@@ -3,9 +3,9 @@ import {Error} from "mongoose";
 import User from "../models/User";
 import auth, {RequestWithUser} from "../middleware/auth";
 
-const UsersRouter = express.Router();
+const usersRouter = express.Router();
 
-UsersRouter.get('/', async (req, res) => {
+usersRouter.get('/', async (req, res) => {
     try {
         const users = await User.find();
         res.status(200).send(users);
@@ -14,7 +14,7 @@ UsersRouter.get('/', async (req, res) => {
     }
 });
 
-UsersRouter.post('/register', async (req, res) => {
+usersRouter.post('/register', async (req, res) => {
     try {
         const {firstName, lastName, email, phone, role, password} = req.body;
 
@@ -40,21 +40,21 @@ UsersRouter.post('/register', async (req, res) => {
     }
 });
 
-UsersRouter.post('/sessions', async (req, res) => {
+usersRouter.post('/sessions', async (req, res) => {
     try {
         const user = await User.findOne({
             email: req.body.email,
         });
 
         if (!user) {
-            res.status(400).send({error: 'Email Not Found'});
+            res.status(404).send({error: 'Email Not Found'});
             return;
         }
 
         const isMatch = await user.checkPassword(req.body.password);
 
         if (!isMatch) {
-            res.status(400).send({error: 'Password is incorrect'});
+            res.status(401).send({error: 'Password is incorrect'});
             return;
         }
 
@@ -71,7 +71,7 @@ UsersRouter.post('/sessions', async (req, res) => {
     }
 });
 
-UsersRouter.delete('/sessions', auth, async (req, res) => {
+usersRouter.delete('/sessions', auth, async (req, res) => {
     let reqWithAuth = req as RequestWithUser;
     const userFromAuth = reqWithAuth.user;
 
@@ -80,16 +80,20 @@ UsersRouter.delete('/sessions', auth, async (req, res) => {
             _id: userFromAuth._id,
         });
 
-        if (user) {
-            user.generateToken();
-            await user.save();
-
-            res.send({message: 'Success logout'});
+        if (!user) {
+            res.status(404).send({ error: 'User not found' });
+            return;
         }
+
+        user.generateToken();
+        await user.save();
+
+        res.status(200).send({ message: 'Logout successful' });
+
     } catch (e) {
         res.status(400).send({error: 'An error occurred'});
     }
 
 });
 
-export default UsersRouter;
+export default usersRouter;
