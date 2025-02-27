@@ -1,14 +1,17 @@
 import {UserFields} from "../types";
 import mongoose, {HydratedDocument, Model} from "mongoose";
 import {randomUUID} from "crypto";
+import bcrypt from "bcrypt";
 
 interface UserMethods {
     generateToken(): void;
+    checkPassword(password: string): Promise<boolean>;
 }
 
 type UserModel = Model<UserFields, {}, UserMethods>
 
 const Schema = mongoose.Schema;
+const SALT_WORK_FACTOR = 10;
 
 const regEmail = /^(\w+[-.]?\w+)@(\w+)([.-]?\w+)?(\.[a-zA-Z]{2,3})$/;
 const regPhone = /^(\+996|0)\s?\d{3}\s?\d{3}\s?\d{3}$/;
@@ -34,6 +37,7 @@ const UserSchema = new Schema<
         validate: [
             {
                 validator: async function (this: HydratedDocument<UserFields>, value: string): Promise<boolean> {
+                    if (!this.isNew) return true;
                     const user: UserFields | null = await User.findOne({ email: value });
                     return !user;
                 },
@@ -47,6 +51,10 @@ const UserSchema = new Schema<
             },
         ]
     },
+    password: {
+        type: String,
+        required: true,
+    },
     role: {
         type: String,
         required: true,
@@ -56,15 +64,7 @@ const UserSchema = new Schema<
     phone: {
         type: String,
         required: true,
-        unique: true,
         validate: [
-            {
-                validator: async function (this: HydratedDocument<UserFields>, value: string): Promise<boolean> {
-                    const user: UserFields | null = await User.findOne({ phone: value });
-                    return !user;
-                },
-                message: "This phone already exists",
-            },
             {
                 validator:  async function (this: HydratedDocument<UserFields>, value: string): Promise<boolean> {
                     return regPhone.test(value);
@@ -79,20 +79,38 @@ const UserSchema = new Schema<
     }
 });
 
-UserSchema.pre("save", function (next) {
-    if (!this.isModified("phone")) return next();
-
-    this.phone = this.phone.replace(/[\s\-()]/g, "");
-
-    if (!this.phone.startsWith("+")) {
-        this.phone = "+996" + this.phone.replace(/^0/, "");
+UserSchema.pre("save", async function (next) {
+    if (this.isModified("password")) {
+        const salt = await bcrypt.genSalt(SALT_WORK_FACTOR);
+        this.password = await bcrypt.hash(this.password, salt);
     }
+
+    if (this.isModified("phone")) {
+        this.phone = this.phone.replace(/[^\d+]/g, "");
+
+        if (!this.phone.startsWith("+996")) {
+            this.phone = this.phone.replace(/^0/, "");
+            this.phone = "+996" + this.phone;
+        }
+    }
+
     next();
 });
+
+UserSchema.methods.checkPassword = function (password: string) {
+    return bcrypt.compare(password, this.password);
+};
 
 UserSchema.methods.generateToken = function () {
     this.token = randomUUID();
 };
+
+UserSchema.set('toJSON', {
+    transform: (_doc, ret, _options) => {
+        delete ret.password;
+        return ret;
+    }
+});
 
 const User = mongoose.model('User', UserSchema);
 export default User;

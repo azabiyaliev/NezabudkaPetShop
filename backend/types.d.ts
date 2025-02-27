@@ -4,5 +4,6 @@ export interface UserFields {
     phone: string;
     token: string;
     email: string;
+    password: string;
     role: string;
 }
