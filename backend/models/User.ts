@@ -80,6 +80,8 @@ const UserSchema = new Schema<
 });
 
 UserSchema.pre("save", function (next) {
+    if (!this.isModified("phone")) return next();
+
     this.phone = this.phone.replace(/[\s\-()]/g, "");
 
     if (!this.phone.startsWith("+")) {
