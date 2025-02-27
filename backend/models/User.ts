@@ -1,8 +1,8 @@
 import {UserFields} from "../types";
 import mongoose, {HydratedDocument, Model} from "mongoose";
+import {randomUUID} from "crypto";
 
 interface UserMethods {
-    checkPassword(password: string): Promise<boolean>;
     generateToken(): void;
 }
 
@@ -90,6 +90,9 @@ UserSchema.pre("save", function (next) {
     next();
 });
 
+UserSchema.methods.generateToken = function () {
+    this.token = randomUUID();
+};
 
 const User = mongoose.model('User', UserSchema);
 export default User;
