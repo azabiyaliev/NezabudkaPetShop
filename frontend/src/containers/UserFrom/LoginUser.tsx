@@ -4,17 +4,15 @@ import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid2";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
 import Typography from "@mui/material/Typography";
-import { useAppDispatch, useAppSelector } from "../../app/hooks.ts";
+import { useAppDispatch } from "../../app/hooks.ts";
 import { NavLink } from "react-router-dom";
 import { LogInMutation } from "../../types";
 import { login } from "../../features/users/usersThunk.ts";
-import { selectLoginError } from "../../features/users/usersSlice.ts";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const LoginUser = () => {
   const dispatch = useAppDispatch();
-  const loginError = useAppSelector(selectLoginError);
 
   const [form, setForm] = useState<LogInMutation>({
     email: "",
@@ -31,19 +29,15 @@ const LoginUser = () => {
     try {
       await dispatch(login(form)).unwrap();
     } catch (error) {
-      if (loginError && loginError.error) {
-        toast.error(loginError.error, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      }else{
-        console.error(error);
-      }
+      toast.error((error as { error: string }).error, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
   };
 
