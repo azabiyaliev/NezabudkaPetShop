@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store.ts";
-import { GlobalError, User, ValidationError } from '../../types';
+import { GlobalError, User, ValidationError } from "../../types";
 import { login, register } from "./usersThunk.ts";
 
 interface UserState {
@@ -60,7 +60,7 @@ export const userSlice = createSlice({
       .addCase(login.rejected, (state, { payload: error }) => {
         state.loginLoading = false;
         state.loginError = error || null;
-      })
+      });
   },
 });
 

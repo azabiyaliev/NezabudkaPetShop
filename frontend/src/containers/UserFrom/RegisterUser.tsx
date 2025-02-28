@@ -71,7 +71,6 @@ const RegisterUser = () => {
       });
     } catch (error) {
       if (registerError) {
-        // Показываем ошибку через Toast
         if (registerError.errors?.email) {
           toast.error(registerError.errors.email.message, {
             position: "top-right",
@@ -134,7 +133,12 @@ const RegisterUser = () => {
           <Typography component="h1" variant="h5" sx={{ color: "black" }}>
             Регистрация
           </Typography>
-          <Box component="form" noValidate onSubmit={submitHandler} sx={{ mt: 3 }}>
+          <Box
+            component="form"
+            noValidate
+            onSubmit={submitHandler}
+            sx={{ mt: 3 }}
+          >
             <Grid direction={"column"} spacing={2}>
               <Grid>
                 <TextField
@@ -182,7 +186,9 @@ const RegisterUser = () => {
                   name="email"
                   value={form.email}
                   onChange={inputChangeHandler}
-                  error={Boolean(getFielderror("email")) || Boolean(emailError.email)}
+                  error={
+                    Boolean(getFielderror("email")) || Boolean(emailError.email)
+                  }
                   helperText={getFielderror("email") || emailError.email}
                   style={{
                     marginTop: "10px",
@@ -220,7 +226,9 @@ const RegisterUser = () => {
                   id="phone"
                   value={form.phone}
                   onChange={inputChangeHandler}
-                  error={Boolean(getFielderror("phone")) || Boolean(phoneError.phone)}
+                  error={
+                    Boolean(getFielderror("phone")) || Boolean(phoneError.phone)
+                  }
                   helperText={getFielderror("phone") || phoneError.phone}
                   style={{
                     marginTop: "10px",
@@ -261,7 +269,6 @@ const RegisterUser = () => {
           </Box>
         </Box>
       </Container>
-
 
       <ToastContainer />
     </div>

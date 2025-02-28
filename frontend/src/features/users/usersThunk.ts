@@ -8,8 +8,7 @@ import {
   RegisterResponse,
   User,
   ValidationError,
-} from '../../types';
-
+} from "../../types";
 
 export const register = createAsyncThunk<
   RegisterResponse,
@@ -33,7 +32,6 @@ export const register = createAsyncThunk<
   }
 });
 
-
 export const login = createAsyncThunk<
   User,
   LogInMutation,
@@ -55,8 +53,6 @@ export const login = createAsyncThunk<
       if (status === 401 && data.error) {
         return rejectWithValue(data as GlobalError);
       }
-
-
     }
     throw error;
   }

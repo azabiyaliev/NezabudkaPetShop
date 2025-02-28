@@ -1,16 +1,16 @@
 import React, { useState } from "react";
-import { Avatar, Box, Button, Container } from '@mui/material';
+import { Avatar, Box, Button, Container } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid2";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
 import Typography from "@mui/material/Typography";
 import { useAppDispatch, useAppSelector } from "../../app/hooks.ts";
 import { NavLink } from "react-router-dom";
-import { LogInMutation } from '../../types';
-import { login } from '../../features/users/usersThunk.ts';
-import { selectLoginError } from '../../features/users/usersSlice.ts';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { LogInMutation } from "../../types";
+import { login } from "../../features/users/usersThunk.ts";
+import { selectLoginError } from "../../features/users/usersSlice.ts";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const LoginUser = () => {
   const dispatch = useAppDispatch();
@@ -58,7 +58,7 @@ const LoginUser = () => {
             padding: 4,
             borderRadius: 2,
             boxShadow: 3,
-            border: '2px solid  #FFEB3B'
+            border: "2px solid  #FFEB3B",
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: "white" }}>

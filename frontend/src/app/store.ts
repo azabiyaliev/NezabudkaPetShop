@@ -9,8 +9,7 @@ import {
   REHYDRATE,
   PERSIST,
 } from "redux-persist";
-import { userReducer } from '../features/users/usersSlice.ts';
-
+import { userReducer } from "../features/users/usersSlice.ts";
 
 const userPersistConfig = {
   key: "store:users",
