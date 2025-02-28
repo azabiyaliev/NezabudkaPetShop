@@ -18,6 +18,21 @@ usersRouter.post('/register', async (req, res) => {
     try {
         const {firstName, lastName, email, phone, role, password} = req.body;
 
+        if (firstName.trim() === '' || lastName.trim() === '') {
+            res.status(400).send({error: 'First name and last name is required'});
+            return;
+        }
+
+        if(password.trim() === '') {
+            res.status(400).send({error: 'password is required'});
+            return;
+        }
+
+        if( password.includes(' ')) {
+            res.status(400).send({error: 'The password must not contain spaces.'});
+            return;
+        }
+
         const user = new User({
             firstName: firstName,
             lastName: lastName,
