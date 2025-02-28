@@ -41,6 +41,8 @@ const LoginUser = () => {
           draggable: true,
           progress: undefined,
         });
+      }else{
+        console.error(error);
       }
     }
   };
