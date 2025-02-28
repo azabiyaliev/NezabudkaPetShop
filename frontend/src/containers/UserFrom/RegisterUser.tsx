@@ -8,7 +8,9 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks.ts";
 import { NavLink } from "react-router-dom";
 import { RegisterMutation } from "../../types";
 import { selectUserError } from "../../features/users/usersSlice.ts";
-import { register } from '../../features/users/usersThunk.ts';
+import { register } from "../../features/users/usersThunk.ts";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const regPhone = /^(\+996|0)\s?\d{3}\s?\d{3}\s?\d{3}$/;
 const regEmail = /^(\w+[-.]?\w+)@(\w+)([.-]?\w+)?(\.[a-zA-Z]{2,3})$/;
@@ -16,34 +18,40 @@ const regEmail = /^(\w+[-.]?\w+)@(\w+)([.-]?\w+)?(\.[a-zA-Z]{2,3})$/;
 const RegisterUser = () => {
   const dispatch = useAppDispatch();
   const registerError = useAppSelector(selectUserError);
-  const [phoneError, setPhoneError] = useState<{phone?: string}>({});
-  const [emailError, setEmailError] = useState<{email?: string}>({});
+  const [phoneError, setPhoneError] = useState<{ phone?: string }>({});
+  const [emailError, setEmailError] = useState<{ email?: string }>({});
 
   const [form, setForm] = useState<RegisterMutation>({
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-    phone: ''
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    phone: "",
   });
 
   const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setForm((prevState) => ({ ...prevState, [name]: value }));
 
-    if(name === 'phone'){
-      if(regPhone.test(value)){
-        setPhoneError(prevState => ({ ...prevState, phone: '' }));
-      }else{
-        setPhoneError(prevState => ({ ...prevState, phone: 'Неправильный формат номера телефона' }));
+    if (name === "phone") {
+      if (regPhone.test(value)) {
+        setPhoneError((prevState) => ({ ...prevState, phone: "" }));
+      } else {
+        setPhoneError((prevState) => ({
+          ...prevState,
+          phone: "Неправильный формат номера телефона",
+        }));
       }
     }
 
-    if(name === 'email'){
-      if(regEmail.test(value)){
-        setEmailError(prevState => ({ ...prevState, email: '' }));
-      }else {
-        setEmailError(prevState => ({ ...prevState, email: 'Неправильный формат email' }));
+    if (name === "email") {
+      if (regEmail.test(value)) {
+        setEmailError((prevState) => ({ ...prevState, email: "" }));
+      } else {
+        setEmailError((prevState) => ({
+          ...prevState,
+          email: "Неправильный формат email",
+        }));
       }
     }
   };
@@ -52,8 +60,52 @@ const RegisterUser = () => {
     e.preventDefault();
     try {
       await dispatch(register(form)).unwrap();
-    } catch (e) {
-      console.log(e);
+      toast.success("Регистрация успешна!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } catch (error) {
+      if (registerError) {
+        // Показываем ошибку через Toast
+        if (registerError.errors?.email) {
+          toast.error(registerError.errors.email.message, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+        }
+        if (registerError.errors?.password) {
+          toast.error(registerError.errors.password.message, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+        }
+        if (registerError.errors?.phone) {
+          toast.error(registerError.errors.phone.message, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+        }
+      }
     }
   };
 
@@ -73,7 +125,7 @@ const RegisterUser = () => {
             backgroundColor: "#FFFFFF",
             padding: 4,
             borderRadius: 2,
-            border: '2px solid  #FFEB3B'
+            border: "2px solid  #FFEB3B",
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: "white" }}>
@@ -82,22 +134,9 @@ const RegisterUser = () => {
           <Typography component="h1" variant="h5" sx={{ color: "black" }}>
             Регистрация
           </Typography>
-          <Box
-            component="form"
-            noValidate
-            onSubmit={submitHandler}
-            sx={{ mt: 3 }}
-          >
+          <Box component="form" noValidate onSubmit={submitHandler} sx={{ mt: 3 }}>
             <Grid direction={"column"} spacing={2}>
               <Grid>
-                {getFielderror("firstName") ? (
-                  <div
-                    className="alert alert-danger w-100 text-center p-1 mx-auto"
-                    role="alert"
-                  >
-                    {getFielderror("firstName")}
-                  </div>
-                ) : null}
                 <TextField
                   fullWidth
                   name="firstName"
@@ -107,7 +146,7 @@ const RegisterUser = () => {
                   value={form.firstName}
                   onChange={inputChangeHandler}
                   error={Boolean(getFielderror("firstName"))}
-                  helperText={Boolean(getFielderror("firstName"))}
+                  helperText={getFielderror("firstName")}
                   style={{
                     marginTop: "10px",
                     backgroundColor: "white",
@@ -117,14 +156,6 @@ const RegisterUser = () => {
                 />
               </Grid>
               <Grid>
-                {getFielderror("lastName") ? (
-                  <div
-                    className="alert alert-danger w-100 text-center p-1 mx-auto"
-                    role="alert"
-                  >
-                    {getFielderror("lastName")}
-                  </div>
-                ) : null}
                 <TextField
                   fullWidth
                   name="lastName"
@@ -134,7 +165,7 @@ const RegisterUser = () => {
                   value={form.lastName}
                   onChange={inputChangeHandler}
                   error={Boolean(getFielderror("lastName"))}
-                  helperText={Boolean(getFielderror("lastName"))}
+                  helperText={getFielderror("lastName")}
                   style={{
                     marginTop: "10px",
                     backgroundColor: "white",
@@ -144,14 +175,6 @@ const RegisterUser = () => {
                 />
               </Grid>
               <Grid>
-                {getFielderror("email") ? (
-                  <div
-                    className="alert alert-danger w-100 text-center p-1 mx-auto"
-                    role="alert"
-                  >
-                    {getFielderror("email")}
-                  </div>
-                ) : null}
                 <TextField
                   fullWidth
                   id="email"
@@ -160,7 +183,7 @@ const RegisterUser = () => {
                   value={form.email}
                   onChange={inputChangeHandler}
                   error={Boolean(getFielderror("email")) || Boolean(emailError.email)}
-                  helperText={getFielderror("email" ) || emailError.email}
+                  helperText={getFielderror("email") || emailError.email}
                   style={{
                     marginTop: "10px",
                     backgroundColor: "white",
@@ -170,14 +193,6 @@ const RegisterUser = () => {
                 />
               </Grid>
               <Grid>
-                {getFielderror("password") ? (
-                  <div
-                    className="alert alert-danger w-100 text-center p-1 mx-auto"
-                    role="alert"
-                  >
-                    {getFielderror("password")}
-                  </div>
-                ) : null}
                 <TextField
                   fullWidth
                   name="password"
@@ -197,14 +212,6 @@ const RegisterUser = () => {
                 />
               </Grid>
               <Grid>
-                {getFielderror("phone") ? (
-                  <div
-                    className="alert alert-danger w-100 text-center p-1 mx-auto"
-                    role="alert"
-                  >
-                    {getFielderror("phone")}
-                  </div>
-                ) : null}
                 <TextField
                   fullWidth
                   name="phone"
@@ -214,7 +221,7 @@ const RegisterUser = () => {
                   value={form.phone}
                   onChange={inputChangeHandler}
                   error={Boolean(getFielderror("phone")) || Boolean(phoneError.phone)}
-                  helperText={getFielderror("phone" ) || phoneError.phone}
+                  helperText={getFielderror("phone") || phoneError.phone}
                   style={{
                     marginTop: "10px",
                     backgroundColor: "white",
@@ -254,6 +261,9 @@ const RegisterUser = () => {
           </Box>
         </Box>
       </Container>
+
+
+      <ToastContainer />
     </div>
   );
 };

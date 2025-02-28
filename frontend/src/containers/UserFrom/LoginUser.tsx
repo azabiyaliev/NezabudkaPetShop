@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Alert, Avatar, Box, Button, Container } from '@mui/material';
+import { Avatar, Box, Button, Container } from '@mui/material';
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid2";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
@@ -9,6 +9,8 @@ import { NavLink } from "react-router-dom";
 import { LogInMutation } from '../../types';
 import { login } from '../../features/users/usersThunk.ts';
 import { selectLoginError } from '../../features/users/usersSlice.ts';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const LoginUser = () => {
   const dispatch = useAppDispatch();
@@ -26,7 +28,21 @@ const LoginUser = () => {
 
   const submitHandler = async (e: React.FormEvent) => {
     e.preventDefault();
-    await dispatch(login(form)).unwrap();
+    try {
+      await dispatch(login(form)).unwrap();
+    } catch (error) {
+      if (loginError && loginError.error) {
+        toast.error(loginError.error, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
+    }
   };
 
   return (
@@ -51,20 +67,6 @@ const LoginUser = () => {
           <Typography component="h1" variant="h5" sx={{ color: "black" }}>
             Вход в аккаунт
           </Typography>
-
-          {loginError && (
-            <Alert
-              severity="error"
-              sx={{
-                mt: 3,
-                width: "100%",
-                color: "black",
-                backgroundColor: "white",
-              }}
-            >
-              {loginError.error}
-            </Alert>
-          )}
 
           <Box
             component="form"
@@ -129,6 +131,8 @@ const LoginUser = () => {
           </Box>
         </Box>
       </Container>
+
+      <ToastContainer />
     </div>
   );
 };
