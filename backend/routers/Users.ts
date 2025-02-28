@@ -18,6 +18,11 @@ usersRouter.post('/register', async (req, res) => {
     try {
         const {firstName, lastName, email, phone, role, password} = req.body;
 
+        if (firstName.trim() === '' || lastName.trim() === '') {
+            res.status(400).send({error: 'First name and last name is required'});
+            return;
+        }
+
         const user = new User({
             firstName: firstName,
             lastName: lastName,

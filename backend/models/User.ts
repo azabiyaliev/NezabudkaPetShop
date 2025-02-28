@@ -80,10 +80,10 @@ const UserSchema = new Schema<
 });
 
 UserSchema.pre("save", async function (next) {
-    if (this.isModified("password")) {
-        const salt = await bcrypt.genSalt(SALT_WORK_FACTOR);
-        this.password = await bcrypt.hash(this.password, salt);
-    }
+    if (!this.isModified("password")) return next();
+
+    const salt = await bcrypt.genSalt(SALT_WORK_FACTOR);
+    this.password = await bcrypt.hash(this.password, salt);
 
     if (this.isModified("phone")) {
         this.phone = this.phone.replace(/[^\d+]/g, "");
@@ -93,7 +93,6 @@ UserSchema.pre("save", async function (next) {
             this.phone = "+996" + this.phone;
         }
     }
-
     next();
 });
 
