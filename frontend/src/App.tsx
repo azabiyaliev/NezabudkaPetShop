@@ -2,11 +2,17 @@ import { Route, Routes } from "react-router-dom";
 import RegisterUser from "./containers/UserFrom/RegisterUser.tsx";
 import LoginUser from "./containers/UserFrom/LoginUser.tsx";
 import { Container, CssBaseline } from "@mui/material";
+import Header from './containers/Header/Header.tsx';
 
 const App = () => {
   return (
     <>
       <CssBaseline />
+
+      <header>
+        <Header/>
+      </header>
+
       <main>
         <Container maxWidth="lg">
           <Routes>
