@@ -23,7 +23,7 @@ const RegisterUser = () => {
 
   const [form, setForm] = useState<RegisterMutation>({
     firstName: "",
-    lastName: "",
+    secondName: "",
     email: "",
     password: "",
     phone: "",
@@ -162,11 +162,11 @@ const RegisterUser = () => {
               <Grid>
                 <TextField
                   fullWidth
-                  name="lastName"
+                  name="secondName"
                   label="Ваша фамилия"
-                  type="lastName"
-                  id="lastName"
-                  value={form.lastName}
+                  type="secondName"
+                  id="secondName"
+                  value={form.secondName}
                   onChange={inputChangeHandler}
                   error={Boolean(getFielderror("lastName"))}
                   helperText={getFielderror("lastName")}

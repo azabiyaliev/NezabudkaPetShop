@@ -122,7 +122,13 @@ export class AuthService {
       data: { token },
     });
 
-    return { email: user.email, firstName: user.firstName, token };
+    return {
+      email: user.email,
+      firstName: user.firstName,
+      token,
+      secondName: user.secondName,
+      id: user.id
+    };
   }
 
   async logout(userId: number) {

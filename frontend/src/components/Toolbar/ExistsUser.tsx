@@ -25,7 +25,7 @@ const ExistsUser: React.FC<Props> = ({ user }) => {
     <>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
         <Button onClick={toggleDrawer(true)} style={{ color: 'black' }}>
-          {user.firstName && user.lastName}
+          {user.firstName && user.secondName}
         </Button>
       </Box>
 
@@ -44,14 +44,17 @@ const ExistsUser: React.FC<Props> = ({ user }) => {
             sx={{
               marginBottom: 2
           }}>
-            {user.firstName} {user.lastName}
+            {user.firstName} {user.secondName}
           </Typography>
           <Divider />
 
           {user && user.role === 'admin' && (
             <List>
-              <ListItem  component={NavLink} to="/private" onClick={toggleDrawer(false)}>
+              <ListItem  component={NavLink} to={`/private_account}`} onClick={toggleDrawer(false)}>
                 <ListItemText primary="Личный кабинет" className='text-black'/>
+              </ListItem>
+              <ListItem  component={NavLink} to={`/users/${user._id}`} onClick={toggleDrawer(false)}>
+                <ListItemText primary="Редактировать профиль" className='text-black'/>
               </ListItem>
               <ListItem  component={NavLink} to="/private/client_orders" onClick={toggleDrawer(false)}>
                 <ListItemText primary="Заказы" className='text-black'/>

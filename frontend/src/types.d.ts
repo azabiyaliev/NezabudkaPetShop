@@ -1,6 +1,6 @@
 export interface RegisterMutation {
   firstName: string;
-  lastName: string;
+  secondName: string;
   email: string;
   password: string;
   phone: string;
@@ -12,13 +12,19 @@ export interface LogInMutation {
 }
 
 export interface User {
-  _id: string;
+  _id: number;
   firstName: string;
-  lastName: string;
+  secondName: string;
   email: string;
   role: string;
   token: string;
   phone: string;
+}
+
+export interface AdminRefactor {
+  firstName: string;
+  secondName: string;
+  email: string;
 }
 
 export interface RegisterResponse {
