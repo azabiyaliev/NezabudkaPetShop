@@ -16,8 +16,8 @@ const regPhone = /^(\+996|0)\s?\d{3}\s?\d{3}\s?\d{3}$/;
 interface FacebookPayload {
   email: string;
   id: string;
-  firstName: string;
-  secondName: string;
+  first_name: string;
+  last_name: string;
 }
 
 @Injectable()
@@ -177,17 +177,14 @@ export class AuthService {
 
   async verifyFacebookToken(accessToken: string) {
     try {
-      // Отправляем запрос на Facebook API для верификации токена
-      const url = `https://graph.facebook.com/me?access_token=${accessToken}&fields=id,first_name,last_name,email,`;
+      const url = `https://graph.facebook.com/me?access_token=${accessToken}&fields=id,first_name,last_name,email`;
 
       const response = await fetch(url);
 
       if (!response.ok) {
         throw new UnauthorizedException('Invalid Facebook user data');
       }
-
       const data = (await response.json()) as FacebookPayload;
-      console.log(data);
 
       if (data && data.id) {
         return data;
@@ -203,7 +200,12 @@ export class AuthService {
   async loginWithFacebook(accessToken: string) {
     const payload = await this.verifyFacebookToken(accessToken);
 
-    const { email, id: facebookID, firstName, secondName } = payload;
+    const {
+      email,
+      id: facebookID,
+      first_name: firstName,
+      last_name: secondName,
+    } = payload;
 
     if (!firstName && !secondName) {
       throw new UnauthorizedException('Not enough data from Facebook');
@@ -220,18 +222,14 @@ export class AuthService {
       user = await this.prisma.user.create({
         data: {
           email: userEmail,
-          password: crypto.randomUUID(), // Генерируем случайный пароль
+          password: crypto.randomUUID(),
           facebookID,
-          firstName: firstName,
-          secondName: secondName,
+          firstName,
+          secondName,
         },
       });
     }
-
-    // Генерация токена для пользователя
     const token = await this.generateUserToken(user.id);
-    console.log(user);
-
     return { message: 'Login with Facebook success.', user, token };
   }
 }

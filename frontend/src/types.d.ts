@@ -14,7 +14,7 @@ export interface LogInMutation {
 export interface User {
   _id: string;
   firstName: string;
-  lastName: string;
+  secondName: string;
   email: string;
   role: string;
   token: string;

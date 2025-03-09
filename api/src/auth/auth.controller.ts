@@ -75,9 +75,14 @@ export class AuthController {
       throw new BadRequestException('Invalid credential. Google login error!');
     }
 
-    const { email, sub: googleID, family_name, given_name } = payload;
+    const {
+      email,
+      sub: googleID,
+      given_name: firstName,
+      family_name: secondName,
+    } = payload;
 
-    if (!email || !family_name || given_name) {
+    if (!email || !firstName || !secondName) {
       throw new BadRequestException('Not enough data from Google');
     }
 
@@ -89,8 +94,8 @@ export class AuthController {
           email,
           password: crypto.randomUUID(),
           googleID,
-          firstName: given_name || '',
-          secondName: family_name,
+          firstName,
+          secondName,
         },
       });
     }

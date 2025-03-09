@@ -1,4 +1,4 @@
 export class GoogleUserDto {
-  name: string;
-  credential: string;
+  name: string = '';
+  credential: string = '';
 }

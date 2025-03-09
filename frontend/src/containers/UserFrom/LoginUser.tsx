@@ -1,18 +1,24 @@
 import React, { useState } from "react";
-import { Avatar, Box, Button, Container } from "@mui/material";
+import { Avatar, Box, Button, Container, Divider } from '@mui/material';
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid2";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
 import Typography from "@mui/material/Typography";
 import { useAppDispatch } from "../../app/hooks.ts";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from 'react-router-dom';
 import { LogInMutation } from "../../types";
-import { login } from "../../features/users/usersThunk.ts";
+import { facebookLogin, googleLogin, login } from '../../features/users/usersThunk.ts';
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { GoogleLogin } from '@react-oauth/google';
+import FacebookLogin from '@greatsumini/react-facebook-login';
+import FacebookIcon from "@mui/icons-material/Facebook";
+
 
 const LoginUser = () => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
 
   const [form, setForm] = useState<LogInMutation>({
     email: "",
@@ -41,6 +47,16 @@ const LoginUser = () => {
     }
   };
 
+  const googleLoginHandler = async (credential: string) => {
+    await dispatch(googleLogin(credential)).unwrap();
+    navigate("/");
+  };
+
+  const facebookLoginHandler = async (accessToken: string) => {
+    await dispatch(facebookLogin({accessToken})).unwrap();
+    navigate('/');
+  };
+
   return (
     <div>
       <Container component="main" maxWidth="xs">
@@ -63,14 +79,13 @@ const LoginUser = () => {
           <Typography component="h1" variant="h5" sx={{ color: "black" }}>
             Вход в аккаунт
           </Typography>
-
           <Box
             component="form"
             noValidate
             onSubmit={submitHandler}
             sx={{ mt: 3 }}
           >
-            <Grid direction={"column"} spacing={2}>
+              <Grid direction={"column"} spacing={2}>
               <Grid>
                 <TextField
                   fullWidth
@@ -125,6 +140,47 @@ const LoginUser = () => {
               </Grid>
             </Grid>
           </Box>
+          <Box sx={{ width: '100%', textAlign: 'center', mt: 2 }}>
+            <Divider sx={{ mb: 2, textTransform: "uppercase" }}>или войти с</Divider>
+          </Box>
+          <Grid container direction={'column'} size={12} spacing={2} mt={2}>
+            <Grid size={12}>
+              <FacebookLogin
+                appId="1011210890854768"
+                onSuccess={response => facebookLoginHandler(response.accessToken)}
+                onFail={() => alert('Facebook Login failed!')}
+                render={({ onClick }) => (
+                  <Button
+                    onClick={onClick}
+                    startIcon={<FacebookIcon />}
+                    variant="contained"
+                    sx={{
+                      backgroundColor: "#1877f2",
+                      color: "white",
+                      fontSize: "16px",
+                      fontWeight: "bold",
+                      padding: "10px",
+                      borderRadius: "8px",
+                      "&:hover": { backgroundColor: "#145db2" },
+                      width: "100%",
+                    }}
+                  >
+                    Facebook
+                  </Button>
+                )}
+              />
+            </Grid>
+            <Grid size={12}>
+              <GoogleLogin
+                onSuccess={(credentialResponse) => {
+                  if (credentialResponse.credential) {
+                    void googleLoginHandler(credentialResponse.credential);
+                  }
+                }}
+                onError={() => alert("Login failed")}
+              />
+            </Grid>
+          </Grid>
         </Box>
       </Container>
 
