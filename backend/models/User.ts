@@ -76,7 +76,10 @@ const UserSchema = new Schema<
     token: {
         type: String,
         required: true,
-    }
+    },
+    googleId: String,
+    vkId: String,
+    facebookID: String,
 });
 
 UserSchema.pre("save", async function (next) {

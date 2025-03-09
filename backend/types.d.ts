@@ -6,4 +6,7 @@ export interface UserFields {
     email: string;
     password: string;
     role: string;
+    googleId: string;
+    vkId: string;
+    facebookID: string;
 }

@@ -7,13 +7,42 @@ import {
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
 import { LoginDto, RegisterDto } from './auth.dto';
+import { OAuth2Client } from 'google-auth-library';
+import { ConfigService } from '@nestjs/config';
 
 const regEmail = /^(\w+[-.]?\w+)@(\w+)([.-]?\w+)?(\.[a-zA-Z]{2,3})$/;
 const regPhone = /^(\+996|0)\s?\d{3}\s?\d{3}\s?\d{3}$/;
 
+interface FacebookPayload {
+  email: string;
+  id: string;
+  firstName: string;
+  secondName: string;
+}
+
 @Injectable()
 export class AuthService {
-  constructor(private prisma: PrismaService) {}
+  private client: OAuth2Client;
+
+  constructor(
+    private prisma: PrismaService,
+    private configService: ConfigService,
+  ) {
+    this.client = new OAuth2Client(
+      this.configService.get<string>('GOOGLE_CLIENT_ID'),
+    );
+  }
+
+  async generateUserToken(userId: number): Promise<string> {
+    const token = crypto.randomUUID();
+
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { token },
+    });
+
+    return token;
+  }
 
   async register(registerDto: RegisterDto) {
     const { email, firstName, secondName, password } = registerDto;
@@ -124,5 +153,85 @@ export class AuthService {
 
   async findByToken(token: string) {
     return this.prisma.user.findFirst({ where: { token } });
+  }
+
+  async verifyGoogleToken(idToken: string) {
+    try {
+      const ticket = await this.client.verifyIdToken({
+        idToken,
+        audience: this.configService.get<string>('GOOGLE_CLIENT_ID'),
+      });
+
+      const payload = ticket.getPayload();
+
+      if (!payload) {
+        throw new UnauthorizedException('Invalid Google token');
+      }
+
+      return payload;
+    } catch (error) {
+      console.log(error);
+      throw new UnauthorizedException('Google authentication failed');
+    }
+  }
+
+  async verifyFacebookToken(accessToken: string) {
+    try {
+      // Отправляем запрос на Facebook API для верификации токена
+      const url = `https://graph.facebook.com/me?access_token=${accessToken}&fields=id,first_name,last_name,email,`;
+
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new UnauthorizedException('Invalid Facebook user data');
+      }
+
+      const data = (await response.json()) as FacebookPayload;
+      console.log(data);
+
+      if (data && data.id) {
+        return data;
+      } else {
+        throw new UnauthorizedException('Invalid Facebook token');
+      }
+    } catch (error) {
+      console.log(error);
+      throw new UnauthorizedException('Facebook authentication failed');
+    }
+  }
+
+  async loginWithFacebook(accessToken: string) {
+    const payload = await this.verifyFacebookToken(accessToken);
+
+    const { email, id: facebookID, firstName, secondName } = payload;
+
+    if (!firstName && !secondName) {
+      throw new UnauthorizedException('Not enough data from Facebook');
+    }
+
+    let userEmail = email;
+    if (!userEmail) {
+      userEmail = `${facebookID}@facebook.com`;
+    }
+
+    let user = await this.prisma.user.findUnique({ where: { facebookID } });
+
+    if (!user) {
+      user = await this.prisma.user.create({
+        data: {
+          email: userEmail,
+          password: crypto.randomUUID(), // Генерируем случайный пароль
+          facebookID,
+          firstName: firstName,
+          secondName: secondName,
+        },
+      });
+    }
+
+    // Генерация токена для пользователя
+    const token = await this.generateUserToken(user.id);
+    console.log(user);
+
+    return { message: 'Login with Facebook success.', user, token };
   }
 }
