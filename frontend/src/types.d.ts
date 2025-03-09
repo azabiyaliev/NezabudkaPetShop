@@ -12,7 +12,7 @@ export interface LogInMutation {
 }
 
 export interface User {
-  _id: number;
+  id: number;
   firstName: string;
   secondName: string;
   email: string;
