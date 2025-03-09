@@ -5,7 +5,7 @@ import Grid from "@mui/material/Grid2";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
 import Typography from "@mui/material/Typography";
 import { useAppDispatch } from "../../app/hooks.ts";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from 'react-router-dom';
 import { LogInMutation } from "../../types";
 import { login } from "../../features/users/usersThunk.ts";
 import { toast, ToastContainer } from "react-toastify";
@@ -13,6 +13,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 const LoginUser = () => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const [form, setForm] = useState<LogInMutation>({
     email: "",
@@ -28,6 +29,7 @@ const LoginUser = () => {
     e.preventDefault();
     try {
       await dispatch(login(form)).unwrap();
+      navigate('/')
     } catch (error) {
       toast.error((error as { error: string }).error, {
         position: "top-right",

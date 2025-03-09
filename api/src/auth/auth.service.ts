@@ -11,12 +11,17 @@ import { LoginDto, RegisterDto } from './auth.dto';
 const regEmail = /^(\w+[-.]?\w+)@(\w+)([.-]?\w+)?(\.[a-zA-Z]{2,3})$/;
 const regPhone = /^(\+996|0)\s?\d{3}\s?\d{3}\s?\d{3}$/;
 
+enum Role {
+  client = 'client',
+  admin = 'admin',
+}
+
 @Injectable()
 export class AuthService {
   constructor(private prisma: PrismaService) {}
 
   async register(registerDto: RegisterDto) {
-    const { email, firstName, secondName, password } = registerDto;
+    const { email, firstName, secondName, password, role } = registerDto;
     let phone = registerDto.phone;
 
     if (
@@ -73,6 +78,10 @@ export class AuthService {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
+    if (role && !Object.values(Role).includes(role as Role)) {
+      throw new BadRequestException('Invalid role');
+    }
+
     const user = await this.prisma.user.create({
       data: {
         email,
@@ -80,6 +89,7 @@ export class AuthService {
         secondName,
         password: hashedPassword,
         phone,
+        role: role ? (role as Role) : undefined,
         token: crypto.randomUUID(),
       },
     });
