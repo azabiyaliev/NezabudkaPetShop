@@ -57,3 +57,39 @@ export const login = createAsyncThunk<
     throw error;
   }
 });
+
+export const googleLogin = createAsyncThunk<
+  User,
+  string,
+  { rejectValue: GlobalError }
+>("users/googleLogin", async (credential, { rejectWithValue }) => {
+  try {
+    const response = await axiosApi.post<RegisterResponse>("/auth/google", {
+      credential,
+    });
+    console.log(response.data);
+    return response.data.user;
+  } catch (e) {
+    if (isAxiosError(e) && e.response && e.response.status === 400) {
+      return rejectWithValue(e.response.data);
+    }
+    throw e;
+  }
+});
+
+export const facebookLogin = createAsyncThunk<User, {accessToken: string}, { rejectValue: GlobalError }>(
+  'users/facebookLogin',
+  async (data, {rejectWithValue}) => {
+    try {
+      const response = await axiosApi.post<RegisterResponse>('auth/facebook', data);
+      console.log(response.data.user);
+      return response.data.user;
+    } catch (error) {
+      if (isAxiosError(error) && error.response && error.response.status === 400) {
+        return rejectWithValue(error.response.data as GlobalError);
+      }
+
+      throw error;
+    }
+  }
+);

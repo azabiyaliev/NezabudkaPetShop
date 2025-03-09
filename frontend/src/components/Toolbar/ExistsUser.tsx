@@ -25,7 +25,7 @@ const ExistsUser: React.FC<Props> = ({ user }) => {
     <>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
         <Button onClick={toggleDrawer(true)} style={{ color: 'black' }}>
-          {user.firstName && user.lastName}
+          {user.firstName}  {user.secondName}
         </Button>
       </Box>
 
@@ -44,7 +44,7 @@ const ExistsUser: React.FC<Props> = ({ user }) => {
             sx={{
               marginBottom: 2
           }}>
-            {user.firstName} {user.lastName}
+            {user.firstName} {user.secondName}
           </Typography>
           <Divider />
 

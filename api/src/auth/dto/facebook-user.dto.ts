@@ -1,4 +1,4 @@
 export class FacebookUserDto {
-  accessToken: string;
-  name: string;
+  accessToken: string = '';
+  name: string = '';
 }
