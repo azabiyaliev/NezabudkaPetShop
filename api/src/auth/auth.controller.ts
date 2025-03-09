@@ -47,6 +47,9 @@ export class AuthController {
         user: {
           email: user.email,
           firstName: user.firstName,
+          token: user.token,
+          secondName: user.secondName,
+          id: user.id
         },
       };
     } catch (e) {

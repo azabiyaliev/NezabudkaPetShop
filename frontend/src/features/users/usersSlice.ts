@@ -1,7 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store.ts";
 import { GlobalError, User, ValidationError } from "../../types";
-import { facebookLogin, googleLogin, login, register } from './usersThunk.ts';
+import { facebookLogin, googleLogin  } from './usersThunk.ts';
+import { login, register, updateUser } from './usersThunk.ts';
 
 interface UserState {
   user: User | null;
@@ -9,6 +10,8 @@ interface UserState {
   registerError: ValidationError | null;
   loginLoading: boolean;
   loginError: GlobalError | null;
+  editLoading: boolean;
+  editError: GlobalError | null;
 }
 
 const initialState: UserState = {
@@ -17,6 +20,8 @@ const initialState: UserState = {
   registerError: null,
   loginLoading: false,
   loginError: null,
+  editLoading: false,
+  editError: null,
 };
 
 export const selectUser = (state: RootState) => state.users.user;
@@ -85,6 +90,19 @@ export const userSlice = createSlice({
         state.loginLoading = false;
         state.loginError = error || null;
       })
+      .addCase(updateUser.pending, (state) => {
+        state.editLoading = true;
+        state.editError = null;
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.editLoading = false;
+        state.user = action.payload;
+        state.editError = null;
+      })
+      .addCase(updateUser.rejected, (state, ) => {
+        state.editLoading = false;
+        state.editError =  null;
+      });
   },
 });
 

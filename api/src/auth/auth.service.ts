@@ -20,6 +20,11 @@ interface FacebookPayload {
   last_name: string;
 }
 
+enum Role {
+  client = 'client',
+  admin = 'admin',
+}
+
 @Injectable()
 export class AuthService {
   private client: OAuth2Client;
@@ -45,7 +50,7 @@ export class AuthService {
   }
 
   async register(registerDto: RegisterDto) {
-    const { email, firstName, secondName, password } = registerDto;
+    const { email, firstName, secondName, password, role } = registerDto;
     let phone = registerDto.phone;
 
     if (
@@ -102,6 +107,10 @@ export class AuthService {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
+    if (role && !Object.values(Role).includes(role as Role)) {
+      throw new BadRequestException('Invalid role');
+    }
+
     const user = await this.prisma.user.create({
       data: {
         email,
@@ -109,6 +118,7 @@ export class AuthService {
         secondName,
         password: hashedPassword,
         phone,
+        role: role ? (role as Role) : undefined,
         token: crypto.randomUUID(),
       },
     });
@@ -141,7 +151,13 @@ export class AuthService {
       data: { token },
     });
 
-    return { email: user.email, firstName: user.firstName, token };
+    return {
+      email: user.email,
+      firstName: user.firstName,
+      token,
+      secondName: user.secondName,
+      id: user.id,
+    };
   }
 
   async logout(userId: number) {
