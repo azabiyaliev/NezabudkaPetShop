@@ -1,0 +1,14 @@
+.font-link{
+  font-family: "Modak", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.icon-hover {
+  transition: color 0.3s ease;
+}
+
+.icon-hover:hover {
+  color: yellow;
+}
+
