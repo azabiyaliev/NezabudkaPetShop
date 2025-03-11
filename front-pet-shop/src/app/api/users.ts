@@ -3,13 +3,13 @@ import axios from "axios";
 import {apiUrl} from "@/globalConstants";
 
 
-export async function registerUser(registerData: RegisterMutation): Promise<RegisterResponse> {
+export async function registerUser(registerData: RegisterMutation): Promise<User> {
     try {
-        const response = await axios.post<RegisterResponse>(apiUrl + '/auth/register', {
+        const response = await axios.post<{message: string; user: User}>(apiUrl + '/auth/register', {
             ...registerData,
         });
 
-        return response.data;
+        return response.data.user;
     } catch (error) {
         console.error('Регистрация не удалась', error);
         throw new Error('Регистрация не удалась');

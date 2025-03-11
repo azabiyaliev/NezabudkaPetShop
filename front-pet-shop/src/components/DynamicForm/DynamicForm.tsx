@@ -81,7 +81,22 @@ export function DynamicForm<T extends Record<string, unknown>>({
                                         {field.label}
                                     </label>
 
-                                    {field.type === 'input' && (
+                                    {field.type === 'input' && field.name === 'password' ? (
+                                        <TextField
+                                            fullWidth
+                                            id={field.name}
+                                            type="password"
+                                            {...register(field.name, field.validation as RegisterOptions<T, Path<T>>)}
+                                            error={!!error}
+                                            helperText={error?.message}
+                                            variant="outlined"
+                                            sx={{
+                                                backgroundColor: 'white',
+                                                borderRadius: '7px',
+                                                marginTop: '10px',
+                                            }}
+                                        />
+                                    ) : (
                                         <TextField
                                             fullWidth
                                             id={field.name}
@@ -96,6 +111,7 @@ export function DynamicForm<T extends Record<string, unknown>>({
                                             }}
                                         />
                                     )}
+
 
                                     {field.type === 'textarea' && (
                                         <div>
