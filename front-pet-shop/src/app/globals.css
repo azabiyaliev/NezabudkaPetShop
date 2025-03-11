@@ -1,0 +1,7 @@
+.ColorAll {
+    background-color:#FFF8E1;
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}

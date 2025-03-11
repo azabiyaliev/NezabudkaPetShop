@@ -1,27 +1,44 @@
 'use client'
-import React, {useEffect, useState} from 'react';
-import { AppBar, Toolbar, Container, Typography, IconButton, InputBase, Badge, Box } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { AppBar, Toolbar, Container, Typography, IconButton, InputBase, Badge, Box, Button } from '@mui/material';
 import { Search, ShoppingCart, Favorite, Phone } from '@mui/icons-material';
 import Image from 'next/image';
 import Link from 'next/link';
 import LogoPic from '../../../public/logo.jpg';
-import ExistsUser from "@/components/MainToolBar/ExistsUser";
-import UnknownUser from "@/components/MainToolBar/UnknownUser";
 import Cookies from "js-cookie";
+import { Nav, Offcanvas } from 'react-bootstrap';
+import UnknownUser from "@/components/MainToolBar/UnknownUser";
+
+interface User {
+    firstName: string;
+    secondName: string;
+    role: string;
+}
 
 const MainToolbar = () => {
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState<User | null>(null);
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
     useEffect(() => {
         const userCookie = Cookies.get('user');
+        console.log('User cookie:', userCookie);
+
         if (userCookie) {
-            setUser(JSON.parse(userCookie));
+            const userData = JSON.parse(userCookie);
+            console.log('Parsed user data:', userData);
+            setUser(userData);
+        } else {
+            console.log('No user cookie found');
         }
     }, []);
 
+    const toggleDrawer = (open: boolean) => () => {
+        setIsDrawerOpen(open);
+    };
+
     return (
         <div>
-            <Box sx={{ backgroundColor: '#f0f0f0', padding: '5px 0' }}>
+            <Box sx={{  padding: '5px 0' }}>
                 <Container sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <Box sx={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
                         <Link href='/'>
@@ -35,21 +52,30 @@ const MainToolbar = () => {
                 </Container>
             </Box>
 
-            <AppBar position="sticky" sx={{ boxShadow: 'none', paddingBottom: '10px', paddingTop: '10px', backgroundColor: 'white', borderBottom: '3px solid #FFEB3B' }}>
-                <Toolbar>
-                    <Container sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        {/* Логотип */}
+            <AppBar
+                position="sticky"
+                sx={{
+                    boxShadow: 'none',
+                    paddingBottom: '10px',
+                    paddingTop: '10px',
+                    backgroundColor: '#FFF8E1',
+                    borderBottom: '3px solid #FFEB3B',
+                    borderTop: '3px solid #FFEB3B',
+                    zIndex: isDrawerOpen ? 0 : 1100,
+                }}
+            >
+                <Container>
+                    <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <Link href="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
-                            <Image src={LogoPic} alt="Nezabudka" width={86} height={86} />
+                            <Image src={LogoPic} alt="Nezabудка" width={86} height={86} />
                             <Typography variant="h5" sx={{ color: 'black', fontFamily: 'COMIC SANS MS, sans-serif', marginLeft: 1, textTransform: 'uppercase' }}>
                                 Незабудка
                             </Typography>
                         </Link>
 
-                        {/* Поиск */}
                         <Box sx={{ display: 'flex', alignItems: 'center', width: '300px', border: '1px solid #d3d3d3', borderRadius: '4px' }}>
                             <InputBase
-                                placeholder="Поиск"
+                                placeholder="Поиск товаров"
                                 sx={{ paddingLeft: 2, width: '100%' }}
                             />
                             <IconButton sx={{
@@ -62,7 +88,7 @@ const MainToolbar = () => {
                             </IconButton>
                         </Box>
 
-                        <Box sx={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
                             <Link href="/client/my_cart" style={{ textDecoration: 'none' }}>
                                 <IconButton>
                                     <Badge badgeContent={4} color="primary">
@@ -77,17 +103,129 @@ const MainToolbar = () => {
                                         <Favorite />
                                     </Badge>
                                 </IconButton>
-                                <Typography variant="body2" sx={{ marginLeft: 1, color: '#333' }}>Избранное</Typography>
                             </Link>
+
+                            {user ? (
+                                <Button onClick={toggleDrawer(true)} style={{ color: 'black' }}>
+                                    Мой аккаунт
+                                </Button>
+                            ) : (
+                                <UnknownUser />
+                            )}
                         </Box>
-                    </Container>
-                </Toolbar>
-                {user ? (
-                    <ExistsUser user={user} />
-                ) : (
-                    <UnknownUser />
-                )}
+                    </Toolbar>
+                </Container>
             </AppBar>
+
+            <Offcanvas
+                show={isDrawerOpen}
+                onHide={toggleDrawer(false)}
+                placement="end"
+                style={{ zIndex: 1050 }}
+            >
+                <Offcanvas.Header closeButton>
+                    <Offcanvas.Title style={{ fontFamily: 'COMIC SANS MS, sans-serif', marginLeft: '20px', marginTop: '10px' }}>
+                        {user?.firstName} {user?.secondName}
+                    </Offcanvas.Title>
+                </Offcanvas.Header>
+                <hr />
+                <Offcanvas.Body>
+                    {user && user.role === 'admin' && (
+                        <Nav defaultActiveKey="/" className="flex-column" style={{ padding: '15px' }}>
+                            <Link href="/admin/cabinet" onClick={toggleDrawer(false)}>
+                                <Button variant="text"  sx={{ textAlign: 'left', padding: '10px', color: 'rgb(119, 119, 119)' }}>
+                                    Личный кабинет админа
+                                </Button>
+                            </Link>
+                            <Link href="/admin/client_orders" onClick={toggleDrawer(false)}>
+                                <Button variant="text"  sx={{ textAlign: 'left', padding: '10px', color: 'rgb(119, 119, 119)' }}>
+                                    Заказы
+                                </Button>
+                            </Link>
+                            <Link href="/admin/clients" onClick={toggleDrawer(false)}>
+                                <Button variant="text"  sx={{textAlign: 'left', padding: '10px', color: 'rgb(119, 119, 119)' }}>
+                                    Наши клиенты
+                                </Button>
+                            </Link>
+
+                            <Link href="/admin/add_brand" onClick={toggleDrawer(false)}>
+                                <Button variant="text"  sx={{ textAlign: 'left', padding: '10px', color: 'rgb(119, 119, 119)'}}>
+                                    Добавить бренд
+                                </Button>
+                            </Link>
+                            <Link href="/admin/all_products" onClick={toggleDrawer(false)}>
+                                <Button variant="text"  sx={{ textAlign: 'left', padding: '10px', color: 'rgb(119, 119, 119)' }}>
+                                    Все товары
+                                </Button>
+                            </Link>
+                            <Link href="/admin/all_categories" onClick={toggleDrawer(false)}>
+                                <Button variant="text"  sx={{ textAlign: 'left', padding: '10px', color: 'rgb(119, 119, 119)' }}>
+                                    Все категории
+                                </Button>
+                            </Link>
+                            <Link href="/admin/edit_site" onClick={toggleDrawer(false)}>
+                                <Button variant="text"  sx={{ textAlign: 'left', padding: '10px', color: 'rgb(119, 119, 119)' }}>
+                                    Редактирование сайта
+                                </Button>
+                            </Link>
+                            <Button
+                                variant="contained"
+                                fullWidth
+                                color="error"
+                                sx={{ marginTop: '15px', padding: '10px', fontWeight: 'bold' }}
+                                onClick={() => {
+                                    Cookies.remove('user');
+                                    setUser(null);
+                                }}
+                            >
+                                Выйти
+                            </Button>
+                        </Nav>
+                    )}
+
+                    {user && user.role === 'client' && (
+                        <Nav defaultActiveKey="/" className="flex-column" style={{ padding: '15px' }}>
+                            <Link href="/client/my_profile" onClick={toggleDrawer(false)}>
+                                <Button variant="text" sx={{ textAlign: 'left', padding: '10px', color: 'rgb(119, 119, 119)' }}>
+                                    Личный кабинет
+                                </Button>
+                            </Link>
+
+                            <Link href="/client/my_orders" onClick={toggleDrawer(false)}>
+                                <Button variant="text" sx={{ textAlign: 'left', padding: '10px', color: 'rgb(119, 119, 119)' }}>
+                                    Мои Заказы
+                                </Button>
+                            </Link>
+
+                            <Link href="/client/my_cart" onClick={toggleDrawer(false)}>
+                                <Button variant="text" sx={{ textAlign: 'left', padding: '10px', color: 'rgb(119, 119, 119)' }}>
+                                    Корзина
+                                </Button>
+                            </Link>
+
+                            <Link href="/client/my_favorites" onClick={toggleDrawer(false)}>
+                                <Button variant="text" sx={{ textAlign: 'left', padding: '10px', color: 'rgb(119, 119, 119)' }}>
+                                    Избранные
+                                </Button>
+                            </Link>
+
+                            <Button
+                                variant="contained"
+                                fullWidth
+                                color="error"
+                                sx={{ marginTop: '15px', padding: '10px', fontWeight: 'bold' }}
+                                onClick={() => {
+                                    Cookies.remove('user');
+                                    setUser(null);
+                                }}
+                            >
+                                Выйти
+                            </Button>
+                        </Nav>
+                    )}
+
+                </Offcanvas.Body>
+            </Offcanvas>
         </div>
     );
 };

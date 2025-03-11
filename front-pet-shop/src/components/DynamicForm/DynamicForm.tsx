@@ -51,6 +51,8 @@ export function DynamicForm<T extends Record<string, unknown>>({
                     padding: 4,
                     borderRadius: 2,
                     border: '2px solid #FFEB3B',
+                    width: '100%',
+                    maxWidth: '400px',
                 }}
             >
                 <Avatar sx={{ m: 1, bgcolor: 'white' }}>
