@@ -32,3 +32,11 @@ enum Role {
   client
   admin
 }
+
+model Brand {
+  id    Int    @id @default(autoincrement())
+  title String @unique
+  logo  String
+
+  @@map("brands")
+}
