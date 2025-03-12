@@ -53,3 +53,13 @@ model SiteEdition {
 
   @@map("editionSite")
 }
+
+model Category {
+  id            Int        @id @default(autoincrement())
+  title         String     @unique
+  parentId      Int?
+  parent        Category?  @relation("Subcategories", fields: [parentId], references: [id])
+  subcategories Category[] @relation("Subcategories")
+
+  @@map("categories")
+}
