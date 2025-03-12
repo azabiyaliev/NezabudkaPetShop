@@ -49,7 +49,7 @@ export class AuthController {
           firstName: user.firstName,
           token: user.token,
           secondName: user.secondName,
-          id: user.id
+          id: user.id,
         },
       };
     } catch (e) {

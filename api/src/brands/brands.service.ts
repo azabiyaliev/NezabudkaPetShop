@@ -44,7 +44,9 @@ export class BrandsService {
         error instanceof PrismaClientKnownRequestError &&
         error.code === 'P2002'
       ) {
-        throw new ConflictException(`${title} уже существует и вы не можете его повторно добавить!`);
+        throw new ConflictException(
+          `${title} уже существует и вы не можете его повторно добавить!`,
+        );
       }
       throw error;
     }
@@ -61,7 +63,9 @@ export class BrandsService {
       logo = '/brands/' + file.filename;
     }
     if (title.trim().length === 0 || logo.trim().length === 0) {
-      throw new NotFoundException(`Название и логотип бренда не могут быть пустыми!`);
+      throw new NotFoundException(
+        `Название и логотип бренда не могут быть пустыми!`,
+      );
     }
     const brandId = parseInt(id);
     const brand = await this.prisma.brand.findFirst({

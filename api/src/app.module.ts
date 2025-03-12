@@ -9,10 +9,13 @@ import { BrandsController } from './brands/brands.controller';
 import { PrismaModule } from './prisma/prisma.module';
 import { BrandsModule } from './brands/brands.module';
 import { BrandsService } from './brands/brands.service';
+import {EditionSiteModule} from "./editionsite/editionsite.module";
+import {EditionSiteController} from "./editionsite/editionsite.controller";
+import {EditionSiteService} from "./editionsite/editionsite.service";
 
 @Module({
-  imports: [AuthModule, UsersModule, PrismaModule, BrandsModule],
-  controllers: [AppController, BrandsController],
-  providers: [AppService, SeedService, PrismaService, BrandsService],
+  imports: [AuthModule, UsersModule, PrismaModule, BrandsModule, EditionSiteModule],
+  controllers: [AppController, BrandsController, EditionSiteController],
+  providers: [AppService, SeedService, PrismaService, BrandsService, EditionSiteService],
 })
 export class AppModule {}

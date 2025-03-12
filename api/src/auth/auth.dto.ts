@@ -12,7 +12,6 @@ export class RegisterDto {
   role!: Role;
 }
 
-
 export class LoginDto {
   email!: string;
   password!: string;
