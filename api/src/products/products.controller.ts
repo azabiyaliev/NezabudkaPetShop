@@ -102,7 +102,7 @@ export class ProductsController {
   async deleteProduct(@Param('productId') productId: string) {
     try {
       await this.productsService.deleteProduct(productId);
-      return { message: 'Product deleted successfully.' };
+      return { message: 'Товар был удален успешно' };
     } catch (e) {
       console.log(e);
     }

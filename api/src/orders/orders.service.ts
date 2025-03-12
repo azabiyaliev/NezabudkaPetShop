@@ -16,7 +16,7 @@ export class OrdersService {
   async getAllOrders() {
     try {
       const orders = await this.prisma.order.findMany();
-      return orders;
+      return orders || [];
     } catch (error) {
       console.log(error);
     }
@@ -34,7 +34,7 @@ export class OrdersService {
       });
       return oneOrder;
     } catch (e) {
-      throw new BadRequestException({ message: 'Not Found', e });
+      console.log({ message: 'Not Found', e });
     }
   }
 
@@ -134,7 +134,7 @@ export class OrdersService {
       }
       return orderStatus;
     } catch (e) {
-      throw new BadRequestException(e);
+      console.log(e);
     }
   }
 }

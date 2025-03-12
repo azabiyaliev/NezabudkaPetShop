@@ -51,7 +51,7 @@ export class OrdersController {
       const order = await this.ordersService.getOneOrder(id);
       return order;
     } catch (e) {
-      throw new BadRequestException({ message: 'Этот заказ не найден', e });
+      console.log({ message: 'Этот заказ не найден', e });
     }
   }
 
@@ -64,7 +64,7 @@ export class OrdersController {
       const makeOrder = await this.ordersService.createOrder(userId, orderDto);
       return makeOrder;
     } catch (e) {
-      throw new BadRequestException({
+      console.log({
         message: 'Произошла ошибка при заказе товара',
         e,
       });
@@ -85,7 +85,7 @@ export class OrdersController {
 
       return accessedDelivery;
     } catch (e) {
-      throw new BadRequestException(e);
+      console.log(e);
     }
   }
 
@@ -103,7 +103,7 @@ export class OrdersController {
       );
       return updatedOrder;
     } catch (e) {
-      throw new BadRequestException({
+      console.log({
         message: 'Ошибка при обновлении статуса заказа',
         e,
       });

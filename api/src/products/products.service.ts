@@ -10,16 +10,9 @@ export class ProductsService {
   async getAllProducts() {
     try {
       const products = await this.prismaService.products.findMany();
-      if (!products || !products.length) {
-        throw new BadRequestException('В базе данных товаров не найдено');
-      } else {
-        return products;
-      }
+      return products || [];
     } catch (e) {
-      throw new BadRequestException({
-        message: 'Получение всех товаров было отклонено',
-        e,
-      });
+      console.log(e);
     }
   }
 
@@ -48,7 +41,7 @@ export class ProductsService {
       });
       return newProduct;
     } catch (e) {
-      throw new BadRequestException({
+      console.log({
         message: 'Не удалось добавить товар в каталог товаров',
         e,
       });
@@ -68,7 +61,7 @@ export class ProductsService {
       }
       return oneProduct;
     } catch (e) {
-      throw new BadRequestException({
+      console.log({
         message: 'Получение одного товара не удалось',
         e,
       });
@@ -108,7 +101,7 @@ export class ProductsService {
       }
       return changedProduct;
     } catch (e) {
-      throw new BadRequestException({
+      console.log({
         message: 'Редактирование товара не было записано',
         e,
       });
@@ -125,7 +118,7 @@ export class ProductsService {
       });
       return { message: 'Товар был успешно удалён!' };
     } catch (e) {
-      throw new BadRequestException({ message: 'Не удалось удалить товар', e });
+      console.log({ message: 'Не удалось удалить товар', e });
     }
   }
 }
