@@ -1,7 +1,7 @@
 import {
-  BadRequestException,
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -44,8 +44,7 @@ export class OrdersController {
   @Post('make_delivery')
   async createOrder(@Body() orderDto: CreateOrderDto, @Req() req: AuthRequest) {
     const userId = req.user.id;
-    const makeOrder = await this.ordersService.createOrder(userId, orderDto);
-    return makeOrder;
+    return await this.ordersService.createOrder(userId, orderDto);
   }
 
   //FOR ADMIN
@@ -54,8 +53,7 @@ export class OrdersController {
   @Roles('admin')
   @Put(':id/approve_delivery')
   async accessDelivery(@Param() id: CheckoutOrderDto) {
-    const accessedDelivery = await this.ordersService.acceptOrder(id);
-    return accessedDelivery;
+    return await this.ordersService.acceptOrder(id);
   }
 
   //FOR ADMINS
@@ -65,7 +63,13 @@ export class OrdersController {
     @Param('id') orderId: string,
     @Body('status') status: OrderStatus,
   ) {
-    const updatedOrder = await this.ordersService.orderStatus(orderId, status);
-    return updatedOrder;
+    return await this.ordersService.orderStatus(orderId, status);
+  }
+
+  @UseGuards(TokenAuthGuard, RolesGuard)
+  @Roles('admin')
+  @Delete(':id')
+  async deleteDeliveredOrder(@Param('id') id: string) {
+    return await this.ordersService.deleteOrder(id);
   }
 }

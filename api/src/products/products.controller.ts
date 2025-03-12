@@ -1,9 +1,8 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
-  Get, NotFoundException,
+  Get,
   Param,
   Post,
   Put,
@@ -27,18 +26,13 @@ export class ProductsController {
   //GET ALL PRODUCTS
   @Get('catalog')
   async getProducts() {
-    const products = await this.productsService.getAllProducts();
-    return products;
+    return await this.productsService.getAllProducts();
   }
 
   //GET ONE BY ID
   @Get(':id')
   async getOneProduct(@Param('id') id: string) {
-    const product = await this.productsService.getProductById(id);
-    if (!product) {
-      throw new NotFoundException('Товар не найден');
-    }
-    return product;
+    return await this.productsService.getProductById(id);
   }
 
   //CREATE PRODUCT ONLY ADMIN
@@ -64,8 +58,7 @@ export class ProductsController {
       productDto.productPhoto = '/productImg/' + file.filename;
     }
     productDto.productPrice = Number(productDto.productPrice);
-    const newProduct = await this.productsService.addProduct(productDto);
-    return newProduct;
+    return await this.productsService.addProduct(productDto);
   }
 
   //UPDATE PRODUCT ONLY ADMIN
@@ -76,11 +69,10 @@ export class ProductsController {
     @Param('productId') productId: string,
     @Body() createProductDto: CreateProductsDto,
   ) {
-    const updatedProductItem = await this.productsService.changeProductInfo(
+    return await this.productsService.changeProductInfo(
       productId,
       createProductDto,
     );
-    return updatedProductItem;
   }
 
   //DELETE PRODUCT ONLY ADMIN
@@ -88,7 +80,6 @@ export class ProductsController {
   @Roles('admin')
   @Delete(':productId')
   async deleteProduct(@Param('productId') productId: string) {
-    const product = await this.productsService.deleteProduct(productId);
-    return product;
+    return await this.productsService.deleteProduct(productId);
   }
 }
