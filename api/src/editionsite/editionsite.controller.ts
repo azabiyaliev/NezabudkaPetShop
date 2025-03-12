@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   NotFoundException,
   Param,
@@ -11,27 +10,23 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { BrandsService } from './brands.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
-import { BrandDto } from './brands.dto';
+import * as crypto from 'crypto';
 import { TokenAuthGuard } from '../token.auth/token-auth.guard';
 import { RolesGuard } from '../token.auth/token.role.guard';
 import { Roles } from '../roles/roles.decorator';
+import { EditionSiteService } from './editionsite.service';
+import { EditionSitedDto } from './editionsite.dto';
 
-@Controller('brands')
-export class BrandsController {
-  constructor(private brandsService: BrandsService) {}
+@Controller('edition_site')
+export class EditionSiteController {
+  constructor(private editionSite: EditionSiteService) {}
 
   @Get()
   async getBrands() {
-    return await this.brandsService.getBrands();
-  }
-
-  @Get(':id')
-  async getBrand(@Param('id') id: string) {
-    return await this.brandsService.getBrand(id);
+    return await this.editionSite.getAllInfoBySite();
   }
 
   @UseGuards(TokenAuthGuard, RolesGuard)
@@ -40,7 +35,7 @@ export class BrandsController {
   @UseInterceptors(
     FileInterceptor('logo', {
       storage: diskStorage({
-        destination: './public/brands',
+        destination: './public/editsite',
         filename: (_req, file, callback) => {
           const imageFormat = extname(file.originalname);
           callback(null, `${crypto.randomUUID()}${imageFormat}`);
@@ -50,16 +45,20 @@ export class BrandsController {
   )
   async createBrand(
     @UploadedFile() file: Express.Multer.File,
-    @Body() brandDTO: BrandDto,
+    @Body() editsiteDto: EditionSitedDto,
   ) {
-    if (!brandDTO) {
-      throw new NotFoundException(
-        'Название и логотип бренда не был предоставлен!',
-      );
+    if (!editsiteDto) {
+      throw new NotFoundException('Поля не были предоставлены!');
     }
-    const logo = file && file.filename && '/brands/' + file.filename;
-    return await this.brandsService.createBrand({
-      title: brandDTO.title,
+    const logo = file ? '/editsite/' + file.filename : '';
+
+    return await this.editionSite.createInfoSite({
+      instagram: editsiteDto.instagram,
+      whatsapp: editsiteDto.whatsapp,
+      schedule: editsiteDto.schedule,
+      address: editsiteDto.address,
+      email: editsiteDto.email,
+      phone: editsiteDto.phone,
       logo,
     });
   }
@@ -70,7 +69,7 @@ export class BrandsController {
   @UseInterceptors(
     FileInterceptor('logo', {
       storage: diskStorage({
-        destination: './public/brands',
+        destination: './public/editsite',
         filename: (_req, file, callback) => {
           const imageFormat = extname(file.originalname);
           callback(null, `${crypto.randomUUID()}${imageFormat}`);
@@ -78,23 +77,16 @@ export class BrandsController {
       }),
     }),
   )
-  async updateBrand(
+  async updateSite(
     @Param('id') id: string,
     @UploadedFile() file: Express.Multer.File,
-    @Body() brandDTO: BrandDto,
+    @Body() editsiteDto: EditionSitedDto,
   ) {
-    if (!brandDTO) {
-      throw new NotFoundException(
-        'Название и логотип бренда не был предоставлен!',
-      );
+    if (!editsiteDto) {
+      throw new NotFoundException('Поля не были предоставлены!');
     }
-    return await this.brandsService.updateBrand(id, brandDTO, file);
-  }
+    const logo = file ? file : undefined;
 
-  @UseGuards(TokenAuthGuard, RolesGuard)
-  @Roles('admin')
-  @Delete(':id')
-  async deleteBrand(@Param('id') id: string) {
-    return await this.brandsService.deleteBrand(id);
+    return await this.editionSite.updateSite(id, editsiteDto, logo);
   }
 }
