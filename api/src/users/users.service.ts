@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { User } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -46,9 +47,16 @@ export class UsersService {
       throw new NotFoundException(`User with this ${id} not found`);
     }
 
-    return this.prisma.user.update({
+    if (data.password !== undefined) {
+      const salt = await bcrypt.genSalt(10);
+      data.password = await bcrypt.hash(data.password.toString(), salt);
+    }
+
+    await this.prisma.user.update({
       where: { id: userId },
       data,
     });
+
+    return { message: 'Данные успешно обновлены' };
   }
 }
