@@ -1,8 +1,9 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
-  Get,
+  Get, NotFoundException,
   Param,
   Post,
   Put,
@@ -26,23 +27,18 @@ export class ProductsController {
   //GET ALL PRODUCTS
   @Get('catalog')
   async getProducts() {
-    try {
-      const products = await this.productsService.getAllProducts();
-      return products;
-    } catch (e) {
-      console.log(e);
-    }
+    const products = await this.productsService.getAllProducts();
+    return products;
   }
 
   //GET ONE BY ID
   @Get(':id')
   async getOneProduct(@Param('id') id: string) {
-    try {
-      const product = await this.productsService.getProductById(id);
-      return product;
-    } catch (e) {
-      console.log(e);
+    const product = await this.productsService.getProductById(id);
+    if (!product) {
+      throw new NotFoundException('Товар не найден');
     }
+    return product;
   }
 
   //CREATE PRODUCT ONLY ADMIN
@@ -64,16 +60,12 @@ export class ProductsController {
     @Body() productDto: CreateProductsDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    try {
-      if (file && file.filename) {
-        productDto.productPhoto = '/productImg/' + file.filename;
-      }
-      productDto.productPrice = Number(productDto.productPrice);
-      const newProduct = await this.productsService.addProduct(productDto);
-      return newProduct;
-    } catch (e) {
-      console.log(e);
+    if (file && file.filename) {
+      productDto.productPhoto = '/productImg/' + file.filename;
     }
+    productDto.productPrice = Number(productDto.productPrice);
+    const newProduct = await this.productsService.addProduct(productDto);
+    return newProduct;
   }
 
   //UPDATE PRODUCT ONLY ADMIN
@@ -84,15 +76,11 @@ export class ProductsController {
     @Param('productId') productId: string,
     @Body() createProductDto: CreateProductsDto,
   ) {
-    try {
-      const updatedProductItem = await this.productsService.changeProductInfo(
-        productId,
-        createProductDto,
-      );
-      return updatedProductItem;
-    } catch (e) {
-      console.log(e);
-    }
+    const updatedProductItem = await this.productsService.changeProductInfo(
+      productId,
+      createProductDto,
+    );
+    return updatedProductItem;
   }
 
   //DELETE PRODUCT ONLY ADMIN
@@ -100,11 +88,7 @@ export class ProductsController {
   @Roles('admin')
   @Delete(':productId')
   async deleteProduct(@Param('productId') productId: string) {
-    try {
-      await this.productsService.deleteProduct(productId);
-      return { message: 'Товар был удален успешно' };
-    } catch (e) {
-      console.log(e);
-    }
+    const product = await this.productsService.deleteProduct(productId);
+    return product;
   }
 }

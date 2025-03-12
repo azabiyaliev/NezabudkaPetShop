@@ -14,28 +14,26 @@ export class OrdersService {
 
   //FOR ADMIN
   async getAllOrders() {
-    try {
-      const orders = await this.prisma.order.findMany();
-      return orders || [];
-    } catch (error) {
-      console.log(error);
+    const orders = await this.prisma.order.findMany();
+    if (orders.length === 0) {
+      throw new NotFoundException('Список заказов пока что пуст');
     }
+    return orders || [];
   }
 
   async getOneOrder(id: string) {
-    try {
-      if (!id) {
-        throw new NotFoundException('id not found');
-      }
-      const oneOrder = await this.prisma.order.findUnique({
-        where: {
-          id,
-        },
-      });
-      return oneOrder;
-    } catch (e) {
-      console.log({ message: 'Not Found', e });
+    if (!id) {
+      throw new NotFoundException('id not found');
     }
+    const oneOrder = await this.prisma.order.findUnique({
+      where: {
+        id,
+      },
+    });
+    if (!oneOrder) {
+      throw new NotFoundException('Заказ не найден');
+    }
+    return oneOrder;
   }
 
   //FOR ADMIN/CLIENT
@@ -43,98 +41,100 @@ export class OrdersService {
     userId: number,
     { productId, quantity, isDelivered, status }: CreateOrderDto,
   ) {
-    try {
-      const user = await this.prisma.user.findUnique({
-        where: { id: userId },
-        select: { email: true, phone: true },
-      });
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { email: true, phone: true },
+    });
 
-      if (!user || (!user.email && !user.phone)) {
-        throw new BadRequestException(
-          'Для заказа требуется email или номер телефона.',
-        );
-      }
-
-      const order = await this.prisma.order.create({
-        data: {
-          productId,
-          quantity,
-          isDelivered,
-          userId,
-          status: status || OrderStatus.inProcess,
-        },
-      });
-      return order;
-    } catch (e) {
-      console.log(e);
+    if (!user || (!user.email && !user.phone)) {
+      throw new BadRequestException(
+        'Для заказа требуется email или номер телефона.',
+      );
     }
+
+    const order = await this.prisma.order.create({
+      data: {
+        productId,
+        quantity,
+        isDelivered,
+        userId,
+        status: status || OrderStatus.inProcess,
+      },
+    });
+    if (!order) {
+      throw new BadRequestException('Произошла ошибка при заказе товара');
+    }
+    return order;
   }
 
   //FOR ADMIN
   async acceptOrder({ id }: CheckoutOrderDto) {
-    try {
-      const order = await this.prisma.order.findUnique({
-        where: {
-          id,
-        },
-      });
+    const order = await this.prisma.order.findUnique({
+      where: {
+        id,
+      },
+    });
 
-      if (!order) {
-        throw new BadRequestException(`Заказ ${id} не найден`);
-      }
-
-      if (order.isDelivered) {
-        throw new BadRequestException('Заказ уже доставлен');
-      }
-
-      const updatedOrder = await this.prisma.order.update({
-        where: {
-          id,
-        },
-        data: {
-          status: 'isDelivered',
-        },
-      });
-
-      await this.prisma.products.update({
-        where: {
-          id: order.productId ?? undefined,
-        },
-        data: {
-          purchasedProductCounter: {
-            increment: order.quantity,
-          },
-        },
-      });
-
-      return { message: 'Доставка подтверждена', orderData: updatedOrder };
-    } catch (e) {
-      console.log(e);
+    if (!order) {
+      throw new BadRequestException(`Заказ ${id} не найден`);
     }
+
+    if (order.isDelivered) {
+      throw new BadRequestException('Заказ уже доставлен');
+    }
+
+    const updatedOrder = await this.prisma.order.update({
+      where: {
+        id,
+      },
+      data: {
+        status: 'isDelivered',
+      },
+    });
+
+    if (!updatedOrder) {
+      throw new BadRequestException(
+        'Произошла ошибка при подтверждении доставленного товара',
+      );
+    }
+
+    await this.prisma.products.update({
+      where: {
+        id: order.productId ?? undefined,
+      },
+      data: {
+        purchasedProductCounter: {
+          increment: order.quantity,
+        },
+      },
+    });
+    return { message: 'Доставка подтверждена', orderData: updatedOrder };
   }
 
   async orderStatus(id: string, status: OrderStatus) {
-    try {
-      const orderStatus = await this.prisma.order.update({
+    const orderStatus = await this.prisma.order.update({
+      where: {
+        id: id,
+      },
+      data: {
+        status,
+      },
+    });
+
+    if (!orderStatus) {
+      throw new BadRequestException(
+        'Произошла ошибка при обновлении статуса товара',
+      );
+    }
+
+    if (status === OrderStatus.Canceled) {
+      await this.prisma.order.delete({
         where: {
           id: id,
         },
-        data: {
-          status,
-        },
       });
-
-      if (status === OrderStatus.Canceled) {
-        await this.prisma.order.delete({
-          where: {
-            id: id,
-          },
-        });
-        return { message: 'Заказ был отменен' };
-      }
-      return orderStatus;
-    } catch (e) {
-      console.log(e);
+      return { message: 'Заказ был отменен' };
     }
+    return orderStatus;
   }
 }

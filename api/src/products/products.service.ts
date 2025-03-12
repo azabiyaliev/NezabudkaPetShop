@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateProductsDto } from './dto/createProductsDto';
 
@@ -8,12 +12,11 @@ export class ProductsService {
 
   //FOR ADMIN/USER
   async getAllProducts() {
-    try {
-      const products = await this.prismaService.products.findMany();
-      return products || [];
-    } catch (e) {
-      console.log(e);
+    const products = await this.prismaService.products.findMany();
+    if (!products) {
+      throw new BadRequestException('Список товаров пока пуст');
     }
+    return products || [];
   }
 
   //FOR ADMIN
@@ -27,45 +30,36 @@ export class ProductsService {
       sales,
       Brand,
     } = createProductsDto;
-    try {
-      const newProduct = await this.prismaService.products.create({
-        data: {
-          productName,
-          productPhoto,
-          productDescription,
-          Brand,
-          productPrice: Number(productPrice),
-          sales,
-          existence,
-        },
-      });
-      return newProduct;
-    } catch (e) {
-      console.log({
+    const newProduct = await this.prismaService.products.create({
+      data: {
+        productName,
+        productPhoto,
+        productDescription,
+        Brand,
+        productPrice: Number(productPrice),
+        sales,
+        existence,
+      },
+    });
+    if (!newProduct) {
+      throw new BadRequestException({
         message: 'Не удалось добавить товар в каталог товаров',
-        e,
       });
     }
+    return newProduct;
   }
 
   //FOR ADMIN/USER
   async getProductById(id: string) {
-    try {
-      const oneProduct = await this.prismaService.products.findUnique({
-        where: {
-          id,
-        },
-      });
-      if (!oneProduct) {
-        throw new BadRequestException('Товар не найден');
-      }
-      return oneProduct;
-    } catch (e) {
-      console.log({
-        message: 'Получение одного товара не удалось',
-        e,
-      });
+    const oneProduct = await this.prismaService.products.findUnique({
+      where: {
+        id,
+      },
+    });
+    if (!oneProduct) {
+      throw new BadRequestException('Товар не найден');
     }
+    return oneProduct;
   }
 
   //FOR ADMIN
@@ -81,44 +75,53 @@ export class ProductsService {
       sales,
     }: CreateProductsDto,
   ) {
-    try {
-      const changedProduct = await this.prismaService.products.update({
-        where: {
-          id,
-        },
-        data: {
-          productName,
-          productDescription,
-          productPrice,
-          productPhoto,
-          Brand,
-          existence,
-          sales,
-        },
-      });
-      if (!changedProduct) {
-        throw new BadRequestException('Продукт не найден');
-      }
-      return changedProduct;
-    } catch (e) {
-      console.log({
-        message: 'Редактирование товара не было записано',
-        e,
-      });
+    const productId = await this.prismaService.products.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!productId) {
+      throw new NotFoundException('Товар не найден');
     }
+
+    const changedProduct = await this.prismaService.products.update({
+      where: {
+        id,
+      },
+      data: {
+        productName,
+        productDescription,
+        productPrice,
+        productPhoto,
+        Brand,
+        existence,
+        sales,
+      },
+    });
+    if (!changedProduct) {
+      throw new BadRequestException('Продукт не найден');
+    }
+    return changedProduct;
   }
 
   //FOR ADMIN
   async deleteProduct(id: string) {
-    try {
-      await this.prismaService.products.delete({
-        where: {
-          id,
-        },
-      });
-      return { message: 'Товар был успешно удалён!' };
-    } catch (e) {
-      console.log({ message: 'Не удалось удалить товар', e });
+    const productId = await this.prismaService.products.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!productId) {
+      throw new NotFoundException('Данный товар не найден');
     }
+
+    await this.prismaService.products.delete({
+      where: {
+        id,
+      },
+    });
+    return { message: 'Товар был успешно удалён!' };
   }
 }

@@ -28,18 +28,7 @@ export class OrdersController {
   @Roles('admin')
   @Get('')
   async findAll() {
-    try {
-      const orders = await this.ordersService.getAllOrders();
-      if (!orders) {
-        return { message: 'Пока что нет заказов', data: orders };
-      }
-      return orders;
-    } catch (e) {
-      throw new BadRequestException({
-        message: 'Не удалось получить заказы',
-        e,
-      });
-    }
+    return await this.ordersService.getAllOrders();
   }
 
   //FOR ADMINS
@@ -47,28 +36,16 @@ export class OrdersController {
   @Roles('admin')
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    try {
-      const order = await this.ordersService.getOneOrder(id);
-      return order;
-    } catch (e) {
-      console.log({ message: 'Этот заказ не найден', e });
-    }
+    return await this.ordersService.getOneOrder(id);
   }
 
   //FOR USERS && ADMIN
   @UseGuards(TokenAuthGuard)
   @Post('make_delivery')
   async createOrder(@Body() orderDto: CreateOrderDto, @Req() req: AuthRequest) {
-    try {
-      const userId = req.user.id;
-      const makeOrder = await this.ordersService.createOrder(userId, orderDto);
-      return makeOrder;
-    } catch (e) {
-      console.log({
-        message: 'Произошла ошибка при заказе товара',
-        e,
-      });
-    }
+    const userId = req.user.id;
+    const makeOrder = await this.ordersService.createOrder(userId, orderDto);
+    return makeOrder;
   }
 
   //FOR ADMIN
@@ -77,16 +54,8 @@ export class OrdersController {
   @Roles('admin')
   @Put(':id/approve_delivery')
   async accessDelivery(@Param() id: CheckoutOrderDto) {
-    try {
-      const accessedDelivery = await this.ordersService.acceptOrder(id);
-      if (!accessedDelivery) {
-        throw new BadRequestException();
-      }
-
-      return accessedDelivery;
-    } catch (e) {
-      console.log(e);
-    }
+    const accessedDelivery = await this.ordersService.acceptOrder(id);
+    return accessedDelivery;
   }
 
   //FOR ADMINS
@@ -96,17 +65,7 @@ export class OrdersController {
     @Param('id') orderId: string,
     @Body('status') status: OrderStatus,
   ) {
-    try {
-      const updatedOrder = await this.ordersService.orderStatus(
-        orderId,
-        status,
-      );
-      return updatedOrder;
-    } catch (e) {
-      console.log({
-        message: 'Ошибка при обновлении статуса заказа',
-        e,
-      });
-    }
+    const updatedOrder = await this.ordersService.orderStatus(orderId, status);
+    return updatedOrder;
   }
 }
