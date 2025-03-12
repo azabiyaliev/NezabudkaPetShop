@@ -67,7 +67,7 @@ export class EditionSiteService {
     const { instagram, whatsapp, schedule, address, email, phone } = editionDto;
     let logo = editionDto.logo;
     if (file) {
-      logo = '/editsite' + file.filename;
+      logo = '/editsite/' + file.filename;
     }
     if (
       instagram.trim().length === 0 ||
@@ -78,7 +78,7 @@ export class EditionSiteService {
       schedule.trim().length === 0 ||
       address.trim().length === 0
     ) {
-      throw new NotFoundException(`Поля могут быть пустыми!`);
+      throw new NotFoundException(`Поля не могут быть пустыми!`);
     }
     const editId = parseInt(id);
     const editSite = await this.prisma.siteEdition.findFirst({
