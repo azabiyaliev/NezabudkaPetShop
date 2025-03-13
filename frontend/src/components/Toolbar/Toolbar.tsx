@@ -18,6 +18,7 @@ import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import './Fonts.css'
 import { Search } from '@mui/icons-material';
+import { selectEditSite } from '../../features/editionSite/editionSiteSlice.ts';
 
 const CartBadge = styled(Badge)`
   & .${badgeClasses.badge} {
@@ -28,6 +29,8 @@ const CartBadge = styled(Badge)`
 
 const MainToolbar = () => {
     const user = useAppSelector((state) => state.users.user);
+    const editSite = useAppSelector(selectEditSite);
+    const editSiteData = editSite!;
   return (
     <>
       <Box sx={{
@@ -179,7 +182,7 @@ const MainToolbar = () => {
 
             {user ? (
               <>
-                <ExistsUser user={user}/>
+                <ExistsUser user={user} editSite={editSiteData}/>
               </>
             ) : (
               <>

@@ -26,7 +26,7 @@ export class EditionSiteController {
 
   @Get()
   async getBrands() {
-    return await this.editionSite.getAllInfoBySite();
+    return await this.editionSite.getSite();
   }
 
   @UseGuards(TokenAuthGuard, RolesGuard)
@@ -43,7 +43,7 @@ export class EditionSiteController {
       }),
     }),
   )
-  async createBrand(
+  async createSite(
     @UploadedFile() file: Express.Multer.File,
     @Body() editsiteDto: EditionSitedDto,
   ) {

@@ -157,6 +157,8 @@ export class AuthService {
       token,
       secondName: user.secondName,
       id: user.id,
+      role: user.role,
+      phone: user.phone,
     };
   }
 

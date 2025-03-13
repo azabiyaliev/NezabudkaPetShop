@@ -10,6 +10,7 @@ import {
   PERSIST,
 } from "redux-persist";
 import { userReducer } from "../features/users/usersSlice.ts";
+import { editSiteReducer } from '../features/editionSite/editionSiteSlice.ts';
 
 const userPersistConfig = {
   key: "store:users",
@@ -19,6 +20,7 @@ const userPersistConfig = {
 
 const rootReducer = combineReducers({
   users: persistReducer(userPersistConfig, userReducer),
+  edit_site: editSiteReducer,
 });
 
 export const store = configureStore({

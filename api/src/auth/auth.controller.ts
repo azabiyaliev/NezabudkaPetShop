@@ -50,6 +50,8 @@ export class AuthController {
           token: user.token,
           secondName: user.secondName,
           id: user.id,
+          role: user.role,
+          phone: user.phone,
         },
       };
     } catch (e) {

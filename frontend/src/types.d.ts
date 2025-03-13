@@ -46,3 +46,24 @@ export interface ValidationError {
 export interface GlobalError {
   error: string;
 }
+
+export interface EditSiteMutation {
+  id: number;
+  instagram: string;
+  whatsapp: string;
+  schedule: string;
+  address: string;
+  email: string;
+  phone: string;
+  logo: File | null;
+}
+
+export interface SiteMutation {
+  instagram: string;
+  whatsapp: string;
+  schedule: string;
+  address: string;
+  email: string;
+  phone: string;
+  logo: File | null;
+}
