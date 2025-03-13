@@ -1,13 +1,12 @@
-import { Avatar, Box, Button, Container } from '@mui/material';
-import PersonIcon from '@mui/icons-material/Person';
+import { Box, Button, Container } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import { toast, ToastContainer } from 'react-toastify';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { SiteMutation } from '../../../types';
-import { fetchSiteById, updateSite } from '../../../features/editionSite/editionSiteThunk.ts';
+import { fetchSite, updateSite } from '../../../features/editionSite/editionSiteThunk.ts';
 import { selectEditSite } from '../../../features/editionSite/editionSiteSlice.ts';
 import FileInput from '../../../components/UI/FileInput.tsx';
 
@@ -24,23 +23,20 @@ const initialState = {
 const EditSiteFrom = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>();
   const [form, setForm] = useState<SiteMutation>(initialState);
   const site = useAppSelector(selectEditSite)
 
   useEffect(() => {
-    if(id){
-      dispatch(fetchSiteById(id)).unwrap().then((siteEdit) => setForm({
-        instagram: siteEdit.instagram || "",
-        whatsapp: siteEdit.whatsapp || "",
-        schedule: siteEdit.schedule || "",
-        address: siteEdit.address || "",
-        email: siteEdit.email || "",
-        phone: siteEdit.phone || "",
-        logo:  null,
-      }));
-    }
-  }, [dispatch, navigate, id])
+    dispatch(fetchSite()).unwrap().then((siteEdit) => setForm({
+      instagram: siteEdit.instagram || "",
+      whatsapp: siteEdit.whatsapp || "",
+      schedule: siteEdit.schedule || "",
+      address: siteEdit.address || "",
+      email: siteEdit.email || "",
+      phone: siteEdit.phone || "",
+      logo:  null,
+    }));
+  }, [dispatch, navigate])
 
   const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -63,7 +59,7 @@ const EditSiteFrom = () => {
   const submitHandler = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!id) {
+    if (!site?.id) {
       toast.error("Ваш id неверный!", {
         position: "top-right",
         autoClose: 5000,
@@ -77,7 +73,18 @@ const EditSiteFrom = () => {
     }
 
     try {
-      await dispatch(updateSite({id: parseInt(id), data: form})).unwrap();
+
+      const siteData = {
+        id: site.id,
+        instagram: form.instagram,
+        whatsapp: form.whatsapp,
+        schedule: form.schedule,
+        address: form.address,
+        email: form.email,
+        phone: form.phone,
+        logo: form.logo,
+      };
+      await dispatch(updateSite({id: site.id, data: siteData})).unwrap();
       setForm({ ...initialState });
       toast.success("Вы успешно отредактировали сайт!", {
         position: "top-right",
@@ -115,9 +122,6 @@ const EditSiteFrom = () => {
             boxShadow: 3,
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: "white" }}>
-            <PersonIcon sx={{ color: "black" }} />
-          </Avatar>
           <Typography component="h1" variant="h5" sx={{ color: "black" }}>
             Редактировать сайт
           </Typography>
@@ -143,7 +147,7 @@ const EditSiteFrom = () => {
                   sx={{
                     backgroundColor: "white",
                     borderRadius: "7px",
-                    mb: 5
+                    mb: 3
                   }}
                 />
               </div>
@@ -166,7 +170,7 @@ const EditSiteFrom = () => {
             </div>
 
             <div className="row">
-              <div className="col-12">
+              <div className="col-12 mb-4">
                 <TextField
                   fullWidth
                   name="schedule"
@@ -179,32 +183,33 @@ const EditSiteFrom = () => {
                   sx={{
                     backgroundColor: "white",
                     borderRadius: "7px",
+                    mt:3
                   }}
                 />
               </div>
             </div>
 
-              <div className="row">
-                <div className="col-12">
-                  <TextField
-                    fullWidth
-                    name="address"
-                    label="Адрес магазина"
-                    type="text"
-                    id="address"
-                    value={form.address}
-                    onChange={inputChangeHandler}
-                    variant="outlined"
-                    sx={{
-                      backgroundColor: "white",
-                      borderRadius: "7px",
-                    }}
-                  />
-                </div>
+            <div className="row">
+              <div className="col-12 mb-4">
+                <TextField
+                  fullWidth
+                  name="address"
+                  label="Адрес магазина"
+                  type="text"
+                  id="address"
+                  value={form.address}
+                  onChange={inputChangeHandler}
+                  variant="outlined"
+                  sx={{
+                    backgroundColor: "white",
+                    borderRadius: "7px",
+                  }}
+                />
+              </div>
             </div>
 
             <div className="row">
-              <div className="col-12">
+              <div className="col-12 mb-4">
                 <TextField
                   fullWidth
                   name="email"
@@ -223,7 +228,7 @@ const EditSiteFrom = () => {
             </div>
 
             <div className="row">
-              <div className="col-12">
+              <div className="col-12 mb-4">
                 <TextField
                   fullWidth
                   name="phone"

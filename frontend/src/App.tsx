@@ -21,7 +21,7 @@ const App = () => {
             <Route path="/login" element={<LoginUser />} />
             <Route path="/private" element={<AdminProfile />} />
             <Route path="/users/:id" element={<AdminForm />} />
-            <Route path="/edition_site/:id" element={<EditSiteFrom />} />
+            <Route path="/edition_site" element={<EditSiteFrom />} />
           </Routes>
       </main>
     </Container>

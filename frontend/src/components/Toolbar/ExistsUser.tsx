@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
 import { Box, Button, Drawer, List, ListItem, ListItemText, Divider, Typography } from '@mui/material';
 import { NavLink } from 'react-router-dom';
-import { EditSiteMutation, User } from '../../types';
+import { User } from '../../types';
 import { useAppDispatch } from '../../app/hooks';
 import { unsetUser } from '../../features/users/usersSlice';
 
 interface Props {
   user: User;
-  editSite: EditSiteMutation | null;
 }
 
-const ExistsUser: React.FC<Props> = ({ user, editSite }) => {
+const ExistsUser: React.FC<Props> = ({ user }) => {
   const dispatch = useAppDispatch();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
@@ -63,7 +62,7 @@ const ExistsUser: React.FC<Props> = ({ user, editSite }) => {
               <ListItem  component={NavLink} to="/private/clients" onClick={toggleDrawer(false)}>
                 <ListItemText primary="Клиенты" className='text-black'/>
               </ListItem>
-              <ListItem  component={NavLink} to={`/edition_site/${editSite?.id}`} onClick={toggleDrawer(false)}>
+              <ListItem  component={NavLink} to={`/edition_site`} onClick={toggleDrawer(false)}>
                 <ListItemText primary="Редактирование сайта" className='text-black'/>
               </ListItem>
               <ListItem  component={NavLink} to="/private/add_brand" onClick={toggleDrawer(false)}>

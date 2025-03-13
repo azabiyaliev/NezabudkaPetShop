@@ -67,15 +67,15 @@ const FileInput: React.FC<Props> = ({
         <button
           type="button"
           style={{
-            color: "darkviolet",
-            border: "1px solid darkviolet",
+            color: "black",
+            border: "1px solid black`",
             backgroundColor: "white",
             padding: "8px 16px",
             cursor: "pointer",
           }}
           onClick={activateInput}
         >
-          Add photo
+          Добавить фото
           <i className="bi bi-file-earmark"></i>
         </button>
       </div>

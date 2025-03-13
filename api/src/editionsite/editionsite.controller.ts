@@ -24,9 +24,9 @@ import { EditionSitedDto } from './editionsite.dto';
 export class EditionSiteController {
   constructor(private editionSite: EditionSiteService) {}
 
-  @Get(':id')
-  async getBrand(@Param('id') id: string) {
-    return await this.editionSite.getSiteById(id);
+  @Get()
+  async getBrands() {
+    return await this.editionSite.getSite();
   }
 
   @UseGuards(TokenAuthGuard, RolesGuard)
@@ -43,7 +43,7 @@ export class EditionSiteController {
       }),
     }),
   )
-  async createBrand(
+  async createSite(
     @UploadedFile() file: Express.Multer.File,
     @Body() editsiteDto: EditionSitedDto,
   ) {

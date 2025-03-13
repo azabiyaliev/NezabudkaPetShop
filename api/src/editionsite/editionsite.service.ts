@@ -11,15 +11,9 @@ import { EditionSitedDto } from './editionsite.dto';
 export class EditionSiteService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getSiteById(id: string) {
-    const siteId = parseInt(id);
-    const site = await this.prisma.siteEdition.findFirst({
-      where: { id: siteId },
-    });
-    if (!site) {
-      throw new NotFoundException(`Сайт с id = ${id} не найден!`);
-    }
-    return site;
+  async getSite() {
+    const site = await this.prisma.siteEdition.findMany();
+    return site || [];
   }
 
   async createInfoSite(editionDto: EditionSitedDto) {
@@ -71,10 +65,7 @@ export class EditionSiteService {
     file?: Express.Multer.File,
   ) {
     const { instagram, whatsapp, schedule, address, email, phone } = editionDto;
-    let logo = editionDto.logo;
-    if (file) {
-      logo = '/editsite/' + file.filename;
-    }
+    const logo = file ? '/editsite/' + file.filename : '';
     if (
       instagram.trim().length === 0 ||
       logo.trim().length === 0 ||
@@ -87,9 +78,7 @@ export class EditionSiteService {
       throw new NotFoundException(`Поля не могут быть пустыми!`);
     }
     const editId = parseInt(id);
-    const editSite = await this.prisma.siteEdition.findFirst({
-      where: { id: editId },
-    });
+    const editSite = await this.prisma.siteEdition.findFirst();
     if (!editSite) {
       throw new NotFoundException(`Бренд с id = ${id} не найдена!`);
     }
