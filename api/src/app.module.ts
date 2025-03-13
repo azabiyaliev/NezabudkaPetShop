@@ -14,9 +14,13 @@ import {EditionSiteController} from "./editionsite/editionsite.controller";
 import {EditionSiteService} from "./editionsite/editionsite.service";
 import { CategoryModule } from './category/category.module';
 import { CategoryService } from './category/category.service';
+import { ProductsModule } from './products/products.module';
+import { OrdersModule } from './orders/orders.module';
+import { ConfigModule } from '@nestjs/config';
+import { SeedModule } from './seed/seed.module';
 
 @Module({
-  imports: [AuthModule, UsersModule, PrismaModule, BrandsModule, EditionSiteModule, CategoryModule],
+  imports: [AuthModule, UsersModule, PrismaModule, BrandsModule, EditionSiteModule, CategoryModule, ProductsModule, OrdersModule, SeedModule, ConfigModule.forRoot()],
   controllers: [AppController, BrandsController, EditionSiteController],
   providers: [AppService, SeedService, PrismaService, BrandsService, EditionSiteService, CategoryService],
 })

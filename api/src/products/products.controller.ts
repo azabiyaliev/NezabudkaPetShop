@@ -1,0 +1,94 @@
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get, NotFoundException,
+  Param,
+  Post,
+  Put,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
+import { ProductsService } from './products.service';
+import { Roles } from '../roles/roles.decorator';
+import { CreateProductsDto } from './dto/createProductsDto';
+import { RolesGuard } from '../token.auth/token.role.guard';
+import { TokenAuthGuard } from '../token.auth/token-auth.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
+
+@Controller('products')
+export class ProductsController {
+  constructor(private readonly productsService: ProductsService) {}
+
+  //GET ALL PRODUCTS
+  @Get('catalog')
+  async getProducts() {
+    const products = await this.productsService.getAllProducts();
+    return products;
+  }
+
+  //GET ONE BY ID
+  @Get(':id')
+  async getOneProduct(@Param('id') id: string) {
+    const product = await this.productsService.getProductById(id);
+    if (!product) {
+      throw new NotFoundException('Товар не найден');
+    }
+    return product;
+  }
+
+  //CREATE PRODUCT ONLY ADMIN
+  @UseGuards(TokenAuthGuard, RolesGuard)
+  @Roles('admin')
+  @Post('create')
+  @UseInterceptors(
+    FileInterceptor('productPhoto', {
+      storage: diskStorage({
+        destination: './public/productImg',
+        filename: (_req, file, callback) => {
+          const imageFormat = extname(file.originalname);
+          callback(null, `${crypto.randomUUID()}${imageFormat}`);
+        },
+      }),
+    }),
+  )
+  async createProduct(
+    @Body() productDto: CreateProductsDto,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    if (file && file.filename) {
+      productDto.productPhoto = '/productImg/' + file.filename;
+    }
+    productDto.productPrice = Number(productDto.productPrice);
+    const newProduct = await this.productsService.addProduct(productDto);
+    return newProduct;
+  }
+
+  //UPDATE PRODUCT ONLY ADMIN
+  @UseGuards(TokenAuthGuard, RolesGuard)
+  @Roles('admin')
+  @Put('update_product_item/:productId')
+  async updateProductItem(
+    @Param('productId') productId: string,
+    @Body() createProductDto: CreateProductsDto,
+  ) {
+    const updatedProductItem = await this.productsService.changeProductInfo(
+      productId,
+      createProductDto,
+    );
+    return updatedProductItem;
+  }
+
+  //DELETE PRODUCT ONLY ADMIN
+  @UseGuards(TokenAuthGuard, RolesGuard)
+  @Roles('admin')
+  @Delete(':productId')
+  async deleteProduct(@Param('productId') productId: string) {
+    const product = await this.productsService.deleteProduct(productId);
+    return product;
+  }
+}
