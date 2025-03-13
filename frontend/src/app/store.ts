@@ -11,6 +11,7 @@ import {
 } from "redux-persist";
 import { userReducer } from "../features/users/usersSlice.ts";
 import { editSiteReducer } from '../features/editionSite/editionSiteSlice.ts';
+import { categoriesReducer } from '../features/categories/categoriesSlice.ts';
 
 const userPersistConfig = {
   key: "store:users",
@@ -21,6 +22,7 @@ const userPersistConfig = {
 const rootReducer = combineReducers({
   users: persistReducer(userPersistConfig, userReducer),
   edit_site: editSiteReducer,
+  categories: categoriesReducer,
 });
 
 export const store = configureStore({

@@ -67,3 +67,9 @@ export interface SiteMutation {
   phone: string;
   logo: File | null;
 }
+
+export interface ICategories {
+  id: number;
+  title: string;
+  parentId: boolean;
+}
