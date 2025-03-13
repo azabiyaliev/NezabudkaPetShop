@@ -137,4 +137,25 @@ export class OrdersService {
     }
     return orderStatus;
   }
+
+  async deleteOrder(id: string) {
+    const order = await this.prisma.order.findUnique({
+      where: {
+        id,
+      },
+    });
+    if (!order) {
+      throw new NotFoundException('Заказа не существует');
+    }
+    if (order.status !== 'isDelivered') {
+      return { message: 'Заказ еще не доставлен, удаление невозможно' };
+    } else if (order.status === 'isDelivered') {
+      await this.prisma.order.delete({
+        where: {
+          id,
+        },
+      });
+      return { message: 'Заказ был доставлен и успешно удален' };
+    }
+  }
 }

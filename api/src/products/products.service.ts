@@ -13,9 +13,6 @@ export class ProductsService {
   //FOR ADMIN/USER
   async getAllProducts() {
     const products = await this.prismaService.products.findMany();
-    if (!products) {
-      throw new BadRequestException('Список товаров пока пуст');
-    }
     return products || [];
   }
 
