@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import { Box, Button, Drawer, List, ListItem, ListItemText, Divider, Typography } from '@mui/material';
 import { NavLink } from 'react-router-dom';
-import { User } from '../../types';
+import { EditSiteMutation, User } from '../../types';
 import { useAppDispatch } from '../../app/hooks';
 import { unsetUser } from '../../features/users/usersSlice';
 
 interface Props {
   user: User;
+  editSite: EditSiteMutation | null;
 }
 
-const ExistsUser: React.FC<Props> = ({ user }) => {
+const ExistsUser: React.FC<Props> = ({ user, editSite }) => {
   const dispatch = useAppDispatch();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
@@ -48,7 +49,7 @@ const ExistsUser: React.FC<Props> = ({ user }) => {
           </Typography>
           <Divider />
 
-          {user && user.role === 'admin' && (
+          {user && (
             <List>
               <ListItem  component={NavLink} to={`/private_account}`} onClick={toggleDrawer(false)}>
                 <ListItemText primary="Личный кабинет" className='text-black'/>
@@ -62,7 +63,7 @@ const ExistsUser: React.FC<Props> = ({ user }) => {
               <ListItem  component={NavLink} to="/private/clients" onClick={toggleDrawer(false)}>
                 <ListItemText primary="Клиенты" className='text-black'/>
               </ListItem>
-              <ListItem  component={NavLink} to="/private/edit_site" onClick={toggleDrawer(false)}>
+              <ListItem  component={NavLink} to={`/edition_site/${editSite?.id}`} onClick={toggleDrawer(false)}>
                 <ListItemText primary="Редактирование сайта" className='text-black'/>
               </ListItem>
               <ListItem  component={NavLink} to="/private/add_brand" onClick={toggleDrawer(false)}>
@@ -77,23 +78,25 @@ const ExistsUser: React.FC<Props> = ({ user }) => {
             </List>
           )}
 
-          <List>
-            <ListItem  component={NavLink} to="/my_profile" onClick={toggleDrawer(false)}>
-              <ListItemText primary="Личный кабинет" className='text-black'/>
-            </ListItem>
-            <ListItem  component={NavLink} to="/my_orders" onClick={toggleDrawer(false)}>
-              <ListItemText primary="Мои Заказы" className='text-black'/>
-            </ListItem>
-            <ListItem  component={NavLink} to="/my_cart" onClick={toggleDrawer(false)}>
-              <ListItemText primary="Корзина" className='text-black'/>
-            </ListItem>
-            <ListItem  component={NavLink} to="/my_whishlist" onClick={toggleDrawer(false)}>
-              <ListItemText primary="Избранные" className='text-black'/>
-            </ListItem>
-            <ListItem onClick={userLogout}>
-              <ListItemText primary="Выйти" className='text-black'/>
-            </ListItem>
-          </List>
+          {user && user.role === 'client' && (
+            <List>
+              <ListItem  component={NavLink} to="/my_profile" onClick={toggleDrawer(false)}>
+                <ListItemText primary="Личный кабинет" className='text-black'/>
+              </ListItem>
+              <ListItem  component={NavLink} to="/my_orders" onClick={toggleDrawer(false)}>
+                <ListItemText primary="Мои Заказы" className='text-black'/>
+              </ListItem>
+              <ListItem  component={NavLink} to="/my_cart" onClick={toggleDrawer(false)}>
+                <ListItemText primary="Корзина" className='text-black'/>
+              </ListItem>
+              <ListItem  component={NavLink} to="/my_whishlist" onClick={toggleDrawer(false)}>
+                <ListItemText primary="Избранные" className='text-black'/>
+              </ListItem>
+            </List>
+          )}
+          <ListItem onClick={userLogout}>
+            <ListItemText primary="Выйти" className='text-black'/>
+          </ListItem>
         </Box>
       </Drawer>
     </>

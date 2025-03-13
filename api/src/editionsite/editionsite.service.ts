@@ -11,9 +11,15 @@ import { EditionSitedDto } from './editionsite.dto';
 export class EditionSiteService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getAllInfoBySite() {
-    const infoSite = await this.prisma.siteEdition.findMany();
-    return infoSite || [];
+  async getSiteById(id: string) {
+    const siteId = parseInt(id);
+    const site = await this.prisma.siteEdition.findFirst({
+      where: { id: siteId },
+    });
+    if (!site) {
+      throw new NotFoundException(`Сайт с id = ${id} не найден!`);
+    }
+    return site;
   }
 
   async createInfoSite(editionDto: EditionSitedDto) {

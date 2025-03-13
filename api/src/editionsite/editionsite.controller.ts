@@ -24,9 +24,9 @@ import { EditionSitedDto } from './editionsite.dto';
 export class EditionSiteController {
   constructor(private editionSite: EditionSiteService) {}
 
-  @Get()
-  async getBrands() {
-    return await this.editionSite.getAllInfoBySite();
+  @Get(':id')
+  async getBrand(@Param('id') id: string) {
+    return await this.editionSite.getSiteById(id);
   }
 
   @UseGuards(TokenAuthGuard, RolesGuard)
