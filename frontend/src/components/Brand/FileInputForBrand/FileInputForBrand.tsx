@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import { Box, Button, TextField } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 
@@ -6,9 +6,10 @@ interface Props {
   onChange: React.ChangeEventHandler<HTMLInputElement>;
   name: string;
   label: string;
+  resetFile: boolean;
 }
 
-const FileInputForBrand: React.FC<Props> = ({ onChange, name, label }) => {
+const FileInputForBrand: React.FC<Props> = ({ onChange, name, label, resetFile }) => {
   const [filename, setFilename] = useState('');
   const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -28,6 +29,12 @@ const FileInputForBrand: React.FC<Props> = ({ onChange, name, label }) => {
     onChange(e);
   };
 
+  useEffect(() => {
+    if (resetFile) {
+      setFilename('');
+    }
+  }, [resetFile]);
+
   return (
     <>
       <input type="file" name={name} style={{ display: 'none' }} ref={inputRef} onChange={onFileChange} />
@@ -40,14 +47,14 @@ const FileInputForBrand: React.FC<Props> = ({ onChange, name, label }) => {
           </Box>
           <Box sx={{width: '30%'}}>
             <Button variant="text" onClick={activateInput}
-                    sx={{
-                      color: 'white',
-                      width: '100%',
-                      height: '50px',
-                      background: 'linear-gradient(90deg, rgba(250, 134, 1, 1) 0%, rgba(250, 179, 1, 1) 28%, rgba(250, 143, 1, 1) 100%)',
-                    }}
+              sx={{
+                color: 'white',
+                width: '100%',
+                height: '50px',
+                background: 'linear-gradient(90deg, rgba(250, 134, 1, 1) 0%, rgba(250, 179, 1, 1) 28%, rgba(250, 143, 1, 1) 100%)',
+              }}
             >
-              Добавить изображение
+              Выбрать изображение
             </Button>
           </Box>
         </Box>

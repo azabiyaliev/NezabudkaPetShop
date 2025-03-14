@@ -7,18 +7,25 @@ import FileInputForBrand from '../FileInputForBrand/FileInputForBrand.tsx';
 import { Button } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import { toast } from 'react-toastify';
+import ButtonSpinner from '../../UI/ButtonSpinner/ButtonSpinner.tsx';
+import { apiUrl } from '../../../globalConstants.ts';
 
 interface Props {
   addNewBrand: (brand: IBrandForm) => void;
+  isLoading?: boolean;
+  editBrand?: IBrandForm;
+  isBrand?: boolean;
+
 }
 
-const brandState = {
+const initialBrand = {
   title: '',
   logo: null,
 };
 
-const BrandForm:React.FC<Props> = ({addNewBrand}) => {
-  const [newBrand, setNewBrand] = useState<IBrandForm>(brandState);
+const BrandForm:React.FC<Props> = ({addNewBrand, isLoading, editBrand = initialBrand, isBrand = false}) => {
+  const [newBrand, setNewBrand] = useState<IBrandForm>(editBrand);
+  const [resetFile, setResetFile] = useState<boolean>(false);
 
   const onChange = (e:React.ChangeEvent<HTMLInputElement>) => {
     const {name, value} = e.target;
@@ -43,6 +50,10 @@ const BrandForm:React.FC<Props> = ({addNewBrand}) => {
     }
 
     addNewBrand({...newBrand});
+    if (!isBrand) {
+      setNewBrand(initialBrand);
+      setResetFile(true);
+    }
   };
 
   const fileInputChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,8 +65,6 @@ const BrandForm:React.FC<Props> = ({addNewBrand}) => {
       [name]: value,
     }));
   };
-
-  const imageUrl = newBrand.logo ? URL.createObjectURL(newBrand.logo) : '';
 
   return (
     <form onSubmit={onSubmit}>
@@ -80,7 +89,7 @@ const BrandForm:React.FC<Props> = ({addNewBrand}) => {
             <Typography level="h2" component="h1"
               sx={{textAlign: 'center', margin: '10px 0'}}
             >
-              Добавление нового бренда
+              {!isBrand ? 'Добавление нового' : 'Редактирование'} бренда
             </Typography>
           </div>
           <FormControl>
@@ -94,8 +103,8 @@ const BrandForm:React.FC<Props> = ({addNewBrand}) => {
               onChange={onChange}
             />
           </FormControl>
-          <FileInputForBrand label="Выберите изображение для логотипа бренда" name="logo" onChange={fileInputChangeHandler} />
-          {newBrand.logo !== null && (
+          <FileInputForBrand label="Выберите изображение для логотипа бренда" name="logo" onChange={fileInputChangeHandler} resetFile={resetFile} />
+          {newBrand.logo && (
             <img
               style={{
                 width: '200px',
@@ -103,7 +112,7 @@ const BrandForm:React.FC<Props> = ({addNewBrand}) => {
                 textIndent: '-9999px',
                 display: 'block',
               }}
-              src={imageUrl}
+              src={newBrand.logo instanceof File ? URL.createObjectURL(newBrand.logo) : apiUrl + newBrand.logo}
               alt={newBrand.title}
             />
           )}
@@ -112,13 +121,13 @@ const BrandForm:React.FC<Props> = ({addNewBrand}) => {
             sx={{
               color: 'white',
               textTransform: 'uppercase',
-              background: 'linear-gradient(90deg, rgba(250, 134, 1, 1) 0%, rgba(250, 179, 1, 1) 28%, rgba(250, 143, 1, 1) 100%)',
+              background: isLoading ? 'transparent' : 'linear-gradient(90deg, rgba(250, 134, 1, 1) 0%, rgba(250, 179, 1, 1) 28%, rgba(250, 143, 1, 1) 100%)',
             }}
-            type='submit'
-            // disabled={loading}
+            type="submit"
+            disabled={isLoading}
           >
-            Создать
-            {/*{loading ? <ButtonSpinner/> : null}*/}
+            {!isBrand ? 'Создать' : 'Сохранить'}
+            {isLoading ? <ButtonSpinner/> : null}
           </Button>
         </Sheet>
       </main>

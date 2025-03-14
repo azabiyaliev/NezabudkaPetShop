@@ -1,5 +1,5 @@
-import Navbar from '../../components/Navbar/Navbar.tsx';
-import MainToolbar from '../../components/Toolbar/Toolbar.tsx';
+import Navbar from '../Navbar/Navbar.tsx';
+import MainToolbar from '../Toolbar/Toolbar.tsx';
 
 const Header = () => {
   return (

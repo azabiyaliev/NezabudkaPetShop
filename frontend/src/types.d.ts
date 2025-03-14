@@ -48,12 +48,13 @@ export interface GlobalError {
 }
 
 export interface IBrand {
-  id: string;
+  id: number;
   title: string;
   logo: string;
 }
 
 export interface IBrandForm {
+  id?: number;
   title: string;
   logo: File | null;
 }

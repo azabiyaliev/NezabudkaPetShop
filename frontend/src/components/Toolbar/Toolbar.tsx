@@ -9,7 +9,7 @@ import {useAppSelector} from "../../app/hooks.ts";
 import ExistsUser from "./ExistsUser.tsx";
 import UnknownUser from "./UnknownUser.tsx";
 import TextField from "@mui/material/TextField";
-import logo from './assets/logo.jpg'
+import logo from '../../assets/logo.jpg'
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import Typography from '@mui/material/Typography';

@@ -1,21 +1,30 @@
-import { Box, Container } from '@mui/material';
+import { Box } from '@mui/material';
 import BrandForm from '../../../components/Brand/BrandForm/BrandForm.tsx';
 import AdminBar from '../AdminProfile/AdminBar.tsx';
 import { IBrandForm } from '../../../types';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
+import { selectUser } from '../../../features/users/usersSlice.ts';
+import { addBrand } from '../../../features/brands/brandsThunk.ts';
+import { toast } from 'react-toastify';
+import { addLoadingFromSlice } from '../../../features/brands/brandsSlice.ts';
 
 const NewBrand = () => {
+  const user = useAppSelector(selectUser);
+  const dispatch = useAppDispatch();
+  const loading = useAppSelector(addLoadingFromSlice);
 
-  const addNewBrand = (brand: IBrandForm) => {
-    console.log(brand);
+  const addNewBrand = async (brand: IBrandForm) => {
+    if (user && user.role === 'admin') {
+      await dispatch(addBrand({brand, token: user.token})).unwrap();
+      toast.success('Бренд успешно создан!');
+    }
   };
 
   return (
-    <Container>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '30px 0'}}>
-        <AdminBar/>
-        <BrandForm addNewBrand={addNewBrand}/>
-      </Box>
-    </Container>
+    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '30px 0'}}>
+      <AdminBar/>
+      <BrandForm addNewBrand={addNewBrand} isLoading={loading}/>
+    </Box>
   );
 };
 
