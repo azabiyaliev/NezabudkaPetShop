@@ -1,10 +1,13 @@
 import { IsBoolean, IsInt, IsNotEmpty } from 'class-validator';
 
 export class CheckoutOrderDto {
-  id!: string;
+  @IsInt()
+  @IsNotEmpty()
+  id!: number;
+
   @IsNotEmpty()
   @IsInt()
-  productId!: string;
+  productId!: number;
 
   @IsNotEmpty()
   @IsInt()

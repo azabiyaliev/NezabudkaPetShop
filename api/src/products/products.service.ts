@@ -12,7 +12,18 @@ export class ProductsService {
 
   //FOR ADMIN/USER
   async getAllProducts() {
-    const products = await this.prismaService.products.findMany();
+    const products = await this.prismaService.products.findMany({
+      select: {
+        id: true,
+        productName: true,
+        productPhoto: true,
+        productDescription: true,
+        brand: true,
+        category: true,
+        sales: true,
+        existence: true,
+      },
+    });
     return products || [];
   }
 
@@ -25,17 +36,29 @@ export class ProductsService {
       productPrice,
       existence,
       sales,
-      Brand,
+      brandId,
+      categoryId,
     } = createProductsDto;
     const newProduct = await this.prismaService.products.create({
       data: {
         productName,
         productPhoto,
         productDescription,
-        Brand,
+        brandId: Number(brandId),
+        categoryId: Number(categoryId),
         productPrice: Number(productPrice),
         sales,
         existence,
+      },
+      select: {
+        id: true,
+        productName: true,
+        productPhoto: true,
+        productDescription: true,
+        brand: true,
+        category: true,
+        sales: true,
+        existence: true,
       },
     });
     if (!newProduct) {
@@ -47,10 +70,20 @@ export class ProductsService {
   }
 
   //FOR ADMIN/USER
-  async getProductById(id: string) {
+  async getProductById(id: number) {
     const oneProduct = await this.prismaService.products.findUnique({
       where: {
         id,
+      },
+      select: {
+        id: true,
+        productName: true,
+        productPhoto: true,
+        productDescription: true,
+        brand: true,
+        category: true,
+        sales: true,
+        existence: true,
       },
     });
     if (!oneProduct) {
@@ -61,13 +94,14 @@ export class ProductsService {
 
   //FOR ADMIN
   async changeProductInfo(
-    id: string,
+    id: number,
     {
       productName,
       productDescription,
       productPrice,
       productPhoto,
-      Brand,
+      brandId,
+      categoryId,
       existence,
       sales,
     }: CreateProductsDto,
@@ -91,9 +125,20 @@ export class ProductsService {
         productDescription,
         productPrice,
         productPhoto,
-        Brand,
+        brandId,
+        categoryId,
         existence,
         sales,
+      },
+      select: {
+        id: true,
+        productName: true,
+        productPhoto: true,
+        productDescription: true,
+        brand: true,
+        category: true,
+        sales: true,
+        existence: true,
       },
     });
     if (!changedProduct) {
@@ -103,7 +148,7 @@ export class ProductsService {
   }
 
   //FOR ADMIN
-  async deleteProduct(id: string) {
+  async deleteProduct(id: number) {
     const productId = await this.prismaService.products.findUnique({
       where: {
         id,

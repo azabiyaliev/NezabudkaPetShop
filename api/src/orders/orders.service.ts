@@ -14,20 +14,53 @@ export class OrdersService {
 
   //FOR ADMIN
   async getAllOrders() {
-    const orders = await this.prisma.order.findMany();
+    const orders = await this.prisma.orderItem.findMany({
+      select: {
+        id: true,
+        order: true,
+        products: true,
+        quantity: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
     if (orders.length === 0) {
       throw new NotFoundException('Список заказов пока что пуст');
     }
     return orders || [];
   }
 
-  async getOneOrder(id: string) {
+  async getUserOrders() {
+    const orders = await this.prisma.order.findMany({
+      select: {
+        id: true,
+        user: true,
+        orderItem: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+    if (orders.length === 0) {
+      throw new NotFoundException('Список заказов пока что пуст');
+    }
+    return orders || [];
+  }
+
+  async getOneOrder(id: number) {
     if (!id) {
       throw new NotFoundException('id not found');
     }
-    const oneOrder = await this.prisma.order.findUnique({
+    const oneOrder = await this.prisma.orderItem.findUnique({
       where: {
         id,
+      },
+      select: {
+        id: true,
+        order: true,
+        products: true,
+        quantity: true,
+        createdAt: true,
+        updatedAt: true,
       },
     });
     if (!oneOrder) {
@@ -39,11 +72,16 @@ export class OrdersService {
   //FOR ADMIN/CLIENT
   async createOrder(
     userId: number,
-    { productId, quantity, isDelivered, status }: CreateOrderDto,
+    { productId, quantity, status, orderId }: CreateOrderDto,
   ) {
     const user = await this.prisma.user.findUnique({
-      where: { id: userId },
-      select: { email: true, phone: true },
+      where: {
+        id: userId,
+      },
+      select: {
+        email: true,
+        phone: true,
+      },
     });
 
     if (!user || (!user.email && !user.phone)) {
@@ -52,24 +90,52 @@ export class OrdersService {
       );
     }
 
-    const order = await this.prisma.order.create({
-      data: {
+    const existingOrder = await this.prisma.orderItem.findFirst({
+      where: {
         productId,
-        quantity,
-        isDelivered,
-        userId,
-        status: status || OrderStatus.inProcess,
+        orderId,
       },
     });
-    if (!order) {
-      throw new BadRequestException('Произошла ошибка при заказе товара');
+    if (existingOrder) {
+      const quantityIncrement = await this.prisma.orderItem.update({
+        where: {
+          id: existingOrder.id,
+        },
+        data: {
+          quantity: {
+            increment: quantity,
+          },
+        },
+      });
+      return quantityIncrement;
+    } else if (!existingOrder) {
+      const order = await this.prisma.orderItem.create({
+        data: {
+          orderId,
+          productId,
+          quantity,
+          status: status || OrderStatus.inProcess,
+        },
+        select: {
+          id: true,
+          order: true,
+          products: true,
+          quantity: true,
+          status: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      });
+      if (!order) {
+        throw new BadRequestException('Произошла ошибка при заказе товара');
+      }
+      return existingOrder;
     }
-    return order;
   }
 
   //FOR ADMIN
   async acceptOrder({ id }: CheckoutOrderDto) {
-    const order = await this.prisma.order.findUnique({
+    const order = await this.prisma.orderItem.findUnique({
       where: {
         id,
       },
@@ -79,16 +145,25 @@ export class OrdersService {
       throw new BadRequestException(`Заказ ${id} не найден`);
     }
 
-    if (order.isDelivered) {
+    if (order.status === 'isDelivered') {
       throw new BadRequestException('Заказ уже доставлен');
     }
 
-    const updatedOrder = await this.prisma.order.update({
+    const updatedOrder = await this.prisma.orderItem.update({
       where: {
         id,
       },
       data: {
         status: 'isDelivered',
+      },
+      select: {
+        id: true,
+        order: true,
+        products: true,
+        quantity: true,
+        status: true,
+        createdAt: true,
+        updatedAt: true,
       },
     });
 
@@ -97,27 +172,25 @@ export class OrdersService {
         'Произошла ошибка при подтверждении доставленного товара',
       );
     }
-
-    await this.prisma.products.update({
-      where: {
-        id: order.productId ?? undefined,
-      },
-      data: {
-        purchasedProductCounter: {
-          increment: order.quantity,
-        },
-      },
-    });
     return { message: 'Доставка подтверждена', orderData: updatedOrder };
   }
 
-  async orderStatus(id: string, status: OrderStatus) {
-    const orderStatus = await this.prisma.order.update({
+  async orderStatus(id: number, status: OrderStatus) {
+    const orderStatus = await this.prisma.orderItem.update({
       where: {
         id: id,
       },
       data: {
         status,
+      },
+      select: {
+        id: true,
+        order: true,
+        products: true,
+        quantity: true,
+        status: true,
+        createdAt: true,
+        updatedAt: true,
       },
     });
 
@@ -128,7 +201,7 @@ export class OrdersService {
     }
 
     if (status === OrderStatus.Canceled) {
-      await this.prisma.order.delete({
+      await this.prisma.orderItem.delete({
         where: {
           id: id,
         },
@@ -138,19 +211,21 @@ export class OrdersService {
     return orderStatus;
   }
 
-  async deleteOrder(id: string) {
-    const order = await this.prisma.order.findUnique({
+  async deleteOrder(id: number) {
+    const order = await this.prisma.orderItem.findUnique({
       where: {
-        id,
+        id: Number(id),
       },
     });
     if (!order) {
       throw new NotFoundException('Заказа не существует');
     }
     if (order.status !== 'isDelivered') {
-      return { message: 'Заказ еще не доставлен, удаление невозможно' };
+      return {
+        message: 'Заказ еще не доставлен, удаление невозможно',
+      };
     } else if (order.status === 'isDelivered') {
-      await this.prisma.order.delete({
+      await this.prisma.orderItem.delete({
         where: {
           id,
         },

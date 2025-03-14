@@ -34,5 +34,30 @@ export class SeedService {
         },
       ],
     });
+    await this.prisma.products.create({
+      data: {
+        productName: 'test',
+        productDescription: 'testttste',
+        productPrice: 555,
+        productPhoto: './assets/images/product.png',
+      },
+    });
+    await this.prisma.category.create({
+      data: {
+        title: 'test',
+      },
+    });
+    await this.prisma.orderItem.create({
+      data: {
+        quantity: 2,
+        createdAt: new Date(),
+      },
+    });
+    await this.prisma.brand.create({
+      data: {
+        title: 'testrwrw',
+        logo: './assets/images/logo.png',
+      },
+    });
   }
 }

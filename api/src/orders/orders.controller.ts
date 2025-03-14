@@ -31,12 +31,17 @@ export class OrdersController {
     return await this.ordersService.getAllOrders();
   }
 
+  @Get('all_orders')
+  async allOrders() {
+    return await this.ordersService.getUserOrders();
+  }
+
   //FOR ADMINS
   @UseGuards(TokenAuthGuard, RolesGuard)
   @Roles('admin')
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    return await this.ordersService.getOneOrder(id);
+    return await this.ordersService.getOneOrder(Number(id));
   }
 
   //FOR USERS && ADMIN
@@ -63,13 +68,13 @@ export class OrdersController {
     @Param('id') orderId: string,
     @Body('status') status: OrderStatus,
   ) {
-    return await this.ordersService.orderStatus(orderId, status);
+    return await this.ordersService.orderStatus(Number(orderId), status);
   }
 
   @UseGuards(TokenAuthGuard, RolesGuard)
   @Roles('admin')
   @Delete(':id')
   async deleteDeliveredOrder(@Param('id') id: string) {
-    return await this.ordersService.deleteOrder(id);
+    return await this.ordersService.deleteOrder(Number(id));
   }
 }

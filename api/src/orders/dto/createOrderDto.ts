@@ -1,16 +1,14 @@
-import {
-  IsBoolean,
-  IsEnum,
-  IsInt,
-  IsNotEmpty,
-  IsString,
-} from 'class-validator';
+import { IsBoolean, IsEnum, IsInt, IsNotEmpty } from 'class-validator';
 import { OrderStatus } from '@prisma/client';
 
 export class CreateOrderDto {
   @IsNotEmpty()
-  @IsString()
-  productId!: string;
+  @IsInt()
+  productId!: number;
+
+  @IsNotEmpty()
+  @IsInt()
+  orderId!: number;
 
   @IsNotEmpty()
   @IsInt()

@@ -24,7 +24,7 @@ model User {
   token      String?
   googleID   String? @unique
   facebookID String? @unique
-  Order      Order[]
+  order      Order[]
 
   @@map("users")
 }
@@ -38,6 +38,8 @@ model Brand {
   id    Int    @id @default(autoincrement())
   title String @unique
   logo  String
+
+  products Products[]
 
   @@map("brands")
 }
@@ -58,44 +60,64 @@ model SiteEdition {
 model Category {
   id            Int        @id @default(autoincrement())
   title         String     @unique
-  parentId      Int?
+  parentId      Int?       @map("parent_id")
   parent        Category?  @relation("Subcategories", fields: [parentId], references: [id])
   subcategories Category[] @relation("Subcategories")
+
+  products Products[]
 
   @@map("categories")
 }
 
 model Products {
-  id String @id @default(cuid())
+  id Int @id @default(autoincrement())
 
   productName        String  @map("product_name")
   productPhoto       String  @map("product_photo")
   productPrice       Int     @map("product_price")
-  Brand              String? @unique @map("brand")
   productDescription String  @map("product_description")
   productComment     String? @map("product_comment")
 
   existence Boolean @default(true)
   sales     Boolean @default(false)
 
-  purchasedProductCounter Int @default(0)
+  orderItem  OrderItem[]
+  brandId    Int?        @map("brand_id")
+  brand      Brand?      @relation(fields: [brandId], references: [id])
+  categoryId Int?        @map("category_id")
+  category   Category?   @relation(fields: [categoryId], references: [id])
 
-  Order Order[]
+  @@map("products")
 }
 
 model Order {
-  id        String    @id @default(cuid())
-  productId String?
-  product   Products? @relation(fields: [productId], references: [id])
-  quantity  Int
+  id Int @id @default(autoincrement())
 
-  status      OrderStatus @default(inProcess)
-  isDelivered Boolean     @default(false)
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
-  userId Int
-  user   User @relation(fields: [userId], references: [id])
+  userId    Int         @map("user_id")
+  user      User        @relation(fields: [userId], references: [id])
+  orderItem OrderItem[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id Int @id @default(autoincrement())
+
+  quantity Int
+  status   OrderStatus @default(inProcess)
+
+  productId Int?      @map("product_id")
+  products  Products? @relation(fields: [productId], references: [id])
+  orderId   Int?      @map("order_id")
+  order     Order?    @relation(fields: [orderId], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("order_items")
 }
 
 enum OrderStatus {

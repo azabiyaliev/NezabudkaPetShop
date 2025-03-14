@@ -12,13 +12,20 @@ export class BrandsService {
   constructor(private readonly prisma: PrismaService) {}
 
   async getBrands() {
-    const brands = await this.prisma.brand.findMany();
+    const brands = await this.prisma.brand.findMany({
+      select: {
+        products: true,
+      },
+    });
     return brands || [];
   }
 
   async getBrand(id: string) {
     const brandId = parseInt(id);
-    const brand = await this.prisma.brand.findFirst({ where: { id: brandId } });
+    const brand = await this.prisma.brand.findFirst({
+      where: { id: brandId },
+      select: { products: true },
+    });
     if (!brand) {
       throw new NotFoundException(`Бренд с id = ${id} не найдена!`);
     }
@@ -37,6 +44,12 @@ export class BrandsService {
         data: {
           title,
           logo,
+        },
+        select: {
+          id: true,
+          title: true,
+          logo: true,
+          products: true,
         },
       });
     } catch (error) {

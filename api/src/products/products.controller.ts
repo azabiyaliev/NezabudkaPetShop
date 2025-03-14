@@ -32,7 +32,7 @@ export class ProductsController {
   //GET ONE BY ID
   @Get(':id')
   async getOneProduct(@Param('id') id: string) {
-    return await this.productsService.getProductById(id);
+    return await this.productsService.getProductById(Number(id));
   }
 
   //CREATE PRODUCT ONLY ADMIN
@@ -58,6 +58,8 @@ export class ProductsController {
       productDto.productPhoto = '/productImg/' + file.filename;
     }
     productDto.productPrice = Number(productDto.productPrice);
+    productDto.brandId = Number(productDto.brandId);
+    productDto.categoryId = Number(productDto.categoryId);
     return await this.productsService.addProduct(productDto);
   }
 
@@ -70,7 +72,7 @@ export class ProductsController {
     @Body() createProductDto: CreateProductsDto,
   ) {
     return await this.productsService.changeProductInfo(
-      productId,
+      Number(productId),
       createProductDto,
     );
   }
@@ -80,6 +82,6 @@ export class ProductsController {
   @Roles('admin')
   @Delete(':productId')
   async deleteProduct(@Param('productId') productId: string) {
-    return await this.productsService.deleteProduct(productId);
+    return await this.productsService.deleteProduct(Number(productId));
   }
 }
