@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import RegisterUser from "./containers/UserFrom/RegisterUser.tsx";
 import LoginUser from "./containers/UserFrom/LoginUser.tsx";
-import { Container, CssBaseline } from "@mui/material";
+import { CssBaseline } from "@mui/material";
 import Header from './containers/Header/Header.tsx';
 import AdminProfile from './containers/Admin/AdminProfile/AdminProfile.tsx';
 import AdminForm from './containers/Admin/AdminProfile/AdminForm.tsx';
@@ -9,7 +9,7 @@ import EditSiteFrom from './containers/Admin/AdminProfile/EditSiteFrom.tsx';
 
 const App = () => {
   return (
-    <Container>
+    <>
       <CssBaseline />
       <header>
         <Header/>
@@ -24,7 +24,7 @@ const App = () => {
             <Route path="/edition_site" element={<EditSiteFrom />} />
           </Routes>
       </main>
-    </Container>
+    </>
   );
 };
 // 3:22 1:19 3:05
