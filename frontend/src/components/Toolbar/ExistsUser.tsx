@@ -11,7 +11,8 @@ interface Props {
 
 const ExistsUser: React.FC<Props> = ({ user }) => {
   const dispatch = useAppDispatch();
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+  console.log(user)
 
   const toggleDrawer = (open: boolean) => () => {
     setIsDrawerOpen(open);
@@ -25,7 +26,7 @@ const ExistsUser: React.FC<Props> = ({ user }) => {
     <>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
         <Button onClick={toggleDrawer(true)} style={{ color: 'black' }}>
-          {user.firstName}  {user.secondName}
+          Мой профиль
         </Button>
       </Box>
 

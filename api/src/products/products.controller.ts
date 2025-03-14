@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { Roles } from '../roles/roles.decorator';
-import { CreateProductsDto } from './dto/createProductsDto';
+import { CreateProductsDto } from '../dto/createProductsDto';
 import { RolesGuard } from '../token.auth/token.role.guard';
 import { TokenAuthGuard } from '../token.auth/token-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';

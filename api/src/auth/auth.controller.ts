@@ -2,7 +2,6 @@ import {
   Controller,
   Post,
   Body,
-  UnauthorizedException,
   Req,
   Delete,
   UseGuards,
@@ -11,10 +10,10 @@ import {
 import { AuthService } from './auth.service';
 import { Request } from 'express';
 import { TokenAuthGuard } from '../token.auth/token-auth.guard';
-import { LoginDto, RegisterDto } from './auth.dto';
+import { LoginDto, RegisterDto } from '../dto/auth.dto';
 import { User } from '@prisma/client';
-import { FacebookUserDto } from './dto/facebook-user.dto';
-import { GoogleUserDto } from './dto/google-user.dto';
+import { FacebookUserDto } from '../dto/facebook-user.dto';
+import { GoogleUserDto } from '../dto/google-user.dto';
 import { PrismaService } from '../prisma/prisma.service';
 
 interface AuthRequest extends Request {
@@ -35,29 +34,20 @@ export class AuthController {
 
   @Post('login')
   async login(@Body() loginDto: LoginDto) {
-    try {
-      const user = await this.authService.validateUser(loginDto);
+    const user = await this.authService.validateUser(loginDto);
 
-      if (!user) {
-        throw new UnauthorizedException('Invalid credentials');
-      }
-
-      return {
-        message: 'Login successful',
-        user: {
-          email: user.email,
-          firstName: user.firstName,
-          token: user.token,
-          secondName: user.secondName,
-          id: user.id,
-          role: user.role,
-          phone: user.phone,
-        },
-      };
-    } catch (e) {
-      console.error('Login failed:', e);
-      throw new UnauthorizedException('Login failed');
-    }
+    return {
+      message: 'Вход выполнен успешно',
+      user: {
+        email: user.email,
+        firstName: user.firstName,
+        token: user.token,
+        secondName: user.secondName,
+        id: user.id,
+        role: user.role,
+        phone: user.phone,
+      },
+    };
   }
 
   @UseGuards(TokenAuthGuard)
@@ -65,7 +55,7 @@ export class AuthController {
   async logout(@Req() req: Request) {
     const user = (req as AuthRequest).user;
     await this.authService.logout(user.id);
-    return { message: 'Logged out successfully' };
+    return { message: 'Выход выполнен успешно' };
   }
 
   @Post('google')

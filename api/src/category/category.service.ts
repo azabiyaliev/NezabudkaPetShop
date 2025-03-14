@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CategoryDto } from './category.dto';
+import { CategoryDto } from '../dto/category.dto';
 
 @Injectable()
 export class CategoryService {

@@ -18,7 +18,7 @@ import { TokenAuthGuard } from '../token.auth/token-auth.guard';
 import { RolesGuard } from '../token.auth/token.role.guard';
 import { Roles } from '../roles/roles.decorator';
 import { EditionSiteService } from './editionsite.service';
-import { EditionSitedDto } from './editionsite.dto';
+import { EditionSitedDto } from '../dto/editionsite.dto';
 
 @Controller('edition_site')
 export class EditionSiteController {
