@@ -23,7 +23,7 @@ const AdminBar  = () => {
           <ListItemText primary="Редактирование сайта" className='text-black'/>
         </ListItem>
         <ListItem  component={NavLink} to="/private/add_brand">
-          <ListItemText primary="Добавить бренд" className='text-black' />
+          <ListItemText primary="Бренды" className='text-black' />
         </ListItem>
         <ListItem  component={NavLink} to="/private/all_products" >
           <ListItemText primary="Все товары" className='text-black'/>

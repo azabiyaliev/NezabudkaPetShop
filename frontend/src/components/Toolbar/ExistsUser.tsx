@@ -50,7 +50,7 @@ const ExistsUser: React.FC<Props> = ({ user }) => {
 
           {user && user.role === 'admin' && (
             <List>
-              <ListItem  component={NavLink} to={`/private_account}`} onClick={toggleDrawer(false)}>
+              <ListItem  component={NavLink} to={`/private_account`} onClick={toggleDrawer(false)}>
                 <ListItemText primary="Личный кабинет" className='text-black'/>
               </ListItem>
               <ListItem  component={NavLink} to={`/users/${user.id}`} onClick={toggleDrawer(false)}>
@@ -66,7 +66,7 @@ const ExistsUser: React.FC<Props> = ({ user }) => {
                 <ListItemText primary="Редактирование сайта" className='text-black'/>
               </ListItem>
               <ListItem  component={NavLink} to="/private/add_brand" onClick={toggleDrawer(false)}>
-                <ListItemText primary="Добавить бренд" className='text-black' />
+                <ListItemText primary="Бренды" className='text-black' />
               </ListItem>
               <ListItem  component={NavLink} to="/private/all_products" onClick={toggleDrawer(false)}>
                 <ListItemText primary="Все товары" className='text-black'/>

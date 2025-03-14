@@ -46,3 +46,14 @@ export interface ValidationError {
 export interface GlobalError {
   error: string;
 }
+
+export interface IBrand {
+  id: string;
+  title: string;
+  logo: string;
+}
+
+export interface IBrandForm {
+  title: string;
+  logo: File | null;
+}

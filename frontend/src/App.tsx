@@ -5,6 +5,7 @@ import { Container, CssBaseline } from "@mui/material";
 import Header from './containers/Header/Header.tsx';
 import AdminProfile from './containers/Admin/AdminProfile/AdminProfile.tsx';
 import AdminForm from './containers/Admin/AdminProfile/AdminForm.tsx';
+import NewBrand from './containers/Admin/Brand/NewBrand.tsx';
 
 const App = () => {
   return (
@@ -21,7 +22,8 @@ const App = () => {
             <Route path="*" element={<h1>Not found</h1>} />
             <Route path="/register" element={<RegisterUser />} />
             <Route path="/login" element={<LoginUser />} />
-            <Route path="/private" element={<AdminProfile />} />
+            <Route path="/private_account" element={<AdminProfile />} />
+            <Route path="/private/add_brand" element={<NewBrand />} />
             <Route path="/users/:id" element={<AdminForm />} />
           </Routes>
         </Container>

@@ -10,6 +10,7 @@ import {
   PERSIST,
 } from "redux-persist";
 import { userReducer } from "../features/users/usersSlice.ts";
+import { brandReducer } from '../features/brands/brandsSlice.ts';
 
 const userPersistConfig = {
   key: "store:users",
@@ -19,6 +20,7 @@ const userPersistConfig = {
 
 const rootReducer = combineReducers({
   users: persistReducer(userPersistConfig, userReducer),
+  brands: brandReducer,
 });
 
 export const store = configureStore({
