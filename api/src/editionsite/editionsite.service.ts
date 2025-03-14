@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
-import { EditionSitedDto } from './editionsite.dto';
+import { EditionSitedDto } from '../dto/editionsite.dto';
 
 @Injectable()
 export class EditionSiteService {

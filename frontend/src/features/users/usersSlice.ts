@@ -9,7 +9,7 @@ interface UserState {
   registerLoading: boolean;
   registerError: ValidationError | null;
   loginLoading: boolean;
-  loginError: GlobalError | null;
+  loginError: ValidationError | null;
   editLoading: boolean;
   editError: GlobalError | null;
 }

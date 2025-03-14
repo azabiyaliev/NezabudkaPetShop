@@ -14,8 +14,8 @@ import { OrdersService } from './orders.service';
 import { Roles } from '../roles/roles.decorator';
 import { RolesGuard } from '../token.auth/token.role.guard';
 import { TokenAuthGuard } from '../token.auth/token-auth.guard';
-import { CreateOrderDto } from './dto/createOrderDto';
-import { CheckoutOrderDto } from './dto/checkoutOrderDto';
+import { CreateOrderDto } from '../dto/createOrderDto';
+import { CheckoutOrderDto } from '../dto/checkoutOrderDto';
 import { AuthRequest } from '../types';
 import { OrderStatus } from '@prisma/client';
 

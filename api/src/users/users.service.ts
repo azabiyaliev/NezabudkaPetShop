@@ -7,45 +7,42 @@ import * as bcrypt from 'bcrypt';
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
+  private async validateUser(id: number) {
+    const user = await this.prisma.user.findFirst({
+      where: { id },
+    });
+
+    if (!user) {
+      throw new NotFoundException(`Пользователь с ID ${id} не найдена`);
+    }
+    return user;
+  }
+
   async findAll() {
     const result = await this.prisma.user.findMany();
     if (result.length === 0) {
-      throw new NotFoundException('Users not found');
+      throw new NotFoundException('Пользователи не найдены');
     }
     return result;
   }
 
   async findOne(id: string) {
     const parsId = parseInt(id);
-    const user = await this.prisma.user.findFirst({ where: { id: parsId } });
-
-    if (!user) {
-      throw new NotFoundException(`User with this ${id} not found`);
-    }
-    return user;
+    return this.validateUser(parsId);
   }
 
   async delete(id: string) {
     const parsId = parseInt(id);
-    const user = await this.prisma.user.findFirst({ where: { id: parsId } });
-    if (!user) {
-      throw new NotFoundException(`User with this ${id} not found`);
-    }
+    await this.validateUser(parsId);
 
     await this.prisma.user.delete({ where: { id: parsId } });
-    return { message: `User with this ${id} deleted successfully` };
+    return { message: `Пользователь с таким ID ${id} удален успешно` };
   }
 
   async update(id: string, data: Partial<User>) {
     const userId = parseInt(id);
 
-    const existingUser = await this.prisma.user.findFirst({
-      where: { id: userId },
-    });
-
-    if (!existingUser) {
-      throw new NotFoundException(`User with this ${id} not found`);
-    }
+    await this.validateUser(userId);
 
     if (data.password !== undefined) {
       const salt = await bcrypt.genSalt(10);
