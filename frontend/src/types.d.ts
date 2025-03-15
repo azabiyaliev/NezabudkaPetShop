@@ -43,7 +43,6 @@ export interface GlobalError {
 }
 
 export interface EditSiteMutation {
-  id: number;
   instagram: string;
   whatsapp: string;
   schedule: string;
@@ -53,7 +52,8 @@ export interface EditSiteMutation {
   logo: File | null;
 }
 
-export interface SiteMutation {
+export interface EditSite {
+  id: number;
   instagram: string;
   whatsapp: string;
   schedule: string;
