@@ -37,29 +37,28 @@ export const register = createAsyncThunk<
   }
 });
 
-export const login = createAsyncThunk<
-  User,
-  LogInMutation,
-  { rejectValue: ValidationError }
->("users/login", async (LogInMutation, { rejectWithValue }) => {
-  try {
-    const response = await axiosApi.post<User>("/auth/login", LogInMutation);
-    return response.data;
-  } catch (error) {
-    if (isAxiosError(error) && error.response) {
-      const { data, status } = error.response;
+export const login = createAsyncThunk<RegisterResponse, LogInMutation, { rejectValue: ValidationError }>(
+  "users/login",
+  async (LogInMutation, { rejectWithValue }) => {
+    try {
+      const response = await axiosApi.post<RegisterResponse>("/auth/login", LogInMutation);
+      return response.data;
+    } catch (error) {
+      if (isAxiosError(error) && error.response) {
+        const { data, status } = error.response;
 
-      if ([400, 401, 409].includes(status)) {
-        const formattedErrors =
-          typeof data.errors === "object"
-            ? data.errors
-            : { general: data.message };
-        return rejectWithValue({ errors: formattedErrors } as ValidationError);
+        if ([400, 401, 409].includes(status)) {
+          const formattedErrors =
+            typeof data.errors === "object"
+              ? data.errors
+              : { general: data.message };
+          return rejectWithValue({ errors: formattedErrors } as ValidationError);
+        }
       }
+      throw error;
     }
-    throw error;
   }
-});
+);
 
 export const updateUser = createAsyncThunk<
   User,

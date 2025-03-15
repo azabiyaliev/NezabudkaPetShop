@@ -17,9 +17,12 @@ const AllCategoriesPage = () => {
 
   useEffect(() => {
     dispatch(fetchCategoriesThunk());
-  }, [dispatch]);
+    console.log("Updated user:", user);
+  }, [dispatch, user]);
 
-  console.log(categories)
+  if( user) {
+    console.log(user.role);
+  }
 
   const handleOpen = (category: { id: string; title: string }) => {
     setSelectedCategory(category);
