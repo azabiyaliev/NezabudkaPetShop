@@ -9,6 +9,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { LoginDto, RegisterDto } from '../dto/auth.dto';
 import { OAuth2Client } from 'google-auth-library';
 import { ConfigService } from '@nestjs/config';
+import * as crypto from 'crypto';
 
 const regEmail = /^(\w+[-.]?\w+)@(\w+)([.-]?\w+)?(\.[a-zA-Z]{2,3})$/;
 const regPhone = /^(\+996|0)\s?\d{3}\s?\d{3}\s?\d{3}$/;
