@@ -5,14 +5,26 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateProductsDto } from '../dto/createProductsDto';
+import { ProductQueryDto } from './dto/querySearchDto';
 
 @Injectable()
 export class ProductsService {
   constructor(private prismaService: PrismaService) {}
 
   //FOR ADMIN/USER
-  async getAllProducts() {
+  async getAllProducts(query: ProductQueryDto) {
+    const where: ProductQueryDto = {};
+
+    if (query.categoryId) {
+      where.categoryId = Number(query.categoryId);
+    }
+
+    if (query.brandId) {
+      where.brandId = Number(query.brandId);
+    }
+
     const products = await this.prismaService.products.findMany({
+      where,
       select: {
         id: true,
         productName: true,
@@ -39,6 +51,25 @@ export class ProductsService {
       brandId,
       categoryId,
     } = createProductsDto;
+
+    if (!brandId) {
+      throw new BadRequestException({
+        message: 'Заполните поле Бренда товара',
+      });
+    }
+
+    if (!categoryId) {
+      throw new BadRequestException({
+        message: 'Заполните поле Категории товара',
+      });
+    }
+
+    if (!productPhoto) {
+      throw new BadRequestException({
+        message: 'Поле с изображением товара не должно быть пустым ',
+      });
+    }
+
     const newProduct = await this.prismaService.products.create({
       data: {
         productName,

@@ -1,16 +1,19 @@
-import { IsBoolean, IsInt, IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsNotEmpty,
+  IsNumberString,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class CreateProductsDto {
   @IsNotEmpty()
   @IsString()
   productName!: string;
-
-  @IsNotEmpty()
-  @IsString()
   productPhoto!: string;
 
   @IsNotEmpty()
-  @IsInt()
+  @IsNumberString()
   productPrice!: number;
 
   @IsNotEmpty()
@@ -18,14 +21,18 @@ export class CreateProductsDto {
   productDescription!: string;
 
   @IsNotEmpty()
-  @IsInt()
+  @IsNumberString()
   categoryId!: number;
+
   @IsNotEmpty()
-  @IsInt()
+  @IsNumberString()
   brandId!: number;
 
+  @IsOptional()
   @IsBoolean()
-  existence!: boolean;
+  existence?: boolean;
+
+  @IsOptional()
   @IsBoolean()
-  sales!: boolean;
+  sales?: boolean;
 }
