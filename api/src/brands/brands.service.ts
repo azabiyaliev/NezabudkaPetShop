@@ -45,7 +45,7 @@ export class BrandsService {
         error.code === 'P2002'
       ) {
         throw new ConflictException(
-          `${title} уже существует и вы не можете его повторно добавить!`,
+          `Данный бренд уже существует. Вы не можете повторно его добавить!`,
         );
       }
       throw error;

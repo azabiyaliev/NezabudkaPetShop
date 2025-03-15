@@ -45,6 +45,7 @@ export interface ValidationError {
 
 export interface GlobalError {
   error: string;
+  message: string;
 }
 
 export interface IBrand {

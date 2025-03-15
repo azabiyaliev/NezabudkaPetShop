@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { IBrand, IBrandForm } from '../../types';
+import {GlobalError, IBrand, IBrandForm} from '../../types';
 import { addBrand, brandeDelete, editBrand, getBrands, getOneBrand } from './brandsThunk.ts';
 import { RootState } from '../../app/store.ts';
 
@@ -14,6 +14,7 @@ interface BrandState {
     deleteLoading: boolean;
   },
   error: boolean;
+  addError: GlobalError | null;
 }
 
 const initialState: BrandState = {
@@ -27,30 +28,36 @@ const initialState: BrandState = {
     deleteLoading: false,
   },
   error: false,
+  addError: null,
 }
 
 export const brandsFromSlice = (state: RootState) => state.brands.brands;
 export const brandFromSlice = (state: RootState) => state.brands.brand;
 export const addLoadingFromSlice = (state: RootState) => state.brands.loadings.addLoading;
 export const editLoadingFromSlice = (state: RootState) => state.brands.loadings.editLoading;
+export const addErrorFromSlice = (state: RootState) => state.brands.addError;
 
 const brandsSlice = createSlice({
   name: 'brands',
   initialState,
-  reducers: {},
+  reducers: {
+    clearError: (state) => {
+      state.addError = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(addBrand.pending, (state) => {
         state.loadings.addLoading = true;
-        state.error = false;
+        state.addError = null;
       })
       .addCase(addBrand.fulfilled, (state) => {
         state.loadings.addLoading = false;
-        state.error = false;
+        state.addError = null;
       })
-      .addCase(addBrand.rejected, (state) => {
+      .addCase(addBrand.rejected, (state, {payload: error}) => {
         state.loadings.addLoading = false;
-        state.error = true;
+        state.addError = error || null;
       })
       .addCase(getBrands.pending, (state) => {
         state.loadings.getLoading = true;
@@ -106,3 +113,4 @@ const brandsSlice = createSlice({
 });
 
 export const brandReducer = brandsSlice.reducer;
+export const { clearError } = brandsSlice.actions;

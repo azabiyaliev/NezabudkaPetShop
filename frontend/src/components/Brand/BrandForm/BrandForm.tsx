@@ -4,11 +4,13 @@ import FormControl from '@mui/joy/FormControl';
 import React, { useState } from 'react';
 import { IBrandForm } from '../../../types';
 import FileInputForBrand from '../FileInputForBrand/FileInputForBrand.tsx';
-import { Button } from '@mui/material';
+import {Alert, Button } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import { toast } from 'react-toastify';
 import ButtonSpinner from '../../UI/ButtonSpinner/ButtonSpinner.tsx';
 import { apiUrl } from '../../../globalConstants.ts';
+import {useAppSelector} from "../../../app/hooks.ts";
+import {addErrorFromSlice} from "../../../features/brands/brandsSlice.ts";
 
 interface Props {
   addNewBrand: (brand: IBrandForm) => void;
@@ -26,6 +28,8 @@ const initialBrand = {
 const BrandForm:React.FC<Props> = ({addNewBrand, isLoading, editBrand = initialBrand, isBrand = false}) => {
   const [newBrand, setNewBrand] = useState<IBrandForm>(editBrand);
   const [resetFile, setResetFile] = useState<boolean>(false);
+  const addError = useAppSelector(addErrorFromSlice);
+  console.log(addError);
 
   const onChange = (e:React.ChangeEvent<HTMLInputElement>) => {
     const {name, value} = e.target;
@@ -39,21 +43,19 @@ const BrandForm:React.FC<Props> = ({addNewBrand, isLoading, editBrand = initialB
   const onSubmit = (e:React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (newBrand.title.trim().length === 0) {
-      toast.error('Заполните название бренда');
-      return;
-    }
-
     if (!newBrand.logo) {
       toast.error('Выберите изображение для логотипа бренда!');
       return;
     }
 
     addNewBrand({...newBrand});
+
     if (!isBrand) {
       setNewBrand(initialBrand);
       setResetFile(true);
+      return;
     }
+
   };
 
   const fileInputChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -92,6 +94,11 @@ const BrandForm:React.FC<Props> = ({addNewBrand, isLoading, editBrand = initialB
               {!isBrand ? 'Добавление нового' : 'Редактирование'} бренда
             </Typography>
           </div>
+          {addError && (
+            <Alert severity="error" sx={{ width: '100%'}}>
+              {addError.message}
+            </Alert>
+          )}
           <FormControl>
             <TextField
               sx={{ width: "100%" }}

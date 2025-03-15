@@ -4,6 +4,7 @@ import { NavLink } from 'react-router-dom';
 import { User } from '../../types';
 import { useAppDispatch } from '../../app/hooks';
 import { unsetUser } from '../../features/users/usersSlice';
+import { clearError } from '../../features/brands/brandsSlice.ts';
 
 interface Props {
   user: User;
@@ -62,7 +63,10 @@ const ExistsUser: React.FC<Props> = ({ user }) => {
               <ListItem  component={NavLink} to="/private/clients" onClick={toggleDrawer(false)}>
                 <ListItemText primary="Клиенты" className='text-black'/>
               </ListItem>
-              <ListItem  component={NavLink} to="/private/edit_site" onClick={toggleDrawer(false)}>
+              <ListItem  component={NavLink} to="/private/edit_site" onClick={() => {
+                toggleDrawer(false);
+                dispatch(clearError());
+              }}>
                 <ListItemText primary="Редактирование сайта" className='text-black'/>
               </ListItem>
               <ListItem  component={NavLink} to="/private/add_brand" onClick={toggleDrawer(false)}>
