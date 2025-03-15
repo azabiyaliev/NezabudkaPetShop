@@ -14,18 +14,19 @@ datasource db {
 }
 
 model User {
-  id         Int      @id @default(autoincrement())
-  email      String   @unique
+  id         Int       @id @default(autoincrement())
+  email      String    @unique
   firstName  String
   secondName String
   password   String
-  phone      String?  @unique
-  role       Role     @default(client)
+  phone      String?   @unique
+  role       Role      @default(client)
   token      String?
-  googleID   String?  @unique
-  facebookID String?  @unique
+  googleID   String?   @unique
+  facebookID String?   @unique
   Order      Order[]
   Review     Review[]
+  Comment    Comment[]
 
   @@map("users")
 }
@@ -108,13 +109,27 @@ enum OrderStatus {
 }
 
 model Review {
+  id        Int       @id @default(autoincrement())
+  user      User      @relation(fields: [userId], references: [id])
+  userId    Int
+  rating    Int?
+  text      String?
+  product   Products  @relation(fields: [productId], references: [id])
+  productId String
+  comments  Comment[]
+  createdAt DateTime  @default(now())
+
+  @@map("reviews")
+}
+
+model Comment {
   id        Int      @id @default(autoincrement())
   user      User     @relation(fields: [userId], references: [id])
   userId    Int
-  text      String?
-  rating    Int?
-  product   Products @relation(fields: [productId], references: [id])
-  productId String
+  review    Review   @relation(fields: [reviewId], references: [id])
+  reviewId  Int
+  comment   String
+  createdAt DateTime @default(now())
 
-  @@map("reviews")
+  @@map("comments")
 }

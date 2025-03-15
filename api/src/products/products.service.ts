@@ -46,11 +46,36 @@ export class ProductsService {
     return newProduct;
   }
 
-  //FOR ADMIN/USER
+  //FOR ADMIN/USER / Добавлены отзывы и комментарии
   async getProductById(id: string) {
     const oneProduct = await this.prismaService.products.findUnique({
       where: {
         id,
+      },
+      include: {
+        Review: {
+          include: {
+            user: {
+              select: {
+                firstName: true,
+                secondName: true,
+              },
+            },
+            comments: {
+              select: {
+                id: true,
+                comment: true,
+                createdAt: true,
+                user: {
+                  select: {
+                    firstName: true,
+                    secondName: true,
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     });
     if (!oneProduct) {
