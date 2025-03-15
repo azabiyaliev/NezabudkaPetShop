@@ -1,11 +1,16 @@
 import React, { useState } from "react";
-import { Avatar, Box, Button, Container } from "@mui/material";
-import TextField from "@mui/material/TextField";
-import Grid from "@mui/material/Grid2";
+import {
+  Avatar,
+  Box,
+  Button,
+  Container,
+  TextField,
+  Typography,
+} from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import Typography from "@mui/material/Typography";
 import { useAppDispatch, useAppSelector } from "../../app/hooks.ts";
 import { NavLink } from "react-router-dom";
+import Grid from "@mui/material/Grid2";
 import { RegisterMutation } from "../../types";
 import { selectUserError } from "../../features/users/usersSlice.ts";
 import { register } from "../../features/users/usersThunk.ts";
@@ -13,46 +18,37 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const regPhone = /^(\+996|0)\s?\d{3}\s?\d{3}\s?\d{3}$/;
-const regEmail = /^(\w+[-.]?\w+)@(\w+)([.-]?\w+)?(\.[a-zA-Z]{2,3})$/;
+export const regEmail = /^(\w+[-.]?\w+)@(\w+)([.-]?\w+)?(\.[a-zA-Z]{2,3})$/;
 
+const initialState = {
+  firstName: "",
+  secondName: "",
+  email: "",
+  password: "",
+  phone: "",
+}
 const RegisterUser = () => {
   const dispatch = useAppDispatch();
   const registerError = useAppSelector(selectUserError);
-  const [phoneError, setPhoneError] = useState<{ phone?: string }>({});
-  const [emailError, setEmailError] = useState<{ email?: string }>({});
 
-  const [form, setForm] = useState<RegisterMutation>({
-    firstName: "",
-    secondName: "",
-    email: "",
-    password: "",
-    phone: "",
-  });
+  const [phoneError, setPhoneError] = useState("");
+  const [emailError, setEmailError] = useState("");
+
+  const [form, setForm] = useState<RegisterMutation>(initialState);
 
   const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setForm((prevState) => ({ ...prevState, [name]: value }));
 
     if (name === "phone") {
-      if (regPhone.test(value)) {
-        setPhoneError((prevState) => ({ ...prevState, phone: "" }));
+      if (value.trim() === "") {
+        setPhoneError("");
       } else {
-        setPhoneError((prevState) => ({
-          ...prevState,
-          phone: "Неправильный формат номера телефона",
-        }));
+        setPhoneError(regPhone.test(value) ? "" : "Неправильный формат телефона");
       }
     }
-
     if (name === "email") {
-      if (regEmail.test(value)) {
-        setEmailError((prevState) => ({ ...prevState, email: "" }));
-      } else {
-        setEmailError((prevState) => ({
-          ...prevState,
-          email: "Неправильный формат email",
-        }));
-      }
+      setEmailError(regEmail.test(value) ? "" : "Неправильный формат email");
     }
   };
 
@@ -60,57 +56,35 @@ const RegisterUser = () => {
     e.preventDefault();
     try {
       await dispatch(register(form)).unwrap();
-      toast.success("Регистрация успешна!", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      setForm(initialState)
+      toast.success("Регистрация успешна!", { position: "top-right" });
     } catch (error) {
-      if (registerError) {
-        if (registerError.errors?.email) {
-          toast.error(registerError.errors.email.message, {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
-        }
-        if (registerError.errors?.password) {
-          toast.error(registerError.errors.password.message, {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
-        }
-        if (registerError.errors?.phone) {
-          toast.error(registerError.errors.phone.message, {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
-        }
-      }
+      console.log(error);
     }
   };
 
-  const getFielderror = (fieldName: string) => {
-    return registerError?.errors[fieldName]?.message;
+  const getFieldError = (fieldName: string) => {
+    if (!registerError?.errors) return undefined;
+
+    if (registerError.errors[fieldName]) return registerError.errors[fieldName];
+
+    if (registerError.errors.general) {
+      const generalError = registerError.errors.general.toLowerCase();
+
+      if (
+        (fieldName !== "email" && generalError.includes("email")) ||
+        (fieldName !== "phone" && generalError.includes("номер"))
+      ) {
+        return undefined;
+      }
+
+      return registerError.errors.general;
+    }
+
+    return undefined;
   };
+
+
 
   return (
     <div>
@@ -124,7 +98,7 @@ const RegisterUser = () => {
             backgroundColor: "#FFFFFF",
             padding: 4,
             borderRadius: 2,
-            border: "2px solid  #FFEB3B",
+            border: "2px solid #FFEB3B",
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: "white" }}>
@@ -139,82 +113,57 @@ const RegisterUser = () => {
             onSubmit={submitHandler}
             sx={{ mt: 3 }}
           >
-            <Grid direction={"column"} spacing={2}>
+            <Grid container direction="column" spacing={2}>
               <Grid>
                 <TextField
                   fullWidth
+                  autoComplete="current-firstName"
                   name="firstName"
                   label="Ваше имя"
-                  type="firstName"
-                  id="firstName"
                   value={form.firstName}
                   onChange={inputChangeHandler}
-                  error={Boolean(getFielderror("firstName"))}
-                  helperText={getFielderror("firstName")}
-                  style={{
-                    marginTop: "10px",
-                    backgroundColor: "white",
-                    borderRadius: "7px",
-                    cursor: "pointer",
-                  }}
+                  error={Boolean(getFieldError("firstName"))}
+                  helperText={getFieldError("firstName")}
+                  sx={{ backgroundColor: "white", borderRadius: "7px" }}
                 />
               </Grid>
               <Grid>
                 <TextField
                   fullWidth
+                  autoComplete="current-secondName"
                   name="secondName"
                   label="Ваша фамилия"
-                  type="secondName"
-                  id="secondName"
                   value={form.secondName}
                   onChange={inputChangeHandler}
-                  error={Boolean(getFielderror("lastName"))}
-                  helperText={getFielderror("lastName")}
-                  style={{
-                    marginTop: "10px",
-                    backgroundColor: "white",
-                    borderRadius: "7px",
-                    cursor: "pointer",
-                  }}
+                  error={Boolean(getFieldError("secondName"))}
+                  helperText={getFieldError("secondName")}
+                  sx={{ backgroundColor: "white", borderRadius: "7px" }}
                 />
               </Grid>
               <Grid>
                 <TextField
                   fullWidth
-                  id="email"
-                  label="Email"
                   name="email"
+                  label="Email"
                   value={form.email}
                   onChange={inputChangeHandler}
-                  error={
-                    Boolean(getFielderror("email")) || Boolean(emailError.email)
-                  }
-                  helperText={getFielderror("email") || emailError.email}
-                  style={{
-                    marginTop: "10px",
-                    backgroundColor: "white",
-                    borderRadius: "7px",
-                    cursor: "pointer",
-                  }}
+                  error={Boolean(getFieldError("email")) || Boolean(emailError)}
+                  helperText={getFieldError("email") || emailError}
+                  sx={{ backgroundColor: "white", borderRadius: "7px" }}
                 />
               </Grid>
               <Grid>
                 <TextField
                   fullWidth
+                  autoComplete="current-password"
                   name="password"
                   label="Придумайте пароль"
                   type="password"
-                  id="password"
                   value={form.password}
                   onChange={inputChangeHandler}
-                  error={Boolean(getFielderror("password"))}
-                  helperText={getFielderror("password")}
-                  style={{
-                    marginTop: "10px",
-                    backgroundColor: "white",
-                    borderRadius: "7px",
-                    cursor: "pointer",
-                  }}
+                  error={Boolean(getFieldError("password"))}
+                  helperText={getFieldError("password")}
+                  sx={{ backgroundColor: "white", borderRadius: "7px" }}
                 />
               </Grid>
               <Grid>
@@ -222,20 +171,11 @@ const RegisterUser = () => {
                   fullWidth
                   name="phone"
                   label="Номер телефона"
-                  type="phone"
-                  id="phone"
                   value={form.phone}
                   onChange={inputChangeHandler}
-                  error={
-                    Boolean(getFielderror("phone")) || Boolean(phoneError.phone)
-                  }
-                  helperText={getFielderror("phone") || phoneError.phone}
-                  style={{
-                    marginTop: "10px",
-                    backgroundColor: "white",
-                    borderRadius: "7px",
-                    cursor: "pointer",
-                  }}
+                  error={Boolean(getFieldError("phone")) || Boolean(phoneError)}
+                  helperText={getFieldError("phone") || phoneError}
+                  sx={{ backgroundColor: "white", borderRadius: "7px" }}
                 />
               </Grid>
             </Grid>
@@ -244,24 +184,13 @@ const RegisterUser = () => {
               type="submit"
               fullWidth
               variant="contained"
-              sx={{
-                mt: 3,
-                mb: 2,
-                backgroundColor: "#FFEB3B",
-                color: "black",
-              }}
+              sx={{ mt: 3, mb: 2, backgroundColor: "#FFEB3B", color: "black" }}
             >
               Зарегистрироваться
             </Button>
             <Grid container justifyContent="center" sx={{ mt: 2 }}>
               <Grid>
-                <NavLink
-                  to="/login"
-                  style={{
-                    color: "black",
-                    textAlign: "center",
-                  }}
-                >
+                <NavLink to="/login" style={{ color: "black" }}>
                   У вас уже есть аккаунт? Войти
                 </NavLink>
               </Grid>
@@ -269,7 +198,6 @@ const RegisterUser = () => {
           </Box>
         </Box>
       </Container>
-
       <ToastContainer />
     </div>
   );

@@ -8,7 +8,7 @@ import {
   Put,
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
-import { CategoryDto } from './category.dto';
+import { CategoryDto } from '../dto/category.dto';
 
 @Controller('category')
 export class CategoryController {

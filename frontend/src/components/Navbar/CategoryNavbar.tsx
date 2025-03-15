@@ -18,7 +18,6 @@ const CategoryNavbar = () => {
     dispatch(fetchCategoriesThunk());
   }, [dispatch]);
 
-  console.log(categories);
 
   return (
     <AppBar

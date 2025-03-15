@@ -34,13 +34,8 @@ export interface RegisterResponse {
 
 export interface ValidationError {
   errors: {
-    [key: string]: {
-      message: string;
-      name: string;
-    };
+    [key: string]: string;
   };
-  name: string;
-  message: string;
 }
 
 export interface GlobalError {

@@ -15,7 +15,7 @@ import { BrandsService } from './brands.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
-import { BrandDto } from './brands.dto';
+import { BrandDto } from '../dto/brands.dto';
 import { TokenAuthGuard } from '../token.auth/token-auth.guard';
 import { RolesGuard } from '../token.auth/token.role.guard';
 import { Roles } from '../roles/roles.decorator';

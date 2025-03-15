@@ -4,7 +4,7 @@ import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid2";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
 import Typography from "@mui/material/Typography";
-import { useAppDispatch } from "../../app/hooks.ts";
+import { useAppDispatch, useAppSelector } from '../../app/hooks.ts';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { LogInMutation } from "../../types";
 import { facebookLogin, googleLogin, login } from '../../features/users/usersThunk.ts';
@@ -13,21 +13,31 @@ import "react-toastify/dist/ReactToastify.css";
 import { GoogleLogin } from '@react-oauth/google';
 import FacebookLogin from '@greatsumini/react-facebook-login';
 import FacebookIcon from "@mui/icons-material/Facebook";
+import { selectLoginError } from '../../features/users/usersSlice.ts';
+import { regEmail } from './RegisterUser.tsx';
 
 
 
 const LoginUser = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const registerError = useAppSelector(selectLoginError);
 
   const [form, setForm] = useState<LogInMutation>({
     email: "",
     password: "",
   });
 
+  const [emailError, setEmailError] = useState("");
+
+
   const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setForm((prevState) => ({ ...prevState, [name]: value }));
+
+    if (name === "email") {
+      setEmailError(regEmail.test(value) ? "" : "Неправильный формат email");
+    }
   };
 
   const submitHandler = async (e: React.FormEvent) => {
@@ -57,6 +67,14 @@ const LoginUser = () => {
     await dispatch(facebookLogin({accessToken})).unwrap();
     navigate('/');
   };
+
+  const getFieldError = (fieldName: string) => {
+    if (!registerError?.errors) return undefined;
+
+    return registerError.errors[fieldName] || registerError.errors.general || undefined;
+  };
+
+
 
   return (
     <div>
@@ -95,6 +113,8 @@ const LoginUser = () => {
                   name="email"
                   value={form.email}
                   onChange={inputChangeHandler}
+                  error={Boolean(getFieldError("email")) || Boolean(emailError)}
+                  helperText={getFieldError("email") || emailError}
                   style={{
                     backgroundColor: "white",
                     borderRadius: "7px",
@@ -111,6 +131,8 @@ const LoginUser = () => {
                   id="password"
                   value={form.password}
                   onChange={inputChangeHandler}
+                  error={Boolean(getFieldError("password"))}
+                  helperText={getFieldError("password")}
                   style={{
                     marginTop: "10px",
                     backgroundColor: "white",

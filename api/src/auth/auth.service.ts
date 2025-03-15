@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
-import { LoginDto, RegisterDto } from './auth.dto';
+import { LoginDto, RegisterDto } from '../dto/auth.dto';
 import { OAuth2Client } from 'google-auth-library';
 import { ConfigService } from '@nestjs/config';
 
@@ -53,32 +53,14 @@ export class AuthService {
     const { email, firstName, secondName, password, role } = registerDto;
     let phone = registerDto.phone;
 
-    if (
-      email.trim() === '' ||
-      firstName.trim() === '' ||
-      secondName.trim() === '' ||
-      password.trim() === ''
-    ) {
-      throw new BadRequestException(
-        'Missing required fields: email, firstName, secondName or password',
-      );
-    }
-
     if (password.includes(' ')) {
-      throw new BadRequestException({
-        error: 'The password must not contain spaces.',
-      });
+      throw new ConflictException('Пароль не должен содержать пустых отступов');
     }
 
     if (!regEmail.test(email)) {
-      throw new BadRequestException('Invalid email format');
-    }
-
-    if (phone) {
-      if (!regPhone.test(phone))
-        throw new BadRequestException('Invalid number format');
-
-      phone = phone.replace(/\s/g, '');
+      throw new BadRequestException('Неправильный формат для почты');
+    } else if (phone) {
+      if (!regPhone.test(phone)) phone = phone.replace(/\s/g, '');
       if (!phone.startsWith('+996')) {
         phone = '+996' + phone.replace(/^0/, '');
       }
@@ -87,20 +69,17 @@ export class AuthService {
     const existingUser = await this.prisma.user.findUnique({
       where: { email },
     });
-
-    if (existingUser) {
-      throw new ConflictException(
-        `User with this email ${email} already exists`,
-      );
-    }
-
     const existingPhone = await this.prisma.user.findUnique({
       where: { phone },
     });
 
-    if (existingPhone) {
+    if (existingUser) {
       throw new ConflictException(
-        `User with this phone ${phone} already exists`,
+        `Пользователь с таким Email ${email} уже существует`,
+      );
+    } else if (existingPhone) {
+      throw new ConflictException(
+        `Пользователь с таким номером ${phone} уже существует`,
       );
     }
 
@@ -108,8 +87,10 @@ export class AuthService {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     if (role && !Object.values(Role).includes(role as Role)) {
-      throw new BadRequestException('Invalid role');
+      throw new BadRequestException('Неверная роль');
     }
+
+    const defaultPhone = phone?.trim() === '' ? null : phone;
 
     const user = await this.prisma.user.create({
       data: {
@@ -117,31 +98,27 @@ export class AuthService {
         firstName,
         secondName,
         password: hashedPassword,
-        phone,
+        phone: defaultPhone,
         role: role ? (role as Role) : undefined,
         token: crypto.randomUUID(),
       },
     });
 
-    return { message: 'User created successfully', user: user };
+    return { message: 'Пользователь создан успешно', user: user };
   }
 
   async validateUser(loginDto: LoginDto) {
     const { email, password } = loginDto;
     const user = await this.prisma.user.findUnique({ where: { email: email } });
 
-    if (!email || !password) {
-      throw new UnauthorizedException(
-        'Missing required fields: email or password',
-      );
-    }
-
     if (!regEmail.test(email)) {
-      throw new BadRequestException('Invalid email format');
+      throw new BadRequestException('Неправильный формат почты');
     }
 
     if (!user || !(await bcrypt.compare(password, user.password))) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException(
+        'Неверный email или пароль. Проверьте данные и попробуйте снова.',
+      );
     }
 
     const token = crypto.randomUUID();
