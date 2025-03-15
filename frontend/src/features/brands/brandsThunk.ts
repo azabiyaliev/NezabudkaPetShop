@@ -23,7 +23,7 @@ export const addBrand = createAsyncThunk<void, {brand: IBrandForm, token: string
 
       await axiosApi.post('/brands', formData, {headers: {'Authorization': token}});
     } catch (error) {
-      if (isAxiosError(error) && error.response && error.response.status === 409) {
+      if (isAxiosError(error) && error.response && (error.response.status === 409 || error.response.status === 404)) {
         return rejectWithValue(error.response.data as GlobalError);
       }
       throw error;
@@ -57,7 +57,7 @@ export const editBrand = createAsyncThunk<void, {brand: IBrandForm, token: strin
 export const getBrands = createAsyncThunk<IBrand[], void>(
   'brands/fetchAllBrands',
   async () => {
-    const response = await axiosApi('/brands');
+    const response = await axiosApi('/brands/');
     return response.data || [];
   }
 );
@@ -70,7 +70,7 @@ export const getOneBrand = createAsyncThunk<IBrandForm, number>(
   }
 );
 
-export const brandeDelete = createAsyncThunk<void, { brandId: string; token: string }>(
+export const brandeDelete = createAsyncThunk<void, { brandId: number; token: string }>(
   'brands/brandeDelete',
   async ({ brandId, token }) => {
   await axiosApi.delete(`/brands/${brandId}`, {headers: { Authorization: token }});

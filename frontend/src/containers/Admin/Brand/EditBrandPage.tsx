@@ -7,19 +7,20 @@ import { brandFromSlice, editLoadingFromSlice } from '../../../features/brands/b
 import { IBrandForm } from '../../../types';
 import { useEffect } from 'react';
 import { editBrand, getOneBrand } from '../../../features/brands/brandsThunk.ts';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-const EditBrand = () => {
+const EditBrandPage = () => {
   const user = useAppSelector(selectUser);
   const brand = useAppSelector(brandFromSlice);
   const dispatch = useAppDispatch();
   const loading = useAppSelector(editLoadingFromSlice);
   const {id} = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (id) {
-      dispatch(getOneBrand(Number(id)));
+      dispatch(getOneBrand(Number(id))).unwrap();
     }
   }, [dispatch, id]);
 
@@ -28,12 +29,10 @@ const EditBrand = () => {
     if (user) {
       await dispatch(editBrand({token: user.token, brand: newBrand})).unwrap();
       toast.success('Бренд успешно отредактирован!');
+      navigate('/private/brands');
     }
   };
 
-  console.log(brand);
-
-  // editBrand,
   return (
     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '30px 0'}}>
       <AdminBar/>
@@ -44,4 +43,4 @@ const EditBrand = () => {
   );
 };
 
-export default EditBrand;
+export default EditBrandPage;

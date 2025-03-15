@@ -3,13 +3,14 @@ import RegisterUser from './containers/UserFrom/RegisterUser.tsx';
 import LoginUser from './containers/UserFrom/LoginUser.tsx';
 import AdminProfile from './containers/Admin/AdminProfile/AdminProfile.tsx';
 import AdminForm from './containers/Admin/AdminProfile/AdminForm.tsx';
-import NewBrand from './containers/Admin/Brand/NewBrand.tsx';
+import NewBrandPage from './containers/Admin/Brand/NewBrandPage.tsx';
 import HomePage from './containers/Home/HomePage.tsx';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute.tsx';
 import { useAppSelector } from './app/hooks.ts';
 import { selectUser } from './features/users/usersSlice.ts';
 import Layout from './components/Layout/Layout.tsx';
-import EditBrand from './containers/Admin/Brand/EditBrand.tsx';
+import EditBrandPage from './containers/Admin/Brand/EditBrandPage.tsx';
+import BrandsPage from './containers/Admin/Brand/BrandsPage.tsx';
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -20,14 +21,19 @@ const App = () => {
         <Route path="/register" element={<RegisterUser />} />
         <Route path="/login" element={<LoginUser />} />
         <Route path="/private_account" element={<AdminProfile />} />
+        <Route path="/private/brands" element={
+          <ProtectedRoute isAllowed={user && user.role === 'admin'}>
+            <BrandsPage />
+          </ProtectedRoute>
+        } />
         <Route path="/private/add_brand" element={
           <ProtectedRoute isAllowed={user && user.role === 'admin'}>
-            <NewBrand />
+            <NewBrandPage />
           </ProtectedRoute>
         } />
         <Route path="/private/edit_brand/:id" element={
           <ProtectedRoute isAllowed={user && user.role === 'admin'}>
-            <EditBrand />
+            <EditBrandPage />
           </ProtectedRoute>
         } />
         <Route path="/users/:id" element={<AdminForm />} />

@@ -12,7 +12,11 @@ export class BrandsService {
   constructor(private readonly prisma: PrismaService) {}
 
   async getBrands() {
-    const brands = await this.prisma.brand.findMany();
+    const brands = await this.prisma.brand.findMany({
+      orderBy: {
+        id: 'desc',
+      },
+    });
     return brands || [];
   }
 
@@ -27,10 +31,10 @@ export class BrandsService {
 
   async createBrand(brandDTO: BrandDto) {
     const { title, logo } = brandDTO;
-    if (!title) {
-      throw new NotFoundException('Название бренда не может быть пустым!');
-    } else if (!logo) {
-      throw new NotFoundException('Логотип бренда не может быть пустым!');
+    if (!title || title.trim() === '' || !logo || logo.trim() === '') {
+      throw new NotFoundException(
+        'Название и логотип бренда не могут быть пустым!',
+      );
     }
     try {
       return await this.prisma.brand.create({

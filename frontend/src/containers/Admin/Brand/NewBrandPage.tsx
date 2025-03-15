@@ -7,16 +7,19 @@ import {selectUser} from '../../../features/users/usersSlice.ts';
 import {addBrand} from '../../../features/brands/brandsThunk.ts';
 import {toast} from 'react-toastify';
 import {addLoadingFromSlice} from '../../../features/brands/brandsSlice.ts';
+import { useNavigate } from 'react-router-dom';
 
-const NewBrand = () => {
+const NewBrandPage = () => {
   const user = useAppSelector(selectUser);
   const dispatch = useAppDispatch();
   const loading = useAppSelector(addLoadingFromSlice);
+  const navigate = useNavigate();
 
   const addNewBrand = async (brand: IBrandForm) => {
     if (user && user.role === 'admin') {
       await dispatch(addBrand({brand, token: user.token})).unwrap();
       toast.success('Бренд успешно создан!');
+      navigate('/private/brands');
     }
   };
 
@@ -28,4 +31,4 @@ const NewBrand = () => {
   );
 };
 
-export default NewBrand;
+export default NewBrandPage;
