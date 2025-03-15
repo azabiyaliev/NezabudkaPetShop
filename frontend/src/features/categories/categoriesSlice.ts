@@ -1,10 +1,17 @@
 import {createSlice} from '@reduxjs/toolkit';
 import {RootState} from '../../app/store.ts';
 import {ICategories} from '../../types';
-import {addNewCategory, deleteCategory, fetchCategoriesThunk, updateCategoryThunk} from './categoriesThunk.ts';
+import {
+    addNewCategory,
+    deleteCategory,
+    fetchCategoriesThunk,
+    fetchOneCategoryThunk,
+    updateCategoryThunk
+} from './categoriesThunk.ts';
 
 export interface categoriesState {
     Categories: ICategories[];
+    oneCategory: ICategories | null;
     fetchCategories: boolean;
     isLoading: boolean;
     error: string | null;
@@ -15,6 +22,7 @@ export interface categoriesState {
 
 const initialState: categoriesState = {
     Categories: [],
+    oneCategory: null,
     fetchCategories: false,
     isLoading: false,
     error: null,
@@ -24,6 +32,7 @@ const initialState: categoriesState = {
 };
 
 export const selectCategories = (state: RootState) => state.categories.Categories;
+export const selectOneCategory = (state: RootState) => state.categories.oneCategory;
 
 const categoriesSlice = createSlice({
     name: 'categories',
@@ -62,6 +71,16 @@ const categoriesSlice = createSlice({
             })
             .addCase(updateCategoryThunk.rejected, (state) => {
                 state.updateLoading = false;
+            })
+            .addCase(fetchOneCategoryThunk.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(fetchOneCategoryThunk.fulfilled, (state, {payload: oneCategory}) => {
+                state.oneCategory = oneCategory;
+                state.isLoading = false;
+            })
+            .addCase(fetchOneCategoryThunk.rejected, (state) => {
+                state.isLoading = false;
             })
             .addCase(deleteCategory.pending, (state) => {
                 state.deleteLoading = true;

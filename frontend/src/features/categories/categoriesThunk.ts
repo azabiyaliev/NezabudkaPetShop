@@ -52,9 +52,37 @@ export const updateCategoryThunk = createAsyncThunk<
     }
 );
 
+export const fetchOneCategoryThunk = createAsyncThunk<
+    ICategories | null,
+    string,
+    { rejectValue: GlobalError }
+>(
+    "category/fetchOneCategory",
+    async (query, { rejectWithValue }) => {
+        try {
+            const response = await axiosApi.get<ICategories>(`/category`, {
+                params: { search: query },
+            });
+            return response.data;
+        } catch (error) {
+            if (isAxiosError(error) && error.response) {
+                const { status, data } = error.response;
+
+                if (status === 404 && data.error) {
+                    return rejectWithValue(data as GlobalError);
+                }
+            }
+            throw error;
+        }
+    }
+);
+
+
 export const deleteCategory = createAsyncThunk<void, string>(
     'category/deleteCategory',
     async (id)=> {
         await axiosApi.delete(`/category/${id}`);
     }
 );
+
+

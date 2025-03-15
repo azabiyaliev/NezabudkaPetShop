@@ -11,6 +11,7 @@ import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute.tsx';
 import { useAppSelector } from './app/hooks.ts';
 import { selectUser } from './features/users/usersSlice.ts';
 import AllCategoriesPage from './containers/Category/AllCategoriesPage/AllCategoriesPage.tsx';
+import OneCategory from './containers/Category/OneCategory/OneCategory.tsx';
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -30,6 +31,7 @@ const App = () => {
             <Route path="/users/:id" element={<AdminForm />} />
             <Route path="/edition_site" element={<EditSiteFrom />} />
             <Route path="/private/all_categories" element={<AllCategoriesPage/>}/>
+            <Route path="/category/:id" element={<OneCategory/>}/>
             <Route path="/private/add_category" element={
               <ProtectedRoute isaAllowed={user && user.role == 'admin'}>
                 <NewCategory/>
