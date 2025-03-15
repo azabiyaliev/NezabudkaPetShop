@@ -1,6 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import {CategoryMutation, ICategories} from '../../types';
+import {CategoryMutation, GlobalError, ICategories} from '../../types';
 import axiosApi from '../../axiosApi.ts';
+import {isAxiosError} from "axios";
 
 
 export const fetchCategoriesThunk = createAsyncThunk<ICategories[], void>(
@@ -21,5 +22,32 @@ export const addNewCategory = createAsyncThunk<
         await axiosApi.post("/category", category, {
             headers: { Authorization: token },
         });
+    }
+);
+
+export const updateCategoryThunk = createAsyncThunk<
+    void,
+    { id: string; category: { title: string }; token: string }
+>(
+    "category/updateCategory",
+    async ({ id, category, token }, { rejectWithValue }) => {
+        try {
+            await axiosApi.put(`/category/${id}`, category, {
+                headers: { Authorization: token },
+            });
+        } catch (error) {
+            if (isAxiosError(error) && error.response) {
+                const { status, data } = error.response;
+
+                if (status === 404 && data.error) {
+                    return rejectWithValue(data as GlobalError);
+                }
+
+                if (status === 401 && data.error) {
+                    return rejectWithValue(data as GlobalError);
+                }
+            }
+            throw error;
+        }
     }
 );

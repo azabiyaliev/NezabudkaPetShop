@@ -51,7 +51,7 @@ const ExistsUser: React.FC<Props> = ({ user }) => {
 
           {user && (
             <List>
-              <ListItem  component={NavLink} to={`/private_account}`} onClick={toggleDrawer(false)}>
+              <ListItem  component={NavLink} to={`/private_account`} onClick={toggleDrawer(false)}>
                 <ListItemText primary="Личный кабинет" className='text-black'/>
               </ListItem>
               <ListItem  component={NavLink} to={`/users/${user.id}`} onClick={toggleDrawer(false)}>

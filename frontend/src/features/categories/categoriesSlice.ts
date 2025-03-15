@@ -1,7 +1,7 @@
 import {createSlice} from '@reduxjs/toolkit';
 import {RootState} from '../../app/store.ts';
 import {ICategories} from '../../types';
-import {addNewCategory, fetchCategoriesThunk} from './categoriesThunk.ts';
+import {addNewCategory, fetchCategoriesThunk, updateCategoryThunk} from './categoriesThunk.ts';
 
 export interface categoriesState {
     Categories: ICategories[];
@@ -9,6 +9,7 @@ export interface categoriesState {
     isLoading: boolean;
     error: string | null;
     createLoading: boolean;
+    updateLoading: boolean;
 }
 
 const initialState: categoriesState = {
@@ -17,6 +18,7 @@ const initialState: categoriesState = {
     isLoading: false,
     error: null,
     createLoading: false,
+    updateLoading: false,
 };
 
 export const selectCategories = (state: RootState) => state.categories.Categories;
@@ -50,6 +52,15 @@ const categoriesSlice = createSlice({
                 state.fetchCategories = false;
                 state.createLoading = false;
             })
+            .addCase(updateCategoryThunk.pending, (state) => {
+                state.updateLoading = true;
+            })
+            .addCase(updateCategoryThunk.fulfilled, (state) => {
+                state.updateLoading = false;
+            })
+            .addCase(updateCategoryThunk.rejected, (state) => {
+                state.updateLoading = false;
+            });
     },
 });
 
