@@ -51,3 +51,10 @@ export const updateCategoryThunk = createAsyncThunk<
         }
     }
 );
+
+export const deleteCategory = createAsyncThunk<void, string>(
+    'category/deleteCategory',
+    async (id)=> {
+        await axiosApi.delete(`/category/${id}`);
+    }
+);

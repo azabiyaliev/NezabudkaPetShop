@@ -1,9 +1,10 @@
 import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
 import { selectCategories } from '../../../features/categories/categoriesSlice.ts';
 import { useEffect, useState } from 'react';
-import { fetchCategoriesThunk } from '../../../features/categories/categoriesThunk.ts';
+import { deleteCategory, fetchCategoriesThunk } from '../../../features/categories/categoriesThunk.ts';
 import { Box, Card, Typography, Grid, Modal, IconButton } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 import EditCategory from '../../../components/CategoryForm/EditCategory.tsx';
 
 const AllCategoriesPage = () => {
@@ -28,34 +29,58 @@ const AllCategoriesPage = () => {
     setSelectedCategory(null);
   };
 
+  const onDelete = async (id: string) => {
+    await dispatch(deleteCategory(id));
+    dispatch(fetchCategoriesThunk());
+  };
+
+
   return (
     <Box sx={{ maxWidth: 1200, mx: 'auto', mt: 4, p: 2 }}>
       <Grid container spacing={2}>
         {categories.map((category) => (
           <Grid item xs={12} sm={6} md={4} lg={2} key={category.id}>
-            <Card sx={{
-              height: 120,
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              p: 2,
-              position: 'relative'
-            }}>
-              <Typography variant="h6" textAlign="center" sx={{ flexGrow: 1, display: 'flex', alignItems: 'center' }}>
+            <Card
+              sx={{
+                height: 120,
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                p: 2,
+                position: 'relative',
+              }}
+            >
+              <Typography variant="h6" textAlign="center">
                 {category.title}
               </Typography>
-              <IconButton
-                onClick={() => handleOpen({ ...category, id: String(category.id) })}
-                color="primary"
+
+              <Box
                 sx={{
+                  width: '100%',
+                  display: 'flex',
+                  justifyContent: 'space-between',
                   position: 'absolute',
                   bottom: 8,
-                  right: 8
+                  left: 8,
+                  right: 8,
                 }}
               >
-                <EditIcon />
-              </IconButton>
+
+                <IconButton
+                  onClick={() => handleOpen({ ...category, id: String(category.id) })}
+                  color="primary"
+                >
+                  <EditIcon />
+                </IconButton>
+
+                <IconButton
+                  onClick={() => onDelete(String(category.id))}
+                  color="error"
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </Box>
             </Card>
           </Grid>
         ))}
