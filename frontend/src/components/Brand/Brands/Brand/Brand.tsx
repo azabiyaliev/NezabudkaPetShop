@@ -39,8 +39,9 @@ const Brand:React.FC<Props> = ({brand, index}) => {
         <td>
           <img src={apiUrl + brand.logo} alt={brand.title}
                style={{
-                 width: '100px',
-                 height: '100px',
+                 width: '90px',
+                 height: '60px',
+                 margin: '10px 0'
                }}/>
         </td>
         <td style={{
