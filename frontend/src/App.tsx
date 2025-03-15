@@ -5,7 +5,7 @@ import { CssBaseline } from "@mui/material";
 import Header from './containers/Header/Header.tsx';
 import AdminProfile from './containers/Admin/AdminProfile/AdminProfile.tsx';
 import AdminForm from './containers/Admin/AdminProfile/AdminForm.tsx';
-import EditSiteFrom from './containers/Admin/AdminProfile/EditSiteFrom.tsx';
+import EditSiteForm from './containers/Admin/AdminProfile/EditSiteForm.tsx';
 
 const App = () => {
   return (
@@ -21,11 +21,10 @@ const App = () => {
             <Route path="/login" element={<LoginUser />} />
             <Route path="/private" element={<AdminProfile />} />
             <Route path="/users/:id" element={<AdminForm />} />
-            <Route path="/edition_site" element={<EditSiteFrom />} />
+            <Route path="/edition_site" element={<EditSiteForm />} />
           </Routes>
       </main>
     </>
   );
 };
-// 3:22 1:19 3:05
 export default App;

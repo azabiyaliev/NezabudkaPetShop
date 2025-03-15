@@ -38,15 +38,7 @@ export class AuthController {
 
     return {
       message: 'Вход выполнен успешно',
-      user: {
-        email: user.email,
-        firstName: user.firstName,
-        token: user.token,
-        secondName: user.secondName,
-        id: user.id,
-        role: user.role,
-        phone: user.phone,
-      },
+      ...user,
     };
   }
 

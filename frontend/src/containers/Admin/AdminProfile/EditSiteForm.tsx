@@ -5,9 +5,9 @@ import { toast, ToastContainer } from 'react-toastify';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
 import { useNavigate } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
-import { SiteMutation } from '../../../types';
+import { EditSiteMutation } from '../../../types';
 import { fetchSite, updateSite } from '../../../features/editionSite/editionSiteThunk.ts';
-import { selectEditSite } from '../../../features/editionSite/editionSiteSlice.ts';
+import { selectEditSite, selectError } from '../../../features/editionSite/editionSiteSlice.ts';
 import FileInput from '../../../components/UI/FileInput.tsx';
 
 const initialState = {
@@ -20,11 +20,12 @@ const initialState = {
   logo: null
 }
 
-const EditSiteFrom = () => {
+const EditSiteForm = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const [form, setForm] = useState<SiteMutation>(initialState);
-  const site = useAppSelector(selectEditSite)
+  const [form, setForm] = useState<EditSiteMutation>(initialState);
+  const site = useAppSelector(selectEditSite);
+  const editError = useAppSelector(selectError);
 
   useEffect(() => {
     dispatch(fetchSite()).unwrap().then((siteEdit) => setForm({
@@ -36,7 +37,7 @@ const EditSiteFrom = () => {
       phone: siteEdit.phone || "",
       logo:  null,
     }));
-  }, [dispatch, navigate])
+  }, [dispatch])
 
   const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -49,11 +50,16 @@ const EditSiteFrom = () => {
     const { name, files } = e.target;
 
     if (files) {
-      setForm((prevState: SiteMutation) => ({
+      setForm((prevState: EditSiteMutation) => ({
         ...prevState,
         [name]: files[0] || null,
       }));
     }
+  };
+
+  const getFieldError = (fieldName: string) => {
+    if (!editError?.errors) return undefined;
+    return editError.errors[fieldName] || editError.errors.general || undefined;
   };
 
   const submitHandler = async (e: React.FormEvent) => {
@@ -73,19 +79,7 @@ const EditSiteFrom = () => {
     }
 
     try {
-
-      const siteData = {
-        id: site.id,
-        instagram: form.instagram,
-        whatsapp: form.whatsapp,
-        schedule: form.schedule,
-        address: form.address,
-        email: form.email,
-        phone: form.phone,
-        logo: form.logo,
-      };
-      await dispatch(updateSite({id: site.id, data: siteData})).unwrap();
-      setForm({ ...initialState });
+      await dispatch(updateSite({id: site.id, data: form})).unwrap();
       toast.success("Вы успешно отредактировали сайт!", {
         position: "top-right",
         autoClose: 5000,
@@ -97,15 +91,7 @@ const EditSiteFrom = () => {
       });
       navigate(`/`);
     } catch (error) {
-      toast.error((error as { error: string }).error, {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      console.log(error);
     }
   };
   return (
@@ -143,6 +129,8 @@ const EditSiteFrom = () => {
                   id="instagram"
                   value={form.instagram}
                   onChange={inputChangeHandler}
+                  error={Boolean(getFieldError("instagram"))}
+                  helperText={getFieldError("instagram")}
                   variant="outlined"
                   sx={{
                     backgroundColor: "white",
@@ -160,6 +148,8 @@ const EditSiteFrom = () => {
                   id="whatsapp"
                   value={form.whatsapp}
                   onChange={inputChangeHandler}
+                  error={Boolean(getFieldError("whatsapp"))}
+                  helperText={getFieldError("whatsapp")}
                   variant="outlined"
                   sx={{
                     backgroundColor: "white",
@@ -179,6 +169,8 @@ const EditSiteFrom = () => {
                   id="schedule"
                   value={form.schedule}
                   onChange={inputChangeHandler}
+                  error={Boolean(getFieldError("schedule"))}
+                  helperText={getFieldError("schedule")}
                   variant="outlined"
                   sx={{
                     backgroundColor: "white",
@@ -199,6 +191,8 @@ const EditSiteFrom = () => {
                   id="address"
                   value={form.address}
                   onChange={inputChangeHandler}
+                  error={Boolean(getFieldError("address"))}
+                  helperText={getFieldError("address")}
                   variant="outlined"
                   sx={{
                     backgroundColor: "white",
@@ -218,6 +212,8 @@ const EditSiteFrom = () => {
                   id="email"
                   value={form.email}
                   onChange={inputChangeHandler}
+                  error={Boolean(getFieldError("email"))}
+                  helperText={getFieldError("email")}
                   variant="outlined"
                   sx={{
                     backgroundColor: "white",
@@ -237,6 +233,8 @@ const EditSiteFrom = () => {
                   id="text"
                   value={form.phone}
                   onChange={inputChangeHandler}
+                  error={Boolean(getFieldError("phone"))}
+                  helperText={getFieldError("phone")}
                   variant="outlined"
                   sx={{
                     backgroundColor: "white",
@@ -280,4 +278,4 @@ const EditSiteFrom = () => {
   );
 };
 
-export default EditSiteFrom;
+export default EditSiteForm;

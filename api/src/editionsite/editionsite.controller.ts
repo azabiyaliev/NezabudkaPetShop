@@ -25,7 +25,7 @@ export class EditionSiteController {
   constructor(private editionSite: EditionSiteService) {}
 
   @Get()
-  async getBrands() {
+  async getSiteData() {
     return await this.editionSite.getSite();
   }
 

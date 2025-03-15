@@ -12,28 +12,12 @@ export class EditionSiteService {
   constructor(private readonly prisma: PrismaService) {}
 
   async getSite() {
-    const site = await this.prisma.siteEdition.findMany();
-    return site || [];
+    return this.prisma.siteEdition.findFirst();
   }
 
   async createInfoSite(editionDto: EditionSitedDto) {
     const { instagram, whatsapp, schedule, address, email, phone, logo } =
       editionDto;
-    if (!instagram) {
-      throw new NotFoundException(' instagram не может быть пустым!');
-    } else if (!whatsapp) {
-      throw new NotFoundException('whatsapp не может быть пустым!');
-    } else if (!schedule) {
-      throw new NotFoundException('График работы не может быть пустым!');
-    } else if (!address) {
-      throw new NotFoundException('Адресс не может быть пустым!');
-    } else if (!email) {
-      throw new NotFoundException('email не может быть пустым!');
-    } else if (!phone) {
-      throw new NotFoundException('Номер телефона не может быть пустым!');
-    } else if (!logo) {
-      throw new NotFoundException('Логотип карусели не может быть пустым!');
-    }
     try {
       return await this.prisma.siteEdition.create({
         data: {
@@ -66,17 +50,6 @@ export class EditionSiteService {
   ) {
     const { instagram, whatsapp, schedule, address, email, phone } = editionDto;
     const logo = file ? '/editsite/' + file.filename : '';
-    if (
-      instagram.trim().length === 0 ||
-      logo.trim().length === 0 ||
-      email.trim().length === 0 ||
-      phone.trim().length === 0 ||
-      whatsapp.trim().length === 0 ||
-      schedule.trim().length === 0 ||
-      address.trim().length === 0
-    ) {
-      throw new NotFoundException(`Поля не могут быть пустыми!`);
-    }
     const editId = parseInt(id);
     const editSite = await this.prisma.siteEdition.findFirst();
     if (!editSite) {
