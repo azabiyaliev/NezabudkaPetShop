@@ -6,8 +6,14 @@ import Header from './containers/Header/Header.tsx';
 import AdminProfile from './containers/Admin/AdminProfile/AdminProfile.tsx';
 import AdminForm from './containers/Admin/AdminProfile/AdminForm.tsx';
 import EditSiteFrom from './containers/Admin/AdminProfile/EditSiteFrom.tsx';
+import NewCategory from './containers/Category/NewCategory/NewCategory.tsx';
+import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute.tsx';
+import { useAppSelector } from './app/hooks.ts';
+import { selectUser } from './features/users/usersSlice.ts';
 
 const App = () => {
+  const user = useAppSelector(selectUser);
+
   return (
     <>
       <CssBaseline />
@@ -22,6 +28,11 @@ const App = () => {
             <Route path="/private" element={<AdminProfile />} />
             <Route path="/users/:id" element={<AdminForm />} />
             <Route path="/edition_site" element={<EditSiteFrom />} />
+            <Route path="/private/add_category" element={
+              <ProtectedRoute isaAllowed={!!user}>
+                <NewCategory/>
+              </ProtectedRoute>
+            } />
           </Routes>
       </main>
     </>

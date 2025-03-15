@@ -66,5 +66,9 @@ export interface SiteMutation {
 export interface ICategories {
   id: number;
   title: string;
-  parentId: boolean;
+  parentId: number;
+}
+
+export interface CategoryMutation {
+  title: string;
 }
