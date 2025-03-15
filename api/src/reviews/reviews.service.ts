@@ -15,8 +15,16 @@ export class ReviewsService {
   async createReview(userId: number, createReviewDto: CreateReviewDto) {
     const { productId, text, rating } = createReviewDto;
     if (!productId) {
-      throw new BadRequestException(
+      throw new NotFoundException(
         'Идентификатор продукта отсутствует в запросе',
+      );
+    }
+    const productExists = await this.prisma.products.findUnique({
+      where: { id: productId },
+    });
+    if (!productExists) {
+      throw new NotFoundException(
+        `Продукт с данным id - ${productId} не найден`,
       );
     }
     if (rating) {
@@ -63,6 +71,7 @@ export class ReviewsService {
     await this.prisma.review.delete({ where: { id: reviewId } });
     return { message: 'Отзыв успешно удален', review };
   }
+
   // Создание комментария.
   async addComment(userId: number, commentDto: CreateCommentDto) {
     const { reviewId, comment } = commentDto;
@@ -95,6 +104,7 @@ export class ReviewsService {
     }
     return commentObj;
   }
+
   // Обновление комментария.
   async updateComment(id: string, commentDto: CreateCommentDto) {
     const { comment } = commentDto;
@@ -115,6 +125,7 @@ export class ReviewsService {
       },
     });
   }
+
   // Удаление комментария
   async deleteComment(id: string) {
     const commentId = parseInt(id);

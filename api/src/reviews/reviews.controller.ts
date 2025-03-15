@@ -68,7 +68,7 @@ export class ReviewsController {
       where: { id: Number(id) },
     });
     if (!comment) {
-      throw new ForbiddenException('Комментарий не найден');
+      throw new NotFoundException('Комментарий не найден');
     }
     if (user.role === 'admin' || comment.userId === user.id) {
       return await this.review.updateComment(id, commentDto);
