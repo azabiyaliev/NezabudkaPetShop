@@ -9,6 +9,7 @@ export class SeedService {
 
   async seed() {
     await this.prisma.user.deleteMany({});
+    await this.prisma.brand.deleteMany({});
 
     const password = await bcrypt.hash('123', 10);
 
@@ -31,6 +32,51 @@ export class SeedService {
           secondName: 'Bekov',
           role: 'client',
           phone: '+996555100444',
+        },
+      ],
+    });
+
+    await this.prisma.brand.createMany({
+      data: [
+        {
+          title: 'AVZ',
+          logo: '/fixtures/brands/avz.png',
+        },
+        {
+          title: 'BAYER',
+          logo: '/fixtures/brands/bayer.png',
+        },
+        {
+          title: 'Catchow',
+          logo: '/fixtures/brands/catchow_logofina.jpg',
+        },
+        {
+          title: 'Dog-Chow',
+          logo: '/fixtures/brands/dog-chow-logo.png',
+        },
+        {
+          title: 'Flexi',
+          logo: '/fixtures/brands/flexi-logo.png',
+        },
+        {
+          title: 'Friskies',
+          logo: '/fixtures/brands/friskies.png',
+        },
+        {
+          title: 'Gourmet',
+          logo: '/fixtures/brands/gourmet.png',
+        },
+        {
+          title: 'Happy-cat',
+          logo: '/fixtures/brands/happy-cat.png',
+        },
+        {
+          title: 'Happy-dog',
+          logo: '/fixtures/brands/happy-dog.png',
+        },
+        {
+          title: 'Proplan',
+          logo: '/fixtures/brands/proplan.png',
         },
       ],
     });

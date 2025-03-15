@@ -2,14 +2,16 @@ import React, { useState } from 'react';
 import { Box, Button, Drawer, List, ListItem, ListItemText, Divider, Typography } from '@mui/material';
 import { NavLink } from 'react-router-dom';
 import { User } from '../../types';
-import { useAppDispatch } from '../../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { unsetUser } from '../../features/users/usersSlice';
+import { addErrorFromSlice, clearError } from '../../features/brands/brandsSlice.ts';
 
 interface Props {
   user: User;
 }
 
 const ExistsUser: React.FC<Props> = ({ user }) => {
+  const addError = useAppSelector(addErrorFromSlice);
   const dispatch = useAppDispatch();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   console.log(user)
@@ -20,6 +22,13 @@ const ExistsUser: React.FC<Props> = ({ user }) => {
 
   const userLogout = () => {
     dispatch(unsetUser());
+  };
+
+  const toggleBrand = (open: boolean) => {
+    setIsDrawerOpen(open);
+    if (addError !== null) {
+      dispatch(clearError());
+    }
   };
 
   return (
@@ -71,8 +80,8 @@ const ExistsUser: React.FC<Props> = ({ user }) => {
               <ListItem  component={NavLink} to={`/edition_site`} onClick={toggleDrawer(false)}>
                 <ListItemText primary="Редактирование сайта" className='text-black'/>
               </ListItem>
-              <ListItem  component={NavLink} to="/private/add_brand" onClick={toggleDrawer(false)}>
-                <ListItemText primary="Добавить бренд" className='text-black' />
+              <ListItem  component={NavLink} to="/private/brands" onClick={() => toggleBrand(false)}>
+                <ListItemText primary="Бренды" className='text-black' />
               </ListItem>
               <ListItem  component={NavLink} to="/private/all_products" onClick={toggleDrawer(false)}>
                 <ListItemText primary="Все товары" className='text-black'/>

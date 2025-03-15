@@ -1,8 +1,24 @@
-import { List, ListItem, ListItemText } from '@mui/material';
+import { Collapse, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import { NavLink } from 'react-router-dom';
 import './Admin.css'
+import { ListItemButton } from '@mui/joy';
+import { ExpandLess } from '@mui/icons-material';
+import React from 'react';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import ReorderOutlinedIcon from '@mui/icons-material/ReorderOutlined';
+import PlaylistAddOutlinedIcon from '@mui/icons-material/PlaylistAddOutlined';
+import { addErrorFromSlice, clearError } from '../../../features/brands/brandsSlice.ts';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
 
 const AdminBar  = () => {
+  const [open, setOpen] = React.useState(true);
+  const addError = useAppSelector(addErrorFromSlice);
+  const dispatch = useAppDispatch();
+
+  const handleClick = () => {
+    setOpen(!open);
+  };
+
   return (
     <div className="admin-bar">
       <List>
@@ -22,12 +38,36 @@ const AdminBar  = () => {
         <ListItem  component={NavLink} to="/private/edit_site" >
           <ListItemText primary="Редактирование сайта" className='text-black'/>
         </ListItem>
-        <ListItem  component={NavLink} to="/private/add_brand">
-          <ListItemText primary="Добавить бренд" className='text-black' />
-        </ListItem>
+
         <ListItem  component={NavLink} to="/private/add_category">
           <ListItemText primary="Добавить категорию" className='text-black' />
         </ListItem>
+
+        <ListItemButton onClick={handleClick} sx={{
+          marginLeft: '15px'
+        }}>
+          <ListItemText primary="Бренды" />
+          {open ? <ExpandLess /> : <KeyboardArrowRightIcon />}
+        </ListItemButton>
+        <Collapse in={open} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
+            <ListItemButton sx={{ pl: 3 }} component={NavLink} to="/private/brands">
+              <ListItemIcon>
+                <ReorderOutlinedIcon />
+              </ListItemIcon>
+              <ListItemText primary="Все бренды"/>
+            </ListItemButton>
+            <ListItemButton sx={{ pl: 3 }} component={NavLink} to="/private/add_brand" onClick={
+              () => addError !== null ? dispatch(clearError()) : null
+            }>
+              <ListItemIcon>
+                <PlaylistAddOutlinedIcon />
+              </ListItemIcon>
+              <ListItemText primary="Добавить бренд"/>
+            </ListItemButton>
+          </List>
+        </Collapse>
+
         <ListItem  component={NavLink} to="/private/all_products" >
           <ListItemText primary="Все товары" className='text-black'/>
         </ListItem>

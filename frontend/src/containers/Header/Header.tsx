@@ -4,12 +4,12 @@ import { Container } from '@mui/material';
 
 const Header = () => {
   return (
-    <div>
+    <>
       <Container>
         <MainToolbar/>
       </Container>
       <CategoryNavbar/>
-    </div>
+    </>
   );
 };
 

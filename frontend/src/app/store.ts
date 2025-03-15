@@ -12,6 +12,7 @@ import {
 import { userReducer } from "../features/users/usersSlice.ts";
 import { editSiteReducer } from '../features/editionSite/editionSiteSlice.ts';
 import { categoriesReducer } from '../features/categories/categoriesSlice.ts';
+import { brandReducer } from '../features/brands/brandsSlice.ts';
 
 const userPersistConfig = {
   key: "store:users",
@@ -21,6 +22,7 @@ const userPersistConfig = {
 
 const rootReducer = combineReducers({
   users: persistReducer(userPersistConfig, userReducer),
+  brands: brandReducer,
   edit_site: editSiteReducer,
   categories: categoriesReducer,
 });

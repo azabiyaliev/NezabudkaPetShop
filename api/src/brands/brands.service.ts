@@ -13,6 +13,9 @@ export class BrandsService {
 
   async getBrands() {
     const brands = await this.prisma.brand.findMany({
+      orderBy: {
+        id: 'desc',
+      },
       select: {
         products: true,
       },
@@ -34,10 +37,10 @@ export class BrandsService {
 
   async createBrand(brandDTO: BrandDto) {
     const { title, logo } = brandDTO;
-    if (!title) {
-      throw new NotFoundException('Название бренда не может быть пустым!');
-    } else if (!logo) {
-      throw new NotFoundException('Логотип бренда не может быть пустым!');
+    if (!title || title.trim() === '' || !logo || logo.trim() === '') {
+      throw new NotFoundException(
+        'Название и логотип бренда не могут быть пустым!',
+      );
     }
     try {
       return await this.prisma.brand.create({
@@ -58,7 +61,7 @@ export class BrandsService {
         error.code === 'P2002'
       ) {
         throw new ConflictException(
-          `${title} уже существует и вы не можете его повторно добавить!`,
+          `Данный бренд уже существует. Вы не можете повторно его добавить!`,
         );
       }
       throw error;

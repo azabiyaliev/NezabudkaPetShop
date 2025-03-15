@@ -40,6 +40,19 @@ export interface ValidationError {
 
 export interface GlobalError {
   error: string;
+  message: string;
+}
+
+export interface IBrand {
+  id: number;
+  title: string;
+  logo: string;
+}
+
+export interface IBrandForm {
+  id?: number;
+  title: string;
+  logo: File | null;
 }
 
 export interface EditSiteMutation {

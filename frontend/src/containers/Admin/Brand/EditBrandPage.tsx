@@ -1,0 +1,46 @@
+import { Box } from '@mui/material';
+import AdminBar from '../AdminProfile/AdminBar.tsx';
+import BrandForm from '../../../components/Brand/BrandForm/BrandForm.tsx';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
+import { selectUser } from '../../../features/users/usersSlice.ts';
+import { brandFromSlice, editLoadingFromSlice } from '../../../features/brands/brandsSlice.ts';
+import { IBrandForm } from '../../../types';
+import { useEffect } from 'react';
+import { editBrand, getOneBrand } from '../../../features/brands/brandsThunk.ts';
+import { useNavigate, useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
+
+const EditBrandPage = () => {
+  const user = useAppSelector(selectUser);
+  const brand = useAppSelector(brandFromSlice);
+  const dispatch = useAppDispatch();
+  const loading = useAppSelector(editLoadingFromSlice);
+  const {id} = useParams();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (id) {
+      dispatch(getOneBrand(Number(id))).unwrap();
+    }
+  }, [dispatch, id]);
+
+  const addNewBrand = async (newBrand: IBrandForm) => {
+    console.log(newBrand);
+    if (user) {
+      await dispatch(editBrand({token: user.token, brand: newBrand})).unwrap();
+      toast.success('Бренд успешно отредактирован!');
+      navigate('/private/brands');
+    }
+  };
+
+  return (
+    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '30px 0'}}>
+      <AdminBar/>
+      {brand !== null && (
+        <BrandForm addNewBrand={addNewBrand} isLoading={loading} editBrand={brand} isBrand />
+      )}
+    </Box>
+  );
+};
+
+export default EditBrandPage;
