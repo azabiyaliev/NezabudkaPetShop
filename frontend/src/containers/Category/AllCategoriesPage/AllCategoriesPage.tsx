@@ -6,9 +6,11 @@ import { Box, Card, Typography, Grid, Modal, IconButton } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditCategory from '../../../components/CategoryForm/EditCategory.tsx';
+import { selectUser } from '../../../features/users/usersSlice.ts';
 
 const AllCategoriesPage = () => {
   const categories = useAppSelector(selectCategories);
+  const user = useAppSelector(selectUser);
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<{ id: string; title: string } | null>(null);
@@ -66,20 +68,23 @@ const AllCategoriesPage = () => {
                   right: 8,
                 }}
               >
+                {user && user.role === 'admin' && (
+                  <>
+                    <IconButton
+                      onClick={() => handleOpen({ ...category, id: String(category.id) })}
+                      color="primary"
+                    >
+                      <EditIcon />
+                    </IconButton>
 
-                <IconButton
-                  onClick={() => handleOpen({ ...category, id: String(category.id) })}
-                  color="primary"
-                >
-                  <EditIcon />
-                </IconButton>
-
-                <IconButton
-                  onClick={() => onDelete(String(category.id))}
-                  color="error"
-                >
-                  <DeleteIcon />
-                </IconButton>
+                    <IconButton
+                      onClick={() => onDelete(String(category.id))}
+                      color="error"
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </>
+                )}
               </Box>
             </Card>
           </Grid>

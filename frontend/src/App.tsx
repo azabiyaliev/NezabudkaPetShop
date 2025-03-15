@@ -31,7 +31,7 @@ const App = () => {
             <Route path="/edition_site" element={<EditSiteFrom />} />
             <Route path="/private/all_categories" element={<AllCategoriesPage/>}/>
             <Route path="/private/add_category" element={
-              <ProtectedRoute isaAllowed={!!user}>
+              <ProtectedRoute isaAllowed={user && user.role == 'admin'}>
                 <NewCategory/>
               </ProtectedRoute>
             } />
