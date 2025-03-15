@@ -18,6 +18,7 @@ import { ProductsModule } from './products/products.module';
 import { OrdersModule } from './orders/orders.module';
 import { ConfigModule } from '@nestjs/config';
 import { SeedModule } from './seed/seed.module';
+import { ReviewsModule } from './reviews/reviews.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { SeedModule } from './seed/seed.module';
     OrdersModule,
     SeedModule,
     ConfigModule.forRoot(),
+    ReviewsModule,
   ],
   controllers: [AppController, BrandsController, EditionSiteController],
   providers: [

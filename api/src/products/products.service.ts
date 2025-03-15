@@ -116,6 +116,31 @@ export class ProductsService {
         sales: true,
         existence: true,
       },
+      include: {
+        Review: {
+          include: {
+            user: {
+              select: {
+                firstName: true,
+                secondName: true,
+              },
+            },
+            comments: {
+              select: {
+                id: true,
+                comment: true,
+                createdAt: true,
+                user: {
+                  select: {
+                    firstName: true,
+                    secondName: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
     });
     if (!oneProduct) {
       throw new BadRequestException('Товар не найден');

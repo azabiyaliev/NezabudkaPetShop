@@ -24,7 +24,9 @@ model User {
   token      String?
   googleID   String? @unique
   facebookID String? @unique
-  order      Order[]
+  Order      Order[]
+  Review     Review[]
+  Comment    Comment[]
 
   @@map("users")
 }
@@ -87,7 +89,9 @@ model Products {
   categoryId Int?        @map("category_id")
   category   Category?   @relation(fields: [categoryId], references: [id])
 
+  // Review Review[]
   @@map("products")
+  Review Review[]
 }
 
 model Order {
@@ -125,4 +129,30 @@ enum OrderStatus {
   onTheWay
   isDelivered
   Canceled
+}
+
+model Review {
+  id        Int       @id @default(autoincrement())
+  user      User      @relation(fields: [userId], references: [id])
+  userId    Int
+  rating    Int?
+  text      String?
+  product   Products  @relation(fields: [productId], references: [id])
+  productId String
+  comments  Comment[]
+  createdAt DateTime  @default(now())
+
+  @@map("reviews")
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  review    Review   @relation(fields: [reviewId], references: [id])
+  reviewId  Int
+  comment   String
+  createdAt DateTime @default(now())
+
+  @@map("comments")
 }
