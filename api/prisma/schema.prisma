@@ -14,17 +14,18 @@ datasource db {
 }
 
 model User {
-  id         Int     @id @default(autoincrement())
-  email      String  @unique
+  id         Int      @id @default(autoincrement())
+  email      String   @unique
   firstName  String
   secondName String
   password   String
-  phone      String? @unique
-  role       Role    @default(client)
+  phone      String?  @unique
+  role       Role     @default(client)
   token      String?
-  googleID   String? @unique
-  facebookID String? @unique
+  googleID   String?  @unique
+  facebookID String?  @unique
   Order      Order[]
+  Review     Review[]
 
   @@map("users")
 }
@@ -80,7 +81,8 @@ model Products {
 
   purchasedProductCounter Int @default(0)
 
-  Order Order[]
+  Order  Order[]
+  Review Review[]
 }
 
 model Order {
@@ -103,4 +105,16 @@ enum OrderStatus {
   onTheWay
   isDelivered
   Canceled
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  text      String?
+  rating    Int?
+  product   Products @relation(fields: [productId], references: [id])
+  productId String
+
+  @@map("reviews")
 }
