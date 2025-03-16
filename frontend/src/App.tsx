@@ -46,7 +46,7 @@ const App = () => {
         <Route path="/category/:id" element={<OneCategory/>}/>
         <Route path="*" element={<h1>Not found</h1>} />
         <Route path="/private/add_category" element={
-          <ProtectedRoute isaAllowed={user && user.role == 'admin'}>
+          <ProtectedRoute isAllowed={user && user.role == 'admin'}>
             <NewCategory/>
           </ProtectedRoute>
         } />

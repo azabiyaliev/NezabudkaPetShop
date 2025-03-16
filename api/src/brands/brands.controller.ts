@@ -19,6 +19,7 @@ import { BrandDto } from '../dto/brands.dto';
 import { TokenAuthGuard } from '../token.auth/token-auth.guard';
 import { RolesGuard } from '../token.auth/token.role.guard';
 import { Roles } from '../roles/roles.decorator';
+import * as crypto from 'crypto';
 
 @Controller('brands')
 export class BrandsController {

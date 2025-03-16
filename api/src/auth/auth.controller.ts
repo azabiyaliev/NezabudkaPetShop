@@ -38,7 +38,7 @@ export class AuthController {
 
     return {
       message: 'Вход выполнен успешно',
-      ...user,
+      user,
     };
   }
 

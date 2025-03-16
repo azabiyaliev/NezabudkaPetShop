@@ -4,6 +4,7 @@ import User from "../models/User";
 import auth, {RequestWithUser} from "../middleware/auth";
 import config from "../config";
 import {OAuth2Client} from "google-auth-library";
+import * as crypto from 'crypto';
 
 const usersRouter = express.Router()
 const client = new OAuth2Client(config.google.clientId);

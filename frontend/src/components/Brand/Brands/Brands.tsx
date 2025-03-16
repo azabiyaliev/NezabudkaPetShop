@@ -25,7 +25,7 @@ const Brands:React.FC<Props> = ({brands}) => {
       </thead>
       <tbody>
       {brands.map((brand, index) => (
-        <Brand key={brand.id} brand={brand} index={index}/>
+        <Brand key={brand.id || index} brand={brand} index={index}/>
       ))}
       </tbody>
     </Table>

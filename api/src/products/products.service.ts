@@ -106,18 +106,10 @@ export class ProductsService {
       where: {
         id,
       },
-      select: {
-        id: true,
-        productName: true,
-        productPhoto: true,
-        productDescription: true,
+      include: {
         brand: true,
         category: true,
-        sales: true,
-        existence: true,
-      },
-      include: {
-        Review: {
+        reviews: {
           include: {
             user: {
               select: {
