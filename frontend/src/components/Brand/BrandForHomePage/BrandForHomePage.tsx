@@ -37,7 +37,7 @@ const BrandForHomePage: React.FC<Props> = ({ brands }) => {
           {brands.map((brand, index) => (
             <div key={brand.id || `brand-${index}`} className="brand-item" style={{margin: '0 10px', padding: '20px 0'}}>
               <img
-                src={apiUrl + brand.logo}
+                src={apiUrl + "/" + brand.logo}
                 className="d-block"
                 alt={brand.title}
                 style={{width: '80px', height: '50px', marginLeft: '20px'}}

@@ -17,6 +17,9 @@ export class BrandsService {
         id: 'desc',
       },
       select: {
+        id: true,
+        title: true,
+        logo: true,
         products: true,
       },
     });
@@ -27,7 +30,12 @@ export class BrandsService {
     const brandId = parseInt(id);
     const brand = await this.prisma.brand.findFirst({
       where: { id: brandId },
-      select: { products: true },
+      select: {
+        id: true,
+        title: true,
+        logo: true,
+        products: true,
+      },
     });
     if (!brand) {
       throw new NotFoundException(`Бренд с id = ${id} не найдена!`);

@@ -54,10 +54,11 @@ export const editBrand = createAsyncThunk<void, {brand: IBrandForm, token: strin
   },
 );
 
-export const getBrands = createAsyncThunk<IBrand[], void>(
+export const getBrands = createAsyncThunk(
   'brands/fetchAllBrands',
   async () => {
-    const response = await axiosApi('/brands/');
+    const response = await axiosApi<IBrand[]>('/brands/');
+
     return response.data || [];
   }
 );

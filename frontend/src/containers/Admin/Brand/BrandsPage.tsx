@@ -15,8 +15,6 @@ const BrandsPage = () => {
     dispatch(getBrands()).unwrap();
   }, [dispatch]);
 
-  console.log(brands);
-
   return (
     <Box sx={{ display: 'flex', margin: '30px 0'}}>
       <AdminBar/>

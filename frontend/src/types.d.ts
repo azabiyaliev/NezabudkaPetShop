@@ -46,7 +46,7 @@ export interface GlobalError {
 export interface IBrand {
   id: number;
   title: string;
-  logo: string;
+  logo: string | null;
 }
 
 export interface IBrandForm {
