@@ -34,8 +34,8 @@ const BrandForHomePage: React.FC<Props> = ({ brands }) => {
             transform: `translateX(-${scrollIndex * 120}px)`,
           }}
         >
-          {brands.map((brand) => (
-            <div key={brand.id} className="brand-item" style={{margin: '0 10px', padding: '20px 0'}}>
+          {brands.map((brand, index) => (
+            <div key={brand.id || `brand-${index}`} className="brand-item" style={{margin: '0 10px', padding: '20px 0'}}>
               <img
                 src={apiUrl + brand.logo}
                 className="d-block"

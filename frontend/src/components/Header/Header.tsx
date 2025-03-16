@@ -1,12 +1,15 @@
-import MainToolbar from '../Toolbar/Toolbar.tsx';
-import CategoryNavbar from '../Navbar/CategoryNavbar.tsx';
+import CategoryNavbar from '../../components/Navbar/CategoryNavbar.tsx';
+import MainToolbar from '../../components/Toolbar/Toolbar.tsx';
+import { Container } from '@mui/material';
 
 const Header = () => {
   return (
-    <div>
-      <MainToolbar/>
+    <>
+      <Container>
+        <MainToolbar/>
+      </Container>
       <CategoryNavbar/>
-    </div>
+    </>
   );
 };
 
