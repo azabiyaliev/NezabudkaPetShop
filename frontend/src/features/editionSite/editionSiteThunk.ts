@@ -1,14 +1,30 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { EditSite, EditSiteMutation, ValidationError } from '../../types';
-import { RootState } from '../../app/store.ts';
 import axiosApi from '../../axiosApi.ts';
 import { isAxiosError } from 'axios';
 
-export const updateSite = createAsyncThunk<void, {id: number, data: EditSiteMutation}, { state: RootState; rejectValue: ValidationError }>(
+export const updateSite = createAsyncThunk<
+  void,
+  { id: number; site: EditSiteMutation },
+  { rejectValue: ValidationError }
+>(
   'edit_site/updateSite',
-  async ( {id, data} , { rejectWithValue }) => {
+  async ({ id, site }, { rejectWithValue }) => {
     try {
-       await axiosApi.put(`/edition_site/${id}`, data);
+      const data = new FormData();
+      data.append('instagram', site.instagram);
+      data.append('whatsapp', site.whatsapp);
+      data.append('schedule', site.schedule);
+      data.append('address', site.address);
+      data.append('email', site.email);
+      data.append('phone', site.phone);
+
+      site.PhotoByCarousel.forEach((photo) => {
+        if (photo.photo !== null) {
+          data.append(`PhotoByCarousel`, photo.photo);
+        }
+      });
+      await axiosApi.put(`/edition_site/${id}`, data);
     } catch (error) {
       if (isAxiosError(error) && error.response) {
         const { data, status } = error.response;
@@ -23,6 +39,7 @@ export const updateSite = createAsyncThunk<void, {id: number, data: EditSiteMuta
     }
   }
 );
+
 export const fetchSite = createAsyncThunk<EditSite, void>(
   "edit_site/fetchSite",
   async () => {

@@ -9,6 +9,8 @@ import { EditSiteMutation } from '../../../types';
 import { fetchSite, updateSite } from '../../../features/editionSite/editionSiteThunk.ts';
 import { selectEditSite, selectError } from '../../../features/editionSite/editionSiteSlice.ts';
 import FileInput from '../../../components/UI/FileInput.tsx';
+import ClearIcon from '@mui/icons-material/Clear';
+import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 
 const initialState = {
   instagram: "",
@@ -17,7 +19,11 @@ const initialState = {
   address: "",
   email: "",
   phone: "",
-  logo: null
+  PhotoByCarousel:[
+    {
+      photo: null
+    }
+  ]
 }
 
 const EditSiteForm = () => {
@@ -35,7 +41,7 @@ const EditSiteForm = () => {
       address: siteEdit.address || "",
       email: siteEdit.email || "",
       phone: siteEdit.phone || "",
-      logo:  null,
+      PhotoByCarousel: siteEdit.PhotoByCarousel || [],
     }));
   }, [dispatch])
 
@@ -44,18 +50,36 @@ const EditSiteForm = () => {
     setForm((prevState) => ({ ...prevState, [name]: value }));
   };
 
-  const onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void = (
-    e: React.ChangeEvent<HTMLInputElement>,
+  const onPhotoChange = (
+    index: number,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
-    const { name, files } = e.target;
+    const { name, value, files } = e.target as HTMLInputElement;
 
-    if (files) {
-      setForm((prevState: EditSiteMutation) => ({
-        ...prevState,
-        [name]: files[0] || null,
-      }));
+    if (files && files[0]) {
+      setForm((prevState: EditSiteMutation) => {
+        const photoCopy = [...prevState.PhotoByCarousel];
+        photoCopy[index] = { photo: files[0] };
+
+        return {
+          ...prevState,
+          PhotoByCarousel: photoCopy,
+        };
+      });
+    } else {
+      setForm((prevState: EditSiteMutation) => {
+        const photoCopy = [...prevState.PhotoByCarousel];
+        photoCopy[index] = { ...photoCopy[index], [name]: value };
+
+        return {
+          ...prevState,
+          PhotoByCarousel: photoCopy,
+        };
+      });
     }
   };
+
+
 
   const getFieldError = (fieldName: string) => {
     if (!editError?.errors) return undefined;
@@ -79,7 +103,7 @@ const EditSiteForm = () => {
     }
 
     try {
-      await dispatch(updateSite({id: site.id, data: form})).unwrap();
+      await dispatch(updateSite({id: site.id, site: form})).unwrap();
       toast.success("Вы успешно отредактировали сайт!", {
         position: "top-right",
         autoClose: 5000,
@@ -94,6 +118,20 @@ const EditSiteForm = () => {
       console.log(error);
     }
   };
+
+  const addPhotoField = () => {
+    setForm((prevState: EditSiteMutation) => ({
+      ...prevState,
+      PhotoByCarousel : [...prevState.PhotoByCarousel, { photo: null }],
+    }));
+  };
+
+  const deletePhoto = (index: number) => {
+    setForm((prevState: EditSiteMutation) => ({
+      ...prevState,
+      PhotoByCarousel: prevState.PhotoByCarousel.filter((_, i) => i !== index),
+    }));
+  };
   return (
     <div>
       <Container component="main">
@@ -104,8 +142,6 @@ const EditSiteForm = () => {
             flexDirection: "column",
             alignItems: "center",
             padding: 4,
-            borderRadius: 2,
-            boxShadow: 3,
           }}
         >
           <Typography component="h1" variant="h5" sx={{ color: "black" }}>
@@ -245,16 +281,49 @@ const EditSiteForm = () => {
             </div>
 
             <div className="row">
-              <div className="col-12">
-                <FileInput
-                  id="logo"
-                  name="logo"
-                  label="Фотографии на главной странице в карусели"
-                  onGetFile={onFileChange}
-                  file={form.logo}
-                />
+              <div className="col-7">
+                {form.PhotoByCarousel.map((photo, index) => (
+                  <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
+                    <Box sx={{ flex: 1 }}>
+                      <FileInput
+                        id="PhotoByCarousel"
+                        name="PhotoByCarousel"
+                        label="Фото для карусели"
+                        onGetFile={(e) => onPhotoChange(index, e)}
+                        file={photo.photo}
+                      />
+                    </Box>
+                    <Button
+                      variant="outlined"
+                      color="error"
+                      onClick={() => deletePhoto(index)}
+                      sx={{
+                        marginTop: '-16px',
+                        padding: '8px',
+                        height: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <ClearIcon />
+                    </Button>
+                  </div>
+                ))}
+                <Button
+                  onClick={addPhotoField}
+                  sx={{
+                    backgroundColor: "#FFEB3B",
+                    color: "black",
+                    borderRadius: "7px",
+                    padding: "10px 20px",
+                  }}
+                >
+                  <AddOutlinedIcon/>
+                </Button>
               </div>
             </div>
+
 
             <Button
               type="submit"

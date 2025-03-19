@@ -6,11 +6,11 @@ import {
   Param,
   Post,
   Put,
-  UploadedFile,
+  UploadedFiles,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import * as crypto from 'crypto';
@@ -33,7 +33,7 @@ export class EditionSiteController {
   @Roles('admin')
   @Post()
   @UseInterceptors(
-    FileInterceptor('logo', {
+    FilesInterceptor('PhotoByCarousel', 10, {
       storage: diskStorage({
         destination: './public/editsite',
         filename: (_req, file, callback) => {
@@ -44,13 +44,17 @@ export class EditionSiteController {
     }),
   )
   async createSite(
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFiles() files: Express.Multer.File[],
     @Body() editsiteDto: EditionSitedDto,
   ) {
     if (!editsiteDto) {
       throw new NotFoundException('Поля не были предоставлены!');
     }
-    const logo = file ? '/editsite/' + file.filename : '';
+    const photoData = files
+      ? files.map((file) => ({
+          photo: '/editsite/' + file.filename,
+        }))
+      : [];
 
     return await this.editionSite.createInfoSite({
       instagram: editsiteDto.instagram,
@@ -59,7 +63,7 @@ export class EditionSiteController {
       address: editsiteDto.address,
       email: editsiteDto.email,
       phone: editsiteDto.phone,
-      logo,
+      PhotoByCarousel: photoData,
     });
   }
 
@@ -67,7 +71,7 @@ export class EditionSiteController {
   @Roles('admin')
   @Put(':id')
   @UseInterceptors(
-    FileInterceptor('logo', {
+    FilesInterceptor('PhotoByCarousel', 10, {
       storage: diskStorage({
         destination: './public/editsite',
         filename: (_req, file, callback) => {
@@ -79,14 +83,18 @@ export class EditionSiteController {
   )
   async updateSite(
     @Param('id') id: string,
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFiles() files: Express.Multer.File[],
     @Body() editsiteDto: EditionSitedDto,
   ) {
     if (!editsiteDto) {
       throw new NotFoundException('Поля не были предоставлены!');
     }
-    const logo = file ? file : undefined;
 
-    return await this.editionSite.updateSite(id, editsiteDto, logo);
+    const photoData = files
+      ? files.map((file) => ({
+          photo: '/editsite/' + file.filename,
+        }))
+      : [];
+    return await this.editionSite.updateSite(id, editsiteDto, photoData);
   }
 }

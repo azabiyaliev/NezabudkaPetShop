@@ -12,13 +12,30 @@ export class EditionSiteService {
   constructor(private readonly prisma: PrismaService) {}
 
   async getSite() {
-    return this.prisma.siteEdition.findFirst();
+    return this.prisma.siteEdition.findFirst({
+      include: {
+        PhotoByCarousel: true,
+      },
+    });
   }
 
   async createInfoSite(editionDto: EditionSitedDto) {
-    const { instagram, whatsapp, schedule, address, email, phone, logo } =
-      editionDto;
+    const {
+      instagram,
+      whatsapp,
+      schedule,
+      address,
+      email,
+      phone,
+      PhotoByCarousel,
+    } = editionDto;
+
     try {
+      const photoData =
+        PhotoByCarousel?.map((photoDto) => ({
+          photo: photoDto.photo,
+        })) || [];
+
       return await this.prisma.siteEdition.create({
         data: {
           instagram,
@@ -27,10 +44,16 @@ export class EditionSiteService {
           address,
           email,
           phone,
-          logo,
+          PhotoByCarousel: {
+            create: photoData,
+          },
+        },
+        include: {
+          PhotoByCarousel: true,
         },
       });
     } catch (error) {
+      console.error('Ошибка при создании записи в Prisma:', error);
       if (
         error instanceof PrismaClientKnownRequestError &&
         error.code === 'P2002'
@@ -46,15 +69,40 @@ export class EditionSiteService {
   async updateSite(
     id: string,
     editionDto: EditionSitedDto,
-    file?: Express.Multer.File,
+    files?: { photo: string }[],
   ) {
     const { instagram, whatsapp, schedule, address, email, phone } = editionDto;
-    const logo = file ? '/editsite/' + file.filename : '';
     const editId = parseInt(id);
-    const editSite = await this.prisma.siteEdition.findFirst();
+
+    const editSite = await this.prisma.siteEdition.findUnique({
+      where: { id: editId },
+      include: { PhotoByCarousel: true },
+    });
+
     if (!editSite) {
-      throw new NotFoundException(`Бренд с id = ${id} не найдена!`);
+      throw new NotFoundException(`Сайт с id = ${id} не найден!`);
     }
+
+    const newPhotoByCarousel = files
+      ? files.map((file) => ({ photo: file.photo }))
+      : editSite.PhotoByCarousel.map((photo) => ({ photo: photo.photo }));
+
+    const photosToDelete = editSite.PhotoByCarousel.filter(
+      (oldPhoto) =>
+        !newPhotoByCarousel.some(
+          (newPhoto) => newPhoto.photo === oldPhoto.photo,
+        ),
+    );
+
+    const photosToAdd = newPhotoByCarousel.filter(
+      (newPhoto) =>
+        !editSite.PhotoByCarousel.some(
+          (oldPhoto) => oldPhoto.photo === newPhoto.photo,
+        ),
+    );
+
+    const photosToDeleteIds = photosToDelete.map((photo) => photo.id);
+
     return this.prisma.siteEdition.update({
       where: { id: editId },
       data: {
@@ -64,7 +112,15 @@ export class EditionSiteService {
         address,
         email,
         phone,
-        logo,
+        PhotoByCarousel: {
+          deleteMany: {
+            id: { in: photosToDeleteIds },
+          },
+          create: photosToAdd,
+        },
+      },
+      include: {
+        PhotoByCarousel: true,
       },
     });
   }
