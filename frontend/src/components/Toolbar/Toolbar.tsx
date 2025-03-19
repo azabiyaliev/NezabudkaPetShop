@@ -19,6 +19,8 @@ import InstagramIcon from '@mui/icons-material/Instagram';
 import './Fonts.css'
 import { Search } from '@mui/icons-material';
 import { selectEditSite } from '../../features/editionSite/editionSiteSlice.ts';
+import React from 'react';
+import CustomCart from '../CustomCart/CustomCart.tsx';
 
 const CartBadge = styled(Badge)`
   & .${badgeClasses.badge} {
@@ -28,11 +30,23 @@ const CartBadge = styled(Badge)`
 `;
 
 const MainToolbar = () => {
-    const user = useAppSelector((state) => state.users.user);
-    const editSite = useAppSelector(selectEditSite);
-    const editSiteData = editSite!;
+  const [open, setOpen] = React.useState<boolean>(false);
+  const user = useAppSelector((state) => state.users.user);
+  const editSite = useAppSelector(selectEditSite);
+  const editSiteData = editSite!;
+
+  const openCart = () => {
+    setOpen(true);
+  };
+
+  const closeCart = () => {
+    setOpen(false);
+  };
+
+
   return (
     <>
+      <CustomCart openCart={open} closeCart={() => closeCart()}/>
       <Box sx={{
         textAlign: 'right',
         borderBottom: '1px solid #D3D3D3',
@@ -151,21 +165,30 @@ const MainToolbar = () => {
             </Box>
 
             <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-            }}>
-            <NavLink to='/my_cart' className='text-decoration-none me-4'>
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}>
+              <Button variant='text'
+                onClick={() => openCart()}
+                sx={{
+                  marginRight: '15px',
+                  '&:hover': {
+                    background: 'inherit'
+                }
+              }}>
                 <ShoppingCartIcon fontSize="small"
                                   sx={{
                                     color: 'black',
                                     transition: 'color 0.2s ease',
                                     '&:hover': {
                                       color: 'yellow',
+                                      background: 'inherit'
                                     }
                                   }}/>
                 <CartBadge badgeContent={1} color="success" overlap="circular" />
-            </NavLink>
+             </Button>
 
               <NavLink to='/my_favorites' className='text-decoration-none'>
                 <FavoriteIcon fontSize="small"
@@ -182,7 +205,9 @@ const MainToolbar = () => {
 
             {user ? (
               <>
-                <ExistsUser user={user} editSite={editSiteData}/>
+                <ExistsUser user={user}
+                            editSite={editSiteData}
+                />
               </>
             ) : (
               <>
