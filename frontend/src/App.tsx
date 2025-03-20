@@ -15,6 +15,7 @@ import EditSiteForm from './containers/Admin/AdminProfile/EditSiteForm.tsx';
 import NewCategory from './containers/Category/NewCategory/NewCategory.tsx';
 import AllCategoriesPage from './containers/Category/AllCategoriesPage/AllCategoriesPage.tsx';
 import OneCategory from './containers/Category/OneCategory/OneCategory.tsx';
+import NewProduct from './containers/Admin/Product/containers/NewProduct.tsx';
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -40,6 +41,11 @@ const App = () => {
             <EditBrandPage />
           </ProtectedRoute>
         } />
+        <Route path="private/add_product" element={
+          <ProtectedRoute isAllowed={user && user.role === 'admin'}>
+            <NewProduct />
+          </ProtectedRoute>
+        }/>
         <Route path="/users/:id" element={<AdminForm />} />
         <Route path="/edition_site" element={<EditSiteForm />} />
         <Route path="/private/all_categories" element={<AllCategoriesPage/>}/>

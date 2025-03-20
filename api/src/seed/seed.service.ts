@@ -10,6 +10,9 @@ export class SeedService {
   async seed() {
     await this.prisma.user.deleteMany({});
     await this.prisma.brand.deleteMany({});
+    await this.prisma.category.deleteMany({});
+    await this.prisma.products.deleteMany({});
+    await this.prisma.orderItem.deleteMany({});
 
     const password = await bcrypt.hash('123', 10);
 
@@ -39,59 +42,145 @@ export class SeedService {
     await this.prisma.brand.createMany({
       data: [
         {
+          id: 1,
           title: 'AVZ',
           logo: '/fixtures/brands/avz.png',
         },
         {
+          id: 2,
           title: 'BAYER',
           logo: '/fixtures/brands/bayer.png',
         },
         {
+          id: 3,
           title: 'Catchow',
           logo: '/fixtures/brands/catchow_logofina.jpg',
         },
         {
+          id: 4,
           title: 'Dog-Chow',
           logo: '/fixtures/brands/dog-chow-logo.png',
         },
         {
+          id: 5,
           title: 'Flexi',
           logo: '/fixtures/brands/flexi-logo.png',
         },
         {
+          id: 6,
           title: 'Friskies',
           logo: '/fixtures/brands/friskies.png',
         },
         {
+          id: 7,
           title: 'Gourmet',
           logo: '/fixtures/brands/gourmet.png',
         },
         {
+          id: 8,
           title: 'Happy-cat',
           logo: '/fixtures/brands/happy-cat.png',
         },
         {
+          id: 9,
           title: 'Happy-dog',
           logo: '/fixtures/brands/happy-dog.png',
         },
         {
+          id: 10,
           title: 'Proplan',
           logo: '/fixtures/brands/proplan.png',
         },
       ],
     });
-    await this.prisma.products.create({
-      data: {
-        productName: 'test',
-        productDescription: 'testttste',
-        productPrice: 555,
-        productPhoto: './assets/images/product.png',
-      },
+    await this.prisma.category.createMany({
+      data: [
+        {
+          id: 1,
+          title: 'Собаки',
+        },
+        {
+          id: 2,
+          title: 'Кошки',
+        },
+        {
+          id: 3,
+          title: 'Птицы',
+        },
+        {
+          id: 4,
+          title: 'Кролики',
+        },
+        {
+          id: 5,
+          title: 'Рыбы',
+        },
+        {
+          id: 6,
+          title: 'Драконы',
+        },
+      ],
     });
-    await this.prisma.category.create({
-      data: {
-        title: 'test',
-      },
+    await this.prisma.products.createMany({
+      data: [
+        {
+          id: 1,
+          productName: 'Сухой корм для собак',
+          productPrice: 1200,
+          productDescription: 'Качественный сухой корм для взрослых собак.',
+          brandId: 1,
+          categoryId: 1,
+          productPhoto: './fixtures/brands/dog_food.jpg',
+          existence: false,
+          sales: false,
+        },
+        {
+          id: 2,
+          productName: 'Когтеточка для кошек',
+          productPrice: 2500,
+          productDescription: 'Прочная когтеточка для развлечения вашей кошки.',
+          brandId: 2,
+          categoryId: 2,
+          productPhoto: './fixtures/brands/cat_scratcher.jpg',
+          existence: false,
+          sales: false,
+        },
+        {
+          id: 3,
+          productName: 'Клетка для птиц',
+          productPrice: 4500,
+          productDescription: 'Просторная и удобная клетка для мелких птиц.',
+          brandId: 3,
+          categoryId: 3,
+          productPhoto: './fixtures/brands/bird_cage.jpg',
+          existence: false,
+          sales: false,
+        },
+        {
+          id: 4,
+          productName: 'Фильтр для аквариума',
+          productPrice: 1800,
+          productDescription:
+            'Мощный фильтр для чистой и прозрачной воды в аквариуме.',
+          brandId: 4,
+          categoryId: 5,
+          productPhoto: './fixtures/brands/aquarium_filter.jpg',
+          existence: false,
+          sales: false,
+        },
+        {
+          id: 5,
+          productName: 'Кормушка для сена для кроликов',
+          productPrice: 900,
+          productDescription:
+            'Удобная кормушка для сена для кроликов и мелких грызунов.',
+          brandId: 5,
+          categoryId: 4,
+          productPhoto: './fixtures/brands/rabbit_feeder.jpg',
+          existence: false,
+          sales: false,
+        },
+      ],
     });
     await this.prisma.orderItem.create({
       data: {
