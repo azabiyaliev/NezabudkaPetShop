@@ -36,6 +36,26 @@ export class SeedService {
       ],
     });
 
+    await this.prisma.siteEdition.create({
+      data: {
+        instagram: 'nezabudka.zoo',
+        whatsapp: '+(996)500-430-481',
+        schedule: '10:00-20:00',
+        address: 'г. Бишкек, Гоголя 127',
+        email: 'nezabudka.zoo@gmial.com',
+        phone: '+(996)500-430-481',
+        PhotoByCarousel: {
+          create: [
+            { photo: '/fixtures/editionSitePhoto/photo1.jpg' },
+            { photo: '/fixtures/editionSitePhoto/photo2.jpg' },
+            { photo: '/fixtures/editionSitePhoto/photo3.jpg' },
+            { photo: '/fixtures/editionSitePhoto/photo4.jpg' },
+            { photo: '/fixtures/editionSitePhoto/photo5.jpg' },
+          ],
+        },
+      },
+    });
+
     await this.prisma.brand.createMany({
       data: [
         {

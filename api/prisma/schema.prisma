@@ -14,16 +14,16 @@ datasource db {
 }
 
 model User {
-  id         Int     @id @default(autoincrement())
-  email      String  @unique
+  id         Int       @id @default(autoincrement())
+  email      String    @unique
   firstName  String
   secondName String
   password   String
-  phone      String? @unique
-  role       Role    @default(client)
+  phone      String?   @unique
+  role       Role      @default(client)
   token      String?
-  googleID   String? @unique
-  facebookID String? @unique
+  googleID   String?   @unique
+  facebookID String?   @unique
   Order      Order[]
   Review     Review[]
   Comment    Comment[]
@@ -47,16 +47,25 @@ model Brand {
 }
 
 model SiteEdition {
-  id        Int    @id @default(autoincrement())
-  instagram String
-  whatsapp  String
-  schedule  String
-  address   String
-  email     String
-  phone     String
-  logo      String
+  id              Int               @id @default(autoincrement())
+  instagram       String
+  whatsapp        String
+  schedule        String
+  address         String
+  email           String
+  phone           String
+  PhotoByCarousel PhotoByCarousel[] @relation("SiteEditionPhotoCarousel")
 
   @@map("editionSite")
+}
+
+model PhotoByCarousel {
+  id            Int          @id @default(autoincrement())
+  photo         String
+  siteEditionId Int?         @map("site_edition_id")
+  siteEdition   SiteEdition? @relation("SiteEditionPhotoCarousel", fields: [siteEditionId], references: [id])
+
+  @@map("photo_by_carousel")
 }
 
 model Category {
@@ -90,6 +99,7 @@ model Products {
   category   Category?   @relation(fields: [categoryId], references: [id])
 
   reviews Review[]
+
   @@map("products")
 }
 

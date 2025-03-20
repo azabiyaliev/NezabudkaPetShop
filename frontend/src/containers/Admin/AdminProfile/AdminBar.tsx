@@ -29,14 +29,14 @@ const AdminBar  = () => {
         <ListItem  component={NavLink} to={`/private`}>
           <ListItemText primary="Редактировать профиль" className='text-black'/>
         </ListItem>
+        <ListItem  component={NavLink} to="/edition_site" >
+          <ListItemText primary="Редактирование сайта" className='text-black'/>
+        </ListItem>
         <ListItem  component={NavLink} to="/private/client_orders" >
           <ListItemText primary="Заказы" className='text-black'/>
         </ListItem>
         <ListItem  component={NavLink} to="/private/clients" >
           <ListItemText primary="Клиенты" className='text-black'/>
-        </ListItem>
-        <ListItem  component={NavLink} to="/private/edit_site" >
-          <ListItemText primary="Редактирование сайта" className='text-black'/>
         </ListItem>
 
         <ListItem  component={NavLink} to="/private/add_category">
