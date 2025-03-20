@@ -19,11 +19,7 @@ const initialState = {
   address: "",
   email: "",
   phone: "",
-  PhotoByCarousel:[
-    {
-      photo: null
-    }
-  ]
+  PhotoByCarousel: []
 }
 
 const EditSiteForm = () => {
@@ -45,6 +41,7 @@ const EditSiteForm = () => {
     }));
   }, [dispatch])
 
+
   const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setForm((prevState) => ({ ...prevState, [name]: value }));
@@ -54,31 +51,22 @@ const EditSiteForm = () => {
     index: number,
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
-    const { name, value, files } = e.target as HTMLInputElement;
+    const { files } = e.target as HTMLInputElement;
 
     if (files && files[0]) {
-      setForm((prevState: EditSiteMutation) => {
-        const photoCopy = [...prevState.PhotoByCarousel];
-        photoCopy[index] = { photo: files[0] };
+      setForm((prevState) => {
+        const updatedPhotos = [...prevState.PhotoByCarousel];
 
-        return {
-          ...prevState,
-          PhotoByCarousel: photoCopy,
-        };
-      });
-    } else {
-      setForm((prevState: EditSiteMutation) => {
-        const photoCopy = [...prevState.PhotoByCarousel];
-        photoCopy[index] = { ...photoCopy[index], [name]: value };
+        if (updatedPhotos[index]) {
+          updatedPhotos[index] = { photo: files[0] };
+        } else {
+          updatedPhotos.push({ photo: files[0] });
+        }
 
-        return {
-          ...prevState,
-          PhotoByCarousel: photoCopy,
-        };
+        return { ...prevState, PhotoByCarousel: updatedPhotos };
       });
     }
   };
-
 
 
   const getFieldError = (fieldName: string) => {
@@ -103,7 +91,7 @@ const EditSiteForm = () => {
     }
 
     try {
-      await dispatch(updateSite({id: site.id, site: form})).unwrap();
+      await dispatch(updateSite({ id: site.id, site: { ...form, PhotoByCarousel: form.PhotoByCarousel.filter(photo => photo.photo) } })).unwrap();
       toast.success("Вы успешно отредактировали сайт!", {
         position: "top-right",
         autoClose: 5000,
@@ -125,7 +113,6 @@ const EditSiteForm = () => {
       PhotoByCarousel : [...prevState.PhotoByCarousel, { photo: null }],
     }));
   };
-
   const deletePhoto = (index: number) => {
     setForm((prevState: EditSiteMutation) => ({
       ...prevState,
@@ -237,7 +224,6 @@ const EditSiteForm = () => {
                 />
               </div>
             </div>
-
             <div className="row">
               <div className="col-12 mb-4">
                 <TextField

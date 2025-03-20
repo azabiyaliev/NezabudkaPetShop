@@ -20,7 +20,7 @@ export const updateSite = createAsyncThunk<
       data.append('phone', site.phone);
 
       site.PhotoByCarousel.forEach((photo) => {
-        if (photo.photo !== null) {
+        if (photo.photo) {
           data.append(`PhotoByCarousel`, photo.photo);
         }
       });

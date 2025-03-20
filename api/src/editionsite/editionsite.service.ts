@@ -83,9 +83,10 @@ export class EditionSiteService {
       throw new NotFoundException(`Сайт с id = ${id} не найден!`);
     }
 
-    const newPhotoByCarousel = files
-      ? files.map((file) => ({ photo: file.photo }))
-      : editSite.PhotoByCarousel.map((photo) => ({ photo: photo.photo }));
+    const newPhotoByCarousel = [
+      ...editSite.PhotoByCarousel.map((photo) => ({ photo: photo.photo })),
+      ...(files?.map((file) => ({ photo: file.photo })) || []),
+    ];
 
     const photosToDelete = editSite.PhotoByCarousel.filter(
       (oldPhoto) =>
@@ -101,8 +102,6 @@ export class EditionSiteService {
         ),
     );
 
-    const photosToDeleteIds = photosToDelete.map((photo) => photo.id);
-
     return this.prisma.siteEdition.update({
       where: { id: editId },
       data: {
@@ -113,15 +112,11 @@ export class EditionSiteService {
         email,
         phone,
         PhotoByCarousel: {
-          deleteMany: {
-            id: { in: photosToDeleteIds },
-          },
-          create: photosToAdd,
+          delete: photosToDelete.map((photo) => ({ id: photo.id })),
+          create: photosToAdd.length ? photosToAdd : undefined,
         },
       },
-      include: {
-        PhotoByCarousel: true,
-      },
+      include: { PhotoByCarousel: true },
     });
   }
 }
