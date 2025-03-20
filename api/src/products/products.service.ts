@@ -78,8 +78,8 @@ export class ProductsService {
         brandId: Number(brandId),
         categoryId: Number(categoryId),
         productPrice: Number(productPrice),
-        sales,
-        existence,
+        sales: sales === 'true',
+        existence: existence === 'true',
       },
       select: {
         id: true,
@@ -175,8 +175,8 @@ export class ProductsService {
         productPhoto,
         brandId,
         categoryId,
-        existence,
-        sales,
+        existence: existence === 'true',
+        sales: sales === 'true',
       },
       select: {
         id: true,

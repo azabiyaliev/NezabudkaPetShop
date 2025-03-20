@@ -15,6 +15,7 @@ import NewCategory from './containers/Category/NewCategory/NewCategory.tsx';
 import AllCategoriesPage from './containers/Category/AllCategoriesPage/AllCategoriesPage.tsx';
 import OneCategory from './containers/Category/OneCategory/OneCategory.tsx';
 import EditionSitePage from './containers/Admin/EditionSite/EditionSitePage.tsx';
+import NewProduct from './containers/Admin/Product/containers/NewProduct.tsx';
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -42,12 +43,16 @@ const App = () => {
             </ProtectedRoute>
           } />
           <Route path="/users/:id" element={<AdminForm />} />
-
           <Route path="/edition_site" element={
             <ProtectedRoute isAllowed={user && user.role === 'admin'}>
               <EditionSitePage />
             </ProtectedRoute>
           } />
+          <Route path="private/add_product" element={
+            <ProtectedRoute isAllowed={user && user.role === 'admin'}>
+              <NewProduct />
+            </ProtectedRoute>
+          }/>
           <Route path="/private/all_categories" element={<AllCategoriesPage/>}/>
           <Route path="/category/:id" element={<OneCategory/>}/>
           <Route path="*" element={<h1>Not found</h1>} />
