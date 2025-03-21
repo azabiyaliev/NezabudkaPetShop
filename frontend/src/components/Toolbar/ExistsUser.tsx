@@ -78,7 +78,7 @@ const ExistsUser: React.FC<Props> = ({ user }) => {
                 <ListItemText primary="Бренды" className='text-black' />
               </ListItem>
               <ListItem  component={NavLink} to="/private/all_products" onClick={toggleDrawer(false)}>
-                <ListItemText primary="Все товары" className='text-black'/>
+                <ListItemText primary="Товары" className='text-black'/>
               </ListItem>
               <ListItem  component={NavLink} to="/private/all_categories" onClick={toggleDrawer(false)}>
                 <ListItemText primary="Все категории" className='text-black'/>

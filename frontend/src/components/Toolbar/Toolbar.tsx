@@ -1,26 +1,24 @@
 import {
-  AppBar, Badge, badgeClasses,
+   Badge, badgeClasses,
   Box, Button,
-  Container, styled,
+  Container, InputBase, styled,
   Toolbar
 } from '@mui/material';
 import { NavLink } from 'react-router-dom';
-import {useAppSelector} from "../../app/hooks.ts";
+import { useAppSelector } from "../../app/hooks.ts";
 import ExistsUser from "./ExistsUser.tsx";
 import UnknownUser from "./UnknownUser.tsx";
-import TextField from "@mui/material/TextField";
 import logo from '../../assets/logo.jpg'
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import Typography from '@mui/material/Typography';
-import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import './Fonts.css'
-import { Search } from '@mui/icons-material';
 import { selectEditSite } from '../../features/editionSite/editionSiteSlice.ts';
-import React from 'react';
-import CustomCart from '../CustomCart/CustomCart.tsx';
+import PhoneInTalkOutlinedIcon from '@mui/icons-material/PhoneInTalkOutlined';
+import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
+import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 
 const CartBadge = styled(Badge)`
   & .${badgeClasses.badge} {
@@ -30,193 +28,266 @@ const CartBadge = styled(Badge)`
 `;
 
 const MainToolbar = () => {
-  const [open, setOpen] = React.useState<boolean>(false);
   const user = useAppSelector((state) => state.users.user);
-  const editSite = useAppSelector(selectEditSite);
-  const editSiteData = editSite!;
-
-  const openCart = () => {
-    setOpen(true);
-  };
-
-  const closeCart = () => {
-    setOpen(false);
-  };
-
+  const site = useAppSelector(selectEditSite);
 
   return (
-    <>
-      <CustomCart openCart={open} closeCart={() => closeCart()}/>
+    <div>
       <Box sx={{
-        textAlign: 'right',
-        borderBottom: '1px solid #D3D3D3',
-        marginBottom: '10px',
-        padding: '2px'
+        textAlign: 'left',
+        padding: '15px',
       }}>
         <Container>
+          <Box sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            gap: '30px',
+          }}>
             <Box sx={{
               display: 'flex',
-              justifyContent: 'right',
+              alignItems: 'center',
               gap: '30px',
-              alignItems: 'center'
             }}>
-              <Box>
-                <NavLink to='https://www.instagram.com/nezabudka.zoo/'
-                         style={{
-                           marginRight: '10px',
-                         }}>
-                  <InstagramIcon
-                  sx={{
-                    width: '18px',
-                    color: 'black',
-                    transition: 'color 0.3s ease',
-                    '&:hover': {
-                      color: 'yellow',
-                    }
-                  }}/>
-                </NavLink>
+              <NavLink
+                style={{
+                  color: 'black',
+                  textDecoration: 'none',
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+                to='/'
+              >
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderRadius: '50%',
+                    width: '50px',
+                    height: '50px',
+                    backgroundColor: 'rgb(255, 250, 180)',
+                    padding: '10px',
+                    marginRight: '10px',
+                  }}
+                >
+                  <PhoneInTalkOutlinedIcon
+                    sx={{
+                      color: 'black',
+                      transition: 'color 0.3s ease',
+                      width: '24px',
+                      height: '24px',
+                    }}
+                  />
+                </div>
+                {site?.phone}
+              </NavLink>
 
-                <NavLink to='https://api.whatsapp.com/send?phone=996555338899'
-                         style={{
-                           marginRight: '10px',
-                         }}>
+              <NavLink
+                style={{
+                  color: 'black',
+                  textDecoration: 'none',
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+                to='/'
+              >
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderRadius: '50%',
+                    width: '50px',
+                    height: '50px',
+                    backgroundColor: 'rgb(255, 250, 180)',
+                    padding: '10px',
+                    marginRight: '10px',
+                  }}
+                >
+                  <LocationOnOutlinedIcon
+                    sx={{
+                      color: 'black',
+                      transition: 'color 0.3s ease',
+                      width: '24px',
+                      height: '24px',
+                    }}
+                  />
+                </div>
+                {site?.address}
+              </NavLink>
+            </Box>
+            <Box sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '5px',
+            }}>
+              <NavLink to='https://www.instagram.com/nezabudka.zoo/' >
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderRadius: '50%',
+                    width: '50px',
+                    height: '50px',
+                    backgroundColor: 'hsl(50, 100%, 90%)',
+                    padding: '10px',
+                    marginRight: '10px',
+                  }}
+                >
+                  <InstagramIcon
+                    sx={{
+                      width: '18px',
+                      color: 'black',
+                    }}
+                  />
+                </div>
+              </NavLink>
+
+              <NavLink to='https://api.whatsapp.com/send?phone=996555338899' style={{ marginRight: '10px' }}>
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderRadius: '50%',
+                    width: '50px',
+                    height: '50px',
+                    backgroundColor: 'hsl(50, 100%, 90%)',
+                    padding: '10px',
+                    marginRight: '10px',
+                  }}
+                >
                   <WhatsAppIcon
                     sx={{
                       width: '18px',
                       color: 'black',
-                      transition: 'color 0.3s ease',
-                      '&:hover': {
-                        color: 'yellow',
-                      }
-                    }}/>
-                </NavLink>
-
-               <NavLink content='+996 555 33 88 99' to='/'>
-                   <LocalPhoneIcon
-                     sx={{
-                       width: '18px',
-                       color: 'black',
-                       transition: 'color 0.3s ease',
-                       '&:hover': {
-                         color: 'yellow',
-                       }
-                     }}/>
-                </NavLink>
-              </Box>
-              <Box>
-              <Typography
-              sx={{
-                fontSize: '12px'
-              }}>
-                11.00 - 19.00 без выходных
-              </Typography>
-              </Box>
+                    }}
+                  />
+                </div>
+              </NavLink>
             </Box>
+          </Box>
         </Container>
       </Box>
-      <AppBar
-      sx={{
-        backgroundColor: '#fff',
-        position: 'static',
-        boxShadow: 'none',
-        borderBottom: '1px solid yellow',
-      }}>
-          <Toolbar
+      <hr/>
+      <Container>
+        <Box
           sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            paddingBottom: '10px',
-          }}>
-
+            backgroundColor: 'white',
+            position: 'static',
+          }}
+        >
+          <Toolbar
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              padding:'20px',
+            }}
+          >
             <NavLink to='/' className='text-decoration-none d-flex align-items-center gap-2'>
-               <Box
-               component='img'
-               src={logo}
-               alt='Nezabudka'
+              <Box
+                component='img'
+                src={logo}
+                alt='Nezabudka'
                 sx={{
-                  height: '86px',
-                  width: '86px',
+                  height: '70px',
+                  width: '70px',
                   cursor: 'pointer',
+                  marginRight: '15px',
                 }}
-               />
-              <Typography
-              sx={{
-                fontFamily: 'font-link',
-                color: 'black'
-              }}>
+              />
+              <div>
+                <Typography
+                  sx={{
+                    fontSize: '28px',
+                    textTransform: 'uppercase',
+                    fontWeight: 'bold',
+                    fontFamily: 'Georgia, sans-serif',
+                    color: 'black',
+                    cursor: 'pointer',
+                  }}
+                >
                   Незабудка
-              </Typography>
+                </Typography>
+                <Typography
+                  sx={{
+                    marginTop: '10px',
+                    fontSize: '12px',
+                    fontFamily: 'Montserrat, sans-serif',
+                    textTransform: 'uppercase',
+                    color: 'black',
+                  }}
+                >
+                  Zoo магазин
+                </Typography>
+              </div>
             </NavLink>
 
             <Box>
-              <Box
-              sx={{
+              <Box sx={{
                 display: 'flex',
                 alignItems: 'center',
               }}>
-              <TextField fullWidth label="Поиск" id="fullWidth"/>
-                <Button sx={{backgroundColor: 'yellow', height: '56px'}}>
-                <Search sx={{
-                  color: 'black',
-                  }}/>
+                <InputBase
+                  placeholder="Поиск товаров"
+                  sx={{  width: '100%', border: '1px solid lightgray', padding: '5px', borderRight:'none' }}
+                />
+                <Button sx={{
+                  backgroundColor: '#FFEB3B',
+                  height: '100%',
+                  padding: '10px',
+                  color:'black'
+                }}>
+                  <SearchOutlinedIcon/>
                 </Button>
               </Box>
             </Box>
 
-            <Box
-              sx={{
+            {user && user.role === 'client' && (
+              <Box sx={{
                 display: 'flex',
                 justifyContent: 'space-between',
-                alignItems: 'center',
               }}>
-              <Button variant='text'
-                onClick={() => openCart()}
-                sx={{
-                  marginRight: '15px',
-                  '&:hover': {
-                    background: 'inherit'
-                }
-              }}>
-                <ShoppingCartIcon fontSize="small"
-                                  sx={{
-                                    color: 'black',
-                                    transition: 'color 0.2s ease',
-                                    '&:hover': {
-                                      color: 'yellow',
-                                      background: 'inherit'
-                                    }
-                                  }}/>
-                <CartBadge badgeContent={1} color="success" overlap="circular" />
-             </Button>
+                <NavLink to='/my_cart' className='text-decoration-none me-4'>
+                  <ShoppingCartIcon fontSize="small"
+                                    sx={{
+                                      color: 'black',
+                                      transition: 'color 0.2s ease',
+                                      '&:hover': {
+                                        color: 'yellow',
+                                      },
+                                    }} />
+                  <CartBadge badgeContent={1} color="success" overlap="circular" />
+                </NavLink>
 
-              <NavLink to='/my_favorites' className='text-decoration-none'>
-                <FavoriteIcon fontSize="small"
-                                  sx={{
-                                    color: 'black',
-                                    transition: 'color 0.2s ease',
-                                    '&:hover': {
-                                      color: 'yellow',
-                                    }
-                                  }}/>
-                <CartBadge badgeContent={1} color="success" overlap="circular" />
-              </NavLink>
-            </Box>
+                <NavLink to='/my_favorites' className='text-decoration-none'>
+                  <FavoriteIcon fontSize="small"
+                                sx={{
+                                  color: 'black',
+                                  transition: 'color 0.2s ease',
+                                  '&:hover': {
+                                    color: 'yellow',
+                                  },
+                                }} />
+                  <CartBadge badgeContent={1} color="success" overlap="circular" />
+                </NavLink>
+              </Box>
+            )}
 
             {user ? (
-              <>
-                <ExistsUser user={user}
-                            editSite={editSiteData}
-                />
-              </>
+              <ExistsUser user={user} />
             ) : (
-              <>
-                <UnknownUser/>
-              </>
+              <UnknownUser />
             )}
           </Toolbar>
-      </AppBar>
-    </>
+        </Box>
+      </Container>
+
+
+    </div>
   );
 };
 

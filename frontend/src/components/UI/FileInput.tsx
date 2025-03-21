@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 
 interface Props {
   name: string;
@@ -57,6 +58,7 @@ const FileInput: React.FC<Props> = ({
 
       <div className="d-flex justify-content-start gap-4 align-items-center mb-3">
         <input
+          style={{backgroundColor:'white', padding: "8px 30px", borderRadius:'4px', border:'1px solid lightgray' }}
           id={id}
           className={className}
           disabled
@@ -67,15 +69,16 @@ const FileInput: React.FC<Props> = ({
         <button
           type="button"
           style={{
-            color: "black",
-            border: "1px solid black`",
+            color: "gray",
+            border: "1px solid lightgray",
+            borderRadius:'4px',
             backgroundColor: "white",
-            padding: "8px 16px",
+            padding: "8px 20px",
             cursor: "pointer",
           }}
           onClick={activateInput}
         >
-          Добавить фото
+          <AddPhotoAlternateIcon/>
           <i className="bi bi-file-earmark"></i>
         </button>
       </div>

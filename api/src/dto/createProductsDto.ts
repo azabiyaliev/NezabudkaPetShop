@@ -30,9 +30,9 @@ export class CreateProductsDto {
 
   @IsOptional()
   @IsBoolean()
-  existence?: boolean;
+  existence?: boolean | string;
 
   @IsOptional()
   @IsBoolean()
-  sales?: boolean;
+  sales?: boolean | string;
 }

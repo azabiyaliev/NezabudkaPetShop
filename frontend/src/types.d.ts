@@ -62,7 +62,7 @@ export interface EditSiteMutation {
   address: string;
   email: string;
   phone: string;
-  logo: File | null;
+  PhotoByCarousel: PhotoCarousel []
 }
 
 export interface EditSite {
@@ -72,8 +72,12 @@ export interface EditSite {
   schedule: string;
   address: string;
   email: string;
-  phone: string;
-  logo: File | null;
+  phone: string
+  PhotoByCarousel: PhotoCarousel []
+}
+
+export interface PhotoCarousel{
+  photo: File | null;
 }
 
 export interface ICategories {
@@ -84,3 +88,31 @@ export interface ICategories {
 export interface CategoryMutation {
   title: string;
 }
+
+export interface ProductRequest {
+  productName: string;
+  productPhoto: File | null;
+  productPrice: number;
+  productDescription: string;
+  existence: boolean;
+  sales: boolean;
+  brandId: string;
+  categoryId: string;
+}
+
+///  productName        String  @map("product_name")
+//   productPhoto       String  @map("product_photo")
+//   productPrice       Int     @map("product_price")
+//   productDescription String  @map("product_description")
+//   productComment     String? @map("product_comment")
+//
+//   existence Boolean @default(true)
+//   sales     Boolean @default(false)
+//
+//   orderItem  OrderItem[]
+//   brandId    Int?        @map("brand_id")
+//   brand      Brand?      @relation(fields: [brandId], references: [id])
+//   categoryId Int?        @map("category_id")
+//   category   Category?   @relation(fields: [categoryId], references: [id])
+//
+//   reviews Review[]
