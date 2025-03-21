@@ -98,6 +98,13 @@ export interface ProductRequest {
   sales: boolean;
   brandId: string;
   categoryId: string;
+  id?: number;
+}
+
+export interface ICart {
+  id: number;
+  product_id: number;
+  quantity: number;
 }
 
 ///  productName        String  @map("product_name")

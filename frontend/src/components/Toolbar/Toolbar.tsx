@@ -4,7 +4,7 @@ import {
   Container, InputBase, styled,
   Toolbar
 } from '@mui/material';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { useAppSelector } from "../../app/hooks.ts";
 import ExistsUser from "./ExistsUser.tsx";
 import UnknownUser from "./UnknownUser.tsx";
@@ -19,6 +19,9 @@ import { selectEditSite } from '../../features/editionSite/editionSiteSlice.ts';
 import PhoneInTalkOutlinedIcon from '@mui/icons-material/PhoneInTalkOutlined';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
+import { selectUser } from '../../features/users/usersSlice.ts';
+import { useState } from 'react';
+import CustomCart from '../CustomCart/CustomCart.tsx';
 
 const CartBadge = styled(Badge)`
   & .${badgeClasses.badge} {
@@ -28,11 +31,19 @@ const CartBadge = styled(Badge)`
 `;
 
 const MainToolbar = () => {
-  const user = useAppSelector((state) => state.users.user);
+  const [openCart, setOpenCart] = useState<boolean>(false);
+  const user = useAppSelector(selectUser);
   const site = useAppSelector(selectEditSite);
+  const navigate = useNavigate();
+
+  const closeCart = () => {
+    setOpenCart(false);
+    navigate('/');
+  };
 
   return (
     <div>
+      <CustomCart openCart={openCart} closeCart={closeCart}/>
       <Box sx={{
         textAlign: 'left',
         padding: '15px',
@@ -82,7 +93,6 @@ const MainToolbar = () => {
                 </div>
                 {site?.phone}
               </NavLink>
-
               <NavLink
                 style={{
                   color: 'black',
@@ -144,7 +154,6 @@ const MainToolbar = () => {
                   />
                 </div>
               </NavLink>
-
               <NavLink to='https://api.whatsapp.com/send?phone=996555338899' style={{ marginRight: '10px' }}>
                 <div
                   style={{
@@ -225,7 +234,6 @@ const MainToolbar = () => {
                 </Typography>
               </div>
             </NavLink>
-
             <Box>
               <Box sx={{
                 display: 'flex',
@@ -245,37 +253,64 @@ const MainToolbar = () => {
                 </Button>
               </Box>
             </Box>
+            <Box sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}>
+              <div  className='text-decoration-none me-4'>
+                <ShoppingCartIcon fontSize="small" onClick={() => setOpenCart(true)}
+                                  sx={{
+                                    color: 'black',
+                                    transition: 'color 0.2s ease',
+                                    '&:hover': {
+                                      color: 'yellow',
+                                    },
+                                  }} />
+                <CartBadge badgeContent={1} color="success" overlap="circular" />
+              </div>
 
-            {user && user.role === 'client' && (
-              <Box sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-              }}>
-                <NavLink to='/my_cart' className='text-decoration-none me-4'>
-                  <ShoppingCartIcon fontSize="small"
-                                    sx={{
-                                      color: 'black',
-                                      transition: 'color 0.2s ease',
-                                      '&:hover': {
-                                        color: 'yellow',
-                                      },
-                                    }} />
-                  <CartBadge badgeContent={1} color="success" overlap="circular" />
-                </NavLink>
+              <NavLink to='/my_favorites' className='text-decoration-none'>
+                <FavoriteIcon fontSize="small"
+                              sx={{
+                                color: 'black',
+                                transition: 'color 0.2s ease',
+                                '&:hover': {
+                                  color: 'yellow',
+                                },
+                              }} />
+                <CartBadge badgeContent={1} color="success" overlap="circular" />
+              </NavLink>
+            </Box>
+            {/*{user && user.role === 'client' && (*/}
+            {/*  <Box sx={{*/}
+            {/*    display: 'flex',*/}
+            {/*    justifyContent: 'space-between',*/}
+            {/*  }}>*/}
+            {/*    <NavLink to='/my_cart' className='text-decoration-none me-4'>*/}
+            {/*      <ShoppingCartIcon fontSize="small"*/}
+            {/*                        sx={{*/}
+            {/*                          color: 'black',*/}
+            {/*                          transition: 'color 0.2s ease',*/}
+            {/*                          '&:hover': {*/}
+            {/*                            color: 'yellow',*/}
+            {/*                          },*/}
+            {/*                        }} />*/}
+            {/*      <CartBadge badgeContent={1} color="success" overlap="circular" />*/}
+            {/*    </NavLink>*/}
 
-                <NavLink to='/my_favorites' className='text-decoration-none'>
-                  <FavoriteIcon fontSize="small"
-                                sx={{
-                                  color: 'black',
-                                  transition: 'color 0.2s ease',
-                                  '&:hover': {
-                                    color: 'yellow',
-                                  },
-                                }} />
-                  <CartBadge badgeContent={1} color="success" overlap="circular" />
-                </NavLink>
-              </Box>
-            )}
+            {/*    <NavLink to='/my_favorites' className='text-decoration-none'>*/}
+            {/*      <FavoriteIcon fontSize="small"*/}
+            {/*                    sx={{*/}
+            {/*                      color: 'black',*/}
+            {/*                      transition: 'color 0.2s ease',*/}
+            {/*                      '&:hover': {*/}
+            {/*                        color: 'yellow',*/}
+            {/*                      },*/}
+            {/*                    }} />*/}
+            {/*      <CartBadge badgeContent={1} color="success" overlap="circular" />*/}
+            {/*    </NavLink>*/}
+            {/*  </Box>*/}
+            {/*)}*/}
 
             {user ? (
               <ExistsUser user={user} />
@@ -285,8 +320,6 @@ const MainToolbar = () => {
           </Toolbar>
         </Box>
       </Container>
-
-
     </div>
   );
 };

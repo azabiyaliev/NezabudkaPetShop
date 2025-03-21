@@ -6,30 +6,96 @@ import BrandForHomePage from '../../components/Brand/BrandForHomePage/BrandForHo
 import { Box } from '@mui/material';
 import Typography from '@mui/joy/Typography';
 import Carousel from '../../components/UI/Carousel/Carousel.tsx';
-import Footer from '../../components/footer/footer.tsx';
+import { productsFromSlice } from '../../features/products/productsSlice.ts';
+import { getProduct } from '../../features/products/productsThunk.ts';
+import AspectRatio from '@mui/joy/AspectRatio';
+import Button from '@mui/joy/Button';
+import Card from '@mui/joy/Card';
+import CardContent from '@mui/joy/CardContent';
+import IconButton from '@mui/joy/IconButton';
+import BookmarkAdd from '@mui/icons-material/BookmarkAddOutlined';
+import { ProductRequest } from '../../types';
+import { apiUrl } from '../../globalConstants.ts';
 
 const HomePage = () => {
   const brands = useAppSelector(brandsFromSlice);
+  const products = useAppSelector(productsFromSlice);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(getBrands()).unwrap();
+    dispatch(getProduct()).unwrap();
   }, [dispatch]);
 
+  const addProductToCart = (id: number | undefined) => {
+    console.log(id);
+
+  };
+
+  console.log(products);
   return (
     <>
-      {brands.length > 0 && (
-        <Box sx={{marginTop: '40px'}}>
-          <div className='mb-5'>
-            <Carousel />
-          </div>
-          <Typography sx={{ fontSize: '40px', mb: 0.5,  color: 'rgba(250, 143, 1, 1)', textAlign: 'center' }}>
-            Наши бренды
+      <div className='mb-5'>
+        <Carousel/>
+      </div>
+      {products.length > 0 && (
+        <Box>
+          <Typography sx={{fontSize: '40px', mb: 0.5, color: 'rgba(250, 143, 1, 1)', textAlign: 'center'}}>
+            Наши товары
           </Typography>
-          <BrandForHomePage brands={brands} />
+          <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap'}}>
+            {products.map((product: ProductRequest) => (
+              <Card sx={{ width: 320 }} key={product.id}>
+                <div>
+                  <Typography level="title-lg">{product.productName}</Typography>
+                  <Typography level="body-sm">April 24 to May 02, 2021</Typography>
+                  <IconButton
+                    aria-label="bookmark Bahamas Islands"
+                    variant="plain"
+                    color="neutral"
+                    size="sm"
+                    sx={{ position: 'absolute', top: '0.875rem', right: '0.5rem' }}
+                  >
+                    <BookmarkAdd />
+                  </IconButton>
+                </div>
+                <AspectRatio minHeight="120px" maxHeight="200px">
+                  <img
+                    src={apiUrl + product.productPhoto}
+                    srcSet={apiUrl + product.productPhoto}
+                    loading="lazy"
+                    alt=""
+                  />
+                </AspectRatio>
+                <CardContent orientation="horizontal">
+                  <div>
+                    <Typography level="body-xs">Total price:</Typography>
+                    <Typography sx={{ fontSize: 'lg', fontWeight: 'lg' }}>{product.productPrice} сом</Typography>
+                  </div>
+                  <Button
+                    variant="solid"
+                    size="md"
+                    color="primary"
+                    aria-label="Explore Bahamas Islands"
+                    sx={{ ml: 'auto', alignSelf: 'center', fontWeight: 600 }}
+                    onClick={() => addProductToCart(product.id)}
+                  >
+                    Explore
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </Box>
         </Box>
       )}
-      <footer><Footer/></footer>
+      {brands.length > 0 && (
+        <Box sx={{marginTop: '40px'}}>
+          <Typography sx={{fontSize: '40px', mb: 0.5, color: 'rgba(250, 143, 1, 1)', textAlign: 'center'}}>
+            Наши бренды
+          </Typography>
+          <BrandForHomePage brands={brands}/>
+        </Box>
+      )}
     </>
   );
 };

@@ -38,3 +38,11 @@ export const addProduct = createAsyncThunk<
     throw error;
   }
 });
+
+export const getProduct = createAsyncThunk(
+  'product/getProduct',
+  async () => {
+    const response = await axiosApi('/products/catalog');
+    return response.data || [];
+  }
+);
