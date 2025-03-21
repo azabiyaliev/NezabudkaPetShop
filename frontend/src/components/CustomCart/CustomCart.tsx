@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Drawer from '@mui/joy/Drawer';
 import Button from '@mui/joy/Button';
 import DialogTitle from '@mui/joy/DialogTitle';
@@ -8,6 +8,8 @@ import Divider from '@mui/joy/Divider';
 import Sheet from '@mui/joy/Sheet';
 import Typography from '@mui/joy/Typography';
 import { useNavigate } from 'react-router-dom';
+import { useAppSelector } from '../../app/hooks.ts';
+import { cartsFromSlice } from '../../features/cart/cartSlice.ts';
 
 interface Props {
   openCart: boolean;
@@ -15,14 +17,16 @@ interface Props {
 }
 
 const CustomCart:React.FC<Props> = ({openCart, closeCart}) => {
-  const [products, setProducts] = useState([]);
+  const cart = useAppSelector(cartsFromSlice);
   const navigate = useNavigate();
 
   const backToShop = () => {
     closeCart();
     navigate('/');
   }
-  
+
+  console.log(cart);
+
   return (
     <React.Fragment>
       <Drawer
@@ -55,7 +59,7 @@ const CustomCart:React.FC<Props> = ({openCart, closeCart}) => {
           <DialogTitle>Корзина</DialogTitle>
           <ModalClose />
           <Divider/>
-          {products.length === 0 ? (
+          {cart.length === 0 ? (
               <>
                 <img
                   style={{

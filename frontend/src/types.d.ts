@@ -98,12 +98,18 @@ export interface ProductRequest {
   sales: boolean;
   brandId: string;
   categoryId: string;
-  id?: number;
+  id: number;
 }
 
 export interface ICart {
-  id: number;
-  product_id: number;
+  id?: number;
+  productId: number;
+  quantity: number;
+  product?: ProductRequest,
+}
+
+export interface ICartMutation {
+  productId: number;
   quantity: number;
 }
 

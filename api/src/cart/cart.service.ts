@@ -6,7 +6,11 @@ import { CartDto } from '../dto/cart.dto';
 export class CartService {
   constructor(private readonly prisma: PrismaService) {}
   async getCard() {
-    const carts = await this.prisma.customerCart.findMany({});
+    const carts = await this.prisma.customerCart.findMany({
+      include: {
+        product: true,
+      },
+    });
     return carts || [];
   }
   async createCart(cartDTO: CartDto) {

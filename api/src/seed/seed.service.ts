@@ -208,11 +208,5 @@ export class SeedService {
         createdAt: new Date(),
       },
     });
-    await this.prisma.brand.create({
-      data: {
-        title: 'testrwrw',
-        logo: './assets/images/logo.png',
-      },
-    });
   }
 }

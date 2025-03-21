@@ -175,5 +175,5 @@ model CustomerCart {
   product   Products @relation(fields: [productId], references: [id])
   quantity  Int
 
-  @@map("cards")
+  @@map("cart")
 }

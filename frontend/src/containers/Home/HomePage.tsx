@@ -1,6 +1,6 @@
 import { useAppDispatch, useAppSelector } from '../../app/hooks.ts';
 import { brandsFromSlice } from '../../features/brands/brandsSlice.ts';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { getBrands } from '../../features/brands/brandsThunk.ts';
 import BrandForHomePage from '../../components/Brand/BrandForHomePage/BrandForHomePage.tsx';
 import { Box } from '@mui/material';
@@ -16,25 +16,47 @@ import IconButton from '@mui/joy/IconButton';
 import BookmarkAdd from '@mui/icons-material/BookmarkAddOutlined';
 import { ProductRequest } from '../../types';
 import { apiUrl } from '../../globalConstants.ts';
+import { addCart, editCart, getCart } from '../../features/cart/cartThunk.ts';
+import CustomCart from '../../components/CustomCart/CustomCart.tsx';
+import { cartsFromSlice } from '../../features/cart/cartSlice.ts';
 
 const HomePage = () => {
+  const [openCart, setOpenCart] = useState<boolean>(false);
   const brands = useAppSelector(brandsFromSlice);
   const products = useAppSelector(productsFromSlice);
+  const cart = useAppSelector(cartsFromSlice);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(getBrands()).unwrap();
     dispatch(getProduct()).unwrap();
+    dispatch(getCart()).unwrap();
   }, [dispatch]);
 
-  const addProductToCart = (id: number | undefined) => {
-    console.log(id);
+  const addProductToCart = async (product: ProductRequest) => {
 
+    const indexProduct = cart.findIndex((order) => order.productId === product.id);
+
+    if (indexProduct === -1) {
+
+      await dispatch(addCart({ productId: product.id, quantity: 1 })).unwrap();
+    } else {
+
+      const updatedProduct = { ...cart[indexProduct], quantity: cart[indexProduct].quantity + 1 };
+      const cartId = cart[indexProduct].id;
+      console.log(cartId);
+
+      await dispatch(editCart({id: cartId, productId: updatedProduct.productId, quantity: updatedProduct.quantity })).unwrap();
+    }
   };
 
-  console.log(products);
+  const closeCart = () => {
+    setOpenCart(false);
+  };
+
   return (
     <>
+      <CustomCart openCart={openCart} closeCart={closeCart}/>
       <div className='mb-5'>
         <Carousel/>
       </div>
@@ -78,7 +100,7 @@ const HomePage = () => {
                     color="primary"
                     aria-label="Explore Bahamas Islands"
                     sx={{ ml: 'auto', alignSelf: 'center', fontWeight: 600 }}
-                    onClick={() => addProductToCart(product.id)}
+                    onClick={() => addProductToCart(product)}
                   >
                     Explore
                   </Button>
