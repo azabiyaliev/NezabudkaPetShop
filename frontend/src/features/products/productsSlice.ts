@@ -1,16 +1,16 @@
-import { ProductRequest } from '../../types';
+import { SubcategoryWithBrand } from '../../types';
 import { createSlice } from '@reduxjs/toolkit';
-import { addProduct } from './productsThunk.ts';
+import { addProduct, getAllProductsByCategory } from './productsThunk.ts';
 import { RootState } from '../../app/store.ts';
 
 interface ProductsState {
-  products: ProductRequest[];
+  brands: SubcategoryWithBrand[];
   loading: boolean;
   error: boolean;
 }
 
 const initialState: ProductsState = {
-  products: [],
+  brands: [],
   loading: false,
   error: false
 }
@@ -23,6 +23,16 @@ const productsSlice = createSlice({
   reducers:{},
   extraReducers: (builder) => {
     builder
+      .addCase(getAllProductsByCategory.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getAllProductsByCategory.fulfilled, (state, action) => {
+        state.loading = false;
+        state.brands = action.payload
+      })
+      .addCase(getAllProductsByCategory.rejected, (state) => {
+        state.loading = false;
+      })
       .addCase(addProduct.pending, (state) => {
         state.loading = true;
       })

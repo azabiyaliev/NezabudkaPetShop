@@ -86,4 +86,11 @@ export class ProductsController {
   async deleteProduct(@Param('productId') productId: string) {
     return await this.productsService.deleteProduct(Number(productId));
   }
+
+  @Get('categoryId/:id')
+  async getProductByCategory(@Param('id') categoryId: string) {
+    return await this.productsService.getBrandsByCategoryId(
+      Number(categoryId),
+    );
+  }
 }

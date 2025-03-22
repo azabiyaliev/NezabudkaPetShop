@@ -16,6 +16,7 @@ import AllCategoriesPage from './containers/Category/AllCategoriesPage/AllCatego
 import OneCategory from './containers/Category/OneCategory/OneCategory.tsx';
 import EditionSitePage from './containers/Admin/EditionSite/EditionSitePage.tsx';
 import NewProduct from './containers/Admin/Product/containers/NewProduct.tsx';
+import ProductPage from './containers/Admin/Product/containers/ProductPage.tsx';
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -61,6 +62,7 @@ const App = () => {
               <NewCategory/>
             </ProtectedRoute>
           } />
+          <Route path="/product" element={<ProductPage/>}/>
         </Routes>
       </Layout>
     </div>

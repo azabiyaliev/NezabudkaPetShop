@@ -120,8 +120,28 @@ export class SeedService {
           title: 'Собаки',
         },
         {
+          id: 22,
+          title: 'Сухой корм',
+          parentId: 1,
+        },
+        {
+          id: 23,
+          title: 'Влажные корма',
+          parentId: 1,
+        },
+        {
           id: 2,
           title: 'Кошки',
+        },
+        {
+          id: 25,
+          title: 'Сухие корма',
+          parentId: 2,
+        },
+        {
+          id: 26,
+          title: 'Влажные корм',
+          parentId: 2,
         },
         {
           id: 3,
@@ -144,29 +164,66 @@ export class SeedService {
     await this.prisma.products.createMany({
       data: [
         {
-          id: 1,
           productName: 'Сухой корм для собак',
           productPrice: 1200,
           productDescription: 'Качественный сухой корм для взрослых собак.',
           brandId: 1,
-          categoryId: 1,
+          categoryId: 22,
           productPhoto: './fixtures/brands/dog_food.jpg',
           existence: false,
           sales: false,
         },
         {
-          id: 2,
-          productName: 'Когтеточка для кошек',
+          productName: 'Сухой корм',
+          productPrice: 1200,
+          productDescription: 'Качественный сухой корм для взрослых собак.',
+          brandId: 1,
+          categoryId: 22,
+          productPhoto: './fixtures/brands/dog_food.jpg',
+          existence: false,
+          sales: false,
+        },
+        {
+          productName: 'Щебень для собак',
+          productPrice: 1200,
+          productDescription: 'Качественный сухой корм для взрослых собак.',
+          brandId: 1,
+          categoryId: 23,
+          productPhoto: './fixtures/brands/dog_food.jpg',
+          existence: false,
+          sales: false,
+        },
+        {
+          productName: 'Игрушка для собак',
           productPrice: 2500,
           productDescription: 'Прочная когтеточка для развлечения вашей кошки.',
           brandId: 2,
-          categoryId: 2,
+          categoryId: 25,
           productPhoto: './fixtures/brands/cat_scratcher.jpg',
           existence: false,
           sales: false,
         },
         {
-          id: 3,
+          productName: 'Поводок',
+          productPrice: 2500,
+          productDescription: 'Прочная когтеточка для развлечения вашей кошки.',
+          brandId: 2,
+          categoryId: 25,
+          productPhoto: './fixtures/brands/cat_scratcher.jpg',
+          existence: false,
+          sales: false,
+        },
+        {
+          productName: 'Ошейник',
+          productPrice: 2500,
+          productDescription: 'Прочная когтеточка для развлечения вашей кошки.',
+          brandId: 2,
+          categoryId: 26,
+          productPhoto: './fixtures/brands/cat_scratcher.jpg',
+          existence: false,
+          sales: false,
+        },
+        {
           productName: 'Клетка для птиц',
           productPrice: 4500,
           productDescription: 'Просторная и удобная клетка для мелких птиц.',
@@ -177,7 +234,6 @@ export class SeedService {
           sales: false,
         },
         {
-          id: 4,
           productName: 'Фильтр для аквариума',
           productPrice: 1800,
           productDescription:
@@ -189,7 +245,6 @@ export class SeedService {
           sales: false,
         },
         {
-          id: 5,
           productName: 'Кормушка для сена для кроликов',
           productPrice: 900,
           productDescription:
@@ -206,12 +261,6 @@ export class SeedService {
       data: {
         quantity: 2,
         createdAt: new Date(),
-      },
-    });
-    await this.prisma.brand.create({
-      data: {
-        title: 'testrwrw',
-        logo: './assets/images/logo.png',
       },
     });
   }
