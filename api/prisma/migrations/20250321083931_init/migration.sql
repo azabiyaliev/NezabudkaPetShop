@@ -1,37 +1,33 @@
-/*
-  Warnings:
+-- CreateEnum
+CREATE TYPE "Role" AS ENUM ('client', 'admin');
 
-  - You are about to drop the column `parentId` on the `categories` table. All the data in the column will be lost.
-  - You are about to drop the `Order` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Products` table. If the table is not empty, all the data it contains will be lost.
-  - Changed the type of `productId` on the `reviews` table. No cast exists, the column would be dropped and recreated, which cannot be done if there is data, since the column is required.
+-- CreateEnum
+CREATE TYPE "OrderStatus" AS ENUM ('inProcess', 'onTheWay', 'isDelivered', 'Canceled');
 
-*/
--- DropForeignKey
-ALTER TABLE "Order" DROP CONSTRAINT "Order_productId_fkey";
+-- CreateTable
+CREATE TABLE "users" (
+    "id" SERIAL NOT NULL,
+    "email" TEXT NOT NULL,
+    "firstName" TEXT NOT NULL,
+    "secondName" TEXT NOT NULL,
+    "password" TEXT NOT NULL,
+    "phone" TEXT,
+    "role" "Role" NOT NULL DEFAULT 'client',
+    "token" TEXT,
+    "googleID" TEXT,
+    "facebookID" TEXT,
 
--- DropForeignKey
-ALTER TABLE "Order" DROP CONSTRAINT "Order_userId_fkey";
+    CONSTRAINT "users_pkey" PRIMARY KEY ("id")
+);
 
--- DropForeignKey
-ALTER TABLE "categories" DROP CONSTRAINT "categories_parentId_fkey";
+-- CreateTable
+CREATE TABLE "brands" (
+    "id" SERIAL NOT NULL,
+    "title" TEXT NOT NULL,
+    "logo" TEXT NOT NULL,
 
--- DropForeignKey
-ALTER TABLE "reviews" DROP CONSTRAINT "reviews_productId_fkey";
-
--- AlterTable
-ALTER TABLE "categories" DROP COLUMN "parentId",
-ADD COLUMN     "parent_id" INTEGER;
-
--- AlterTable
-ALTER TABLE "reviews" DROP COLUMN "productId",
-ADD COLUMN     "productId" INTEGER NOT NULL;
-
--- DropTable
-DROP TABLE "Order";
-
--- DropTable
-DROP TABLE "Products";
+    CONSTRAINT "brands_pkey" PRIMARY KEY ("id")
+);
 
 -- CreateTable
 CREATE TABLE "editionSite" (
@@ -53,6 +49,15 @@ CREATE TABLE "photo_by_carousel" (
     "site_edition_id" INTEGER,
 
     CONSTRAINT "photo_by_carousel_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "categories" (
+    "id" SERIAL NOT NULL,
+    "title" TEXT NOT NULL,
+    "parent_id" INTEGER,
+
+    CONSTRAINT "categories_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -94,6 +99,56 @@ CREATE TABLE "order_items" (
     CONSTRAINT "order_items_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "reviews" (
+    "id" SERIAL NOT NULL,
+    "userId" INTEGER NOT NULL,
+    "rating" INTEGER,
+    "text" TEXT,
+    "productId" INTEGER NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "reviews_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "comments" (
+    "id" SERIAL NOT NULL,
+    "userId" INTEGER NOT NULL,
+    "reviewId" INTEGER NOT NULL,
+    "comment" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "comments_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "cards" (
+    "id" SERIAL NOT NULL,
+    "product_id" INTEGER NOT NULL,
+    "quantity" INTEGER NOT NULL,
+
+    CONSTRAINT "cards_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateIndex
+CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "users_phone_key" ON "users"("phone");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "users_googleID_key" ON "users"("googleID");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "users_facebookID_key" ON "users"("facebookID");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "brands_title_key" ON "brands"("title");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "categories_title_key" ON "categories"("title");
+
 -- AddForeignKey
 ALTER TABLE "photo_by_carousel" ADD CONSTRAINT "photo_by_carousel_site_edition_id_fkey" FOREIGN KEY ("site_edition_id") REFERENCES "editionSite"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
@@ -116,4 +171,16 @@ ALTER TABLE "order_items" ADD CONSTRAINT "order_items_product_id_fkey" FOREIGN K
 ALTER TABLE "order_items" ADD CONSTRAINT "order_items_order_id_fkey" FOREIGN KEY ("order_id") REFERENCES "orders"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "reviews" ADD CONSTRAINT "reviews_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "reviews" ADD CONSTRAINT "reviews_productId_fkey" FOREIGN KEY ("productId") REFERENCES "products"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "comments" ADD CONSTRAINT "comments_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "comments" ADD CONSTRAINT "comments_reviewId_fkey" FOREIGN KEY ("reviewId") REFERENCES "reviews"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "cards" ADD CONSTRAINT "cards_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "products"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

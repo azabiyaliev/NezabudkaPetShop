@@ -17,6 +17,8 @@ import OneCategory from './containers/Category/OneCategory/OneCategory.tsx';
 import EditionSitePage from './containers/Admin/EditionSite/EditionSitePage.tsx';
 import NewProduct from './containers/Admin/Product/containers/NewProduct.tsx';
 import ProductPage from './containers/Admin/Product/containers/ProductPage.tsx';
+import ProductsPage from './containers/Admin/Product/containers/ProductsPage.tsx';
+import EditProduct from './containers/Admin/Product/containers/EditProduct.tsx';
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -52,6 +54,16 @@ const App = () => {
           <Route path="private/add_product" element={
             <ProtectedRoute isAllowed={user && user.role === 'admin'}>
               <NewProduct />
+            </ProtectedRoute>
+          }/>
+          <Route path="private/products" element={
+            <ProtectedRoute isAllowed={user && user.role === 'admin'}>
+              <ProductsPage />
+            </ProtectedRoute>
+          }/>
+          <Route path="private/edit_product/:id" element={
+            <ProtectedRoute isAllowed={user && user.role === 'admin'}>
+              <EditProduct />
             </ProtectedRoute>
           }/>
           <Route path="/private/all_categories" element={<AllCategoriesPage/>}/>

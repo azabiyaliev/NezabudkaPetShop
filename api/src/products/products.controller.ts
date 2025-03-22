@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -69,10 +70,26 @@ export class ProductsController {
   @UseGuards(TokenAuthGuard, RolesGuard)
   @Roles('admin')
   @Put('update_product_item/:productId')
+  @UseInterceptors(
+    FileInterceptor('productPhoto', {
+      storage: diskStorage({
+        destination: './public/productImg',
+        filename: (_req, file, callback) => {
+          const imageFormat = extname(file.originalname);
+          callback(null, `${crypto.randomUUID()}${imageFormat}`);
+        },
+      }),
+    }),
+  )
   async updateProductItem(
     @Param('productId') productId: string,
     @Body() createProductDto: CreateProductsDto,
   ) {
+    console.log(productId);
+    console.log(createProductDto);
+    if (!createProductDto) {
+      throw new BadRequestException('Необходимо передать данные продукта');
+    }
     return await this.productsService.changeProductInfo(
       Number(productId),
       createProductDto,

@@ -26,6 +26,8 @@ import FormControl from "@mui/material/FormControl";
 
 interface Props {
   onSubmit: (product: ProductRequest) => void;
+  editProduct?: ProductRequest;
+  isProduct?: boolean;
 }
 
 const initialState = {
@@ -39,8 +41,8 @@ const initialState = {
   categoryId: "",
 };
 
-const ProductForm: React.FC<Props> = ({ onSubmit }) => {
-  const [form, setForm] = useState<ProductRequest>(initialState);
+const ProductForm: React.FC<Props> = ({ onSubmit, editProduct = initialState, isProduct = false }) => {
+  const [form, setForm] = useState<ProductRequest>(editProduct || initialState);
   const dispatch = useAppDispatch();
   const brands = useAppSelector(brandsFromSlice);
   const categories = useAppSelector(selectCategories);
@@ -93,6 +95,11 @@ const ProductForm: React.FC<Props> = ({ onSubmit }) => {
     }
 
     onSubmit({ ...form });
+
+    if(!isProduct) {
+      setForm(initialState);
+      return;
+    }
   };
 
   const selectChangeHandler = (e: SelectChangeEvent) => {
@@ -113,74 +120,64 @@ const ProductForm: React.FC<Props> = ({ onSubmit }) => {
 
   return (
     <form onSubmit={submitFormHandler}>
-      <Typography variant={"h5"} sx={{ mt: 4, textAlign: "center" }}>
-        Добавление товара
-      </Typography>
-      <Box
-        sx={{
-          width: 800,
-          borderRadius: "10px",
-          boxShadow: "0 4px 12px rgba(255, 255, 255, 0.2)",
-          border: "1px solid gray",
-          marginTop: 5,
-          mx: "auto",
-          p: 2,
-        }}
-      >
-        <Grid container direction="column" spacing={2}>
-          <Grid size={{ xs: 12 }}>
-            <TextField
-              sx={{
-                width: "100%",
-                "& label.Mui-focused": { color: orange[500] },
-                "& .MuiOutlinedInput-root": {
-                  "& fieldset": { borderColor: "#ccc" },
-                  "&:hover fieldset": { borderColor: orange[500] },
-                  "&.Mui-focused fieldset": { borderColor: orange[500] },
-                },
-              }}
-              id="productName"
-              name="productName"
-              label="Название"
-              required
-              value={form.productName}
-              onChange={inputChangeHandler}
-            />
-          </Grid>
-          <Grid size={{ xs: 12 }}>
-            <TextField
-              sx={{
-                width: "100%",
-                "& label.Mui-focused": { color: orange[500] },
-                "& .MuiOutlinedInput-root": {
-                  "& fieldset": { borderColor: "#ccc" },
-                  "&:hover fieldset": { borderColor: orange[500] },
-                  "&.Mui-focused fieldset": { borderColor: orange[500] },
-                },
-              }}
-              type="number"
-              id="productPrice"
-              name="productPrice"
-              label="Цена"
-              required
-              value={form.productPrice}
-              onChange={inputChangeHandler}
-              inputProps={{ min: 0 }}
-            />
-          </Grid>
-          <Grid size={{ xs: 12 }}>
-            <TiptapEditor
-              content={form.productDescription}
-              onChange={handleDescriptionChange}
-            />
-          </Grid>
-          {brands.length === 0 ? (
-            <Typography>Брендов пока нет</Typography>
-          ) : (
+        <Typography variant={"h5"} sx={{ mt: 4, textAlign: "center" }}>
+          {!isProduct ? 'Добавление товара' : 'Редактирование товара'}
+        </Typography>
+        <Box
+          sx={{
+            width: "100%",
+            marginTop: 5,
+            mx: "auto",
+            p: 2,
+          }}
+        >
+          <Grid container direction="column" spacing={2}>
             <Grid size={{ xs: 12 }}>
-              <FormControl
-                fullWidth
+              <TextField
                 sx={{
+                  width: "100%",
+                  "& label.Mui-focused": { color: orange[500] },
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": { borderColor: "#ccc" },
+                    "&:hover fieldset": { borderColor: orange[500] },
+                    "&.Mui-focused fieldset": { borderColor: orange[500] },
+                  }
+                }}
+                id="productName"
+                name="productName"
+                label="Название"
+                required
+                value={form.productName}
+                onChange={inputChangeHandler}
+              />
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <TextField
+                sx={{
+                  width: "100%",
+                  "& label.Mui-focused": { color: orange[500] },
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": { borderColor: "#ccc" },
+                    "&:hover fieldset": { borderColor: orange[500] },
+                    "&.Mui-focused fieldset": { borderColor: orange[500] },
+                  }
+                }}
+                type="number"
+                id="productPrice"
+                name="productPrice"
+                label="Цена"
+                required
+                value={form.productPrice}
+                onChange={inputChangeHandler}
+                inputProps={{ min: 0}}
+              />
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+                <TiptapEditor content={form.productDescription} onChange={handleDescriptionChange} />
+            </Grid>
+            {brands.length === 0 ? <Typography>Брендов пока нет</Typography> : (
+              <Grid size={{ xs: 12 }}>
+                <FormControl fullWidth sx={{
                   "& label.Mui-focused": { color: orange[500] },
                   "& .MuiOutlinedInput-root": {
                     "& fieldset": { borderColor: "#ccc" },
@@ -275,30 +272,28 @@ const ProductForm: React.FC<Props> = ({ onSubmit }) => {
               label="Есть в наличии"
             />
 
-            <FormControlLabel
-              control={
-                <Checkbox
-                  sx={{
-                    "&.Mui-checked": {
-                      color: orange[500],
-                    },
-                  }}
-                  checked={form.sales}
-                  onChange={(e) =>
-                    setForm((prev) => ({ ...prev, sales: e.target.checked }))
-                  }
-                />
-              }
-              label="Участвует в акции"
-            />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    sx={{
+                      "&.Mui-checked": {
+                        color: orange[500],
+                      },
+                    }}
+                    checked={form.sales}
+                    onChange={(e) => setForm((prev) => ({ ...prev, sales: e.target.checked }))}
+                  />
+                }
+                label="Участвует в акции"
+              />
+            </Grid>
+            <Grid>
+              <Button type="submit" sx={{ color: "#ff9800", width: "100%"}} variant="outlined" color="inherit" >
+                {!isProduct ? 'Добавить' : 'Сохранить'}
+              </Button>
+            </Grid>
           </Grid>
-          <Grid>
-            <Button type="submit" sx={{ color: "#ff9800" }}>
-              Добавить
-            </Button>
-          </Grid>
-        </Grid>
-      </Box>
+        </Box>
     </form>
   );
 };

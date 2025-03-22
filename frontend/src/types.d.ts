@@ -90,6 +90,7 @@ export interface CategoryMutation {
 }
 
 export interface ProductRequest {
+  id?: number;
   productName: string;
   productPhoto: File | null;
   productPrice: number;
@@ -135,3 +136,17 @@ export interface SubcategoryWithBrand {
 //   category   Category?   @relation(fields: [categoryId], references: [id])
 //
 //   reviews Review[]
+export interface ProductResponse {
+  id: number;
+  productName: string;
+  productPhoto: string;
+  productPrice: number;
+  productDescription: string;
+  existence: boolean;
+  sales: boolean;
+  categoryId: string;
+  brandId: string;
+  brand: IBrand;
+  category: ICategories;
+}
+
