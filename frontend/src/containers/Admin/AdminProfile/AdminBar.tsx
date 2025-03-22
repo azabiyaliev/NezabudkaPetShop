@@ -114,7 +114,7 @@ const AdminBar = () => {
             <ListItemButton
               sx={{ pl: 3 }}
             >
-              <ListItem component={NavLink} to="/private/all_products">
+              <ListItem component={NavLink} to="/private/products">
                 <ListItemText primary="Все товары" className="text-black" />
               </ListItem>
             </ListItemButton>

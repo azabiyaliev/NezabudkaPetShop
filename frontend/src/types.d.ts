@@ -90,6 +90,7 @@ export interface CategoryMutation {
 }
 
 export interface ProductRequest {
+  id?: number;
   productName: string;
   productPhoto: File | null;
   productPrice: number;
@@ -100,19 +101,17 @@ export interface ProductRequest {
   categoryId: string;
 }
 
-///  productName        String  @map("product_name")
-//   productPhoto       String  @map("product_photo")
-//   productPrice       Int     @map("product_price")
-//   productDescription String  @map("product_description")
-//   productComment     String? @map("product_comment")
-//
-//   existence Boolean @default(true)
-//   sales     Boolean @default(false)
-//
-//   orderItem  OrderItem[]
-//   brandId    Int?        @map("brand_id")
-//   brand      Brand?      @relation(fields: [brandId], references: [id])
-//   categoryId Int?        @map("category_id")
-//   category   Category?   @relation(fields: [categoryId], references: [id])
-//
-//   reviews Review[]
+export interface ProductResponse {
+  id: number;
+  productName: string;
+  productPhoto: string;
+  productPrice: number;
+  productDescription: string;
+  existence: boolean;
+  sales: boolean;
+  categoryId: string;
+  brandId: string;
+  brand: IBrand;
+  category: ICategories;
+}
+

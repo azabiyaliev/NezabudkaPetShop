@@ -4,10 +4,12 @@ import { addProductLoading } from "../../../../features/products/productsSlice.t
 import { addProduct } from "../../../../features/products/productsThunk.ts";
 import { ProductRequest } from "../../../../types";
 import { toast } from "react-toastify";
-import { Box, CircularProgress } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 import ProductForm from "../components/ProductForm.tsx";
 import { selectUser } from "../../../../features/users/usersSlice.ts";
 import AdminBar from "../../AdminProfile/AdminBar.tsx";
+import Grid from '@mui/material/Grid2';
+
 
 const NewProduct = () => {
   const dispatch = useAppDispatch();
@@ -20,7 +22,7 @@ const NewProduct = () => {
       if (user && user.role === "admin") {
         await dispatch(addProduct({ product, token: user.token })).unwrap();
         toast.success("Товар успешно добавлен!");
-        navigate("/private/");
+        navigate("/private/products");
       }
     } catch (e) {
       console.log(e);
@@ -32,10 +34,14 @@ const NewProduct = () => {
       {loading ? (
         <CircularProgress />
       ) : (
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '30px 0'}}>
-          <AdminBar/>
-          <ProductForm onSubmit={onSubmitForm} />
-        </Box>
+        <Grid container spacing={2} >
+          <Grid size={3}>
+            <AdminBar/>
+          </Grid>
+          <Grid size={9}>
+            <ProductForm onSubmit={onSubmitForm} />
+          </Grid>
+        </Grid>
       )}
     </>
   );

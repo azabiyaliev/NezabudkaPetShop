@@ -26,6 +26,8 @@ import FormControl from '@mui/material/FormControl';
 
 interface Props {
   onSubmit: (product: ProductRequest) => void;
+  editProduct?: ProductRequest;
+  isProduct?: boolean;
 }
 
 const initialState = {
@@ -39,8 +41,8 @@ const initialState = {
   categoryId: '',
 };
 
-const ProductForm: React.FC<Props> = ({ onSubmit }) => {
-  const [form, setForm] = useState<ProductRequest>(initialState);
+const ProductForm: React.FC<Props> = ({ onSubmit, editProduct = initialState, isProduct = false }) => {
+  const [form, setForm] = useState<ProductRequest>(editProduct || initialState);
   const dispatch = useAppDispatch();
   const brands = useAppSelector(brandsFromSlice);
   const categories = useAppSelector(selectCategories);
@@ -94,6 +96,11 @@ const ProductForm: React.FC<Props> = ({ onSubmit }) => {
     }
 
     onSubmit({ ...form });
+
+    if(!isProduct) {
+      setForm(initialState);
+      return;
+    }
   };
 
   const selectChangeHandler = (e: SelectChangeEvent) => {
@@ -115,14 +122,11 @@ const ProductForm: React.FC<Props> = ({ onSubmit }) => {
   return (
     <form onSubmit={submitFormHandler}>
         <Typography variant={"h5"} sx={{ mt: 4, textAlign: "center" }}>
-          Добавление товара
+          {!isProduct ? 'Добавление товара' : 'Редактирование товара'}
         </Typography>
         <Box
           sx={{
-            width: 800,
-            borderRadius: "10px",
-            boxShadow: "0 4px 12px rgba(255, 255, 255, 0.2)",
-            border: "1px solid gray",
+            width: "100%",
             marginTop: 5,
             mx: "auto",
             p: 2,
@@ -274,8 +278,8 @@ const ProductForm: React.FC<Props> = ({ onSubmit }) => {
               />
             </Grid>
             <Grid>
-              <Button type="submit" sx={{ color: "#ff9800"}}>
-                Добавить
+              <Button type="submit" sx={{ color: "#ff9800", width: "100%"}} variant="outlined" color="inherit" >
+                {!isProduct ? 'Добавить' : 'Сохранить'}
               </Button>
             </Grid>
           </Grid>
