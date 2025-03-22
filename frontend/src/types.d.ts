@@ -101,19 +101,6 @@ export interface ProductRequest {
   categoryId: string;
 }
 
-export interface Product {
-  id: number;
-  productName: string;
-  productPhoto: File | null;
-  productPrice: number;
-  productDescription: string;
-  existence: boolean;
-  sales: boolean;
-  brandId: string;
-  categoryId: string;
-}
-
-
 export interface SubcategoryWithBrand {
   id: number;
   title: string;

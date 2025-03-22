@@ -65,7 +65,6 @@ export const getProducts = createAsyncThunk<ProductResponse[]>(
   "products/getProducts",
   async () => {
     const response = await axiosApi<ProductResponse[]>("/products/catalog");
-
     return response.data || [];
   },
 );
