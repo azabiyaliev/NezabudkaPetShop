@@ -30,6 +30,7 @@ const CartBadge = styled(Badge)`
 const MainToolbar = () => {
   const user = useAppSelector((state) => state.users.user);
   const site = useAppSelector(selectEditSite);
+  console.log(site)
 
   return (
     <div>

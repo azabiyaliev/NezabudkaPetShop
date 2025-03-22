@@ -16,9 +16,10 @@ import AllCategoriesPage from './containers/Category/AllCategoriesPage/AllCatego
 import OneCategory from './containers/Category/OneCategory/OneCategory.tsx';
 import EditionSitePage from './containers/Admin/EditionSite/EditionSitePage.tsx';
 import NewProduct from './containers/Admin/Product/containers/NewProduct.tsx';
-import ProductPage from './containers/Admin/Product/containers/ProductPage.tsx';
+import ProductPage from './containers/Product/containers/ProductPage.tsx';
 import ProductsPage from './containers/Admin/Product/containers/ProductsPage.tsx';
 import EditProduct from './containers/Admin/Product/containers/EditProduct.tsx';
+import AllProductsCardsPage from './containers/Product/containers/AllProductsCardsPage.tsx';
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -74,7 +75,8 @@ const App = () => {
               <NewCategory/>
             </ProtectedRoute>
           } />
-          <Route path="/product" element={<ProductPage/>}/>
+          <Route path="/product/:id" element={<ProductPage/>}/>
+          <Route path="/all-products" element={<AllProductsCardsPage/>}/>
         </Routes>
       </Layout>
     </div>
