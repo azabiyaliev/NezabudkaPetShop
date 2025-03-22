@@ -9,7 +9,7 @@ const Layout: React.FC<PropsWithChildren> = ({ children }) => {
        <Header/>
       </header>
       <main>
-        <Container maxWidth="lg">
+        <Container maxWidth={false} sx={{ maxWidth: "1350px" }}>
           {children}
         </Container>
       </main>

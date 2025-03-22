@@ -214,4 +214,26 @@ export class ProductsService {
     });
     return { message: 'Товар был успешно удалён!' };
   }
+  async getBrandsByCategoryId(id: number) {
+    const subcategories = await this.prismaService.category.findMany({
+      where: { parentId: id },
+      include: {
+        products: {
+          include: { brand: true },
+        },
+      },
+    });
+
+    return subcategories.map((sub) => ({
+      id: sub.id,
+      title: sub.title,
+      brands: Array.from(
+        new Map(
+          sub.products
+            .filter((p) => p.brand)
+            .map((p) => [p.brand!.id, p.brand]),
+        ).values(),
+      ),
+    }));
+  }
 }

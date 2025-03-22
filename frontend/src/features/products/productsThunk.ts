@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { GlobalError, ProductRequest } from "../../types";
+import { GlobalError, ProductRequest, SubcategoryWithBrand } from '../../types';
 import { isAxiosError } from "axios";
 import axiosApi from '../../axiosApi.ts';
 
@@ -18,9 +18,7 @@ export const addProduct = createAsyncThunk<
       if (value !== undefined) {
         if (value instanceof File) {
           formData.append(key, value, value.name);
-        } else if (typeof value === 'boolean') {
-          formData.append(key, value ? 'true' : 'false');
-        } else {
+        }  else {
           formData.append(key, String(value));
         }
       }
@@ -38,3 +36,9 @@ export const addProduct = createAsyncThunk<
     throw error;
   }
 });
+
+export const getAllProductsByCategory = createAsyncThunk<SubcategoryWithBrand[], number>('product/getAllProductsByCategory',
+  async (id: number) => {
+  const response = await axiosApi<SubcategoryWithBrand[]>(`products/categoryID/${id}`);
+  return response.data || [];
+})

@@ -1,0 +1,49 @@
+.category-link {
+  text-transform: uppercase;
+  transition: opacity 0.3s;
+  color: white;
+  width: max-content;
+  margin-bottom: 20px;
+  padding: 20px;
+}
+.category-link-with-arrow {
+  background: url("../../../../img/icons/downArrow.svg") no-repeat right 25px center / 20px 20px;
+}
+
+.category-link:hover {
+  opacity: 0.6;
+}
+
+.show-modal {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: white;
+  padding: 10px 30px;
+  width: 800px;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.brand-link {
+  color: #686868;
+  font-size: 15px;
+  font-weight: 500;
+  padding: 8px 16px 16px 0;
+  font-family: Helvetica, Arial, sans-serif;
+  text-decoration: none;
+}
+
+.subcategory-title {
+  font-weight: 520;
+  margin-bottom: 10px;
+  font-size: 15px;
+  text-transform: uppercase;
+  color: #333;
+}
+
+.subcategory-block {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+}
