@@ -24,7 +24,7 @@ export const getCart = createAsyncThunk<ICart[], void>(
   }
 );
 
-export const cartDelete = createAsyncThunk<void, string>(
+export const cartDelete = createAsyncThunk<void, number>(
   'cart/cartDelete',
   async (id) => {
     await axiosApi.delete(`/cart/${id}`);

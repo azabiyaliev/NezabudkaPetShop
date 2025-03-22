@@ -22,6 +22,7 @@ import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import { selectUser } from '../../features/users/usersSlice.ts';
 import { useState } from 'react';
 import CustomCart from '../CustomCart/CustomCart.tsx';
+import { cartsFromSlice } from '../../features/cart/cartSlice.ts';
 
 const CartBadge = styled(Badge)`
   & .${badgeClasses.badge} {
@@ -34,12 +35,22 @@ const MainToolbar = () => {
   const [openCart, setOpenCart] = useState<boolean>(false);
   const user = useAppSelector(selectUser);
   const site = useAppSelector(selectEditSite);
+  const cart = useAppSelector(cartsFromSlice);
   const navigate = useNavigate();
 
   const closeCart = () => {
     setOpenCart(false);
     navigate('/');
   };
+
+  const checkProductInCart: number[] = cart.map((product) => {
+    return product.quantity;
+  });
+
+  const sum: number = checkProductInCart.reduce((acc: number, i: number) => {
+    acc = acc + i;
+    return acc;
+  }, 0);
 
   return (
     <div>
@@ -253,65 +264,65 @@ const MainToolbar = () => {
                 </Button>
               </Box>
             </Box>
-            <Box sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-            }}>
-              <div  className='text-decoration-none me-4'>
-                <ShoppingCartIcon fontSize="small" onClick={() => setOpenCart(true)}
-                                  sx={{
-                                    color: 'black',
-                                    transition: 'color 0.2s ease',
-                                    '&:hover': {
-                                      color: 'yellow',
-                                    },
-                                  }} />
-                <CartBadge badgeContent={1} color="success" overlap="circular" />
-              </div>
+            {user ? user.role === 'client' && (
+              <Box sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+              }}>
+                <div  className='text-decoration-none me-4'>
+                  <ShoppingCartIcon fontSize="small" onClick={() => setOpenCart(true)}
+                                    sx={{
+                                      color: 'black',
+                                      transition: 'color 0.2s ease',
+                                      '&:hover': {
+                                        color: 'yellow',
+                                      },
+                                    }} />
+                  <CartBadge badgeContent={sum} color="success" overlap="circular" />
+                </div>
 
-              <NavLink to='/my_favorites' className='text-decoration-none'>
-                <FavoriteIcon fontSize="small"
-                              sx={{
-                                color: 'black',
-                                transition: 'color 0.2s ease',
-                                '&:hover': {
-                                  color: 'yellow',
-                                },
-                              }} />
-                <CartBadge badgeContent={1} color="success" overlap="circular" />
-              </NavLink>
-            </Box>
-            {/*{user && user.role === 'client' && (*/}
-            {/*  <Box sx={{*/}
-            {/*    display: 'flex',*/}
-            {/*    justifyContent: 'space-between',*/}
-            {/*  }}>*/}
-            {/*    <NavLink to='/my_cart' className='text-decoration-none me-4'>*/}
-            {/*      <ShoppingCartIcon fontSize="small"*/}
-            {/*                        sx={{*/}
-            {/*                          color: 'black',*/}
-            {/*                          transition: 'color 0.2s ease',*/}
-            {/*                          '&:hover': {*/}
-            {/*                            color: 'yellow',*/}
-            {/*                          },*/}
-            {/*                        }} />*/}
-            {/*      <CartBadge badgeContent={1} color="success" overlap="circular" />*/}
-            {/*    </NavLink>*/}
+                <NavLink to='/my_favorites' className='text-decoration-none'>
+                  <FavoriteIcon fontSize="small"
+                                sx={{
+                                  color: 'black',
+                                  transition: 'color 0.2s ease',
+                                  '&:hover': {
+                                    color: 'yellow',
+                                  },
+                                }} />
+                  <CartBadge badgeContent={1} color="success" overlap="circular" />
+                </NavLink>
+              </Box>
+            ) :
+              <Box sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+              }}>
+                <div  className='text-decoration-none me-4'>
+                  <ShoppingCartIcon fontSize="small" onClick={() => setOpenCart(true)}
+                                    sx={{
+                                      color: 'black',
+                                      transition: 'color 0.2s ease',
+                                      '&:hover': {
+                                        color: 'yellow',
+                                      },
+                                    }} />
+                  <CartBadge badgeContent={sum} color="success" overlap="circular" />
+                </div>
 
-            {/*    <NavLink to='/my_favorites' className='text-decoration-none'>*/}
-            {/*      <FavoriteIcon fontSize="small"*/}
-            {/*                    sx={{*/}
-            {/*                      color: 'black',*/}
-            {/*                      transition: 'color 0.2s ease',*/}
-            {/*                      '&:hover': {*/}
-            {/*                        color: 'yellow',*/}
-            {/*                      },*/}
-            {/*                    }} />*/}
-            {/*      <CartBadge badgeContent={1} color="success" overlap="circular" />*/}
-            {/*    </NavLink>*/}
-            {/*  </Box>*/}
-            {/*)}*/}
-
+                <NavLink to='/my_favorites' className='text-decoration-none'>
+                  <FavoriteIcon fontSize="small"
+                                sx={{
+                                  color: 'black',
+                                  transition: 'color 0.2s ease',
+                                  '&:hover': {
+                                    color: 'yellow',
+                                  },
+                                }} />
+                  <CartBadge badgeContent={1} color="success" overlap="circular" />
+                </NavLink>
+              </Box>
+            }
             {user ? (
               <ExistsUser user={user} />
             ) : (

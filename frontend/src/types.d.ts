@@ -102,10 +102,10 @@ export interface ProductRequest {
 }
 
 export interface ICart {
-  id?: number;
+  id: number;
   productId: number;
   quantity: number;
-  product?: ProductRequest,
+  product: ProductRequest,
 }
 
 export interface ICartMutation {
