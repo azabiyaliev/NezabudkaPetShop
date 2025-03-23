@@ -22,12 +22,17 @@ const CustomCart:React.FC<Props> = ({openCart, closeCart}) => {
 
   const backToShop = () => {
     closeCart();
-    navigate('/');
+    navigate('/all-products');
   }
 
   const checkCart = () => {
     closeCart();
     navigate('/my_cart');
+  };
+
+  const makeOrder = () => {
+    closeCart();
+    navigate('/my_order');
   };
 
   const checkProductInCart: {price: number, amount: number}[] = cart.map((product) => {
@@ -124,7 +129,7 @@ const CustomCart:React.FC<Props> = ({openCart, closeCart}) => {
                 Просмотр корзины
               </Button>
               <Button
-                onClick={closeCart}
+                onClick={makeOrder}
                 sx={{
                   background: 'linear-gradient(90deg, rgba(250, 134, 1, 1) 0%, rgba(250, 179, 1, 1) 28%, rgba(250, 143, 1, 1) 100%)',
                 }}

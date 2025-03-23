@@ -1,13 +1,8 @@
-import {
-   Badge, badgeClasses,
-  Box, Button,
-  Container, InputBase, styled,
-  Toolbar
-} from '@mui/material';
+import { Badge, badgeClasses, Box, Button, Container, InputBase, styled, Toolbar } from '@mui/material';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { useAppSelector } from "../../app/hooks.ts";
-import ExistsUser from "./ExistsUser.tsx";
-import UnknownUser from "./UnknownUser.tsx";
+import { useAppDispatch, useAppSelector } from '../../app/hooks.ts';
+import ExistsUser from './ExistsUser.tsx';
+import UnknownUser from './UnknownUser.tsx';
 import logo from '../../assets/logo.jpg'
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -20,9 +15,10 @@ import PhoneInTalkOutlinedIcon from '@mui/icons-material/PhoneInTalkOutlined';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import { selectUser } from '../../features/users/usersSlice.ts';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import CustomCart from '../CustomCart/CustomCart.tsx';
 import { cartsFromSlice } from '../../features/cart/cartSlice.ts';
+import { getCart } from '../../features/cart/cartThunk.ts';
 
 const CartBadge = styled(Badge)`
   & .${badgeClasses.badge} {
@@ -37,6 +33,11 @@ const MainToolbar = () => {
   const site = useAppSelector(selectEditSite);
   const cart = useAppSelector(cartsFromSlice);
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(getCart()).unwrap();
+  }, [dispatch]);
 
   const closeCart = () => {
     setOpenCart(false);

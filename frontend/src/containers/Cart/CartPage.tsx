@@ -5,7 +5,7 @@ import Typography from '@mui/joy/Typography';
 import { useEffect } from 'react';
 import { getCart } from '../../features/cart/cartThunk.ts';
 import { Box } from '@mui/joy';
-import { Button } from '@mui/material';
+import { Button, Container } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 
@@ -19,7 +19,7 @@ const CartPage = () => {
   }, [dispatch]);
 
   return (
-    <>
+    <Container>
       {cart.length > 0 ?
       <Box>
         <Carts carts={cart}/>
@@ -55,7 +55,7 @@ const CartPage = () => {
           >Корзина пока пустая!</Typography>
         </Box>
       }
-    </>
+    </Container>
   );
 };
 
