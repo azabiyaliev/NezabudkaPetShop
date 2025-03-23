@@ -278,7 +278,7 @@ const MainToolbar = () => {
             )}
 
             {user ? (
-              <ExistsUser user={user} />
+              <ExistsUser/>
             ) : (
               <UnknownUser />
             )}

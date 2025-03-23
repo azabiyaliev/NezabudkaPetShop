@@ -2,14 +2,14 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import axiosApi from "../../axiosApi.ts";
 import { isAxiosError } from "axios";
 import {
-  AdminRefactor,
+  AdminRefactor, ChangePasswordPayload, ChangePasswordResponse,
   GlobalError,
   LogInMutation,
   RegisterMutation,
   RegisterResponse,
   User,
-  ValidationError,
-} from "../../types";
+  ValidationError, VerifyResetCodePayload, VerifyResetCodeResponse,
+} from '../../types';
 import { RootState } from "../../app/store.ts";
 
 export const register = createAsyncThunk<
@@ -146,3 +146,76 @@ export const facebookLogin = createAsyncThunk<
     throw error;
   }
 });
+
+export const sendPasswordCode = createAsyncThunk<void, string, { rejectValue: ValidationError } >(
+  'user/sendPasswordCode',
+  async (email, { rejectWithValue }) => {
+    try {
+      const response = await axiosApi.post('/users/send-password-code', { email });
+      return response.data;
+    } catch (error) {
+      if (
+        isAxiosError(error) &&
+        error.response &&
+        error.response.status === 400
+      ) {
+        return rejectWithValue(error.response.data as ValidationError);
+      }
+      throw error;
+    }
+  }
+);
+
+
+export const verifyResetCode = createAsyncThunk<VerifyResetCodeResponse, VerifyResetCodePayload, { rejectValue: ValidationError }>(
+  'user/verifyResetCode',
+  async ({ resetCode, newPassword }, { rejectWithValue }) => {
+    try {
+      console.log("Data sent to backend : ", { resetCode, newPassword });
+      const response = await axiosApi.put('/users/change-password', {
+        resetCode,
+        newPassword
+      });
+      return response.data;
+    } catch (error) {
+      if (
+        isAxiosError(error) &&
+        error.response &&
+        error.response.status === 400
+      ) {
+        return rejectWithValue(error.response.data as ValidationError);
+      }
+      throw error;
+    }
+  }
+);
+
+export const changePasswordAsync = createAsyncThunk<ChangePasswordResponse, ChangePasswordPayload, { state: RootState, rejectValue: ValidationError }>(
+  'user/changePassword',
+  async ({ currentPassword, newPassword }, {getState, rejectWithValue }) => {
+    const token = getState().users.user?.token;
+    console.log('Sending PATCH request with:', { currentPassword, newPassword });
+    try {
+      const response = await axiosApi.patch(
+        '/users/new-password',
+        {
+          currentPassword,
+          newPassword,
+        },
+        {
+          headers: { Authorization: token },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      if (
+        isAxiosError(error) &&
+        error.response &&
+        error.response.status === 400
+      ) {
+        return rejectWithValue(error.response.data as ValidationError);
+      }
+      throw error;
+    }
+  }
+);

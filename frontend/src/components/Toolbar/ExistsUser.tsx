@@ -1,19 +1,16 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import { Box, Button, Drawer, List, ListItem, ListItemText, Divider, Typography } from '@mui/material';
 import { NavLink } from 'react-router-dom';
-import { User } from '../../types';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { unsetUser } from '../../features/users/usersSlice';
+import { selectUser, unsetUser } from "../../features/users/usersSlice";
 import { addErrorFromSlice, clearError } from '../../features/brands/brandsSlice.ts';
 
-interface Props {
-  user: User;
-}
 
-const ExistsUser: React.FC<Props> = ({ user }) => {
+const ExistsUser = () => {
   const addError = useAppSelector(addErrorFromSlice);
   const dispatch = useAppDispatch();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+  const user = useAppSelector(selectUser);
 
   const toggleDrawer = (open: boolean) => () => {
     setIsDrawerOpen(open);
@@ -53,16 +50,16 @@ const ExistsUser: React.FC<Props> = ({ user }) => {
             sx={{
               marginBottom: 2
           }}>
-            {user.firstName} {user.secondName}
+            {user?.firstName} {user?.secondName}
           </Typography>
           <Divider />
 
-          {user && (
+          {user && user.role === 'admin' && (
             <List>
               <ListItem  component={NavLink} to={`/private_account`} onClick={toggleDrawer(false)}>
                 <ListItemText primary="Личный кабинет" className='text-black'/>
               </ListItem>
-              <ListItem  component={NavLink} to={`/users/${user.id}`} onClick={toggleDrawer(false)}>
+              <ListItem  component={NavLink} to={`/private/users/${user.id}`} onClick={toggleDrawer(false)}>
                 <ListItemText primary="Редактировать профиль" className='text-black'/>
               </ListItem>
               <ListItem  component={NavLink} to="/private/client_orders" onClick={toggleDrawer(false)}>
@@ -88,7 +85,7 @@ const ExistsUser: React.FC<Props> = ({ user }) => {
 
           {user && user.role === 'client' && (
             <List>
-              <ListItem  component={NavLink} to="/my_profile" onClick={toggleDrawer(false)}>
+              <ListItem  component={NavLink} to={`/my_account`} onClick={toggleDrawer(false)}>
                 <ListItemText primary="Личный кабинет" className='text-black'/>
               </ListItem>
               <ListItem  component={NavLink} to="/my_orders" onClick={toggleDrawer(false)}>

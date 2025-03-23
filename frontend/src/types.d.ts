@@ -100,6 +100,24 @@ export interface ProductRequest {
   categoryId: string;
 }
 
+interface VerifyResetCodePayload {
+  resetCode: string;
+  newPassword: string;
+}
+
+interface VerifyResetCodeResponse {
+  message: string;
+}
+
+interface ChangePasswordPayload {
+  currentPassword: string;
+  newPassword: string;
+}
+
+interface ChangePasswordResponse {
+  message: string;
+}
+
 ///  productName        String  @map("product_name")
 //   productPhoto       String  @map("product_photo")
 //   productPrice       Int     @map("product_price")

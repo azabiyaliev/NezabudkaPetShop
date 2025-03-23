@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import AdminBar from '../AdminProfile/AdminBar.tsx';
+import AdminBar from '../../../components/Admin/AdminBar.tsx';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
 import { brandsFromSlice } from '../../../features/brands/brandsSlice.ts';
 import { useEffect } from 'react';

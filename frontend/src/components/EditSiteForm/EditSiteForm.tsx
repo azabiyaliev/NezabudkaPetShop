@@ -2,13 +2,13 @@ import { Box, Button, Container } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import { toast, ToastContainer } from 'react-toastify';
-import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
+import { useAppDispatch, useAppSelector } from '../../app/hooks.ts';
 import { useNavigate } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
-import { EditSiteMutation } from '../../../types';
-import { fetchSite, updateSite } from '../../../features/editionSite/editionSiteThunk.ts';
-import { selectEditSite, selectError } from '../../../features/editionSite/editionSiteSlice.ts';
-import FileInput from '../../../components/UI/FileInput.tsx';
+import { EditSiteMutation } from '../../types';
+import { fetchSite, updateSite } from '../../features/editionSite/editionSiteThunk.ts';
+import { selectEditSite, selectError } from '../../features/editionSite/editionSiteSlice.ts';
+import FileInput from '../UI/FileInput.tsx';
 import ClearIcon from '@mui/icons-material/Clear';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 

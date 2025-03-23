@@ -1,6 +1,6 @@
 import {Box} from '@mui/material';
 import BrandForm from '../../../components/Brand/BrandForm/BrandForm.tsx';
-import AdminBar from '../AdminProfile/AdminBar.tsx';
+import AdminBar from '../../../components/Admin/AdminBar.tsx';
 import {IBrandForm} from '../../../types';
 import {useAppDispatch, useAppSelector} from '../../../app/hooks.ts';
 import {selectUser} from '../../../features/users/usersSlice.ts';

@@ -1,9 +1,9 @@
-import AdminBar from '../AdminProfile/AdminBar.tsx';
+import AdminBar from '../../../components/Admin/AdminBar.tsx';
 
 import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
 import { useEffect } from 'react';
 import { fetchSite } from '../../../features/editionSite/editionSiteThunk.ts';
-import EditSiteForm from './EditSiteForm.tsx';
+import EditSiteForm from '../../../components/EditSiteForm/EditSiteForm.tsx';
 import { selectEditSite } from '../../../features/editionSite/editionSiteSlice.ts';
 
 const EditionSitePage = () => {

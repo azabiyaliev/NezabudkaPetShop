@@ -2,7 +2,6 @@ import { Route, Routes } from 'react-router-dom';
 import RegisterUser from './containers/UserFrom/RegisterUser.tsx';
 import LoginUser from './containers/UserFrom/LoginUser.tsx';
 import AdminProfile from './containers/Admin/AdminProfile/AdminProfile.tsx';
-import AdminForm from './containers/Admin/AdminProfile/AdminForm.tsx';
 import NewBrandPage from './containers/Admin/Brand/NewBrandPage.tsx';
 import HomePage from './containers/Home/HomePage.tsx';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute.tsx';
@@ -16,6 +15,9 @@ import AllCategoriesPage from './containers/Category/AllCategoriesPage/AllCatego
 import OneCategory from './containers/Category/OneCategory/OneCategory.tsx';
 import EditionSitePage from './containers/Admin/EditionSite/EditionSitePage.tsx';
 import NewProduct from './containers/Admin/Product/containers/NewProduct.tsx';
+import AdminEditProfile from './containers/Admin/AdminProfile/AdminEditProfile.tsx';
+import ClientProfile from './containers/Client/ClientProfile/ClientProfile.tsx';
+import ClientEditProfile from './containers/Client/ClientProfile/ClientEditProfile.tsx';
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -26,7 +28,25 @@ const App = () => {
           <Route path="/" element={<HomePage/>} />
           <Route path="/register" element={<RegisterUser />} />
           <Route path="/login" element={<LoginUser />} />
-          <Route path="/private_account" element={<AdminProfile />} />
+          <Route path="/private_account" element={
+            <ProtectedRoute isAllowed={user && user.role === 'admin'}>
+              <AdminProfile />
+            </ProtectedRoute>
+          } />
+          <Route path="/my_account" element={
+            <ProtectedRoute isAllowed={user && user.role === 'client'}>
+              <ClientProfile />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/private/users/:id" element={
+            <ProtectedRoute isAllowed={user && user.role === 'admin'}>
+              <AdminEditProfile />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/client/users/:id" element={<ClientEditProfile/>}/>
+
           <Route path="/private/brands" element={
             <ProtectedRoute isAllowed={user && user.role === 'admin'}>
               <BrandsPage />
@@ -42,7 +62,6 @@ const App = () => {
               <EditBrandPage />
             </ProtectedRoute>
           } />
-          <Route path="/users/:id" element={<AdminForm />} />
           <Route path="/edition_site" element={
             <ProtectedRoute isAllowed={user && user.role === 'admin'}>
               <EditionSitePage />
