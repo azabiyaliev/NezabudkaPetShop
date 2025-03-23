@@ -79,9 +79,8 @@ const productsSlice = createSlice({
       })
       .addCase(getOneProduct.rejected, (state) => {
         state.loading = false;
-      })
-
+      });
   }
-})
+});
 
 export const productsReducer = productsSlice.reducer;

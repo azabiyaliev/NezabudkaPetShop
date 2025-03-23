@@ -1,14 +1,15 @@
 import { useAppDispatch, useAppSelector } from '../../app/hooks.ts';
 import { brandsFromSlice } from '../../features/brands/brandsSlice.ts';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { getBrands } from '../../features/brands/brandsThunk.ts';
 import BrandForHomePage from '../../components/Brand/BrandForHomePage/BrandForHomePage.tsx';
 import { Box } from '@mui/material';
 import Typography from '@mui/joy/Typography';
 import Carousel from '../../components/UI/Carousel/Carousel.tsx';
-import Footer from '../../components/footer/footer.tsx';
+import CustomCart from '../../components/CustomCart/CustomCart.tsx';
 
 const HomePage = () => {
+  const [openCart, setOpenCart] = useState<boolean>(false);
   const brands = useAppSelector(brandsFromSlice);
   const dispatch = useAppDispatch();
 
@@ -16,20 +17,25 @@ const HomePage = () => {
     dispatch(getBrands()).unwrap();
   }, [dispatch]);
 
+  const closeCart = () => {
+    setOpenCart(false);
+  };
+
   return (
     <>
+      <CustomCart openCart={openCart} closeCart={closeCart}/>
+      <div className='mb-5'>
+        <Carousel/>
+      </div>
+
       {brands.length > 0 && (
         <Box sx={{marginTop: '40px'}}>
-          <div className='mb-5'>
-            <Carousel />
-          </div>
-          <Typography sx={{ fontSize: '40px', mb: 0.5,  color: 'rgba(250, 143, 1, 1)', textAlign: 'center' }}>
+          <Typography sx={{fontSize: '40px', mb: 0.5, color: 'rgba(250, 143, 1, 1)', textAlign: 'center'}}>
             Наши бренды
           </Typography>
-          <BrandForHomePage brands={brands} />
+          <BrandForHomePage brands={brands}/>
         </Box>
       )}
-      <footer><Footer/></footer>
     </>
   );
 };

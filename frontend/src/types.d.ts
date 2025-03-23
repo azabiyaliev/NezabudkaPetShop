@@ -90,7 +90,6 @@ export interface CategoryMutation {
 }
 
 export interface ProductRequest {
-  id?: number;
   productName: string;
   productPhoto: File | null;
   productPrice: number;
@@ -99,6 +98,19 @@ export interface ProductRequest {
   sales: boolean;
   brandId: string;
   categoryId: string;
+  id: number;
+}
+
+export interface ICart {
+  id: number;
+  productId: number;
+  quantity: number;
+  product: ProductResponse,
+}
+
+export interface ICartMutation {
+  productId: number;
+  quantity: number;
 }
 
 export interface SubcategoryWithBrand {

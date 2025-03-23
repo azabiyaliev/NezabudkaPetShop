@@ -40,11 +40,6 @@ const BrandForm:React.FC<Props> = ({addNewBrand, isLoading, editBrand = initialB
 
   const onSubmit = (e:React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    //
-    // if (!newBrand.logo) {
-    //   toast.error('Выберите изображение для логотипа бренда!');
-    //   return;
-    // }
 
     addNewBrand({...newBrand});
 

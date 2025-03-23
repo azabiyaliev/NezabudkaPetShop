@@ -15,7 +15,8 @@ import NewCategory from './containers/Category/NewCategory/NewCategory.tsx';
 import AllCategoriesPage from './containers/Category/AllCategoriesPage/AllCategoriesPage.tsx';
 import OneCategory from './containers/Category/OneCategory/OneCategory.tsx';
 import EditionSitePage from './containers/Admin/EditionSite/EditionSitePage.tsx';
-import NewProduct from './containers/Admin/Product/containers/NewProduct.tsx';
+import NewProduct from './containers/Admin/Product/containers/NewProduct.tsx';import CartPage from './containers/Cart/CartPage.tsx';
+import OrderPage from './containers/Order/OrderPage.tsx';
 import ProductPage from './containers/Product/containers/ProductPage.tsx';
 import ProductsPage from './containers/Admin/Product/containers/ProductsPage.tsx';
 import EditProduct from './containers/Admin/Product/containers/EditProduct.tsx';
@@ -30,6 +31,8 @@ const App = () => {
           <Route path="/" element={<HomePage/>} />
           <Route path="/register" element={<RegisterUser />} />
           <Route path="/login" element={<LoginUser />} />
+          <Route path="/my_cart" element={<CartPage />} />
+          <Route path="/my_order" element={<OrderPage />} />
           <Route path="/private_account" element={<AdminProfile />} />
           <Route path="/private/brands" element={
             <ProtectedRoute isAllowed={user && user.role === 'admin'}>

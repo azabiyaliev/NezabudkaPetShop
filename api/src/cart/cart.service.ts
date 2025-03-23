@@ -6,7 +6,14 @@ import { CartDto } from '../dto/cart.dto';
 export class CartService {
   constructor(private readonly prisma: PrismaService) {}
   async getCard() {
-    const carts = await this.prisma.customerCart.findMany({});
+    const carts = await this.prisma.customerCart.findMany({
+      include: {
+        product: true,
+      },
+      orderBy: {
+        id: 'asc',
+      },
+    });
     return carts || [];
   }
   async createCart(cartDTO: CartDto) {
@@ -71,5 +78,9 @@ export class CartService {
     }
     await this.prisma.customerCart.delete({ where: { id: cartId } });
     return { message: 'Данная корзина была успешно удалена!' };
+  }
+  async deleteAllCarts() {
+    await this.prisma.customerCart.deleteMany({});
+    return { message: 'Корзина очищена!' };
   }
 }

@@ -93,4 +93,4 @@ export const getAllProductsByCategory = createAsyncThunk<SubcategoryWithBrand[],
   async (id: number) => {
   const response = await axiosApi<SubcategoryWithBrand[]>(`products/categoryID/${id}`);
   return response.data || [];
-})
+});

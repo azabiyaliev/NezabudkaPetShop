@@ -1,23 +1,41 @@
-import {
-  Button,
-  Card,
-  CardContent,
-  CardMedia,
-  Typography,
-} from "@mui/material";
-import React from "react";
-import { ProductResponse } from "../../../types";
-import { apiUrl } from "../../../globalConstants.ts";
-import "../css/product.css";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import { Button, Card, CardContent, CardMedia, Typography, } from '@mui/material';
+import React from 'react';
+import { ProductResponse } from '../../../types';
+import { apiUrl } from '../../../globalConstants.ts';
+import '../css/product.css';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { useNavigate } from 'react-router-dom';
+import { addCart, editCart, getCart } from '../../../features/cart/cartThunk.ts';
+import { enqueueSnackbar } from 'notistack';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
+import { cartsFromSlice } from '../../../features/cart/cartSlice.ts';
 
 interface Props {
   product: ProductResponse;
 }
 
 const OneProductCard: React.FC<Props> = ({ product }) => {
+  const cart = useAppSelector(cartsFromSlice);
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
+
+  const addProductToCart = async (product: ProductResponse) => {
+
+    const indexProduct = cart.findIndex((order) => order.productId === product.id);
+
+    if (indexProduct === -1) {
+      await dispatch(addCart({productId: product.id, quantity: 1 })).unwrap();
+      enqueueSnackbar('Данный товар успешно добавлен в корзину!', { variant: 'success' });
+
+    } else {
+      const updatedProduct = { ...cart[indexProduct], quantity: cart[indexProduct].quantity + 1 };
+      const cartId = cart[indexProduct].id;
+      await dispatch(editCart({product: product, id: cartId, productId: updatedProduct.productId, quantity: updatedProduct.quantity})).unwrap();
+    }
+
+    dispatch(getCart()).unwrap();
+  };
+
   return (
     <Card
       className="product-card"
@@ -27,9 +45,9 @@ const OneProductCard: React.FC<Props> = ({ product }) => {
         textAlign: "center",
         cursor: "pointer",
       }}
-      onClick={() => navigate(`/product/${product.id}`)}
     >
       <CardMedia
+        onClick={() => navigate(`/product/${product.id}`)}
         component="img"
         height="250"
         image={apiUrl + "/" + product.productPhoto}
@@ -45,6 +63,7 @@ const OneProductCard: React.FC<Props> = ({ product }) => {
           до 500 Бонусов
         </Typography>
         <Button
+          onClick={() => addProductToCart(product)}
           variant="contained"
           className="cart-button"
           sx={{
