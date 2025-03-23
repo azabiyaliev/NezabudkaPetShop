@@ -10,6 +10,9 @@ export class CartService {
       include: {
         product: true,
       },
+      orderBy: {
+        id: 'asc',
+      },
     });
     return carts || [];
   }
@@ -75,5 +78,9 @@ export class CartService {
     }
     await this.prisma.customerCart.delete({ where: { id: cartId } });
     return { message: 'Данная корзина была успешно удалена!' };
+  }
+  async deleteAllCarts() {
+    await this.prisma.customerCart.deleteMany({});
+    return { message: 'Корзина очищена!' };
   }
 }

@@ -304,7 +304,7 @@ const MainToolbar = () => {
                                       color: 'black',
                                       transition: 'color 0.2s ease',
                                       '&:hover': {
-                                        color: 'yellow',
+                                        color: 'rgba(250, 179, 1, 1)',
                                       },
                                     }} />
                   <CartBadge badgeContent={sum} color="success" overlap="circular" />
@@ -316,7 +316,7 @@ const MainToolbar = () => {
                                   color: 'black',
                                   transition: 'color 0.2s ease',
                                   '&:hover': {
-                                    color: 'yellow',
+                                    color: 'rgba(250, 179, 1, 1)',
                                   },
                                 }} />
                   <CartBadge badgeContent={1} color="success" overlap="circular" />

@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { ICart } from '../../types';
-import { addCart, cartDelete, editCart, getCart } from './cartThunk.ts';
+import { addCart, cartDelete, editCart, emptyingTrash, getCart } from './cartThunk.ts';
 import { RootState } from '../../app/store.ts';
 
 interface CartSliceInterface {
@@ -79,6 +79,19 @@ const cartSlice = createSlice({
         state.error = false;
       })
       .addCase(cartDelete.rejected, (state) => {
+        state.loadings.deleteLoading = false;
+        state.error = true;
+      })
+      .addCase(emptyingTrash.pending, (state) => {
+        state.loadings.deleteLoading = true;
+        state.error = false;
+      })
+      .addCase(emptyingTrash.fulfilled, (state, {payload: carts}) => {
+        state.loadings.deleteLoading = false;
+        state.error = false;
+        state.carts = carts || [];
+      })
+      .addCase(emptyingTrash.rejected, (state) => {
         state.loadings.deleteLoading = false;
         state.error = true;
       });

@@ -1,7 +1,7 @@
 import React, { PropsWithChildren } from 'react';
 import Header from '../Header/Header.tsx';
 import { Container } from '@mui/material';
-import Footer from '../footer/footer.tsx';
+import Footer from '../Footer/Footer.tsx';
 
 const Layout: React.FC<PropsWithChildren> = ({ children }) => {
   return (

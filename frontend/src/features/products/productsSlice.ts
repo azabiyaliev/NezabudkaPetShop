@@ -1,6 +1,6 @@
 import { ProductRequest } from '../../types';
 import { createSlice } from '@reduxjs/toolkit';
-import { addProduct, getProduct } from './productsThunk.ts';
+import { addProduct } from './productsThunk.ts';
 import { RootState } from '../../app/store.ts';
 
 interface ProductsState {
@@ -16,7 +16,6 @@ const initialState: ProductsState = {
 }
 
 export const addProductLoading = (state: RootState) => state.products.loading;
-export const productsFromSlice = (state: RootState) => state.products.products;
 
 const productsSlice = createSlice({
   name: "products",
@@ -32,11 +31,7 @@ const productsSlice = createSlice({
       })
       .addCase(addProduct.rejected, (state) => {
         state.loading = false;
-      })
-      .addCase(getProduct.fulfilled, (state, {payload: products}) => {
-        state.loading = false;
-        state.products = products;
-      })
+      });
   }
 })
 

@@ -29,3 +29,10 @@ export const cartDelete = createAsyncThunk<void, number>(
   async (id) => {
     await axiosApi.delete(`/cart/${id}`);
 });
+
+export const emptyingTrash = createAsyncThunk<[], void>(
+  'cart/emptyingTrash',
+  async () => {
+    await axiosApi.delete('/cart');
+    return [];
+  });
