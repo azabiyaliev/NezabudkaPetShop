@@ -30,6 +30,7 @@ export class ProductsService {
         productName: true,
         productPhoto: true,
         productDescription: true,
+        productPrice: true,
         brand: true,
         category: true,
         sales: true,
@@ -153,13 +154,17 @@ export class ProductsService {
       existence,
       sales,
     }: CreateProductsDto,
+    file?: Express.Multer.File,
   ) {
+    let photo = productPhoto;
+    if (file) {
+      photo = '/products/' + file.filename;
+    }
     const productId = await this.prismaService.products.findUnique({
       where: {
         id,
       },
     });
-
     if (!productId) {
       throw new NotFoundException('Товар не найден');
     }
@@ -171,10 +176,10 @@ export class ProductsService {
       data: {
         productName,
         productDescription,
-        productPrice,
-        productPhoto,
-        brandId,
-        categoryId,
+        productPrice: Number(productPrice),
+        productPhoto: photo,
+        brandId: Number(brandId),
+        categoryId: Number(categoryId),
         existence: existence === 'true',
         sales: sales === 'true',
       },
@@ -182,13 +187,17 @@ export class ProductsService {
         id: true,
         productName: true,
         productPhoto: true,
+        productPrice: true,
         productDescription: true,
+        brandId: true,
+        categoryId: true,
         brand: true,
         category: true,
         sales: true,
         existence: true,
       },
     });
+
     if (!changedProduct) {
       throw new BadRequestException('Продукт не найден');
     }
@@ -213,5 +222,27 @@ export class ProductsService {
       },
     });
     return { message: 'Товар был успешно удалён!' };
+  }
+  async getBrandsByCategoryId(id: number) {
+    const subcategories = await this.prismaService.category.findMany({
+      where: { parentId: id },
+      include: {
+        products: {
+          include: { brand: true },
+        },
+      },
+    });
+
+    return subcategories.map((sub) => ({
+      id: sub.id,
+      title: sub.title,
+      brands: Array.from(
+        new Map(
+          sub.products
+            .filter((p) => p.brand)
+            .map((p) => [p.brand!.id, p.brand]),
+        ).values(),
+      ),
+    }));
   }
 }

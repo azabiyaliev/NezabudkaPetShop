@@ -1,31 +1,33 @@
 import { ProductRequest } from "../../../../types";
-import React, { FormEvent, useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
+import React, { FormEvent, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import {
   Box,
-  Button, Checkbox,
+  Button,
+  Checkbox,
   FormControlLabel,
   InputLabel,
   MenuItem,
   Select,
   SelectChangeEvent,
-  Typography
-} from '@mui/material';
-import Grid from '@mui/material/Grid2';
-import TextField from '@mui/material/TextField';
-import FileInput from '../../../../components/FileInput/FileInput.tsx';
-import { useAppDispatch, useAppSelector } from '../../../../app/hooks.ts';
-import { brandsFromSlice } from '../../../../features/brands/brandsSlice.ts';
-import { getBrands } from '../../../../features/brands/brandsThunk.ts';
-import { selectCategories } from '../../../../features/categories/categoriesSlice.ts';
-import { fetchCategoriesThunk } from '../../../../features/categories/categoriesThunk.ts';
-import TiptapEditor from '../../../../components/TiptapEditor/TiptapEditor.tsx';
-import { orange } from '@mui/material/colors';
-import FormControl from '@mui/material/FormControl';
-
+  Typography,
+} from "@mui/material";
+import Grid from "@mui/material/Grid2";
+import TextField from "@mui/material/TextField";
+import FileInput from "../../../../components/FileInput/FileInput.tsx";
+import { useAppDispatch, useAppSelector } from "../../../../app/hooks.ts";
+import { brandsFromSlice } from "../../../../features/brands/brandsSlice.ts";
+import { getBrands } from "../../../../features/brands/brandsThunk.ts";
+import { selectCategories } from "../../../../features/categories/categoriesSlice.ts";
+import { fetchCategoriesThunk } from "../../../../features/categories/categoriesThunk.ts";
+import TiptapEditor from "../../../../components/TiptapEditor/TiptapEditor.tsx";
+import { orange } from "@mui/material/colors";
+import FormControl from "@mui/material/FormControl";
 
 interface Props {
   onSubmit: (product: ProductRequest) => void;
+  editProduct?: ProductRequest;
+  isProduct?: boolean;
 }
 
 const initialState = {
@@ -35,12 +37,12 @@ const initialState = {
   productDescription: "",
   existence: false,
   sales: false,
-  brandId: '',
-  categoryId: '',
+  brandId: "",
+  categoryId: "",
 };
 
-const ProductForm: React.FC<Props> = ({ onSubmit }) => {
-  const [form, setForm] = useState<ProductRequest>(initialState);
+const ProductForm: React.FC<Props> = ({ onSubmit, editProduct = initialState, isProduct = false }) => {
+  const [form, setForm] = useState<ProductRequest>(editProduct || initialState);
   const dispatch = useAppDispatch();
   const brands = useAppSelector(brandsFromSlice);
   const categories = useAppSelector(selectCategories);
@@ -65,7 +67,6 @@ const ProductForm: React.FC<Props> = ({ onSubmit }) => {
       [name]: value,
     }));
   };
-
 
   const submitFormHandler = (e: FormEvent) => {
     e.preventDefault();
@@ -94,6 +95,11 @@ const ProductForm: React.FC<Props> = ({ onSubmit }) => {
     }
 
     onSubmit({ ...form });
+
+    if(!isProduct) {
+      setForm(initialState);
+      return;
+    }
   };
 
   const selectChangeHandler = (e: SelectChangeEvent) => {
@@ -115,14 +121,11 @@ const ProductForm: React.FC<Props> = ({ onSubmit }) => {
   return (
     <form onSubmit={submitFormHandler}>
         <Typography variant={"h5"} sx={{ mt: 4, textAlign: "center" }}>
-          Добавление товара
+          {!isProduct ? 'Добавление товара' : 'Редактирование товара'}
         </Typography>
         <Box
           sx={{
-            width: 800,
-            borderRadius: "10px",
-            boxShadow: "0 4px 12px rgba(255, 255, 255, 0.2)",
-            border: "1px solid gray",
+            width: "100%",
             marginTop: 5,
             mx: "auto",
             p: 2,
@@ -180,83 +183,94 @@ const ProductForm: React.FC<Props> = ({ onSubmit }) => {
                     "& fieldset": { borderColor: "#ccc" },
                     "&:hover fieldset": { borderColor: orange[500] },
                     "&.Mui-focused fieldset": { borderColor: orange[500] },
-                  }
-                }}>
-                  <InputLabel id="brand">Бренд</InputLabel>
-                  <Select
-                    labelId="brandId"
-                    id="brandId"
-                    value={form.brandId}
-                    name="brandId"
-                    label="Бренд"
-                    onChange={selectChangeHandler}
-                  >
-                    <MenuItem value="" disabled>
-                      Выберите бренд
+                  },
+                }}
+              >
+                <InputLabel id="brand">Бренд</InputLabel>
+                <Select
+                  labelId="brandId"
+                  id="brandId"
+                  value={form.brandId}
+                  name="brandId"
+                  label="Бренд"
+                  onChange={selectChangeHandler}
+                >
+                  <MenuItem value="" disabled>
+                    Выберите бренд
+                  </MenuItem>
+                  {brands.map((brand) => (
+                    <MenuItem key={brand.id} value={brand.id}>
+                      {brand.title}
                     </MenuItem>
-                    {brands.map((brand) => (
-                      <MenuItem key={brand.id} value={brand.id}>
-                        {brand.title}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grid>
-            )}
-            {categories.length === 0 ? <Typography>Категорий пока нет</Typography> : (
-              <Grid size={{ xs: 12 }}>
-                <FormControl fullWidth sx={{
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+          )}
+          {categories.length === 0 ? (
+            <Typography>Категорий пока нет</Typography>
+          ) : (
+            <Grid size={{ xs: 12 }}>
+              <FormControl
+                fullWidth
+                sx={{
                   "& label.Mui-focused": { color: orange[500] },
                   "& .MuiOutlinedInput-root": {
                     "& fieldset": { borderColor: "#ccc" },
                     "&:hover fieldset": { borderColor: orange[500] },
                     "&.Mui-focused fieldset": { borderColor: orange[500] },
-                  }
-                }}>
-                  <InputLabel id="category">Категория</InputLabel>
-                  <Select
-                    labelId="categoryId"
-                    id="categoryId"
-                    value={form.categoryId}
-                    name="categoryId"
-                    label="Категория"
-                    onChange={selectChangeHandler}
-                  >
-                    <MenuItem value="" disabled>
-                      Выберите категорию
+                  },
+                }}
+              >
+                <InputLabel id="category">Категория</InputLabel>
+                <Select
+                  labelId="categoryId"
+                  id="categoryId"
+                  value={form.categoryId}
+                  name="categoryId"
+                  label="Категория"
+                  onChange={selectChangeHandler}
+                >
+                  <MenuItem value="" disabled>
+                    Выберите категорию
+                  </MenuItem>
+                  {categories.map((category) => (
+                    <MenuItem key={category.id} value={category.id}>
+                      {category.title}
                     </MenuItem>
-                    {categories.map((category) => (
-                      <MenuItem key={category.id} value={category.id}>
-                        {category.title}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grid>
-            )}
-
-            <Grid size={{ xs: 12 }}>
-              <FileInput
-                name="productPhoto"
-                label="Выберите изображение"
-                onGetFile={fileEventChangeHandler}
-              />
+                  ))}
+                </Select>
+              </FormControl>
             </Grid>
-            <Grid>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    sx={{
-                      "&.Mui-checked": {
-                        color: orange[500],
-                      },
-                    }}
-                    checked={form.existence}
-                    onChange={(e) => setForm((prev) => ({ ...prev, existence: e.target.checked }))}
-                  />
-                }
-                label="Есть в наличии"
-              />
+          )}
+
+          <Grid size={{ xs: 12 }}>
+            <FileInput
+              name="productPhoto"
+              label="Выберите изображение"
+              onGetFile={fileEventChangeHandler}
+            />
+          </Grid>
+          <Grid>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  sx={{
+                    "&.Mui-checked": {
+                      color: orange[500],
+                    },
+                  }}
+                  checked={form.existence}
+                  onChange={(e) =>
+                    setForm((prev) => ({
+                      ...prev,
+                      existence: e.target.checked,
+                    }))
+                  }
+                />
+              }
+              label="Есть в наличии"
+            />
 
               <FormControlLabel
                 control={
@@ -274,8 +288,8 @@ const ProductForm: React.FC<Props> = ({ onSubmit }) => {
               />
             </Grid>
             <Grid>
-              <Button type="submit" sx={{ color: "#ff9800"}}>
-                Добавить
+              <Button type="submit" sx={{ color: "#ff9800", width: "100%"}} variant="outlined" color="inherit" >
+                {!isProduct ? 'Добавить' : 'Сохранить'}
               </Button>
             </Grid>
           </Grid>

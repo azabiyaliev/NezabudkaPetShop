@@ -17,6 +17,10 @@ import OneCategory from './containers/Category/OneCategory/OneCategory.tsx';
 import EditionSitePage from './containers/Admin/EditionSite/EditionSitePage.tsx';
 import NewProduct from './containers/Admin/Product/containers/NewProduct.tsx';import CartPage from './containers/Cart/CartPage.tsx';
 import OrderPage from './containers/Order/OrderPage.tsx';
+import ProductPage from './containers/Product/containers/ProductPage.tsx';
+import ProductsPage from './containers/Admin/Product/containers/ProductsPage.tsx';
+import EditProduct from './containers/Admin/Product/containers/EditProduct.tsx';
+import AllProductsCardsPage from './containers/Product/containers/AllProductsCardsPage.tsx';
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -56,6 +60,16 @@ const App = () => {
               <NewProduct />
             </ProtectedRoute>
           }/>
+          <Route path="private/products" element={
+            <ProtectedRoute isAllowed={user && user.role === 'admin'}>
+              <ProductsPage />
+            </ProtectedRoute>
+          }/>
+          <Route path="private/edit_product/:id" element={
+            <ProtectedRoute isAllowed={user && user.role === 'admin'}>
+              <EditProduct />
+            </ProtectedRoute>
+          }/>
           <Route path="/private/all_categories" element={<AllCategoriesPage/>}/>
           <Route path="/category/:id" element={<OneCategory/>}/>
           <Route path="*" element={<h1>Not found</h1>} />
@@ -64,6 +78,8 @@ const App = () => {
               <NewCategory/>
             </ProtectedRoute>
           } />
+          <Route path="/product/:id" element={<ProductPage/>}/>
+          <Route path="/all-products" element={<AllProductsCardsPage/>}/>
         </Routes>
       </Layout>
     </div>

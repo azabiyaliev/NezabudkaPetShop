@@ -90,6 +90,7 @@ export interface CategoryMutation {
 }
 
 export interface ProductRequest {
+  id?: number;
   productName: string;
   productPhoto: File | null;
   productPrice: number;
@@ -113,6 +114,12 @@ export interface ICartMutation {
   quantity: number;
 }
 
+export interface SubcategoryWithBrand {
+  id: number;
+  title: string;
+  brands: IBrand[];
+}
+
 ///  productName        String  @map("product_name")
 //   productPhoto       String  @map("product_photo")
 //   productPrice       Int     @map("product_price")
@@ -129,3 +136,17 @@ export interface ICartMutation {
 //   category   Category?   @relation(fields: [categoryId], references: [id])
 //
 //   reviews Review[]
+export interface ProductResponse {
+  id: number;
+  productName: string;
+  productPhoto: string;
+  productPrice: number;
+  productDescription: string;
+  existence: boolean;
+  sales: boolean;
+  categoryId: string;
+  brandId: string;
+  brand: IBrand;
+  category: ICategories;
+}
+
