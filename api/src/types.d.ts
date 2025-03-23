@@ -4,3 +4,7 @@ import { User } from '@prisma/client';
 export interface AuthRequest extends Request {
   user: User;
 }
+
+export interface RequestUser {
+  id: number;
+}

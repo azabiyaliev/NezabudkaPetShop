@@ -2,7 +2,6 @@ import { Route, Routes } from 'react-router-dom';
 import RegisterUser from './containers/UserFrom/RegisterUser.tsx';
 import LoginUser from './containers/UserFrom/LoginUser.tsx';
 import AdminProfile from './containers/Admin/AdminProfile/AdminProfile.tsx';
-import AdminForm from './containers/Admin/AdminProfile/AdminForm.tsx';
 import NewBrandPage from './containers/Admin/Brand/NewBrandPage.tsx';
 import HomePage from './containers/Home/HomePage.tsx';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute.tsx';
@@ -15,12 +14,16 @@ import NewCategory from './containers/Category/NewCategory/NewCategory.tsx';
 import AllCategoriesPage from './containers/Category/AllCategoriesPage/AllCategoriesPage.tsx';
 import OneCategory from './containers/Category/OneCategory/OneCategory.tsx';
 import EditionSitePage from './containers/Admin/EditionSite/EditionSitePage.tsx';
-import NewProduct from './containers/Admin/Product/containers/NewProduct.tsx';import CartPage from './containers/Cart/CartPage.tsx';
+import NewProduct from './containers/Admin/Product/containers/NewProduct.tsx';
+import AdminEditProfile from './containers/Admin/AdminProfile/AdminEditProfile.tsx';
+import ClientProfile from './containers/Client/ClientProfile/ClientProfile.tsx';
+import ClientEditProfile from './containers/Client/ClientProfile/ClientEditProfile.tsx';
 import OrderPage from './containers/Order/OrderPage.tsx';
 import ProductPage from './containers/Product/containers/ProductPage.tsx';
 import ProductsPage from './containers/Admin/Product/containers/ProductsPage.tsx';
 import EditProduct from './containers/Admin/Product/containers/EditProduct.tsx';
 import AllProductsCardsPage from './containers/Product/containers/AllProductsCardsPage.tsx';
+import CartPage from './containers/Cart/CartPage.tsx';
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -33,7 +36,22 @@ const App = () => {
           <Route path="/login" element={<LoginUser />} />
           <Route path="/my_cart" element={<CartPage />} />
           <Route path="/my_order" element={<OrderPage />} />
-          <Route path="/private_account" element={<AdminProfile />} />
+          <Route path="/private_account" element={
+            <ProtectedRoute isAllowed={user && user.role === 'admin'}>
+              <AdminProfile />
+            </ProtectedRoute>
+          } />
+          <Route path="/my_account" element={
+            <ProtectedRoute isAllowed={user && user.role === 'client'}>
+              <ClientProfile />
+            </ProtectedRoute>
+          } />
+          <Route path="/private/users/:id" element={
+            <ProtectedRoute isAllowed={user && user.role === 'admin'}>
+              <AdminEditProfile />
+            </ProtectedRoute>
+          } />
+          <Route path="/client/users/:id" element={<ClientEditProfile/>}/>
           <Route path="/private/brands" element={
             <ProtectedRoute isAllowed={user && user.role === 'admin'}>
               <BrandsPage />
@@ -49,23 +67,22 @@ const App = () => {
               <EditBrandPage />
             </ProtectedRoute>
           } />
-          <Route path="/users/:id" element={<AdminForm />} />
           <Route path="/edition_site" element={
             <ProtectedRoute isAllowed={user && user.role === 'admin'}>
               <EditionSitePage />
             </ProtectedRoute>
           } />
-          <Route path="private/add_product" element={
+          <Route path="/private/add_product" element={
             <ProtectedRoute isAllowed={user && user.role === 'admin'}>
               <NewProduct />
             </ProtectedRoute>
           }/>
-          <Route path="private/products" element={
+          <Route path="/private/products" element={
             <ProtectedRoute isAllowed={user && user.role === 'admin'}>
               <ProductsPage />
             </ProtectedRoute>
           }/>
-          <Route path="private/edit_product/:id" element={
+          <Route path="/private/edit_product/:id" element={
             <ProtectedRoute isAllowed={user && user.role === 'admin'}>
               <EditProduct />
             </ProtectedRoute>
@@ -74,7 +91,7 @@ const App = () => {
           <Route path="/category/:id" element={<OneCategory/>}/>
           <Route path="*" element={<h1>Not found</h1>} />
           <Route path="/private/add_category" element={
-            <ProtectedRoute isAllowed={user && user.role == 'admin'}>
+            <ProtectedRoute isAllowed={user && user.role === 'admin'}>
               <NewCategory/>
             </ProtectedRoute>
           } />
@@ -83,7 +100,6 @@ const App = () => {
         </Routes>
       </Layout>
     </div>
-
   );
 };
 

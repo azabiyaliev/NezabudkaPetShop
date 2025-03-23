@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { useAppDispatch, useAppSelector } from "../../app/hooks.ts";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from 'react-router-dom';
 import Grid from "@mui/material/Grid2";
 import { RegisterMutation } from "../../types";
 import { selectUserError } from "../../features/users/usersSlice.ts";
@@ -30,6 +30,7 @@ const initialState = {
 const RegisterUser = () => {
   const dispatch = useAppDispatch();
   const registerError = useAppSelector(selectUserError);
+  const navigate = useNavigate();
 
   const [phoneError, setPhoneError] = useState("");
   const [emailError, setEmailError] = useState("");
@@ -58,6 +59,7 @@ const RegisterUser = () => {
       await dispatch(register(form)).unwrap();
       setForm(initialState)
       toast.success("Регистрация успешна!", { position: "top-right" });
+      navigate('/')
     } catch (error) {
       console.log(error);
     }

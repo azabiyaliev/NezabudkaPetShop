@@ -1,5 +1,4 @@
-import AdminBar from './AdminBar.tsx';
-import AdminForm from './AdminForm.tsx';
+import AdminBar from '../../../components/Admin/AdminBar.tsx';
 
 const AdminProfile = () => {
   return (
@@ -10,7 +9,9 @@ const AdminProfile = () => {
          <AdminBar/>
        </div>
        <div className="col-9">
-         <AdminForm />
+         <div>
+           <h6 style={{textAlign:"center", marginTop:'20px'}}>Info by admin</h6>
+         </div>
        </div>
      </div>
    </div>

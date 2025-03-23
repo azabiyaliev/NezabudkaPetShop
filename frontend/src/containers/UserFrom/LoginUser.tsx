@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { Avatar, Box, Button, Container, Divider } from '@mui/material';
+import {
+  Avatar,
+  Box,
+  Button,
+  Container,
+  Divider,
+} from "@mui/material";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid2";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
@@ -15,8 +21,7 @@ import FacebookLogin from '@greatsumini/react-facebook-login';
 import FacebookIcon from "@mui/icons-material/Facebook";
 import { selectLoginError } from '../../features/users/usersSlice.ts';
 import { regEmail } from './RegisterUser.tsx';
-
-
+import ModalWindow from '../../components/ModalWindow/ModalWindowEmail.tsx';
 
 const LoginUser = () => {
   const dispatch = useAppDispatch();
@@ -38,6 +43,12 @@ const LoginUser = () => {
     if (name === "email") {
       setEmailError(regEmail.test(value) ? "" : "Неправильный формат email");
     }
+  };
+
+  const [open, setOpen] = useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
   };
 
   const submitHandler = async (e: React.FormEvent) => {
@@ -104,7 +115,7 @@ const LoginUser = () => {
             onSubmit={submitHandler}
             sx={{ mt: 3 }}
           >
-              <Grid direction={"column"} spacing={2}>
+            <Grid direction={"column"} spacing={2}>
               <Grid>
                 <TextField
                   fullWidth
@@ -155,11 +166,31 @@ const LoginUser = () => {
             >
               Войти
             </Button>
-            <Grid container justifyContent="flex-end">
+            <Grid
+              container
+              direction="column"
+              justifyContent="center"
+              alignItems="center"
+              spacing={2}
+            >
               <Grid>
-                <NavLink to="/register" style={{ color: "black" }}>
-                  У вас нету аккаунта? Зарегистрироваться
+                <Typography variant="body2" color="textSecondary" align="center">
+                  У вас нет аккаунта?
+                </Typography>
+                <NavLink to="/register" style={{ textDecoration: 'none' }}>
+                  <Button variant="text" style={{ color: 'black' }}>
+                    Зарегистрироваться
+                  </Button>
                 </NavLink>
+              </Grid>
+
+              <Grid>
+                <Typography variant="body2" color="textSecondary" align="center">
+                  Забыли пароль?
+                </Typography>
+                <Button variant="text" style={{ color: 'black' }} onClick={handleClickOpen}>
+                  Восстановить пароль
+                </Button>
               </Grid>
             </Grid>
           </Box>
@@ -207,6 +238,7 @@ const LoginUser = () => {
         </Box>
       </Container>
 
+      <ModalWindow open={open} setOpen={setOpen} />
       <ToastContainer />
     </div>
   );

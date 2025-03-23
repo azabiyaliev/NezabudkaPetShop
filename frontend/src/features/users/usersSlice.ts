@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store.ts";
 import { GlobalError, User, ValidationError } from "../../types";
-import { facebookLogin, googleLogin  } from './usersThunk.ts';
+import { changePasswordAsync, facebookLogin, googleLogin, sendPasswordCode, verifyResetCode } from './usersThunk.ts';
 import { login, register, updateUser } from './usersThunk.ts';
 
 interface UserState {
@@ -12,6 +12,9 @@ interface UserState {
   loginError: ValidationError | null;
   editLoading: boolean;
   editError: GlobalError | null;
+  passwordCodeLoading: boolean;
+  passwordCodeError: GlobalError | null;
+  passwordCodeMessage: string | null;
 }
 
 const initialState: UserState = {
@@ -22,6 +25,9 @@ const initialState: UserState = {
   loginError: null,
   editLoading: false,
   editError: null,
+  passwordCodeLoading: false,
+  passwordCodeError: null,
+  passwordCodeMessage: null,
 };
 
 export const selectUser = (state: RootState) => state.users.user;
@@ -102,6 +108,40 @@ export const userSlice = createSlice({
       .addCase(updateUser.rejected, (state, ) => {
         state.editLoading = false;
         state.editError =  null;
+      })
+      .addCase(sendPasswordCode.pending, (state) => {
+        state.passwordCodeLoading = true;
+        state.passwordCodeError = null;
+      })
+      .addCase(sendPasswordCode.fulfilled, (state) => {
+        state.passwordCodeLoading = false;
+      })
+      .addCase(sendPasswordCode.rejected, (state) => {
+        state.passwordCodeLoading = false;
+        state.passwordCodeError = null
+      })
+      .addCase(verifyResetCode.pending, (state) => {
+        state.passwordCodeLoading = true;
+        state.passwordCodeError = null;
+      })
+      .addCase(verifyResetCode.fulfilled, (state) => {
+        state.passwordCodeLoading = false;
+      })
+      .addCase(verifyResetCode.rejected, (state) => {
+        state.passwordCodeLoading = false;
+        state.passwordCodeError = null
+      })
+      .addCase(changePasswordAsync.pending, (state) => {
+        state.passwordCodeLoading = true;
+        state.passwordCodeError = null;
+      })
+      .addCase(changePasswordAsync.fulfilled, (state, action) => {
+        state.passwordCodeLoading = false;
+        state.passwordCodeMessage = action.payload.message;
+      })
+      .addCase(changePasswordAsync.rejected, (state) => {
+        state.passwordCodeLoading = false;
+        state.passwordCodeError = null;
       });
   },
 });

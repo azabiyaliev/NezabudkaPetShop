@@ -7,9 +7,8 @@ import { toast } from "react-toastify";
 import { CircularProgress } from "@mui/material";
 import ProductForm from "../components/ProductForm.tsx";
 import { selectUser } from "../../../../features/users/usersSlice.ts";
-import AdminBar from "../../AdminProfile/AdminBar.tsx";
 import Grid from '@mui/material/Grid2';
-
+import AdminBar from "../../../../components/Admin/AdminBar.tsx";
 
 const NewProduct = () => {
   const dispatch = useAppDispatch();
