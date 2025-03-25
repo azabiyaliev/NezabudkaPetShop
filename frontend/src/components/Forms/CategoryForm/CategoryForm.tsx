@@ -1,6 +1,9 @@
 import { TextField, Button, Box, Typography } from "@mui/material";
 import React, { useCallback, useState } from 'react';
 import { CategoryMutation } from '../../../types';
+import { selectLoading } from '../../../store/categories/categoriesSlice.ts';
+import { useAppSelector } from '../../../app/hooks.ts';
+import { toast } from 'react-toastify';
 
 export interface Props {
   onSubmit: (category: CategoryMutation) => void;
@@ -12,13 +15,13 @@ const initialState = {
 
 const CategoryForm: React.FC<Props> = ({onSubmit}) => {
   const [category, setCategory] = useState<CategoryMutation>(initialState);
+  const isLoading = useAppSelector(selectLoading);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log(category);
     if(category.title.trim() === '') {
-      alert('Нельзя оставлять пустые поля');
-      return;
+      return toast.warning("Необходимо название для категории!");
     }
 
     onSubmit({...category});
@@ -43,7 +46,8 @@ const CategoryForm: React.FC<Props> = ({onSubmit}) => {
           display: "flex",
           flexDirection: "column",
           gap: 2,
-          maxWidth: 400,
+          maxWidth: 500,
+          width: "100%",
           mx: "auto",
           mt: 4,
           p: 3,
@@ -66,7 +70,11 @@ const CategoryForm: React.FC<Props> = ({onSubmit}) => {
           onChange={inputChangeHandler}
         />
 
-        <Button type="submit" variant="contained" sx={{ bgcolor: "#ffc107", color: "black" }}>
+        <Button type="submit" variant="contained" sx={{
+          color: 'white',
+          textTransform: 'uppercase',
+          background: isLoading ? 'transparent' : 'linear-gradient(90deg, rgba(250, 134, 1, 1) 0%, rgba(250, 179, 1, 1) 28%, rgba(250, 143, 1, 1) 100%)',
+        }}>
           Добавить
         </Button>
       </Box>
