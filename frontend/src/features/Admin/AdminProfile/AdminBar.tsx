@@ -58,9 +58,43 @@ const AdminBar = () => {
           <ListItem component={NavLink} to="/private/clients">
             <ListItemText primary="Клиенты" className="text-black" />
           </ListItem>
-          <ListItem component={NavLink} to="/private/add_category">
-            <ListItemText primary="Добавить категорию" className="text-black" />
-          </ListItem>
+
+          <ListItemButton
+            onClick={handleClick}
+            sx={{
+              marginLeft: "15px",
+            }}
+          >
+            <ListItemText primary="Категории" />
+            {open ? <ExpandLess /> : <KeyboardArrowRightIcon />}
+          </ListItemButton>
+          <Collapse in={open} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              <ListItemButton
+                sx={{ pl: 3 }}
+                component={NavLink}
+                to="/private/all_categories"
+              >
+                <ListItemIcon>
+                  <ReorderOutlinedIcon />
+                </ListItemIcon>
+                <ListItemText primary="Все категории" />
+              </ListItemButton>
+              <ListItemButton
+                sx={{ pl: 3 }}
+                component={NavLink}
+                to="/private/add_category"
+                onClick={() =>
+                  addError !== null ? dispatch(clearError()) : null
+                }
+              >
+                <ListItemIcon>
+                  <PlaylistAddOutlinedIcon />
+                </ListItemIcon>
+                <ListItemText primary="Добавить категорию" />
+              </ListItemButton>
+            </List>
+          </Collapse>
 
           <ListItemButton
             onClick={handleClick}
@@ -127,9 +161,6 @@ const AdminBar = () => {
             </List>
           </Collapse>
 
-          <ListItem component={NavLink} to="/private/all_categories">
-            <ListItemText primary="Все категории" className="text-black" />
-          </ListItem>
         </List>
       )}
 
