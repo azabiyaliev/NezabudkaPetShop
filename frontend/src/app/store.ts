@@ -9,12 +9,12 @@ import {
   REHYDRATE,
   PERSIST,
 } from "redux-persist";
-import { userReducer } from "../features/users/usersSlice.ts";
-import { editSiteReducer } from '../features/editionSite/editionSiteSlice.ts';
-import { categoriesReducer } from '../features/categories/categoriesSlice.ts';
-import { brandReducer } from '../features/brands/brandsSlice.ts';
-import { productsReducer } from '../features/products/productsSlice.ts';
-import { cartReducer } from '../features/cart/cartSlice.ts';
+import { userReducer } from "../store/users/usersSlice.ts";
+import { editSiteReducer } from '../store/editionSite/editionSiteSlice.ts';
+import { categoriesReducer } from '../store/categories/categoriesSlice.ts';
+import { brandReducer } from '../store/brands/brandsSlice.ts';
+import { productsReducer } from '../store/products/productsSlice.ts';
+import { cartReducer } from '../store/cart/cartSlice.ts';
 
 const userPersistConfig = {
   key: "store:users",

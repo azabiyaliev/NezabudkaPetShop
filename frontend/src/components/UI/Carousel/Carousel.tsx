@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
-import { selectEditSite } from '../../../features/editionSite/editionSiteSlice.ts';
-import { fetchSite } from '../../../features/editionSite/editionSiteThunk.ts';
+import { selectEditSite } from '../../../store/editionSite/editionSiteSlice.ts';
+import { fetchSite } from '../../../store/editionSite/editionSiteThunk.ts';
 import { apiUrl } from '../../../globalConstants.ts';
 import { useNavigate } from 'react-router-dom';
 

@@ -8,10 +8,13 @@ export class SeedService {
   constructor(private prisma: PrismaService) {}
 
   async seed() {
+    await this.prisma.passwordReset.deleteMany();
     await this.prisma.user.deleteMany({});
+    await this.prisma.customerCart.deleteMany({});
+    await this.prisma.products.deleteMany({});
+    await this.prisma.siteEdition.deleteMany({});
     await this.prisma.brand.deleteMany({});
     await this.prisma.category.deleteMany({});
-    await this.prisma.products.deleteMany({});
     await this.prisma.orderItem.deleteMany({});
 
     const password = await bcrypt.hash('123', 10);
