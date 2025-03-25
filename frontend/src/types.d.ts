@@ -98,7 +98,7 @@ export interface ProductRequest {
   sales: boolean;
   brandId: string;
   categoryId: string;
-  id: number;
+  id?: number;
 }
 
 export interface ICart {
