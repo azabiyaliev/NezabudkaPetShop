@@ -144,9 +144,22 @@ const SubcategoryForm: React.FC<Props> = ({ onSubmit }) => {
         </Button>
       </Box>
 
-      <Button type="submit" variant="contained" sx={{ textTransform: 'uppercase', color: 'white', background: isLoading ? 'transparent' : 'linear-gradient(90deg, rgba(250, 134, 1, 1) 0%, rgba(250, 179, 1, 1) 28%, rgba(250, 143, 1, 1) 100%)' }}>
+      <Button
+        type="submit"
+        variant="contained"
+        sx={{
+          textTransform: 'uppercase',
+          color: 'white',
+          background: isLoading ? 'transparent' : '#237803',
+          borderRadius: '10px',
+          '&:hover': {
+            backgroundColor: '#1e6600',
+          },
+        }}
+      >
         Добавить
       </Button>
+
     </Box>
   );
 };
