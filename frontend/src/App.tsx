@@ -24,6 +24,7 @@ import ProductsPage from './features/Admin/Product/containers/ProductsPage.tsx';
 import EditProduct from './features/Admin/Product/containers/EditProduct.tsx';
 import AllProductsCardsPage from './features/Product/containers/AllProductsCardsPage.tsx';
 import CartPage from './features/Cart/CartPage.tsx';
+import NewSubcategory from './features/Category/NewSubcategory/NewSubcategory.tsx';
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -93,6 +94,11 @@ const App = () => {
           <Route path="/private/add_category" element={
             <ProtectedRoute isAllowed={user && user.role === 'admin'}>
               <NewCategory/>
+            </ProtectedRoute>
+          } />
+          <Route path="/private/add_subcategory" element={
+            <ProtectedRoute isAllowed={user && user.role === 'admin'}>
+              <NewSubcategory/>
             </ProtectedRoute>
           } />
           <Route path="/product/:id" element={<ProductPage/>}/>

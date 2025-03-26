@@ -6,6 +6,20 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CategoryDto } from '../dto/category.dto';
+import { SubcategoryDto } from '../dto/subCategoryDto';
+
+const predefinedSubcategories = [
+  'Амуниция',
+  'Ветеринарная аптека',
+  'Витамины и добавки',
+  'Влажный корм',
+  'Сухой корм',
+  'Домики и лежанки',
+  'Ошейники и шлейки',
+  'Лакомства',
+  'Игрушки',
+  'Сено',
+];
 
 @Injectable()
 export class CategoryService {
@@ -22,6 +36,27 @@ export class CategoryService {
     return category;
   }
 
+  async createPredefinedSubcategories(categoryId: number) {
+    await this.validateCategory(categoryId);
+
+    for (const subcategory of predefinedSubcategories) {
+      const existingSubcategory = await this.prisma.category.findUnique({
+        where: { title: subcategory },
+      });
+
+      if (!existingSubcategory) {
+        await this.prisma.category.create({
+          data: {
+            title: subcategory,
+            parentId: categoryId,
+          },
+        });
+      }
+    }
+
+    return { message: 'Предустановленные подкатегории добавлены успешно' };
+  }
+
   async createCategory(categoryDto: CategoryDto) {
     const { title, parentId } = categoryDto;
 
@@ -32,9 +67,7 @@ export class CategoryService {
     }
 
     const existingCategory = await this.prisma.category.findUnique({
-      where: {
-        title: title,
-      },
+      where: { title },
     });
 
     if (existingCategory) {
@@ -45,9 +78,50 @@ export class CategoryService {
       await this.validateCategory(parentId);
     }
 
-    return this.prisma.category.create({
+    const newCategory = await this.prisma.category.create({
       data: { title, parentId },
     });
+
+    if (parentId === null) {
+      await this.createPredefinedSubcategories(newCategory.id);
+    }
+
+    return newCategory;
+  }
+  async createSubcategory(
+    categoryId: number,
+    subCategoryDtos: SubcategoryDto[],
+  ) {
+    categoryId = parseInt(categoryId.toString(), 10);
+
+    await this.validateCategory(categoryId);
+
+    for (const subCategoryDto of subCategoryDtos) {
+      const { title } = subCategoryDto;
+
+      if (!title) {
+        throw new BadRequestException('Название подкатегории отсутствует');
+      }
+
+      const existingSubcategory = await this.prisma.category.findFirst({
+        where: { title, parentId: categoryId },
+      });
+
+      if (existingSubcategory) {
+        throw new ConflictException(
+          'Подкатегория с таким названием уже существует',
+        );
+      }
+
+      await this.prisma.category.create({
+        data: {
+          title,
+          parentId: categoryId,
+        },
+      });
+    }
+
+    return { message: 'Подкатегории успешно добавлены' };
   }
 
   async getAllCategories() {
@@ -62,15 +136,18 @@ export class CategoryService {
     return result;
   }
 
-  async getAllSubCategories() {
-    const result = await this.prisma.category.findMany({
-      where: { parentId: { not: null } },
+  async getSubcategories(categoryId: number) {
+    await this.validateCategory(categoryId);
+
+    const subcategories = await this.prisma.category.findMany({
+      where: { parentId: categoryId },
     });
 
-    if (result.length === 0) {
+    if (subcategories.length === 0) {
       throw new NotFoundException('Подкатегории не найдены');
     }
-    return result;
+
+    return subcategories;
   }
 
   async getOneCategory(parentId: string) {

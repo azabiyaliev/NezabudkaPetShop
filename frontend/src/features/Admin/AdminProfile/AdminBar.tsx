@@ -93,6 +93,19 @@ const AdminBar = () => {
                 </ListItemIcon>
                 <ListItemText primary="Добавить категорию" />
               </ListItemButton>
+              <ListItemButton
+                sx={{ pl: 3 }}
+                component={NavLink}
+                to="/private/add_subcategory"
+                onClick={() =>
+                  addError !== null ? dispatch(clearError()) : null
+                }
+              >
+                <ListItemIcon>
+                  <PlaylistAddOutlinedIcon />
+                </ListItemIcon>
+                <ListItemText primary="Добавить подкатегорию" />
+              </ListItemButton>
             </List>
           </Collapse>
 

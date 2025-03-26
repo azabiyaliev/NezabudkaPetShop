@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import {CategoryMutation, GlobalError, ICategories} from '../../types';
+import { CategoryMutation, GlobalError, ICategories } from '../../types';
 import axiosApi from '../../axiosApi.ts';
 import {isAxiosError} from "axios";
 
@@ -19,11 +19,30 @@ export const addNewCategory = createAsyncThunk<
 >(
     "category/addNewCategory",
     async ({ category, token }) => {
+      console.log("Sending category data:", category);
         await axiosApi.post("/category", category, {
             headers: { Authorization: token },
         });
     }
 );
+
+export const addNewSubcategory = createAsyncThunk<
+  void,
+  { id: number; subcategories: string[]; token: string }
+>(
+  "category/addNewSubcategory",
+  async ({ id, subcategories, token }) => {
+    console.log("Adding subcategories to category ID:", id);
+
+    const subcategoryData = subcategories.map(sub => ({ title: sub }));
+
+
+    await axiosApi.post(`/category/${id}/subcategories`, { subcategories: subcategoryData }, {
+      headers: { Authorization: token },
+    });
+  }
+);
+
 
 export const updateCategoryThunk = createAsyncThunk<
     void,
@@ -77,6 +96,27 @@ export const fetchOneCategoryThunk = createAsyncThunk<
     }
 );
 
+export const fetchSubcategories = createAsyncThunk<
+  ICategories[],
+  number,
+  { rejectValue: GlobalError }
+>(
+  "category/fetchSubcategories",
+  async (categoryId, { rejectWithValue }) => {
+    try {
+      const response = await axiosApi.get<ICategories[]>(`/category/${categoryId}/subcategories`);
+      return response.data;
+    } catch (error) {
+      if (isAxiosError(error) && error.response) {
+        const { status, data } = error.response;
+        if (status === 404 && data.error) {
+          return rejectWithValue(data as GlobalError);
+        }
+      }
+      throw error;
+    }
+  }
+);
 
 export const deleteCategory = createAsyncThunk<void, string>(
     'category/deleteCategory',

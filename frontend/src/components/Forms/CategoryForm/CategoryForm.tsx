@@ -21,7 +21,7 @@ const CategoryForm: React.FC<Props> = ({onSubmit}) => {
     e.preventDefault();
     console.log(category);
     if(category.title.trim() === '') {
-      return toast.warning("Необходимо название для категории!");
+      return toast.warning("Необходимо название категории!");
     }
 
     onSubmit({...category});
@@ -46,8 +46,7 @@ const CategoryForm: React.FC<Props> = ({onSubmit}) => {
           display: "flex",
           flexDirection: "column",
           gap: 2,
-          maxWidth: 500,
-          width: "100%",
+          maxWidth: 400,
           mx: "auto",
           mt: 4,
           p: 3,
@@ -57,7 +56,7 @@ const CategoryForm: React.FC<Props> = ({onSubmit}) => {
         }}
       >
         <Typography variant="h6" textAlign="center">
-          Добавить категорию / подкатегорию
+          Добавить категорию
         </Typography>
 
         <TextField

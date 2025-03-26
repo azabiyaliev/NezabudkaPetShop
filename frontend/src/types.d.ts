@@ -80,13 +80,21 @@ export interface PhotoCarousel{
   photo: File | null;
 }
 
+
 export interface ICategories {
   id: number;
   title: string;
+  parentId?: number | null;
 }
 
 export interface CategoryMutation {
   title: string;
+}
+
+export interface Subcategory {
+  title: string;
+  parentId: string | number | undefined | null;
+  subcategories: string[];
 }
 
 export interface ProductRequest {
