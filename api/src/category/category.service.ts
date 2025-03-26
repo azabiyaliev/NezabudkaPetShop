@@ -40,16 +40,13 @@ export class CategoryService {
     await this.validateCategory(categoryId);
 
     for (const subcategory of predefinedSubcategories) {
-      const existingSubcategory = await this.prisma.category.findUnique({
-        where: { title: subcategory },
+      const existingSubcategory = await this.prisma.category.findFirst({
+        where: { title: subcategory, parentId: categoryId },
       });
 
       if (!existingSubcategory) {
         await this.prisma.category.create({
-          data: {
-            title: subcategory,
-            parentId: categoryId,
-          },
+          data: { title: subcategory, parentId: categoryId },
         });
       }
     }
@@ -93,13 +90,10 @@ export class CategoryService {
     subCategoryDtos: SubcategoryDto[],
   ) {
     categoryId = parseInt(categoryId.toString(), 10);
-
     await this.validateCategory(categoryId);
 
-    for (const subCategoryDto of subCategoryDtos) {
-      const { title } = subCategoryDto;
-
-      if (!title) {
+    for (const { title } of subCategoryDtos) {
+      if (!title.trim()) {
         throw new BadRequestException('Название подкатегории отсутствует');
       }
 
@@ -114,10 +108,7 @@ export class CategoryService {
       }
 
       await this.prisma.category.create({
-        data: {
-          title,
-          parentId: categoryId,
-        },
+        data: { title, parentId: categoryId },
       });
     }
 

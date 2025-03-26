@@ -28,11 +28,26 @@ const SubcategoryForm: React.FC<Props> = ({ onSubmit }) => {
   const [newSubcategory, setNewSubcategory] = useState('');
   const dispatch = useAppDispatch();
 
+  const predefinedSubcategories = [
+    'Амуниция',
+    'Ветеринарная аптека',
+    'Витамины и добавки',
+    'Влажный корм',
+    'Сухой корм',
+    'Домики и лежанки',
+    'Ошейники и шлейки',
+    'Лакомства',
+    'Игрушки',
+    'Сено',
+  ];
+
   useEffect(() => {
     if (parentId) {
+      console.log("Fetching subcategories for:", parentId);
       dispatch(fetchSubcategories(parentId));
     }
   }, [parentId, dispatch]);
+
 
   console.log(allSubcategories);
 
@@ -72,10 +87,10 @@ const SubcategoryForm: React.FC<Props> = ({ onSubmit }) => {
     setNewSubcategory('');
   };
 
-  // const filteredSubcategories = allSubcategories.filter(
-  //   (sub) => sub.parentId === parentId
-  // );
-
+  const availableSubcategories = [
+    ...predefinedSubcategories,
+    ...allSubcategories.map((sub) => sub.title),
+  ];
 
   return (
     <Box
@@ -109,7 +124,7 @@ const SubcategoryForm: React.FC<Props> = ({ onSubmit }) => {
           onChange={handleSelectSubcategoriesChange}
           renderValue={(selected) => selected.join(', ')}
         >
-          {subcategories.map((sub) => (
+          {availableSubcategories.map((sub) => (
             <MenuItem key={sub} value={sub}>
               {sub}
             </MenuItem>

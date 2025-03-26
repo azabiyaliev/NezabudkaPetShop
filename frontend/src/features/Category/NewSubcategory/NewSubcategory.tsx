@@ -1,6 +1,9 @@
 import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
 import { selectUser } from '../../../store/users/usersSlice.ts';
-import {  addNewSubcategory, fetchCategoriesThunk } from '../../../store/categories/categoriesThunk.ts';
+import {
+  addNewSubcategory,
+  fetchCategoriesThunk,
+} from '../../../store/categories/categoriesThunk.ts';
 import { toast, ToastContainer } from 'react-toastify';
 import SubcategoryForm from '../../../components/Forms/SubcategoryForm/SubcategoryForm.tsx';
 import { Box } from '@mui/material';

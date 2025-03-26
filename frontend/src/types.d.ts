@@ -94,7 +94,7 @@ export interface CategoryMutation {
 export interface Subcategory {
   title: string;
   parentId: string | number | undefined | null;
-  subcategories: string[];
+  subcategories?: string[];
 }
 
 export interface ProductRequest {

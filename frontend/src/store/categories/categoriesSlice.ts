@@ -111,12 +111,11 @@ const categoriesSlice = createSlice({
         state.isLoading = true;
         state.error = null;
       })
-      .addCase(fetchSubcategories.fulfilled, (state, { payload }) => {
-        state.isLoading = false;
-        state.SubCategories = payload.map(category => ({
+      .addCase(fetchSubcategories.fulfilled, (state, {payload}) => {
+        state.SubCategories = payload.map((category: ICategories) => ({
           title: category.title,
-          parentId: null,
-          subcategories: []
+          parentId: category.parentId,
+          subcategories: [],
         }));
       })
       .addCase(fetchSubcategories.rejected, (state) => {
