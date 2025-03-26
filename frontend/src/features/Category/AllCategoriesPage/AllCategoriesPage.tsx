@@ -97,7 +97,9 @@ const AllCategoriesPage = () => {
                           {category.subcategories.map((sub, index) => (
                             <ListItem key={index}
                                       sx={{display: 'flex', justifyContent: 'space-between', padding: '8px 16px'}}>
-                              <TableCell sx={{fontSize: '0.8rem', color: 'text.secondary'}}>{sub.title}</TableCell>
+                              <Typography sx={{fontSize: '0.8rem', color: 'text.secondary'}}>
+                                {sub.title}
+                              </Typography>
                             </ListItem>
                           ))}
                         </List>
