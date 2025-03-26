@@ -85,6 +85,7 @@ export interface ICategories {
   id: number;
   title: string;
   parentId?: number | null;
+  subcategories?: Subcategory[];
 }
 
 export interface CategoryMutation {
@@ -92,6 +93,7 @@ export interface CategoryMutation {
 }
 
 export interface Subcategory {
+  id: number;
   title: string;
   parentId: string | number | undefined | null;
   subcategories?: string[];
