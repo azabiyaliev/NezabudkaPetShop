@@ -1,7 +1,13 @@
-import { createSlice } from '@reduxjs/toolkit';
-import {GlobalError, IBrand, IBrandForm} from '../../types';
-import { addBrand, brandeDelete, editBrand, getBrands, getOneBrand } from './brandsThunk.ts';
-import { RootState } from '../../app/store.ts';
+import { createSlice } from "@reduxjs/toolkit";
+import { GlobalError, IBrand, IBrandForm } from "../../types";
+import {
+  addBrand,
+  brandeDelete,
+  editBrand,
+  getBrands,
+  getOneBrand,
+} from "./brandsThunk.ts";
+import { RootState } from "../../app/store.ts";
 
 interface BrandState {
   brands: IBrand[];
@@ -12,7 +18,7 @@ interface BrandState {
     getOneLoading: boolean;
     editLoading: boolean;
     deleteLoading: boolean;
-  },
+  };
   error: boolean;
   addError: GlobalError | null;
 }
@@ -29,16 +35,18 @@ const initialState: BrandState = {
   },
   error: false,
   addError: null,
-}
+};
 
 export const brandsFromSlice = (state: RootState) => state.brands.brands;
 export const brandFromSlice = (state: RootState) => state.brands.brand;
-export const addLoadingFromSlice = (state: RootState) => state.brands.loadings.addLoading;
-export const editLoadingFromSlice = (state: RootState) => state.brands.loadings.editLoading;
+export const addLoadingFromSlice = (state: RootState) =>
+  state.brands.loadings.addLoading;
+export const editLoadingFromSlice = (state: RootState) =>
+  state.brands.loadings.editLoading;
 export const addErrorFromSlice = (state: RootState) => state.brands.addError;
 
 const brandsSlice = createSlice({
-  name: 'brands',
+  name: "brands",
   initialState,
   reducers: {
     clearError: (state) => {
@@ -55,7 +63,7 @@ const brandsSlice = createSlice({
         state.loadings.addLoading = false;
         state.addError = null;
       })
-      .addCase(addBrand.rejected, (state, {payload: error}) => {
+      .addCase(addBrand.rejected, (state, { payload: error }) => {
         state.loadings.addLoading = false;
         state.addError = error || null;
       })
@@ -63,7 +71,7 @@ const brandsSlice = createSlice({
         state.loadings.getLoading = true;
         state.error = false;
       })
-      .addCase(getBrands.fulfilled, (state, {payload: brands}) => {
+      .addCase(getBrands.fulfilled, (state, { payload: brands }) => {
         state.loadings.getLoading = false;
         state.error = false;
         state.brands = brands;
@@ -76,7 +84,7 @@ const brandsSlice = createSlice({
         state.loadings.getOneLoading = true;
         state.error = false;
       })
-      .addCase(getOneBrand.fulfilled, (state, {payload: brand}) => {
+      .addCase(getOneBrand.fulfilled, (state, { payload: brand }) => {
         state.loadings.getOneLoading = false;
         state.error = false;
         state.brand = brand;
@@ -109,7 +117,7 @@ const brandsSlice = createSlice({
         state.loadings.editLoading = false;
         state.error = true;
       });
-  }
+  },
 });
 
 export const brandReducer = brandsSlice.reducer;

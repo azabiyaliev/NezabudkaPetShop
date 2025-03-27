@@ -48,11 +48,16 @@ const FileInput: React.FC<Props> = ({ name, label, onGetFile }) => {
           />
         </Grid>
         <Grid size={{ xs: 3 }}>
-          <Button variant="contained" onClick={activateInput} sx={{
-            color: 'white',
-            textTransform: 'uppercase',
-            background: 'linear-gradient(90deg, rgba(250, 134, 1, 1) 0%, rgba(250, 179, 1, 1) 28%, rgba(250, 143, 1, 1) 100%)',
-          }}>
+          <Button
+            variant="contained"
+            onClick={activateInput}
+            sx={{
+              color: "white",
+              textTransform: "uppercase",
+              background:
+                "linear-gradient(90deg, rgba(250, 134, 1, 1) 0%, rgba(250, 179, 1, 1) 28%, rgba(250, 143, 1, 1) 100%)",
+            }}
+          >
             Выбрать изображение
           </Button>
         </Grid>

@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import { CircularProgress } from "@mui/material";
 import ProductForm from "../components/ProductForm.tsx";
 import { selectUser } from "../../../../store/users/usersSlice.ts";
-import Grid from '@mui/material/Grid2';
+import Grid from "@mui/material/Grid2";
 import AdminBar from "../../AdminProfile/AdminBar.tsx";
 
 const NewProduct = () => {
@@ -33,9 +33,9 @@ const NewProduct = () => {
       {loading ? (
         <CircularProgress />
       ) : (
-        <Grid container spacing={2} >
+        <Grid container spacing={2}>
           <Grid size={3}>
-            <AdminBar/>
+            <AdminBar />
           </Grid>
           <Grid size={9}>
             <ProductForm onSubmit={onSubmitForm} />

@@ -1,10 +1,10 @@
-import { ProductRequest, ProductResponse } from '../../types';
-import {  PayloadAction } from '@reduxjs/toolkit';
-import { editProduct, getOneProduct, getProducts } from './productsThunk.ts';
-import { SubcategoryWithBrand } from '../../types';
-import { createSlice } from '@reduxjs/toolkit';
-import { addProduct, getAllProductsByCategory } from './productsThunk.ts';
-import { RootState } from '../../app/store.ts';
+import { ProductRequest, ProductResponse } from "../../types";
+import { PayloadAction } from "@reduxjs/toolkit";
+import { editProduct, getOneProduct, getProducts } from "./productsThunk.ts";
+import { SubcategoryWithBrand } from "../../types";
+import { createSlice } from "@reduxjs/toolkit";
+import { addProduct, getAllProductsByCategory } from "./productsThunk.ts";
+import { RootState } from "../../app/store.ts";
 
 interface ProductsState {
   products: ProductResponse[];
@@ -19,17 +19,17 @@ const initialState: ProductsState = {
   products: [],
   product: null,
   loading: false,
-  error: false
-}
+  error: false,
+};
 
-export const addProductLoading = (state: RootState) => state.products.loading
+export const addProductLoading = (state: RootState) => state.products.loading;
 export const selectProducts = (state: RootState) => state.products.products;
 export const selectProduct = (state: RootState) => state.products.product;
 
 const productsSlice = createSlice({
   name: "products",
   initialState,
-  reducers:{},
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(getAllProductsByCategory.pending, (state) => {
@@ -37,7 +37,7 @@ const productsSlice = createSlice({
       })
       .addCase(getAllProductsByCategory.fulfilled, (state, action) => {
         state.loading = false;
-        state.brands = action.payload
+        state.brands = action.payload;
       })
       .addCase(getAllProductsByCategory.rejected, (state) => {
         state.loading = false;
@@ -54,10 +54,13 @@ const productsSlice = createSlice({
       .addCase(getProducts.pending, (state) => {
         state.loading = true;
       })
-      .addCase(getProducts.fulfilled, (state, action: PayloadAction<ProductResponse[]>) => {
-        state.products = action.payload
-        state.loading = false;
-      })
+      .addCase(
+        getProducts.fulfilled,
+        (state, action: PayloadAction<ProductResponse[]>) => {
+          state.products = action.payload;
+          state.loading = false;
+        },
+      )
       .addCase(getProducts.rejected, (state) => {
         state.loading = false;
       })
@@ -73,14 +76,17 @@ const productsSlice = createSlice({
       .addCase(getOneProduct.pending, (state) => {
         state.loading = true;
       })
-      .addCase(getOneProduct.fulfilled, (state, action: PayloadAction<ProductRequest>) => {
-        state.product = action.payload
-        state.loading = false;
-      })
+      .addCase(
+        getOneProduct.fulfilled,
+        (state, action: PayloadAction<ProductRequest>) => {
+          state.product = action.payload;
+          state.loading = false;
+        },
+      )
       .addCase(getOneProduct.rejected, (state) => {
         state.loading = false;
       });
-  }
+  },
 });
 
 export const productsReducer = productsSlice.reducer;
