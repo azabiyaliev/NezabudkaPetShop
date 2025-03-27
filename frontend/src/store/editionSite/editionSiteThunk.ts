@@ -22,6 +22,9 @@ export const updateSite = createAsyncThunk<
       site.PhotoByCarousel.forEach((photo) => {
         if (photo.photo) {
           data.append(`PhotoByCarousel`, photo.photo);
+          if (photo.id) {
+            data.append(`PhotoByCarouselIds`, String(photo.id));
+          }
         }
       });
       await axiosApi.put(`/edition_site/${id}`, data);

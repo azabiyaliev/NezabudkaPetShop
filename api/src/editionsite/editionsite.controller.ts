@@ -5,7 +5,7 @@ import {
   NotFoundException,
   Param,
   Post,
-  Put,
+  Put, Req,
   UploadedFiles,
   UseGuards,
   UseInterceptors,
@@ -20,6 +20,11 @@ import { Roles } from '../roles/roles.decorator';
 import { EditionSiteService } from './editionsite.service';
 import { EditionSitedDto } from '../dto/editionsite.dto';
 
+interface RequestBody {
+  [key: string]: any;
+  PhotoByCarouselIds?: string[];
+}
+
 @Controller('edition_site')
 export class EditionSiteController {
   constructor(private editionSite: EditionSiteService) {}
@@ -33,28 +38,34 @@ export class EditionSiteController {
   @Roles('admin')
   @Post()
   @UseInterceptors(
-    FilesInterceptor('PhotoByCarousel', 10, {
-      storage: diskStorage({
-        destination: './public/editsite',
-        filename: (_req, file, callback) => {
-          const imageFormat = extname(file.originalname);
-          callback(null, `${crypto.randomUUID()}${imageFormat}`);
-        },
+      FilesInterceptor('PhotoByCarousel', 10, {
+        storage: diskStorage({
+          destination: './public/editsite',
+          filename: (_req, file, callback) => {
+            const imageFormat = extname(file.originalname);
+            callback(null, `${crypto.randomUUID()}${imageFormat}`);
+          },
+        }),
       }),
-    }),
   )
   async createSite(
-    @UploadedFiles() files: Express.Multer.File[],
-    @Body() editsiteDto: EditionSitedDto,
+      @UploadedFiles() files: Express.Multer.File[],
+      @Body() editsiteDto: EditionSitedDto,
+      @Req() req: Request,
   ) {
     if (!editsiteDto) {
       throw new NotFoundException('Поля не были предоставлены!');
     }
+
+    const requestBody = req.body as RequestBody;
     const photoData = files
-      ? files.map((file) => ({
+        ? files.map((file, index) => ({
           photo: '/editsite/' + file.filename,
+          id: requestBody.PhotoByCarouselIds && requestBody.PhotoByCarouselIds[index]
+              ? parseInt(requestBody.PhotoByCarouselIds[index])
+              : undefined,
         }))
-      : [];
+        : [];
 
     return await this.editionSite.createInfoSite({
       instagram: editsiteDto.instagram,
@@ -71,30 +82,36 @@ export class EditionSiteController {
   @Roles('admin')
   @Put(':id')
   @UseInterceptors(
-    FilesInterceptor('PhotoByCarousel', 10, {
-      storage: diskStorage({
-        destination: './public/editsite',
-        filename: (_req, file, callback) => {
-          const imageFormat = extname(file.originalname);
-          callback(null, `${crypto.randomUUID()}${imageFormat}`);
-        },
+      FilesInterceptor('PhotoByCarousel', 10, {
+        storage: diskStorage({
+          destination: './public/editsite',
+          filename: (_req, file, callback) => {
+            const imageFormat = extname(file.originalname);
+            callback(null, `${crypto.randomUUID()}${imageFormat}`);
+          },
+        }),
       }),
-    }),
   )
   async updateSite(
-    @Param('id') id: string,
-    @UploadedFiles() files: Express.Multer.File[],
-    @Body() editsiteDto: EditionSitedDto,
+      @Param('id') id: string,
+      @UploadedFiles() files: Express.Multer.File[],
+      @Body() editsiteDto: EditionSitedDto,
+      @Req() req: Request,
   ) {
     if (!editsiteDto) {
       throw new NotFoundException('Поля не были предоставлены!');
     }
 
+    const requestBody = req.body as RequestBody;
+
     const photoData = files
-      ? files.map((file) => ({
+        ? files.map((file, index) => ({
           photo: '/editsite/' + file.filename,
+          id: requestBody.PhotoByCarouselIds && requestBody.PhotoByCarouselIds[index]
+              ? parseInt(requestBody.PhotoByCarouselIds[index])
+              : undefined,
         }))
-      : [];
+        : [];
     return await this.editionSite.updateSite(id, editsiteDto, photoData);
   }
 }

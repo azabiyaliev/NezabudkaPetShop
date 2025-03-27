@@ -15,7 +15,6 @@ async function bootstrap() {
     throw result.error;
   }
 
-
   if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
     console.error('EMAIL_USER или EMAIL_PASSWORD не установлены в .env');
     process.exit(1);

@@ -58,7 +58,7 @@ const EditSiteForm = () => {
         const updatedPhotos = [...prevState.PhotoByCarousel];
 
         if (updatedPhotos[index]) {
-          updatedPhotos[index] = { photo: files[0] };
+          updatedPhotos[index] = { ...updatedPhotos[index], photo: files[0] };
         } else {
           updatedPhotos.push({ photo: files[0] });
         }
@@ -76,6 +76,8 @@ const EditSiteForm = () => {
 
   const submitHandler = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    console.log('FormData перед отправкой:', site);
 
     if (!site?.id) {
       toast.error("Ваш id неверный!", {

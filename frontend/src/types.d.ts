@@ -77,6 +77,7 @@ export interface EditSite {
 }
 
 export interface PhotoCarousel{
+  id?: number
   photo: File | null;
 }
 
