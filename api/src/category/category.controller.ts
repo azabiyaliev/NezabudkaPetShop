@@ -54,8 +54,6 @@ export class CategoryController {
     @Param('id', ParseIntPipe) id: number,
     @Body() subCategoryDto: { subcategories: SubcategoryDto[] },
   ) {
-    console.log('Полученные данные:', subCategoryDto);
-
     return this.categoryService.createSubcategory(
       id,
       subCategoryDto.subcategories,

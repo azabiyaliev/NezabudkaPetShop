@@ -8,18 +8,21 @@ import {
   TextField,
   SelectChangeEvent,
   Typography,
-} from '@mui/material';
-import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
-import { selectAllSubcategories, selectCategories, selectLoading } from '../../../store/categories/categoriesSlice.ts';
-import React, { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
-import { fetchSubcategories } from '../../../store/categories/categoriesThunk.ts';
+} from "@mui/material";
+import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
+import {
+  selectAllSubcategories,
+  selectCategories,
+  selectLoading,
+} from "../../../store/categories/categoriesSlice.ts";
+import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { fetchSubcategories } from "../../../store/categories/categoriesThunk.ts";
 
-
-const WARNING_SELECT_CATEGORY = 'Выберите родительскую категорию!';
-const WARNING_SELECT_SUBCATEGORY = 'Выберите хотя бы одну подкатегорию!';
-const WARNING_EMPTY_SUBCATEGORY = 'Введите название подкатегории!';
-const WARNING_DUPLICATE_SUBCATEGORY = 'Эта подкатегория уже выбрана!';
+const WARNING_SELECT_CATEGORY = "Выберите родительскую категорию!";
+const WARNING_SELECT_SUBCATEGORY = "Выберите хотя бы одну подкатегорию!";
+const WARNING_EMPTY_SUBCATEGORY = "Введите название подкатегории!";
+const WARNING_DUPLICATE_SUBCATEGORY = "Эта подкатегория уже выбрана!";
 
 export interface Props {
   onSubmit: (id: number, subcategories: string[]) => void;
@@ -31,7 +34,7 @@ const SubcategoryForm: React.FC<Props> = ({ onSubmit }) => {
   const isLoading = useAppSelector(selectLoading);
   const [parentId, setParentId] = useState<number | null>(null);
   const [subcategories, setSubcategories] = useState<string[]>([]);
-  const [newSubcategory, setNewSubcategory] = useState('');
+  const [newSubcategory, setNewSubcategory] = useState("");
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -44,11 +47,13 @@ const SubcategoryForm: React.FC<Props> = ({ onSubmit }) => {
     e.preventDefault();
 
     if (!parentId) {
-      return toast.warning(WARNING_SELECT_CATEGORY);
+      return toast.warning(WARNING_SELECT_CATEGORY, { position: "top-center" });
     }
 
     if (subcategories.length === 0) {
-      return toast.warning(WARNING_SELECT_SUBCATEGORY);
+      return toast.warning(WARNING_SELECT_SUBCATEGORY, {
+        position: "top-center",
+      });
     }
 
     onSubmit(parentId, subcategories);
@@ -64,27 +69,40 @@ const SubcategoryForm: React.FC<Props> = ({ onSubmit }) => {
   };
 
   const handleAddSubcategory = () => {
-    if (newSubcategory.trim() === '') {
-      return toast.warning(WARNING_EMPTY_SUBCATEGORY);
+    if (newSubcategory.trim() === "") {
+      return toast.warning(WARNING_EMPTY_SUBCATEGORY, {
+        position: "top-center",
+      });
     }
 
     if (subcategories.includes(newSubcategory)) {
-      return toast.warning(WARNING_DUPLICATE_SUBCATEGORY);
+      return toast.warning(WARNING_DUPLICATE_SUBCATEGORY, {
+        position: "top-center",
+      });
     }
 
     setSubcategories((prev) => [...prev, newSubcategory]);
-    setNewSubcategory('');
+    setNewSubcategory("");
   };
 
-  const availableSubcategories = [
-    ...allSubcategories.map((sub) => sub.title),
-  ];
+  const availableSubcategories = [...allSubcategories.map((sub) => sub.title)];
 
   return (
     <Box
       component="form"
       onSubmit={handleSubmit}
-      sx={{ display: 'flex', flexDirection: 'column', gap: 2, maxWidth: 800, mx: 'auto', mt: 4, p: 4, border: '1px solid #ccc', borderRadius: 2, boxShadow: 2 }}
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 2,
+        maxWidth: 800,
+        mx: "auto",
+        mt: 4,
+        p: 4,
+        border: "1px solid #ccc",
+        borderRadius: 2,
+        boxShadow: 2,
+      }}
     >
       <Typography variant="h6" textAlign="center">
         Добавить подкатегорию
@@ -93,7 +111,7 @@ const SubcategoryForm: React.FC<Props> = ({ onSubmit }) => {
       <FormControl fullWidth>
         <InputLabel>Родительская категория</InputLabel>
         <Select
-          value={parentId ? String(parentId) : ''}
+          value={parentId ? String(parentId) : ""}
           onChange={handleSelectParentChange}
         >
           {categories.map((cat) => (
@@ -110,7 +128,7 @@ const SubcategoryForm: React.FC<Props> = ({ onSubmit }) => {
           multiple
           value={subcategories}
           onChange={handleSelectSubcategoriesChange}
-          renderValue={(selected) => selected.join(', ')}
+          renderValue={(selected) => selected.join(", ")}
         >
           {availableSubcategories.map((sub) => (
             <MenuItem key={sub} value={sub}>
@@ -120,7 +138,7 @@ const SubcategoryForm: React.FC<Props> = ({ onSubmit }) => {
         </Select>
       </FormControl>
 
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
         <TextField
           fullWidth
           label="Добавить новую подкатегорию"
@@ -136,12 +154,12 @@ const SubcategoryForm: React.FC<Props> = ({ onSubmit }) => {
         type="submit"
         variant="contained"
         sx={{
-          textTransform: 'uppercase',
-          color: 'white',
-          background: isLoading ? 'transparent' : '#237803',
-          borderRadius: '10px',
-          '&:hover': {
-            backgroundColor: '#1e6600',
+          textTransform: "uppercase",
+          color: "white",
+          background: isLoading ? "transparent" : "#237803",
+          borderRadius: "10px",
+          "&:hover": {
+            backgroundColor: "#1e6600",
           },
         }}
       >

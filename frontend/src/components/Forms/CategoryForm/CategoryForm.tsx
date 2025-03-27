@@ -1,41 +1,46 @@
 import { TextField, Button, Box, Typography } from "@mui/material";
-import React, { useCallback, useState } from 'react';
-import { CategoryMutation } from '../../../types';
-import { selectLoading } from '../../../store/categories/categoriesSlice.ts';
-import { useAppSelector } from '../../../app/hooks.ts';
-import { toast } from 'react-toastify';
+import React, { useCallback, useState } from "react";
+import { CategoryMutation } from "../../../types";
+import { selectLoading } from "../../../store/categories/categoriesSlice.ts";
+import { useAppSelector } from "../../../app/hooks.ts";
+import { toast } from "react-toastify";
 
 export interface Props {
   onSubmit: (category: CategoryMutation) => void;
 }
 
 const initialState = {
-  title: '',
+  title: "",
 };
 
-const CategoryForm: React.FC<Props> = ({onSubmit}) => {
+const WARNING_EMPTY_SUBCATEGORY = "Введите название подкатегории!";
+
+const CategoryForm: React.FC<Props> = ({ onSubmit }) => {
   const [category, setCategory] = useState<CategoryMutation>(initialState);
   const isLoading = useAppSelector(selectLoading);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log(category);
-    if(category.title.trim() === '') {
-      return toast.warning("Необходимо название категории!");
+    if (category.title.trim() === "") {
+      return toast.warning(WARNING_EMPTY_SUBCATEGORY , { position: "top-center" });
     }
 
-    onSubmit({...category});
+    onSubmit({ ...category });
     setCategory(initialState);
   };
 
-  const inputChangeHandler = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const {name, value} = e.target;
+  const inputChangeHandler = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { name, value } = e.target;
 
-    setCategory((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  }, []);
+      setCategory((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
+    },
+    [],
+  );
 
   return (
     <>
@@ -63,7 +68,6 @@ const CategoryForm: React.FC<Props> = ({onSubmit}) => {
           label="Название категории"
           variant="outlined"
           fullWidth
-          required
           name="title"
           value={category.title}
           onChange={inputChangeHandler}
@@ -73,12 +77,12 @@ const CategoryForm: React.FC<Props> = ({onSubmit}) => {
           type="submit"
           variant="contained"
           sx={{
-            textTransform: 'uppercase',
-            color: 'white',
-            background: isLoading ? 'transparent' : '#237803',
-            borderRadius: '10px',
-            '&:hover': {
-              backgroundColor: '#1e6600',
+            textTransform: "uppercase",
+            color: "white",
+            background: isLoading ? "transparent" : "#237803",
+            borderRadius: "10px",
+            "&:hover": {
+              backgroundColor: "#1e6600",
             },
           }}
         >

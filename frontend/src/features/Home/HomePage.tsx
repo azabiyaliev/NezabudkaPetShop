@@ -7,6 +7,7 @@ import { Box } from '@mui/material';
 import Typography from '@mui/joy/Typography';
 import Carousel from '../../components/UI/Carousel/Carousel.tsx';
 import CustomCart from '../../components/Domain/CustomCart/CustomCart.tsx';
+import CategoryMenuBox from '../Category/CategoryMenuBox/CategoryMenuBox.tsx';
 
 const HomePage = () => {
   const [openCart, setOpenCart] = useState<boolean>(false);
@@ -24,7 +25,8 @@ const HomePage = () => {
   return (
     <>
       <CustomCart openCart={openCart} closeCart={closeCart}/>
-      <div className='mb-5'>
+      <div className='mb-5 d-flex justify-content-between'>
+        <CategoryMenuBox/>
         <Carousel/>
       </div>
 
