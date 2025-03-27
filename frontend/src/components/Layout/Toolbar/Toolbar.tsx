@@ -255,7 +255,7 @@ const MainToolbar = () => {
                 </Box>
               </Box>
               {user ? (
-                user.role !== "admin" && (
+                user.role === "client" && (
                   <Box
                     sx={{
                       display: "flex",
@@ -266,7 +266,7 @@ const MainToolbar = () => {
                       <Box
                         onClick={() => setOpenCart(true)}
                         sx={{
-                          backgroundColor: "rgb(255, 214, 51)",
+                          backgroundColor: "#FDE910",
                           paddingTop: "7px",
                           paddingBottom: "7px",
                           paddingRight: "20px",
@@ -277,9 +277,6 @@ const MainToolbar = () => {
                           justifyContent: "center",
                           cursor: "pointer",
                           transition: "background 0.3s ease",
-                          "&:hover": {
-                            backgroundColor: "#A8B89D",
-                          },
                         }}
                       >
                         <ShoppingCartIcon sx={{ color: "rgb(52, 51, 50)" }} />
@@ -296,7 +293,7 @@ const MainToolbar = () => {
                       >
                         <Box
                           sx={{
-                            backgroundColor: "yellow",
+                            backgroundColor: "#FDE910",
                             paddingTop: "10px",
                             paddingBottom: "10px",
                             paddingRight: "20px",
@@ -307,9 +304,6 @@ const MainToolbar = () => {
                             justifyContent: "center",
                             cursor: "pointer",
                             transition: "background 0.3s ease",
-                            "&:hover": {
-                              backgroundColor: "#A8B89D",
-                            },
                           }}
                         >
                           <FavoriteIcon sx={{ color: "rgb(52, 51, 50)" }} />
@@ -340,9 +334,6 @@ const MainToolbar = () => {
                         justifyContent: "center",
                         cursor: "pointer",
                         transition: "background 0.3s ease",
-                        "&:hover": {
-                          backgroundColor: "#A8B89D",
-                        },
                       }}
                     >
                       <ShoppingCartIcon sx={{ color: "rgb(52, 51, 50)" }} />
@@ -370,9 +361,6 @@ const MainToolbar = () => {
                           justifyContent: "center",
                           cursor: "pointer",
                           transition: "background 0.3s ease",
-                          "&:hover": {
-                            backgroundColor: "#A8B89D",
-                          },
                         }}
                       >
                         <FavoriteIcon sx={{ color: "rgb(52, 51, 50)" }} />

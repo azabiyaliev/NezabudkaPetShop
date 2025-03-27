@@ -96,7 +96,6 @@ const Footer = () => {
         </Box>
       </Box>
 
-      {/* Авторские права внизу */}
       <Typography
         variant="body2"
         sx={{ color: "lightgray", marginTop: "20px" }}
