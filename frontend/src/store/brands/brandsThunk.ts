@@ -31,50 +31,70 @@ export const addBrand = createAsyncThunk<void, {brand: IBrandForm, token: string
   },
 );
 
-export const editBrand = createAsyncThunk<void, {brand: IBrandForm, token: string }>(
+export const editBrand = createAsyncThunk<void, {brand: IBrandForm, token: string }, {rejectValue: GlobalError}>(
   'brands/editBrand',
-  async ({brand, token}) => {
-    const formData = new FormData();
+  async ({brand, token}, {rejectWithValue}) => {
+    try {
+      const formData = new FormData();
 
-    const keys = Object.keys(brand) as (keyof IBrand)[];
+      const keys = Object.keys(brand) as (keyof IBrand)[];
 
-    keys.forEach((key) => {
-      const value = brand[key];
+      keys.forEach((key) => {
+        const value = brand[key];
 
-      if (value !== undefined) {
-        if (value instanceof File) {
-          formData.append(key, value, value.name);
-        } else {
-          formData.append(key, String(value));
+        if (value !== undefined) {
+          if (value instanceof File) {
+            formData.append(key, value, value.name);
+          } else {
+            formData.append(key, String(value));
+          }
         }
-      }
-    });
+      });
 
-    await axiosApi.put(`/brands/${brand.id}`, formData, {headers: {'Authorization': token}});
+      await axiosApi.patch(`/brands/${brand.id}`, formData, {headers: {'Authorization': token}});
+    } catch (error) {
+      if (isAxiosError(error) && error.response && (error.response.status === 409 || error.response.status === 404)) {
+        return rejectWithValue(error.response.data as GlobalError);
+      }
+      throw error;
+    }
   },
 );
 
-export const getBrands = createAsyncThunk(
+export const getBrands = createAsyncThunk<IBrand[], void>(
   'brands/fetchAllBrands',
   async () => {
-    const response = await axiosApi<IBrand[]>('/brands/');
-
+    const response = await axiosApi.get('/brands/');
     return response.data || [];
   }
 );
 
-export const getOneBrand = createAsyncThunk<IBrandForm, number>(
+export const getOneBrand = createAsyncThunk<IBrandForm, number, {rejectValue: GlobalError}>(
   'brands/getOneBrand',
-  async (brandId) => {
-    const response = await axiosApi.get<IBrandForm>(`/brands/${brandId}`);
-    return response.data || null;
+  async (brandId, {rejectWithValue}) => {
+    try {
+      const response = await axiosApi.get(`/brands/${brandId}`);
+      return response.data || null;
+    } catch (error) {
+      if (isAxiosError(error) && error.response && (error.response.status === 409 || error.response.status === 404)) {
+        return rejectWithValue(error.response.data as GlobalError);
+      }
+      throw error;
+    }
   }
 );
 
-export const brandeDelete = createAsyncThunk<void, { brandId: number; token: string }>(
+export const brandeDelete = createAsyncThunk<void, {brandId: number; token: string}, {rejectValue: GlobalError}>(
   'brands/brandeDelete',
-  async ({ brandId, token }) => {
-  await axiosApi.delete(`/brands/${brandId}`, {headers: { Authorization: token }});
+  async ({brandId, token}, {rejectWithValue}) => {
+    try {
+      await axiosApi.delete(`/brands/${brandId}`, {headers: { Authorization: token }});
+    } catch (error) {
+      if (isAxiosError(error) && error.response && (error.response.status === 409 || error.response.status === 404)) {
+        return rejectWithValue(error.response.data as GlobalError);
+      }
+      throw error;
+    }
 });
 
 

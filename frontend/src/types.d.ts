@@ -47,12 +47,14 @@ export interface IBrand {
   id: number;
   title: string;
   logo: string | null;
+  description: string | null;
 }
 
 export interface IBrandForm {
   id?: number;
   title: string;
   logo: File | null;
+  description: string;
 }
 
 export interface EditSiteMutation {

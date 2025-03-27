@@ -9,6 +9,8 @@ import { useAppDispatch, useAppSelector } from '../../../../../app/hooks.ts';
 import { selectUser } from '../../../../../store/users/usersSlice.ts';
 import { brandeDelete, getBrands } from '../../../../../store/brands/brandsThunk.ts';
 import { toast } from 'react-toastify';
+import DOMPurify from 'dompurify';
+import noImage from '../../../../../assets/no-image.jpg';
 
 interface Props {
   brand: IBrand;
@@ -19,6 +21,16 @@ const Brand:React.FC<Props> = ({brand, index}) => {
   const user = useAppSelector(selectUser);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  let sanitizedDescription = '';
+  let brandImage = noImage;
+
+  if (brand.logo) {
+    brandImage = apiUrl + brand.logo;
+  }
+
+  if (brand.description !== null) {
+    sanitizedDescription = DOMPurify.sanitize(brand.description);
+  }
 
   const deleteThisBrand = async (id: number) => {
     if (user && user.role === 'admin') {
@@ -37,12 +49,14 @@ const Brand:React.FC<Props> = ({brand, index}) => {
           {index + 1}
         </td>
         <td>
-          <img src={apiUrl + "/" + brand.logo} alt={brand.title}
-               style={{
-                 width: '90px',
-                 height: '60px',
-                 margin: '10px 0'
-               }}/>
+          <img
+            src={brandImage}
+            alt={brand.title}
+            style={{
+              width: '80px',
+              height: '80px',
+              objectFit: 'contain',
+            }}/>
         </td>
         <td style={{
           fontSize: '18px'
@@ -66,6 +80,17 @@ const Brand:React.FC<Props> = ({brand, index}) => {
           >
             <DeleteSweepOutlinedIcon fontSize='medium'/>
           </Button>
+        </td>
+        <td>
+          <div
+            style={{
+              height: '10%',
+              width: '10%',
+              border: '1px solid #ccc',
+              padding: '10px',
+            }}
+            dangerouslySetInnerHTML={{__html: sanitizedDescription}}
+          />
         </td>
       </tr>
     </>

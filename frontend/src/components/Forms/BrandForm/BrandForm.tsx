@@ -1,27 +1,28 @@
 import Sheet from '@mui/joy/Sheet';
 import Typography from '@mui/joy/Typography';
 import FormControl from '@mui/joy/FormControl';
-import React, {useState} from 'react';
-import {IBrandForm} from '../../../types';
+import React, { useState } from 'react';
+import { IBrandForm } from '../../../types';
 import FileInputForBrand from '../../Domain/Brand/FileInputForBrand/FileInputForBrand.tsx';
-import {Alert, Button} from '@mui/material';
+import { Alert, Button } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import ButtonSpinner from '../../UI/ButtonSpinner/ButtonSpinner.tsx';
-import {apiUrl} from '../../../globalConstants.ts';
-import {useAppSelector} from "../../../app/hooks.ts";
-import {addErrorFromSlice} from "../../../store/brands/brandsSlice.ts";
+import { apiUrl } from '../../../globalConstants.ts';
+import { useAppSelector } from '../../../app/hooks.ts';
+import { addErrorFromSlice } from '../../../store/brands/brandsSlice.ts';
+import TextEditor from '../../TextEditor/TextEditor.tsx';
 
 interface Props {
   addNewBrand: (brand: IBrandForm) => void;
   isLoading?: boolean;
   editBrand?: IBrandForm;
   isBrand?: boolean;
-
 }
 
 const initialBrand = {
   title: '',
   logo: null,
+  description: '',
 };
 
 const BrandForm:React.FC<Props> = ({addNewBrand, isLoading, editBrand = initialBrand, isBrand = false}) => {
@@ -38,6 +39,13 @@ const BrandForm:React.FC<Props> = ({addNewBrand, isLoading, editBrand = initialB
     }));
   };
 
+  const onChangeEditor = (html: string) => {
+    setNewBrand((prevState) => ({
+      ...prevState,
+      description: html,
+    }));
+  };
+
   const onSubmit = (e:React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -48,7 +56,6 @@ const BrandForm:React.FC<Props> = ({addNewBrand, isLoading, editBrand = initialB
       setResetFile(true);
       return;
     }
-
   };
 
   const fileInputChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -103,6 +110,7 @@ const BrandForm:React.FC<Props> = ({addNewBrand, isLoading, editBrand = initialB
               onChange={onChange}
             />
           </FormControl>
+          <TextEditor value={newBrand.description} onChange={onChangeEditor}/>
           <FileInputForBrand label="Выберите изображение для логотипа бренда" name="logo" onChange={fileInputChangeHandler} resetFile={resetFile} />
           {newBrand.logo && (
             <img
