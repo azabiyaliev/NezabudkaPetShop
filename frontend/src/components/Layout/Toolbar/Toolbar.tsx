@@ -277,13 +277,20 @@ const MainToolbar = () => {
                           justifyContent: "center",
                           cursor: "pointer",
                           transition: "background 0.3s ease",
+                          position: "relative",
                         }}
                       >
                         <ShoppingCartIcon sx={{ color: "rgb(52, 51, 50)" }} />
                         <Badge
                           badgeContent={sum}
-                          color="success"
                           overlap="circular"
+                          color="warning"
+                          sx={{
+                            position: "absolute",
+                            top: "10px",
+                            right: "17px",
+                            backgroundColor: "olive"
+                          }}
                         />
                       </Box>
 
@@ -339,8 +346,14 @@ const MainToolbar = () => {
                       <ShoppingCartIcon sx={{ color: "rgb(52, 51, 50)" }} />
                       <Badge
                         badgeContent={sum}
-                        color="success"
+                        color="warning"
                         overlap="circular"
+                        sx={{
+                          position: "absolute",
+                          top: "10px",
+                          right: "17px",
+                          backgroundColor: "olive"
+                        }}
                       />
                     </Box>
 
