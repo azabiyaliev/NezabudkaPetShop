@@ -8,19 +8,6 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CategoryDto } from '../dto/category.dto';
 import { SubcategoryDto } from '../dto/subCategoryDto';
 
-const predefinedSubcategories = [
-  'Амуниция',
-  'Ветеринарная аптека',
-  'Витамины и добавки',
-  'Влажный корм',
-  'Сухой корм',
-  'Домики и лежанки',
-  'Ошейники и шлейки',
-  'Лакомства',
-  'Игрушки',
-  'Сено',
-];
-
 @Injectable()
 export class CategoryService {
   constructor(private prisma: PrismaService) {}
@@ -36,24 +23,6 @@ export class CategoryService {
     return category;
   }
 
-  async createPredefinedSubcategories(categoryId: number) {
-    await this.validateCategory(categoryId);
-
-    for (const subcategory of predefinedSubcategories) {
-      const existingSubcategory = await this.prisma.category.findFirst({
-        where: { title: subcategory, parentId: categoryId },
-      });
-
-      if (!existingSubcategory) {
-        await this.prisma.category.create({
-          data: { title: subcategory, parentId: categoryId },
-        });
-      }
-    }
-
-    return { message: 'Предустановленные подкатегории добавлены успешно' };
-  }
-
   async createCategory(categoryDto: CategoryDto) {
     const { title, parentId } = categoryDto;
 
@@ -63,28 +32,17 @@ export class CategoryService {
       );
     }
 
-    const existingCategory = await this.prisma.category.findUnique({
-      where: { title },
-    });
-
-    if (existingCategory) {
-      throw new ConflictException('Категория с таким названием уже существует');
-    }
-
     if (parentId) {
       await this.validateCategory(parentId);
     }
 
     const newCategory = await this.prisma.category.create({
-      data: { title, parentId },
+      data: { title, parentId: parentId ?? null },
     });
-
-    if (parentId === null) {
-      await this.createPredefinedSubcategories(newCategory.id);
-    }
 
     return newCategory;
   }
+
   async createSubcategory(
     categoryId: number,
     subCategoryDtos: SubcategoryDto[],
@@ -102,9 +60,7 @@ export class CategoryService {
       });
 
       if (existingSubcategory) {
-        throw new ConflictException(
-          'Подкатегория с таким названием уже существует',
-        );
+        throw new ConflictException(`Подкатегория "${title}" уже существует`);
       }
 
       await this.prisma.category.create({
@@ -141,38 +97,29 @@ export class CategoryService {
     return subcategories;
   }
 
-  async getOneCategory(parentId: string) {
-    const parsId = parseInt(parentId);
-
-    await this.validateCategory(parsId);
-
-    return this.prisma.category.findMany({
-      where: { id: parsId },
+  async getOneCategory(id: number) {
+    return this.prisma.category.findUnique({
+      where: { id },
+      include: { subcategories: true },
     });
   }
 
-  async updateCategory(id: string, categoryDto: CategoryDto) {
-    const parsId = parseInt(id);
-
-    await this.validateCategory(parsId);
+  async updateCategory(id: number, categoryDto: CategoryDto) {
+    await this.validateCategory(id);
 
     await this.prisma.category.update({
-      where: { id: parsId },
-      data: {
-        title: categoryDto.title,
-      },
+      where: { id },
+      data: { title: categoryDto.title },
     });
+
     return { message: 'Категория обновлена успешно' };
   }
 
-  async deleteCategory(id: string) {
-    const parsId = parseInt(id);
+  async deleteCategory(id: number) {
+    await this.validateCategory(id);
 
-    await this.validateCategory(parsId);
+    await this.prisma.category.delete({ where: { id } });
 
-    await this.prisma.category.delete({
-      where: { id: parsId },
-    });
     return { message: 'Категория успешно удалена' };
   }
 }

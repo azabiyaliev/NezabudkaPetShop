@@ -123,28 +123,8 @@ export class SeedService {
           title: 'Собаки',
         },
         {
-          id: 22,
-          title: 'Сухой корм',
-          parentId: 1,
-        },
-        {
-          id: 23,
-          title: 'Влажные корма',
-          parentId: 1,
-        },
-        {
           id: 2,
           title: 'Кошки',
-        },
-        {
-          id: 25,
-          title: 'Сухие корма',
-          parentId: 2,
-        },
-        {
-          id: 26,
-          title: 'Влажные корм',
-          parentId: 2,
         },
         {
           id: 3,
@@ -161,6 +141,72 @@ export class SeedService {
         {
           id: 6,
           title: 'Драконы',
+        },
+        {
+          id: 22,
+          title: 'Сухой корм',
+          parentId: 1,
+        },
+        {
+          id: 23,
+          title: 'Влажные корма',
+          parentId: 1,
+        },
+        {
+          id: 25,
+          title: 'Сухие корма',
+          parentId: 2,
+        },
+        {
+          id: 26,
+          title: 'Влажные корм',
+          parentId: 2,
+        },
+
+        {
+          id: 7,
+          title: 'Амуниция',
+          parentId: null,
+        },
+        {
+          id: 8,
+          title: 'Ветеринарная аптека',
+          parentId: null,
+        },
+        {
+          id: 9,
+          title: 'Витамины и добавки',
+          parentId: null,
+        },
+        {
+          id: 10,
+          title: 'Сухой корм',
+          parentId: null,
+        },
+        {
+          id: 11,
+          title: 'Домики и лежанки',
+          parentId: null,
+        },
+        {
+          id: 12,
+          title: 'Ошейники и шлейки',
+          parentId: null,
+        },
+        {
+          id: 13,
+          title: 'Лакомства',
+          parentId: null,
+        },
+        {
+          id: 14,
+          title: 'Игрушки',
+          parentId: null,
+        },
+        {
+          id: 15,
+          title: 'Сено',
+          parentId: null,
         },
       ],
     });
@@ -189,7 +235,8 @@ export class SeedService {
         {
           productName: 'Щебень для собак',
           productPrice: 1200,
-          productDescription: 'Щебень для создания ландшафтных решений для собак.',
+          productDescription:
+            'Щебень для создания ландшафтных решений для собак.',
           brandId: 1,
           categoryId: 1,
           productPhoto: './fixtures/products/dog_food.jpg',

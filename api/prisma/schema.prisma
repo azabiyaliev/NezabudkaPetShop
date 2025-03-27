@@ -83,20 +83,13 @@ model PhotoByCarousel {
 
 model Category {
   id            Int          @id @default(autoincrement())
-  title         String       @unique
-  subcategories Subcategory[] @relation("CategorySubcategories")
+  title         String
+  parentId      Int?       @map("parent_id")
+  parent        Category?  @relation("CategorySubcategories", fields: [parentId], references: [id])
+  subcategories Category[] @relation("CategorySubcategories")
   products      Products[]
 
   @@map("categories")
-}
-
-model Subcategory {
-  id        Int        @id @default(autoincrement())
-  title     String
-  parentId  Int?
-  parent    Category?  @relation("CategorySubcategories", fields: [parentId], references: [id])
-
-  @@map("subcategories")
 }
 
 model Products {

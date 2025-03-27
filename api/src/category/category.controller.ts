@@ -27,20 +27,20 @@ export class CategoryController {
   }
 
   @Get(':id')
-  async findOneCategory(@Param('id') id: string) {
+  async findOneCategory(@Param('id', ParseIntPipe) id: number) {
     return this.categoryService.getOneCategory(id);
   }
 
   @Put(':id')
   async updateCategory(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() categoryDto: CategoryDto,
   ) {
     return this.categoryService.updateCategory(id, categoryDto);
   }
 
   @Delete(':id')
-  async deleteCategory(@Param('id') id: string) {
+  async deleteCategory(@Param('id', ParseIntPipe) id: number) {
     return this.categoryService.deleteCategory(id);
   }
 
@@ -48,9 +48,10 @@ export class CategoryController {
   async getSubcategories(@Param('id', ParseIntPipe) categoryId: number) {
     return this.categoryService.getSubcategories(categoryId);
   }
+
   @Post(':id/subcategories')
   async addSubcategory(
-    @Param('id') id: number,
+    @Param('id', ParseIntPipe) id: number,
     @Body() subCategoryDto: { subcategories: SubcategoryDto[] },
   ) {
     console.log('Полученные данные:', subCategoryDto);

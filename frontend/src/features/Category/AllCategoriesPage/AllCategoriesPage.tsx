@@ -20,7 +20,7 @@ import EditCategory from '../../../components/Forms/CategoryForm/EditCategory.ts
 import { selectUser } from '../../../store/users/usersSlice.ts';
 import AdminBar from '../../Admin/AdminProfile/AdminBar.tsx';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 
 const AllCategoriesPage = () => {
   const categories = useAppSelector(selectCategories);
@@ -135,6 +135,7 @@ const AllCategoriesPage = () => {
           </Modal>
         </Box>
       </Box>
+      <ToastContainer/>
     </>
   );
 };

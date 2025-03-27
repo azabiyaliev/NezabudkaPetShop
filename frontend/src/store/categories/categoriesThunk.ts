@@ -19,7 +19,6 @@ export const addNewCategory = createAsyncThunk<
 >(
     "category/addNewCategory",
     async ({ category, token }) => {
-      console.log("Sending category data:", category);
         await axiosApi.post("/category", category, {
             headers: { Authorization: token },
         });
@@ -31,15 +30,19 @@ export const addNewSubcategory = createAsyncThunk<
   { id: number; subcategories: string[]; token: string }
 >(
   "category/addNewSubcategory",
-  async ({ id, subcategories, token }) => {
-    console.log("Adding subcategories to category ID:", id);
-
-    const subcategoryData = subcategories.map(sub => ({ title: sub }));
-
-
-    await axiosApi.post(`/category/${id}/subcategories`, { subcategories: subcategoryData }, {
-      headers: { Authorization: token },
-    });
+  async ({ id, subcategories, token }, { rejectWithValue }) => {
+    try {
+      const subcategoryData = subcategories.map(sub => ({ title: sub }));
+      await axiosApi.post(
+        `/category/${id}/subcategories`,
+        { subcategories: subcategoryData },
+        {
+          headers: { Authorization: token },
+        }
+      );
+    } catch (error) {
+      return rejectWithValue(error);
+    }
   }
 );
 

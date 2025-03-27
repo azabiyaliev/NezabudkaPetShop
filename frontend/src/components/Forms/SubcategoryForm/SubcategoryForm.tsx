@@ -15,6 +15,12 @@ import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { fetchSubcategories } from '../../../store/categories/categoriesThunk.ts';
 
+
+const WARNING_SELECT_CATEGORY = 'Выберите родительскую категорию!';
+const WARNING_SELECT_SUBCATEGORY = 'Выберите хотя бы одну подкатегорию!';
+const WARNING_EMPTY_SUBCATEGORY = 'Введите название подкатегории!';
+const WARNING_DUPLICATE_SUBCATEGORY = 'Эта подкатегория уже выбрана!';
+
 export interface Props {
   onSubmit: (id: number, subcategories: string[]) => void;
 }
@@ -28,38 +34,21 @@ const SubcategoryForm: React.FC<Props> = ({ onSubmit }) => {
   const [newSubcategory, setNewSubcategory] = useState('');
   const dispatch = useAppDispatch();
 
-  const predefinedSubcategories = [
-    'Амуниция',
-    'Ветеринарная аптека',
-    'Витамины и добавки',
-    'Влажный корм',
-    'Сухой корм',
-    'Домики и лежанки',
-    'Ошейники и шлейки',
-    'Лакомства',
-    'Игрушки',
-    'Сено',
-  ];
-
   useEffect(() => {
     if (parentId) {
-      console.log("Fetching subcategories for:", parentId);
       dispatch(fetchSubcategories(parentId));
     }
   }, [parentId, dispatch]);
-
-
-  console.log(allSubcategories);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!parentId) {
-      return toast.warning('Выберите родительскую категорию!');
+      return toast.warning(WARNING_SELECT_CATEGORY);
     }
 
     if (subcategories.length === 0) {
-      return toast.warning('Выберите хотя бы одну подкатегорию!');
+      return toast.warning(WARNING_SELECT_SUBCATEGORY);
     }
 
     onSubmit(parentId, subcategories);
@@ -76,11 +65,11 @@ const SubcategoryForm: React.FC<Props> = ({ onSubmit }) => {
 
   const handleAddSubcategory = () => {
     if (newSubcategory.trim() === '') {
-      return toast.warning('Введите название подкатегории!');
+      return toast.warning(WARNING_EMPTY_SUBCATEGORY);
     }
 
     if (subcategories.includes(newSubcategory)) {
-      return toast.warning('Эта подкатегория уже выбрана!');
+      return toast.warning(WARNING_DUPLICATE_SUBCATEGORY);
     }
 
     setSubcategories((prev) => [...prev, newSubcategory]);
@@ -88,7 +77,6 @@ const SubcategoryForm: React.FC<Props> = ({ onSubmit }) => {
   };
 
   const availableSubcategories = [
-    ...predefinedSubcategories,
     ...allSubcategories.map((sub) => sub.title),
   ];
 
@@ -159,7 +147,6 @@ const SubcategoryForm: React.FC<Props> = ({ onSubmit }) => {
       >
         Добавить
       </Button>
-
     </Box>
   );
 };
