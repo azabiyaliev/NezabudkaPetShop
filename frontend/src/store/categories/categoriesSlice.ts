@@ -113,6 +113,7 @@ const categoriesSlice = createSlice({
       })
       .addCase(fetchSubcategories.fulfilled, (state, {payload}) => {
         state.SubCategories = payload.map((category: ICategories) => ({
+          id: category.id,
           title: category.title,
           parentId: category.parentId,
           subcategories: [],

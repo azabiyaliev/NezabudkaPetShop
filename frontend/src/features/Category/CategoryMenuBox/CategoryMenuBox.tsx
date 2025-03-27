@@ -16,6 +16,8 @@ const CategoryMenuBox = () => {
     (cat) => cat.title === selectedCategory,
   );
 
+  console.log(categories);
+
   const showSubcategories =
     selectedCategory === "Собаки" || selectedCategory === "Кошки";
 
@@ -58,6 +60,7 @@ const CategoryMenuBox = () => {
               <a key={sub.id} href="#" className="nav-category-link">
                 <img src={paw} alt="paw icon" className="paw-icon" />
                 {sub.title}
+                asasas
               </a>
             ))}
           </div>

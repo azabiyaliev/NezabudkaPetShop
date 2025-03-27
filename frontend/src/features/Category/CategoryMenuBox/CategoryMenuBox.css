@@ -45,3 +45,7 @@
   height: 35px;
   margin-right: 5px;
 }
+
+.subcategory-box:hover {
+  background: #b9dab9;
+}
