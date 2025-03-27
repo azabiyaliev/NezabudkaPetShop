@@ -50,9 +50,10 @@ model PasswordReset {
 }
 
 model Brand {
-  id    Int    @id @default(autoincrement())
-  title String @unique
-  logo  String
+  id          Int     @id @default(autoincrement())
+  title       String  @unique
+  logo        String?
+  description String?
 
   products Products[]
 

@@ -1,11 +1,6 @@
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { BrandDto } from '../dto/brands.dto';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class BrandsService {
@@ -20,6 +15,7 @@ export class BrandsService {
         id: true,
         title: true,
         logo: true,
+        description: true,
         products: true,
       },
     });
@@ -34,6 +30,7 @@ export class BrandsService {
         id: true,
         title: true,
         logo: true,
+        description: true,
         products: true,
       },
     });
@@ -44,36 +41,33 @@ export class BrandsService {
   }
 
   async createBrand(brandDTO: BrandDto) {
-    const { title, logo } = brandDTO;
-    if (!title || title.trim() === '' || !logo || logo.trim() === '') {
+    const { title, logo, description } = brandDTO;
+    if (!title || title.trim() === '') {
+      throw new NotFoundException('Название бренда не может быть пустым!');
+    }
+    const brand = await this.prisma.brand.findUnique({
+      where: { title },
+    });
+    if (brand) {
       throw new NotFoundException(
-        'Название и логотип бренда не могут быть пустым!',
+        'Данный бренд уже существует и вы не можете повторно его добавить!',
       );
     }
-    try {
-      return await this.prisma.brand.create({
-        data: {
-          title,
-          logo,
-        },
-        select: {
-          id: true,
-          title: true,
-          logo: true,
-          products: true,
-        },
-      });
-    } catch (error) {
-      if (
-        error instanceof PrismaClientKnownRequestError &&
-        error.code === 'P2002'
-      ) {
-        throw new ConflictException(
-          `Данный бренд уже существует. Вы не можете повторно его добавить!`,
-        );
-      }
-      throw error;
-    }
+    const newBrand = await this.prisma.brand.create({
+      data: {
+        title,
+        logo,
+        description,
+      },
+      select: {
+        id: true,
+        title: true,
+        logo: true,
+        description: true,
+        products: true,
+      },
+    });
+    return { message: 'Новый бренд был успешно создан!', newBrand };
   }
 
   async updateBrand(
@@ -81,37 +75,41 @@ export class BrandsService {
     brandDTO: BrandDto,
     file?: Express.Multer.File,
   ) {
-    const { title } = brandDTO;
-    let logo = brandDTO.logo;
+    const { title, description } = brandDTO;
+    let logo = file ? '/brands/' + file.filename : null;
     if (file) {
       logo = '/brands/' + file.filename;
     }
-    if (title.trim().length === 0 || logo.trim().length === 0) {
-      throw new NotFoundException(
-        `Название и логотип бренда не могут быть пустыми!`,
-      );
+    if (title.trim().length === 0) {
+      throw new NotFoundException(`Название бренда не может быть пустыми!`);
     }
     const brandId = parseInt(id);
     const brand = await this.prisma.brand.findFirst({
       where: { id: brandId },
     });
     if (!brand) {
-      throw new NotFoundException(`Бренд с id = ${id} не найдена!`);
+      throw new NotFoundException(
+        `Бренд с идентификатором равное ${id} не найдена!`,
+      );
     }
-    return this.prisma.brand.update({
+    const updateBrand = await this.prisma.brand.update({
       where: { id: brandId },
       data: {
         title,
         logo,
+        description,
       },
     });
+    return { message: 'Данный бренд был успешно отредактирован!', updateBrand };
   }
 
   async deleteBrand(id: string) {
     const brandId = parseInt(id);
     const brand = await this.prisma.brand.findFirst({ where: { id: brandId } });
     if (!brand) {
-      throw new NotFoundException(`Бренд с id = ${id} не найдена!`);
+      throw new NotFoundException(
+        `Бренд с идентификатором равное ${id} не найдена!`,
+      );
     }
     await this.prisma.brand.delete({ where: { id: brandId } });
     return { message: 'Данный бренд был успешно удален!' };

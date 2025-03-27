@@ -1,4 +1,5 @@
 export class BrandDto {
   title!: string;
-  logo!: string;
+  logo?: null | string;
+  description?: null | string;
 }
