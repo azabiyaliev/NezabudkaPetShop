@@ -5,39 +5,51 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateProductsDto } from '../dto/createProductsDto';
-import { ProductQueryDto } from './dto/querySearchDto';
 
 @Injectable()
 export class ProductsService {
   constructor(private prismaService: PrismaService) {}
 
   //FOR ADMIN/USER
-  async getAllProducts(query: ProductQueryDto) {
-    const where: ProductQueryDto = {};
-
-    if (query.categoryId) {
-      where.categoryId = Number(query.categoryId);
-    }
-
-    if (query.brandId) {
-      where.brandId = Number(query.brandId);
-    }
-
+  async getAllProducts(searchKeyword?: string) {
     const products = await this.prismaService.products.findMany({
-      where,
-      select: {
-        id: true,
-        productName: true,
-        productPhoto: true,
-        productDescription: true,
-        productPrice: true,
-        brand: true,
+      where: {
+        OR: [
+          {
+            productName: {
+              contains: searchKeyword,
+              mode: 'insensitive',
+            },
+          },
+          {
+            category: {
+              title: {
+                contains: searchKeyword,
+                mode: 'insensitive',
+              },
+            },
+          },
+          {
+            brand: {
+              title: {
+                contains: searchKeyword,
+                mode: 'insensitive',
+              },
+            },
+          },
+        ],
+      },
+      include: {
         category: true,
-        sales: true,
-        existence: true,
+        brand: true,
       },
     });
-    return products || [];
+
+    if (!products.length) {
+      throw new BadRequestException('Данного товара не найдено');
+    }
+
+    return products;
   }
 
   //FOR ADMIN

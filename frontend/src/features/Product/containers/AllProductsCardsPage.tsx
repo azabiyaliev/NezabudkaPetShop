@@ -12,7 +12,7 @@ const AllProductsCardsPage = () => {
 
 
   useEffect(() => {
-    dispatch(getProducts());
+    dispatch(getProducts(''));
   }, [dispatch]);
 
   return (

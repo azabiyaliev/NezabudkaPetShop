@@ -1,4 +1,11 @@
-import { Badge, badgeClasses, Box, Button, Container, InputBase, styled, Toolbar } from '@mui/material';
+import {
+  Badge,
+  badgeClasses,
+  Box,
+  Container,
+  styled,
+  Toolbar
+} from '@mui/material';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
 import ExistsUser from './ExistsUser.tsx';
@@ -13,13 +20,13 @@ import './Fonts.css'
 import { selectEditSite } from '../../../store/editionSite/editionSiteSlice.ts';
 import PhoneInTalkOutlinedIcon from '@mui/icons-material/PhoneInTalkOutlined';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
-import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import { selectUser } from '../../../store/users/usersSlice.ts';
 import { useEffect, useState } from 'react';
 import CustomCart from '../../Domain/CustomCart/CustomCart.tsx';
 import { cartsFromSlice } from '../../../store/cart/cartSlice.ts';
 import { getCart } from '../../../store/cart/cartThunk.ts';
-
+import { selectProducts } from '../../../store/products/productsSlice.ts';
+import { getProducts } from '../../../store/products/productsThunk.ts';
 const CartBadge = styled(Badge)`
   & .${badgeClasses.badge} {
     top: -12px;
@@ -34,10 +41,28 @@ const MainToolbar = () => {
   const cart = useAppSelector(cartsFromSlice);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const products = useAppSelector(selectProducts);
+  const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState<string>('');
 
   useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  }, [search]);
+
+  useEffect(() => {
+    if (search) {
+      dispatch(getProducts(debouncedSearch));
+    } else {
+      dispatch(getProducts(''));
+    }
+
     dispatch(getCart()).unwrap();
-  }, [dispatch]);
+  }, [dispatch, debouncedSearch, search]);
+
 
   const closeCart = () => {
     setOpenCart(false);
@@ -52,7 +77,6 @@ const MainToolbar = () => {
     acc = acc + i;
     return acc;
   }, 0);
-
   return (
     <div>
       <CustomCart openCart={openCart} closeCart={closeCart}/>
@@ -246,24 +270,64 @@ const MainToolbar = () => {
                 </Typography>
               </div>
             </NavLink>
-            <Box>
-              <Box sx={{
-                display: 'flex',
-                alignItems: 'center',
-              }}>
-                <InputBase
-                  placeholder="Поиск товаров"
-                  sx={{  width: '100%', border: '1px solid lightgray', padding: '5px', borderRight:'none' }}
-                />
-                <Button sx={{
-                  backgroundColor: '#FFEB3B',
-                  height: '100%',
-                  padding: '10px',
-                  color:'black'
-                }}>
-                  <SearchOutlinedIcon/>
-                </Button>
-              </Box>
+            <Box sx={{ position: 'relative', width: '100%', maxWidth: 400 }}>
+              <input
+                style={{
+                  width: "100%",
+                  maxWidth: "400px",
+                  padding: "12px 16px",
+                  fontSize: "16px",
+                  color: "#fff",
+                  backgroundColor: "#5b7133",
+                  border: "2px solid #475726",
+                  borderRadius: "12px",
+                  outline: "none",
+                  transition: "all 0.3s ease-in-out",
+                  boxShadow: "0 4px 10px rgba(91, 113, 51, 0.3)",
+                }}
+                placeholder="Поиск товара"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                onFocus={(e) => {
+                  e.target.style.borderColor = "#d4d9c5";
+                  e.target.style.boxShadow = "0 0 8px rgba(91, 113, 51, 0.5)";
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = "#475726";
+                  e.target.style.boxShadow = "0 4px 10px rgba(91, 113, 51, 0.3)";
+                }}
+              />
+
+              {search && (
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    top: '100%',
+                    left: 0,
+                    width: '100%',
+                    maxHeight: 300,
+                    overflowY: 'auto',
+                    backgroundColor: 'white',
+                    boxShadow: 3,
+                    zIndex: 1000,
+                    marginTop: 1,
+                    borderRadius: 1,
+                  }}
+                >
+                  {products.length > 0 ? (
+                    products.map((product) => (
+                      <NavLink className='text-decoration-none text-black' to={`/product/${product.id}`} onClick={() => setSearch('')}>
+                      <div key={product.id} style={{ padding: '10px', borderBottom: '1px solid #ddd' }}>
+                        <h3>{product.productName}</h3>
+                        <p>{product.productDescription}</p>
+                      </div>
+                      </NavLink>
+                    ))
+                  ) : (
+                    <div style={{ padding: '10px' }}>Товаров не найдено</div>
+                  )}
+                </Box>
+              )}
             </Box>
             {user ? user.role === 'client' && (
               <Box sx={{
