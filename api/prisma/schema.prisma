@@ -28,6 +28,7 @@ model User {
   Review        Review[]
   Comment       Comment[]
   PasswordReset PasswordReset[]
+  CustomerCart  CustomerCart[]
 
   @@map("users")
 }
@@ -182,8 +183,9 @@ model Comment {
 
 model CustomerCart {
   id        Int      @id @default(autoincrement())
-  // userId    Int?     @map("user_id")
-  // user      User?    @relation(fields: [userId], references: [id])
+  userId    Int?     @map("user_id")
+  guestId   Int?     @map("guest_id")
+  user      User?    @relation(fields: [userId], references: [id])
   productId Int      @map("product_id")
   product   Products @relation(fields: [productId], references: [id])
   quantity  Int

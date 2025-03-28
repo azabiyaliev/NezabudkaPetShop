@@ -9,6 +9,14 @@ export class CartService {
     const carts = await this.prisma.customerCart.findMany({
       include: {
         product: true,
+        user: {
+          select: {
+            id: true,
+            email: true,
+            firstName: true,
+            secondName: true,
+          },
+        },
       },
       orderBy: {
         id: 'asc',
@@ -17,11 +25,27 @@ export class CartService {
     return carts || [];
   }
   async createCart(cartDTO: CartDto) {
-    const { productId, quantity } = cartDTO;
+    const { productId, quantity, token } = cartDTO;
     if (!productId || !quantity) {
       throw new NotFoundException(
         'Идентификатор продукта и количество товара не могут быть пустыми или равными 0!',
       );
+    }
+    let userIdn = null;
+    let guestIdn = null;
+    if (token) {
+      const user = await this.prisma.user.findFirst({
+        where: {
+          token: token,
+        },
+      });
+      if (user) {
+        userIdn = user.id;
+      }
+    } else {
+      const timestamp = Date.now();
+      const randomPart = Math.floor(Math.random() * 100);
+      guestIdn = Number(`${timestamp}${randomPart}`.toString().slice(0, 10));
     }
     const product = await this.prisma.products.findUnique({
       where: { id: productId },
@@ -35,14 +59,26 @@ export class CartService {
       data: {
         productId,
         quantity,
+        userId: userIdn,
+        guestId: guestIdn,
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            email: true,
+            firstName: true,
+            secondName: true,
+          },
+        },
       },
     });
   }
   async updateCart(id: string, cartDto: CartDto) {
-    const { productId, quantity } = cartDto;
-    if (!productId || !quantity) {
+    const { quantity, token } = cartDto;
+    if (!quantity) {
       throw new NotFoundException(
-        'Идентификатор продукта не может быть пустым, а также количество товара!',
+        'Количество товара не может быть пустым или равным 0!',
       );
     }
     const cartId = parseInt(id);
@@ -54,10 +90,26 @@ export class CartService {
         `Корзина с идентификатором равное ${id} не найдена!`,
       );
     }
+    let userIdn = null;
+    let guestIdn = null;
+    if (token) {
+      const user = await this.prisma.user.findFirst({
+        where: { token: token },
+      });
+      if (user) {
+        userIdn = user.id;
+      }
+    } else {
+      guestIdn = cart.guestId;
+    }
+    if (cart.userId !== userIdn || cart.guestId !== guestIdn) {
+      throw new NotFoundException(
+        'Вы не можете отредактировать чужую корзину!',
+      );
+    }
     const updateCart = await this.prisma.customerCart.update({
       where: { id: cartId },
       data: {
-        productId,
         quantity,
       },
     });
