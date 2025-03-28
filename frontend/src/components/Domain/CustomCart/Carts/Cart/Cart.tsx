@@ -1,42 +1,42 @@
-import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined';
 import { Box } from '@mui/material';
 import { apiUrl } from '../../../../../globalConstants.ts';
 import Typography from '@mui/joy/Typography';
 import IconButton from '@mui/joy/IconButton';
 import { Add, Remove } from '@mui/icons-material';
 import React from 'react';
-import { ICart } from '../../../../../types';
-import { useAppDispatch } from '../../../../../app/hooks.ts';
-import { cartDelete, editCart, getCart } from '../../../../../store/cart/cartThunk.ts';
+import { ICart, ProductResponse } from '../../../../../types';
+import { useAppDispatch, useAppSelector } from '../../../../../app/hooks.ts';
+import {
+  cartsFromSlice,
+  deleteProduct,
+  productCardToAdd,
+  productCardToRemoveQuantity
+} from '../../../../../store/cart/cartSlice.ts';
 import { enqueueSnackbar } from 'notistack';
+import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined';
 
 interface Props {
   productCart: ICart;
 }
 
 const Cart:React.FC<Props> = ({productCart}) => {
+  const cart = useAppSelector(cartsFromSlice);
   const dispatch = useAppDispatch();
+  localStorage.setItem('cart', JSON.stringify(cart));
 
-  const addQuantity = async (id: number) => {
-    const amount = productCart.quantity + 1;
-    await dispatch(editCart({id, productId: productCart.productId, quantity: amount, product: productCart.product})).unwrap();
-    await dispatch(getCart()).unwrap();
+  const addQuantity = (product: ProductResponse) => {
+    dispatch(productCardToAdd(product));
+    localStorage.setItem('cart', JSON.stringify(cart));
   };
 
-  const removeQuantity = async (id: number) => {
-    if (productCart.quantity > 1) {
-      const amount = productCart.quantity - 1;
-      await dispatch(editCart({ id, productId: productCart.productId, quantity: amount, product: productCart.product })).unwrap();
-      await dispatch(getCart()).unwrap();
-    } else {
-      enqueueSnackbar('Количество товара не может быть меньше 1! Если хотите убрать товар из списка, то можете удалить его из списка.', { variant: 'warning' });
-    }
+  const removeQuantity = async (product: ProductResponse) => {
+    dispatch(productCardToRemoveQuantity(product));
   };
 
-  const deleteProduct = async (id: number) => {
-    await dispatch(cartDelete(id)).unwrap();
+  const deleteProductFromCart = (id: number) => {
+    dispatch(deleteProduct(id));
+    localStorage.setItem('cart', JSON.stringify(cart));
     enqueueSnackbar('Данный товар успешно удален из списка в корзине!', { variant: 'success' });
-    await dispatch(getCart()).unwrap();
   };
 
   const totalCost: number = productCart.product.productPrice * productCart.quantity;
@@ -46,7 +46,7 @@ const Cart:React.FC<Props> = ({productCart}) => {
       <td style={{
         fontSize: '15px'
       }}>
-        <ClearOutlinedIcon fontSize="small" onClick={() => deleteProduct(productCart.id)}/>
+        <ClearOutlinedIcon fontSize="small" onClick={() => deleteProductFromCart(productCart.product.id)}/>
       </td>
       <td>
         <Box sx={{
@@ -94,7 +94,7 @@ const Cart:React.FC<Props> = ({productCart}) => {
           <IconButton
             size="sm"
             variant="outlined"
-            onClick={() => removeQuantity(productCart.id)}
+            onClick={() => removeQuantity(productCart.product)}
           >
             <Remove/>
           </IconButton>
@@ -104,7 +104,7 @@ const Cart:React.FC<Props> = ({productCart}) => {
           <IconButton
             size="sm"
             variant="outlined"
-            onClick={() => addQuantity(productCart.id)}
+            onClick={() => addQuantity(productCart.product)}
           >
             <Add/>
           </IconButton>

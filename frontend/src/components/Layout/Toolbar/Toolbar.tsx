@@ -17,8 +17,7 @@ import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import { selectUser } from '../../../store/users/usersSlice.ts';
 import { useEffect, useState } from 'react';
 import CustomCart from '../../Domain/CustomCart/CustomCart.tsx';
-import { cartsFromSlice } from '../../../store/cart/cartSlice.ts';
-import { getCart } from '../../../store/cart/cartThunk.ts';
+import { cartsFromSlice, getFromLocalStorage } from '../../../store/cart/cartSlice.ts';
 
 const CartBadge = styled(Badge)`
   & .${badgeClasses.badge} {
@@ -36,7 +35,7 @@ const MainToolbar = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(getCart()).unwrap();
+    dispatch(getFromLocalStorage());
   }, [dispatch]);
 
   const closeCart = () => {

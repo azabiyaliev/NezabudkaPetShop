@@ -102,8 +102,8 @@ export interface ProductRequest {
 }
 
 export interface ICart {
-  id: number;
-  productId: number;
+  // id: number;
+  // productId: number;
   quantity: number;
   product: ProductResponse,
 }

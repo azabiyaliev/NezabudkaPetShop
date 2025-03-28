@@ -5,10 +5,9 @@ import { apiUrl } from '../../../globalConstants.ts';
 import '../css/product.css';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { useNavigate } from 'react-router-dom';
-import { addCart, editCart, getCart } from '../../../store/cart/cartThunk.ts';
-import { enqueueSnackbar } from 'notistack';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
-import { cartsFromSlice } from '../../../store/cart/cartSlice.ts';
+import { cartsFromSlice, productCardToAdd } from '../../../store/cart/cartSlice.ts';
+import { enqueueSnackbar } from 'notistack';
 
 interface Props {
   product: ProductResponse;
@@ -19,21 +18,31 @@ const OneProductCard: React.FC<Props> = ({ product }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
+  localStorage.setItem('cart', JSON.stringify(cart));
+
   const addProductToCart = async (product: ProductResponse) => {
+    const existingProduct = cart.find((productCart) => productCart.product.id === product.id);
 
-    const indexProduct = cart.findIndex((order) => order.productId === product.id);
-
-    if (indexProduct === -1) {
-      await dispatch(addCart({productId: product.id, quantity: 1 })).unwrap();
+    if (!existingProduct) {
       enqueueSnackbar('Данный товар успешно добавлен в корзину!', { variant: 'success' });
-
-    } else {
-      const updatedProduct = { ...cart[indexProduct], quantity: cart[indexProduct].quantity + 1 };
-      const cartId = cart[indexProduct].id;
-      await dispatch(editCart({product: product, id: cartId, productId: updatedProduct.productId, quantity: updatedProduct.quantity})).unwrap();
     }
+    dispatch(productCardToAdd(product));
 
-    dispatch(getCart()).unwrap();
+    localStorage.setItem('cart', JSON.stringify(cart));
+
+    // const indexProduct = cart.findIndex((order) => order.productId === product.id);
+    //
+    // if (indexProduct === -1) {
+    //   await dispatch(addCart({productId: product.id, quantity: 1 })).unwrap();
+    //   enqueueSnackbar('Данный товар успешно добавлен в корзину!', { variant: 'success' });
+    //
+    // } else {
+    //   const updatedProduct = { ...cart[indexProduct], quantity: cart[indexProduct].quantity + 1 };
+    //   const cartId = cart[indexProduct].id;
+    //   await dispatch(editCart({product: product, id: cartId, productId: updatedProduct.productId, quantity: updatedProduct.quantity})).unwrap();
+    // }
+    //
+    // dispatch(getCart()).unwrap();
   };
 
   return (

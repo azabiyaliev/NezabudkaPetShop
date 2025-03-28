@@ -104,7 +104,7 @@ const CustomCart:React.FC<Props> = ({openCart, closeCart}) => {
             ) :
             <>
               {cart.map((product, index) => (
-                <React.Fragment key={product.id}>
+                <React.Fragment key={product.product.id}>
                   <CartProduct productCart={product}/>
                   {index < cart.length - 1 && <Divider sx={{ mt: 'auto' }} />}
                 </React.Fragment>

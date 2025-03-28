@@ -5,8 +5,8 @@ import { apiUrl } from '../../../globalConstants.ts';
 import Typography from '@mui/joy/Typography';
 import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined';
 import { useAppDispatch } from '../../../app/hooks.ts';
-import { cartDelete, getCart } from '../../../store/cart/cartThunk.ts';
 import { enqueueSnackbar } from 'notistack';
+import { deleteProduct } from '../../../store/cart/cartSlice.ts';
 
 interface Props {
   productCart: ICart;
@@ -14,10 +14,9 @@ interface Props {
 const CartProduct:React.FC<Props> = ({productCart}) => {
   const dispatch = useAppDispatch();
 
-  const deleteProduct = async (id: number) => {
-    await dispatch(cartDelete(id)).unwrap();
+  const deleteProductFromCart = (id: number) => {
+    dispatch(deleteProduct(id));
     enqueueSnackbar('Данный товар успешно удален из корзины!', { variant: 'success' });
-    await dispatch(getCart()).unwrap();
   };
 
   return (
@@ -49,7 +48,7 @@ const CartProduct:React.FC<Props> = ({productCart}) => {
         </Typography>
       </Box>
       <Box sx={{ ml: 'auto'}}>
-        <Button size="small" onClick={() => deleteProduct(productCart.id)}>
+        <Button size="small" onClick={() => deleteProductFromCart(productCart.product.id)}>
           <ClearOutlinedIcon fontSize='small'/>
         </Button>
       </Box>
