@@ -60,7 +60,6 @@ const CategoryMenuBox = () => {
               <a key={sub.id} href="#" className="nav-category-link">
                 <img src={paw} alt="paw icon" className="paw-icon" />
                 {sub.title}
-                asasas
               </a>
             ))}
           </div>

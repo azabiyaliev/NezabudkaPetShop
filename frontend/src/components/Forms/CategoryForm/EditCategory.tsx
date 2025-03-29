@@ -10,6 +10,9 @@ interface EditCategoryProps {
   category: { id: string; title: string };
 }
 
+const WARNING_SELECT_CATEGORY = "Заполните все поля!!";
+const SUCCESSFUL_CATEGORY_UPDATE = "Категория успешно обновлена!";
+
 const EditCategory: React.FC<EditCategoryProps> = ({ category }) => {
   const [editedCategory, setEditedCategory] = useState<CategoryMutation>({ title: category.title });
   const user = useAppSelector(selectUser);
@@ -18,7 +21,7 @@ const EditCategory: React.FC<EditCategoryProps> = ({ category }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (editedCategory.title.trim() === "") {
-      alert("Нельзя оставлять пустые поля");
+      toast.warning(WARNING_SELECT_CATEGORY);
       return;
     }
 
@@ -29,7 +32,7 @@ const EditCategory: React.FC<EditCategoryProps> = ({ category }) => {
       category: editedCategory,
       token: user.token,
     }));
-    toast.success("Категория обновлена!");
+    toast.success(SUCCESSFUL_CATEGORY_UPDATE);
 
     await dispatch(fetchCategoriesThunk());
   };

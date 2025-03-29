@@ -1,9 +1,12 @@
 .menu-box {
-  padding: 15px;
   margin-top: 0;
   border: 1px solid #c8ddb9;
   box-shadow: 0 1px 2px rgba(9, 39, 9, 0.16);
   border-radius: 10px;
+}
+
+.nav {
+  margin: 15px;
 }
 
 .category-nav {
@@ -31,13 +34,9 @@
 .nav-category-link {
   text-decoration: none;
   color: #173314;
-  padding: 13px 5px;
+  padding: 13px 20px;
   display: block;
   font-size: 14px;
-}
-
-.subcategory-menu-desktop {
-  margin: 10px;
 }
 
 .paw-icon {
@@ -46,6 +45,7 @@
   margin-right: 5px;
 }
 
-.subcategory-box:hover {
-  background: #b9dab9;
+.nav-category-link:hover {
+  background: #dcffe6;
+  color: #45833f;
 }
