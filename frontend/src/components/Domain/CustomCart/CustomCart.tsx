@@ -47,6 +47,11 @@ const CustomCart:React.FC<Props> = ({openCart, closeCart}) => {
     return acc + (item.price * item.amount);
   }, 0);
 
+  const amount: number = checkProductInCart.reduce((acc: number, item: { price: number, amount: number }) => {
+    acc = acc + item.amount;
+    return acc;
+  }, 0);
+
   return (
     <React.Fragment>
       <Drawer
@@ -76,7 +81,10 @@ const CustomCart:React.FC<Props> = ({openCart, closeCart}) => {
             overflow: 'auto',
           }}
         >
-          <DialogTitle>Корзина</DialogTitle>
+          {cart.length > 0 ?  <DialogTitle>В корзине <b>{amount}</b>
+            {amount === 1 ? 'товар' : (amount > 1 && amount < 5 ? 'товара' : 'товаров')}
+          </DialogTitle>
+          : <DialogTitle>В корзине нет товаров</DialogTitle>}
           <ModalClose />
           <Divider/>
           {cart.length === 0 ? (

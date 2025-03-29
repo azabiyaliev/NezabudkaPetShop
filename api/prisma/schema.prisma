@@ -28,7 +28,6 @@ model User {
   Review        Review[]
   Comment       Comment[]
   PasswordReset PasswordReset[]
-  CustomerCart  CustomerCart[]
 
   @@map("users")
 }
@@ -112,8 +111,7 @@ model Products {
   categoryId Int?        @map("category_id")
   category   Category?   @relation(fields: [categoryId], references: [id])
 
-  reviews      Review[]
-  CustomerCart CustomerCart[]
+  reviews Review[]
 
   @@map("products")
 }
@@ -179,16 +177,4 @@ model Comment {
   createdAt DateTime @default(now())
 
   @@map("comments")
-}
-
-model CustomerCart {
-  id        Int      @id @default(autoincrement())
-  userId    Int?     @map("user_id")
-  guestId   Int?     @map("guest_id")
-  user      User?    @relation(fields: [userId], references: [id])
-  productId Int      @map("product_id")
-  product   Products @relation(fields: [productId], references: [id])
-  quantity  Int
-
-  @@map("cart")
 }

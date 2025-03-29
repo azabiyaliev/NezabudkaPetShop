@@ -1,9 +1,7 @@
-import { useAppDispatch, useAppSelector } from '../../app/hooks.ts';
+import { useAppSelector } from '../../app/hooks.ts';
 import { cartsFromSlice } from '../../store/cart/cartSlice.ts';
 import Carts from '../../components/Domain/CustomCart/Carts/Carts.tsx';
 import Typography from '@mui/joy/Typography';
-import { useEffect } from 'react';
-import { getCart } from '../../store/cart/cartThunk.ts';
 import { Box } from '@mui/joy';
 import { Button, Container } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
@@ -11,12 +9,7 @@ import { useNavigate } from 'react-router-dom';
 
 const CartPage = () => {
   const cart = useAppSelector(cartsFromSlice);
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    dispatch(getCart()).unwrap();
-  }, [dispatch]);
 
   return (
     <Container>

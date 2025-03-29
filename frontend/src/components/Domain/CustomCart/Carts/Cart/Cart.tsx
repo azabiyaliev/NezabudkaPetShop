@@ -10,7 +10,7 @@ import {
   cartsFromSlice,
   deleteProduct,
   productCardToAdd,
-  productCardToRemoveQuantity
+  productCardToRemoveQuantity, setToLocalStorage
 } from '../../../../../store/cart/cartSlice.ts';
 import { enqueueSnackbar } from 'notistack';
 import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined';
@@ -22,11 +22,12 @@ interface Props {
 const Cart:React.FC<Props> = ({productCart}) => {
   const cart = useAppSelector(cartsFromSlice);
   const dispatch = useAppDispatch();
-  localStorage.setItem('cart', JSON.stringify(cart));
+
+  dispatch(setToLocalStorage(cart));
 
   const addQuantity = (product: ProductResponse) => {
     dispatch(productCardToAdd(product));
-    localStorage.setItem('cart', JSON.stringify(cart));
+    dispatch(setToLocalStorage(cart));
   };
 
   const removeQuantity = async (product: ProductResponse) => {
@@ -35,7 +36,7 @@ const Cart:React.FC<Props> = ({productCart}) => {
 
   const deleteProductFromCart = (id: number) => {
     dispatch(deleteProduct(id));
-    localStorage.setItem('cart', JSON.stringify(cart));
+    dispatch(setToLocalStorage(cart));
     enqueueSnackbar('Данный товар успешно удален из списка в корзине!', { variant: 'success' });
   };
 

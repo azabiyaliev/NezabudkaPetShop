@@ -10,7 +10,6 @@ export class SeedService {
   async seed() {
     await this.prisma.passwordReset.deleteMany();
     await this.prisma.user.deleteMany({});
-    await this.prisma.customerCart.deleteMany({});
     await this.prisma.products.deleteMany({});
     await this.prisma.siteEdition.deleteMany({});
     await this.prisma.brand.deleteMany({});
@@ -172,7 +171,7 @@ export class SeedService {
           productDescription: 'Качественный сухой корм для взрослых собак.',
           brandId: 1,
           categoryId: 1,
-          productPhoto: './fixtures/products/dog_food.jpg',
+          productPhoto: '/fixtures/products/dog_food.jpg',
           existence: false,
           sales: false,
         },
@@ -182,7 +181,7 @@ export class SeedService {
           productDescription: 'Качественный сухой корм для взрослых собак.',
           brandId: 1,
           categoryId: 22,
-          productPhoto: './fixtures/products/dog_food.jpg',
+          productPhoto: '/fixtures/products/dog_food.jpg',
           existence: false,
           sales: false,
         },
@@ -192,7 +191,7 @@ export class SeedService {
           productDescription: 'Качественный сухой корм для взрослых собак.',
           brandId: 1,
           categoryId: 23,
-          productPhoto: './fixtures/products/dog_food.jpg',
+          productPhoto: '/fixtures/products/dog_food.jpg',
           existence: false,
           sales: false,
         },
@@ -202,7 +201,7 @@ export class SeedService {
           productDescription: 'Прочная когтеточка для развлечения вашей кошки.',
           brandId: 2,
           categoryId: 25,
-          productPhoto: './fixtures/products/cat_scratcher.jpg',
+          productPhoto: '/fixtures/products/cat_scratcher.jpg',
           existence: false,
           sales: false,
         },
@@ -212,7 +211,7 @@ export class SeedService {
           productDescription: 'Прочная когтеточка для развлечения вашей кошки.',
           brandId: 2,
           categoryId: 25,
-          productPhoto: './fixtures/products/cat_scratcher.jpg',
+          productPhoto: '/fixtures/products/cat_scratcher.jpg',
           existence: false,
           sales: false,
         },
@@ -222,7 +221,7 @@ export class SeedService {
           productDescription: 'Прочная когтеточка для развлечения вашей кошки.',
           brandId: 2,
           categoryId: 26,
-          productPhoto: './fixtures/products/cat_scratcher.jpg',
+          productPhoto: '/fixtures/products/cat_scratcher.jpg',
           existence: false,
           sales: false,
         },
@@ -232,7 +231,7 @@ export class SeedService {
           productDescription: 'Просторная и удобная клетка для мелких птиц.',
           brandId: 3,
           categoryId: 3,
-          productPhoto: './fixtures/products/bird_cage.jpg',
+          productPhoto: '/fixtures/products/bird_cage.jpg',
           existence: false,
           sales: false,
         },
@@ -243,7 +242,7 @@ export class SeedService {
             'Мощный фильтр для чистой и прозрачной воды в аквариуме.',
           brandId: 4,
           categoryId: 5,
-          productPhoto: './fixtures/products/aquarium_filter.jpg',
+          productPhoto: '/fixtures/products/aquarium_filter.jpg',
           existence: false,
           sales: false,
         },
@@ -254,7 +253,7 @@ export class SeedService {
             'Удобная кормушка для сена для кроликов и мелких грызунов.',
           brandId: 5,
           categoryId: 4,
-          productPhoto: './fixtures/products/rabbit_feeder.jpg',
+          productPhoto: '/fixtures/products/rabbit_feeder.jpg',
           existence: false,
           sales: false,
         },
