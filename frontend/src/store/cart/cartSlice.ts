@@ -53,7 +53,7 @@ const cartSlice = createSlice({
       }, 0);
 
       if (sum === 0) {
-        state.carts = [];
+        clearCart();
       }
     },
     getFromLocalStorage: (state) => {
@@ -71,9 +71,13 @@ const cartSlice = createSlice({
         state.carts.splice(indexProduct, 1);
       }
       localStorage.setItem('cart', JSON.stringify(state.carts));
+    },
+    clearCart: (state) => {
+      state.carts = [];
+      localStorage.removeItem('cart');
     }
   },
 });
 
 export const cartReducer = cartSlice.reducer;
-export const { productCardToAdd, productCardToRemoveQuantity, getFromLocalStorage, deleteProduct, setToLocalStorage } = cartSlice.actions;
+export const { productCardToAdd, productCardToRemoveQuantity, getFromLocalStorage, deleteProduct, setToLocalStorage, clearCart } = cartSlice.actions;

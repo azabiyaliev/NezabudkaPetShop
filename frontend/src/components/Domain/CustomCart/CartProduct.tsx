@@ -34,10 +34,10 @@ const CartProduct:React.FC<Props> = ({productCart}) => {
         />
       </Box>
       <Box sx={{marginLeft: '20px'}}>
-        <Typography>
+        <Typography sx={{fontFamily: 'Nunito, sans-serif',}}>
           {productCart.product.productName}
         </Typography>
-        <Typography level="body-sm" sx={{marginTop: '10px'}}>
+        <Typography level="body-sm" sx={{marginTop: '10px', fontFamily: 'Nunito, sans-serif',}}>
           {productCart.quantity} x
           <span style={{
             color: 'rgba(250, 179, 1, 1)',

@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAppSelector } from '../../../app/hooks.ts';
 import { cartsFromSlice } from '../../../store/cart/cartSlice.ts';
 import CartProduct from './CartProduct.tsx';
+import imageCart from '../../../assets/image_transparent.png';
 
 interface Props {
   openCart: boolean;
@@ -20,19 +21,16 @@ const CustomCart:React.FC<Props> = ({openCart, closeCart}) => {
   const cart = useAppSelector(cartsFromSlice);
   const navigate = useNavigate();
 
+  console.log(cart);
+
   const backToShop = () => {
     closeCart();
     navigate('/all-products');
   }
 
-  const checkCart = () => {
-    closeCart();
-    navigate('/my_cart');
-  };
-
   const makeOrder = () => {
     closeCart();
-    navigate('/my_order');
+    navigate('/my_cart');
   };
 
   const checkProductInCart: {price: number, amount: number}[] = cart.map((product) => {
@@ -81,29 +79,41 @@ const CustomCart:React.FC<Props> = ({openCart, closeCart}) => {
             overflow: 'auto',
           }}
         >
-          {cart.length > 0 ?  <DialogTitle>В корзине <b>{amount}</b>
+          {cart.length > 0 ?  <DialogTitle sx={{fontFamily: 'Nunito, sans-serif', fontWeight: 600}}>В корзине <b>{amount}</b>
             {amount === 1 ? 'товар' : (amount > 1 && amount < 5 ? 'товара' : 'товаров')}
           </DialogTitle>
-          : <DialogTitle>В корзине нет товаров</DialogTitle>}
+          : <DialogTitle sx={{fontFamily: 'Nunito, sans-serif', fontWeight: 600}}>В корзине нет товаров</DialogTitle>}
           <ModalClose />
           <Divider/>
           {cart.length === 0 ? (
               <>
                 <img
                   style={{
-                    margin: '20% auto 0'
+                    margin: '15% auto 0'
                   }}
-                  width="100"
-                  height="100"
-                  src="https://img.icons8.com/dotty/80/shopping-cart.png" alt="shopping-cart"
+                  width="150"
+                  height="150"
+                  src={imageCart} alt="shopping-cart"
                 />
-                <Typography level="h2" sx={{fontSize: 'xl', margin: '20px auto'}}>
+                <Typography level="h2" sx={{fontSize: 'xl', margin: '20px auto', fontFamily: 'Nunito, sans-serif', fontWeight: 600}}>
                   Корзина пуста!
                 </Typography>
                 <Button
+                  type='button'
                   onClick={backToShop}
                   sx={{
-                    background: 'linear-gradient(90deg, rgba(250, 134, 1, 1) 0%, rgba(250, 179, 1, 1) 28%, rgba(250, 143, 1, 1) 100%)',
+                    backgroundColor: '#237803',
+                    borderRadius: '50px',
+                    fontFamily: 'Nunito, sans-serif',
+                    color: 'white',
+                    fontWeight: 600,
+                    width: '200px',
+                    margin: '0 auto',
+                    padding: '15px 0',
+                    fontSize: '16px',
+                    '&:hover': {
+                      backgroundColor: '#154902',
+                    }
                   }}
                 >
                   Вернуться в магазин
@@ -118,7 +128,7 @@ const CustomCart:React.FC<Props> = ({openCart, closeCart}) => {
                 </React.Fragment>
               ))}
               <Divider sx={{mt: 'auto'}}/>
-              <Typography level="h2" sx={{ fontSize: 'xl', mb: 0.5, display: 'flex', justifyContent: 'space-between' }}>
+              <Typography level="h2" sx={{fontFamily: 'Nunito, sans-serif', fontSize: 'xl', mb: 0.5, display: 'flex', justifyContent: 'space-between' }}>
                 Подытог:
                 <span style={{
                   color: 'rgba(250, 179, 1, 1)',
@@ -129,17 +139,17 @@ const CustomCart:React.FC<Props> = ({openCart, closeCart}) => {
                 </span>
               </Typography>
               <Button
-                onClick={checkCart}
-                sx={{
-                  background: 'linear-gradient(90deg, rgba(250, 134, 1, 1) 0%, rgba(250, 179, 1, 1) 28%, rgba(250, 143, 1, 1) 100%)',
-                }}
-              >
-                Просмотр корзины
-              </Button>
-              <Button
                 onClick={makeOrder}
                 sx={{
-                  background: 'linear-gradient(90deg, rgba(250, 134, 1, 1) 0%, rgba(250, 179, 1, 1) 28%, rgba(250, 143, 1, 1) 100%)',
+                  backgroundColor: '#237803',
+                  borderRadius: '50px',
+                  fontFamily: 'Nunito, sans-serif',
+                  color: 'white',
+                  fontWeight: 600,
+                  padding: '13px',
+                  '&:hover': {
+                    backgroundColor: '#154902',
+                  }
                 }}
               >
                 Оформление заказа
