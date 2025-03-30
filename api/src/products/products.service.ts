@@ -44,11 +44,6 @@ export class ProductsService {
         brand: true,
       },
     });
-
-    if (!products.length) {
-      throw new BadRequestException('Данного товара не найдено');
-    }
-
     return products;
   }
 
