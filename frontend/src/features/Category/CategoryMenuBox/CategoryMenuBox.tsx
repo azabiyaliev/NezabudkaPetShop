@@ -1,16 +1,22 @@
-import { useState } from "react";
-import { useAppSelector } from "../../../app/hooks.ts";
+import { useEffect, useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
 import { selectCategories } from "../../../store/categories/categoriesSlice.ts";
 import "./CategoryMenuBox.css";
 import paw from "../../.../../../assets/paw-solid-svgrepo-com.svg";
+import { fetchCategoriesThunk } from '../../../store/categories/categoriesThunk.ts';
 
 const CategoryMenuBox = () => {
   const categories = useAppSelector(selectCategories);
   const [selectedCategory, setSelectedCategory] = useState<string>("Собаки");
+  const dispatch = useAppDispatch();
 
   const handleCategoryClick = (categoryTitle: string) => {
     setSelectedCategory(categoryTitle);
   };
+
+  useEffect(() => {
+    dispatch(fetchCategoriesThunk());
+  }, [dispatch]);
 
   const currentCategory = categories.find(
     (cat) => cat.title === selectedCategory,

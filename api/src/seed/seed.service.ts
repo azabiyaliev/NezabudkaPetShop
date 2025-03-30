@@ -166,47 +166,47 @@ export class SeedService {
         {
           id: 7,
           title: 'Амуниция',
-          parentId: null,
+          parentId: 1,
         },
         {
           id: 8,
           title: 'Ветеринарная аптека',
-          parentId: null,
+          parentId: 2,
         },
         {
           id: 9,
           title: 'Витамины и добавки',
-          parentId: null,
+          parentId: 1,
         },
         {
           id: 10,
           title: 'Сухой корм',
-          parentId: null,
+          parentId: 2,
         },
         {
           id: 11,
           title: 'Домики и лежанки',
-          parentId: null,
+          parentId: 1,
         },
         {
           id: 12,
           title: 'Ошейники и шлейки',
-          parentId: null,
+          parentId: 2,
         },
         {
           id: 13,
           title: 'Лакомства',
-          parentId: null,
+          parentId: 1,
         },
         {
           id: 14,
           title: 'Игрушки',
-          parentId: null,
+          parentId: 2,
         },
         {
           id: 15,
           title: 'Сено',
-          parentId: null,
+          parentId: 1,
         },
       ],
     });
