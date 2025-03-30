@@ -10,11 +10,12 @@ import {
   PERSIST,
 } from "redux-persist";
 import { userReducer } from "../store/users/usersSlice.ts";
-import { editSiteReducer } from '../store/editionSite/editionSiteSlice.ts';
-import { categoriesReducer } from '../store/categories/categoriesSlice.ts';
-import { brandReducer } from '../store/brands/brandsSlice.ts';
-import { productsReducer } from '../store/products/productsSlice.ts';
-import { cartReducer } from '../store/cart/cartSlice.ts';
+import { editSiteReducer } from "../store/editionSite/editionSiteSlice.ts";
+import { categoriesReducer } from "../store/categories/categoriesSlice.ts";
+import { brandReducer } from "../store/brands/brandsSlice.ts";
+import { productsReducer } from "../store/products/productsSlice.ts";
+import { cartReducer } from "../store/cart/cartSlice.ts";
+import { photoCarouselReducer } from '../store/photoCarousel/photoCarouselSlice.ts';
 
 const userPersistConfig = {
   key: "store:users",
@@ -29,6 +30,7 @@ const rootReducer = combineReducers({
   categories: categoriesReducer,
   products: productsReducer,
   carts: cartReducer,
+  photo_carousel: photoCarouselReducer,
 });
 
 export const store = configureStore({

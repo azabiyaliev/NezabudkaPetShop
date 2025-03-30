@@ -18,7 +18,7 @@ import {
   clearError,
 } from "../../../store/brands/brandsSlice.ts";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
-import { selectUser } from '../../../store/users/usersSlice.ts';
+import { selectUser } from "../../../store/users/usersSlice.ts";
 
 const AdminBar = () => {
   const [open, setOpen] = React.useState(true);
@@ -42,18 +42,21 @@ const AdminBar = () => {
           <ListItem component={NavLink} to={`/private_account`}>
             <b className="text-uppercase text-black">Личный кабинет</b>
           </ListItem>
-          <hr/>
+          <hr />
           <ListItem component={NavLink} to={`/private/users/${user.id}`}>
             <ListItemText
               primary="Редактировать профиль"
               className="text-black"
             />
           </ListItem>
-          <ListItem  component={NavLink} to="/edition_site" >
-            <ListItemText primary="Редактирование сайта" className='text-black'/>
+          <ListItem component={NavLink} to="/edition_site">
+            <ListItemText
+              primary="Редактирование сайта"
+              className="text-black"
+            />
           </ListItem>
-          <ListItem  component={NavLink} to="/private/client_orders" >
-            <ListItemText primary="Заказы" className='text-black'/>
+          <ListItem component={NavLink} to="/private/client_orders">
+            <ListItemText primary="Заказы" className="text-black" />
           </ListItem>
           <ListItem component={NavLink} to="/private/clients">
             <ListItemText primary="Клиенты" className="text-black" />
@@ -110,18 +113,17 @@ const AdminBar = () => {
           </ListItemButton>
           <Collapse in={openProducts} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-              <ListItemButton
-                sx={{ pl: 3 }}
-              >
+              <ListItemButton sx={{ pl: 3 }}>
                 <ListItem component={NavLink} to="/private/products">
                   <ListItemText primary="Все товары" className="text-black" />
                 </ListItem>
               </ListItemButton>
-              <ListItemButton
-                sx={{ pl: 3 }}
-              >
+              <ListItemButton sx={{ pl: 3 }}>
                 <ListItem component={NavLink} to="/private/add_product">
-                  <ListItemText primary="Добавить товар" className="text-black" />
+                  <ListItemText
+                    primary="Добавить товар"
+                    className="text-black"
+                  />
                 </ListItem>
               </ListItemButton>
             </List>
@@ -132,7 +134,6 @@ const AdminBar = () => {
           </ListItem>
         </List>
       )}
-
     </div>
   );
 };

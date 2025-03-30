@@ -31,13 +31,4 @@ export class EditionSitedDto {
 
   @IsNotEmpty({ message: 'phone Поле для телефона обязательно к заполнению' })
   phone!: string;
-
-  @IsOptional()
-  @IsArray({ message: 'Фото для карусели должно быть массивом' })
-  @ValidateNested({
-    each: true,
-    message: 'Каждый элемент фото для карусели должен быть объектом',
-  })
-  @Type(() => PhotoByCarouselDto)
-  PhotoByCarousel?: PhotoByCarouselDto[];
 }

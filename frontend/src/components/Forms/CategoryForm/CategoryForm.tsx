@@ -1,38 +1,41 @@
 import { TextField, Button, Box, Typography } from "@mui/material";
-import React, { useCallback, useState } from 'react';
-import { CategoryMutation } from '../../../types';
+import React, { useCallback, useState } from "react";
+import { CategoryMutation } from "../../../types";
 
 export interface Props {
   onSubmit: (category: CategoryMutation) => void;
 }
 
 const initialState = {
-  title: '',
+  title: "",
 };
 
-const CategoryForm: React.FC<Props> = ({onSubmit}) => {
+const CategoryForm: React.FC<Props> = ({ onSubmit }) => {
   const [category, setCategory] = useState<CategoryMutation>(initialState);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log(category);
-    if(category.title.trim() === '') {
-      alert('Нельзя оставлять пустые поля');
+    if (category.title.trim() === "") {
+      alert("Нельзя оставлять пустые поля");
       return;
     }
 
-    onSubmit({...category});
+    onSubmit({ ...category });
     setCategory(initialState);
   };
 
-  const inputChangeHandler = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const {name, value} = e.target;
+  const inputChangeHandler = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { name, value } = e.target;
 
-    setCategory((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  }, []);
+      setCategory((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
+    },
+    [],
+  );
 
   return (
     <>
@@ -66,7 +69,11 @@ const CategoryForm: React.FC<Props> = ({onSubmit}) => {
           onChange={inputChangeHandler}
         />
 
-        <Button type="submit" variant="contained" sx={{ bgcolor: "#ffc107", color: "black" }}>
+        <Button
+          type="submit"
+          variant="contained"
+          sx={{ bgcolor: "#ffc107", color: "black" }}
+        >
           Добавить
         </Button>
       </Box>

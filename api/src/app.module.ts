@@ -21,6 +21,9 @@ import { SeedModule } from './seed/seed.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { CartController } from './cart/cart.controller';
 import { CartService } from './cart/cart.service';
+import { PhotoCarouselController } from './photo_carousel/photo_carousel.controller';
+import { PhotoCarouselModule } from './photo_carousel/photo_carousel.module';
+import { PhotoCarouselService } from './photo_carousel/photo_carousel.service';
 
 @Module({
   imports: [
@@ -35,12 +38,14 @@ import { CartService } from './cart/cart.service';
     SeedModule,
     ConfigModule.forRoot(),
     ReviewsModule,
+    PhotoCarouselModule,
   ],
   controllers: [
     AppController,
     BrandsController,
     EditionSiteController,
     CartController,
+    PhotoCarouselController,
   ],
   providers: [
     AppService,
@@ -50,6 +55,7 @@ import { CartService } from './cart/cart.service';
     EditionSiteService,
     CategoryService,
     CartService,
+    PhotoCarouselService,
   ],
 })
 export class AppModule {}

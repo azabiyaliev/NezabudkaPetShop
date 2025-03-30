@@ -1,14 +1,20 @@
-import { Button, Card, CardContent, CardMedia, Typography, } from '@mui/material';
-import React from 'react';
-import { ProductResponse } from '../../../types';
-import { apiUrl } from '../../../globalConstants.ts';
-import '../css/product.css';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import { useNavigate } from 'react-router-dom';
-import { addCart, editCart, getCart } from '../../../store/cart/cartThunk.ts';
-import { enqueueSnackbar } from 'notistack';
-import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
-import { cartsFromSlice } from '../../../store/cart/cartSlice.ts';
+import {
+  Button,
+  Card,
+  CardContent,
+  CardMedia,
+  Typography,
+} from "@mui/material";
+import React from "react";
+import { ProductResponse } from "../../../types";
+import { apiUrl } from "../../../globalConstants.ts";
+import "../css/product.css";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import { useNavigate } from "react-router-dom";
+import { addCart, editCart, getCart } from "../../../store/cart/cartThunk.ts";
+import { enqueueSnackbar } from "notistack";
+import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
+import { cartsFromSlice } from "../../../store/cart/cartSlice.ts";
 
 interface Props {
   product: ProductResponse;
@@ -20,17 +26,29 @@ const OneProductCard: React.FC<Props> = ({ product }) => {
   const navigate = useNavigate();
 
   const addProductToCart = async (product: ProductResponse) => {
-
-    const indexProduct = cart.findIndex((order) => order.productId === product.id);
+    const indexProduct = cart.findIndex(
+      (order) => order.productId === product.id,
+    );
 
     if (indexProduct === -1) {
-      await dispatch(addCart({productId: product.id, quantity: 1 })).unwrap();
-      enqueueSnackbar('Данный товар успешно добавлен в корзину!', { variant: 'success' });
-
+      await dispatch(addCart({ productId: product.id, quantity: 1 })).unwrap();
+      enqueueSnackbar("Данный товар успешно добавлен в корзину!", {
+        variant: "success",
+      });
     } else {
-      const updatedProduct = { ...cart[indexProduct], quantity: cart[indexProduct].quantity + 1 };
+      const updatedProduct = {
+        ...cart[indexProduct],
+        quantity: cart[indexProduct].quantity + 1,
+      };
       const cartId = cart[indexProduct].id;
-      await dispatch(editCart({product: product, id: cartId, productId: updatedProduct.productId, quantity: updatedProduct.quantity})).unwrap();
+      await dispatch(
+        editCart({
+          product: product,
+          id: cartId,
+          productId: updatedProduct.productId,
+          quantity: updatedProduct.quantity,
+        }),
+      ).unwrap();
     }
 
     dispatch(getCart()).unwrap();

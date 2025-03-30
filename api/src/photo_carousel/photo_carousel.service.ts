@@ -1,0 +1,117 @@
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
+import { PhotoByCarouselDto } from '../dto/photoCarousel.dto';
+import {BrandDto} from "../dto/brands.dto";
+
+@Injectable()
+export class PhotoCarouselService {
+  constructor(private prisma: PrismaService) {}
+
+  async getPhotos() {
+    return this.prisma.photoByCarousel.findMany({
+      orderBy: { order: 'asc' },
+    });
+  }
+
+  async createPhoto(photoDto: PhotoByCarouselDto) {
+    return this.prisma.photoByCarousel.create({
+      data: {
+        ...photoDto,
+      },
+    });
+  }
+
+  async updatePhoto(
+    id: string,
+    photoDto: PhotoByCarouselDto,
+    file?: Express.Multer.File,
+  ) {
+    const { link } = photoDto;
+    let photo = photoDto.photo;
+
+    if (file) {
+      photo = '/photo_carousel/' + file.filename;
+    }
+
+    if (link.trim().length === 0 || photo.trim().length === 0) {
+      throw new NotFoundException(
+        `Ccылка и фото карусели не могут быть пустыми!`,
+      );
+    }
+
+    const brandId = parseInt(id);
+
+    const existingPhoto = await this.prisma.photoByCarousel.findFirst({
+      where: { id: brandId },
+    });
+
+    if (!existingPhoto) {
+      throw new BadRequestException('Фото не найдено');
+    }
+
+    return this.prisma.photoByCarousel.update({
+      where: { id: brandId },
+      data: {
+        link,
+        photo,
+      },
+    });
+  }
+
+  async deletePhoto(id: string) {
+    const photoId = parseInt(id);
+    const photo = await this.prisma.photoByCarousel.findFirst({ where: { id: photoId } });
+    if(!photo) {
+      throw new NotFoundException(`Фото с id = ${id} не найдена!`);
+    }
+
+    await this.prisma.photoByCarousel.delete({ where: { id: photoId } });
+
+    return { message: 'Данное фото было успешно удалено!' };
+  }
+
+  async updatePhotoOrder(photos: PhotoByCarouselDto[]) {
+
+    const validPhotos = photos.filter((p) => p.id !== undefined) as {
+      id: number;
+      order: number;
+    }[];
+
+    if (validPhotos.length === 0) {
+      throw new BadRequestException('Нет валидных фото для обновления');
+    }
+
+    const existingPhotos = await this.prisma.photoByCarousel.findMany({
+      where: { id: { in: validPhotos.map((p) => p.id) } },
+      select: { id: true },
+    });
+
+    const existingIds = new Set(existingPhotos.map((p) => p.id));
+    const missingIds = validPhotos
+      .map((p) => p.id)
+      .filter((id) => !existingIds.has(id));
+
+    if (missingIds.length) {
+      throw new BadRequestException(
+        `Фото с id ${missingIds.join(', ')} не найдены`,
+      );
+    }
+    const orderValues = validPhotos.map((p) => p.order);
+    const uniqueOrders = new Set(orderValues);
+    if (uniqueOrders.size !== orderValues.length) {
+      throw new BadRequestException('Дублирующиеся значения order');
+    }
+    return this.prisma.$transaction(
+      validPhotos.map((photo) =>
+        this.prisma.photoByCarousel.update({
+          where: { id: photo.id },
+          data: { order: photo.order },
+        }),
+      ),
+    );
+  }
+}
