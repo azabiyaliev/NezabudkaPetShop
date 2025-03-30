@@ -1,6 +1,6 @@
 import { Box, Button, Typography } from '@mui/joy';
 import { ICart, ProductResponse } from '../../../../../../types';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { apiUrl } from '../../../../../../globalConstants.ts';
 import IconButton from '@mui/joy/IconButton';
 import { Add, Remove } from '@mui/icons-material';
@@ -21,7 +21,9 @@ interface Props {
 const Cart:React.FC<Props> = ({product, products}) => {
   const dispatch = useAppDispatch();
 
-  dispatch(setToLocalStorage(products));
+  useEffect(() => {
+    dispatch(setToLocalStorage(products));
+  }, [dispatch, products]);
 
   const addQuantity = (product: ProductResponse) => {
     dispatch(productCardToAdd(product));
@@ -34,13 +36,17 @@ const Cart:React.FC<Props> = ({product, products}) => {
 
   const deleteProductFromCart = (id: number) => {
     dispatch(deleteProduct(id));
-    dispatch(setToLocalStorage(products));
+    const updatedProducts = products.filter((product) => product.product.id !== id); // Фильтруем товары
+    dispatch(setToLocalStorage(updatedProducts));
     enqueueSnackbar('Данный товар успешно удален из списка в корзине!', { variant: 'success' });
   };
 
-  if (product.quantity === 0) {
-    deleteProductFromCart(product.product.id);
-  }
+  useEffect(() => {
+    if (product.quantity === 0) {
+      dispatch(deleteProduct(product.product.id));
+      dispatch(setToLocalStorage(products));
+    }
+  }, [dispatch, product.product.id, product.quantity, products]);
 
   return (
     <Box sx={{
@@ -150,7 +156,7 @@ const Cart:React.FC<Props> = ({product, products}) => {
           </Box>
         </Box>
         <Box>
-          <Button variant="plain" type='button'>
+          <Button variant="plain" type='button' onClick={() => deleteProductFromCart(product.product.id)}>
             <svg
               style={{
                 fill:'#737373',
