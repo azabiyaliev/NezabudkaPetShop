@@ -4,13 +4,14 @@ import { apiUrl } from '../../../globalConstants.ts';
 import { Typography, Button } from '@mui/material';
 import { DragEvent, useState, useEffect } from 'react';
 import { PhotoCarousel } from '../../../types';
-import { useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { fetchPhoto, updatePhotoOrders , deletePhoto} from '../../../store/photoCarousel/photoCarouselThunk.ts';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Swal from "sweetalert2";
 import ModalWindowAddNewPhoto from '../../UI/ModalWindow/ModalWindowAddNewPhoto.tsx';
 import { toast, ToastContainer } from 'react-toastify';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const DragAndDropPhoto = () => {
   const photos = useAppSelector(selectPhotoCarousel) || [];
@@ -205,12 +206,12 @@ const DragAndDropPhoto = () => {
           <div>Данные не загружены.</div>
         )}
       </div>
-      <div style={{ marginTop: "30px", display: "flex", justifyContent: "center" }}>
+      <div style={{ marginTop: "40px", display: "flex", justifyContent: "center", marginBottom:"50px" }}>
         <Button
           onClick={handleSave}
           variant="contained"
           color="primary"
-          style={{ backgroundColor: "#738A6E", color: "white", marginRight: "20px", fontSize: "16px" }}
+          style={{ backgroundColor: "#738A6E", color: "white", marginRight: "20px", fontSize: "16px",  borderRadius:"20px", }}
         >
           Сохранить порядок
         </Button>
@@ -218,7 +219,7 @@ const DragAndDropPhoto = () => {
           onClick={() => setIsAddModalOpen(true)}
           variant="contained"
           color="primary"
-          style={{ backgroundColor: "#FDE910", color: "rgb(52, 51, 50)", fontSize: "16px" }}
+          style={{ backgroundColor: "#FDE910", color: "rgb(52, 51, 50)", fontSize: "16px",  borderRadius:"20px", }}
         >
           Добавить новое фото
         </Button>
@@ -227,6 +228,7 @@ const DragAndDropPhoto = () => {
         open={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
       />
+      <NavLink to="/edition_site" style={{ color:"#738A6E", textDecoration:"none" }}><span><ArrowBackIcon sx={{width:"20px", marginRight:"10px"}}/>Вернуться к редактированию сайта</span></NavLink>
       <ToastContainer />
     </>
   );

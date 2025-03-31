@@ -28,6 +28,7 @@ import { useEffect, useState } from "react";
 import CustomCart from "../../Domain/CustomCart/CustomCart.tsx";
 import { cartsFromSlice } from "../../../store/cart/cartSlice.ts";
 import { getCart } from "../../../store/cart/cartThunk.ts";
+import { fetchSite } from '../../../store/editionSite/editionSiteThunk.ts';
 
 const CartBadge = styled(Badge)`
   & .${badgeClasses.badge} {
@@ -43,6 +44,12 @@ const MainToolbar = () => {
   const cart = useAppSelector(cartsFromSlice);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(fetchSite()).unwrap()
+  }, [dispatch]);
+
+  console.log(site)
 
   useEffect(() => {
     dispatch(getCart()).unwrap();

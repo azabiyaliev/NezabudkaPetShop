@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
@@ -6,6 +7,9 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { EditionSitedDto } from '../dto/editionsite.dto';
+
+const regEmail = /^(\w+[-.]?\w+)@(\w+)([.-]?\w+)?(\.[a-zA-Z]{2,3})$/;
+const regPhone = /^(\+996|0)\s?\d{3}\s?\d{3}\s?\d{3}$/;
 
 @Injectable()
 export class EditionSiteService {
@@ -17,6 +21,15 @@ export class EditionSiteService {
 
   async createInfoSite(editionDto: EditionSitedDto) {
     try {
+      if (!regEmail.test(editionDto.email)) {
+        throw new BadRequestException('Неправильный формат для почты');
+      } else if (editionDto.phone) {
+        if (!regPhone.test(editionDto.phone))
+          editionDto.phone = editionDto.phone.replace(/\s/g, '');
+        if (!editionDto.phone.startsWith('+996')) {
+          editionDto.phone = '+996' + editionDto.phone.replace(/^0/, '');
+        }
+      }
       return await this.prisma.siteEdition.create({
         data: {
           ...editionDto,

@@ -5,7 +5,6 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { PhotoByCarouselDto } from '../dto/photoCarousel.dto';
-import {BrandDto} from "../dto/brands.dto";
 
 @Injectable()
 export class PhotoCarouselService {
@@ -64,8 +63,10 @@ export class PhotoCarouselService {
 
   async deletePhoto(id: string) {
     const photoId = parseInt(id);
-    const photo = await this.prisma.photoByCarousel.findFirst({ where: { id: photoId } });
-    if(!photo) {
+    const photo = await this.prisma.photoByCarousel.findFirst({
+      where: { id: photoId },
+    });
+    if (!photo) {
       throw new NotFoundException(`Фото с id = ${id} не найдена!`);
     }
 
@@ -75,7 +76,6 @@ export class PhotoCarouselService {
   }
 
   async updatePhotoOrder(photos: PhotoByCarouselDto[]) {
-
     const validPhotos = photos.filter((p) => p.id !== undefined) as {
       id: number;
       order: number;

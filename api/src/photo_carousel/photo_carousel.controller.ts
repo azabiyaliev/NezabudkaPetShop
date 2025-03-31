@@ -2,7 +2,8 @@ import {
   Body,
   Controller,
   Delete,
-  Get, NotFoundException,
+  Get,
+  NotFoundException,
   Param,
   Patch,
   Post,
@@ -20,7 +21,7 @@ import * as crypto from 'crypto';
 import { TokenAuthGuard } from '../token.auth/token-auth.guard';
 import { RolesGuard } from '../token.auth/token.role.guard';
 import { Roles } from '../roles/roles.decorator';
-import {BrandDto} from "../dto/brands.dto";
+import { BrandDto } from '../dto/brands.dto';
 
 @Controller('photos')
 export class PhotoCarouselController {
@@ -70,11 +71,7 @@ export class PhotoCarouselController {
     @Body() photoDto: PhotoByCarouselDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    return await this.photoCarouselService.updatePhoto(
-      id,
-      photoDto,
-      file,
-    );
+    return await this.photoCarouselService.updatePhoto(id, photoDto, file);
   }
 
   @Patch()

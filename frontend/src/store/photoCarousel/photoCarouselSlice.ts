@@ -18,6 +18,7 @@ const initialState: PhotoCarouselState = {
 };
 
 export const selectPhotoCarousel = (state: RootState) => state.photo_carousel.photos;
+export const selectPhotoError = (state: RootState) => state.photo_carousel.editError;
 
 export const PhotoCarouselSlice = createSlice({
   name: "photo_carousel",
@@ -38,8 +39,9 @@ export const PhotoCarouselSlice = createSlice({
         state.editLoading = false;
         state.editError = null;
       })
-      .addCase(updatePhoto.rejected, (state) => {
+      .addCase(updatePhoto.rejected, (state, { payload: error }) => {
         state.editLoading = false;
+        state.editError = error || null
       })
       .addCase(addNewPhoto.pending, (state) => {
         state.editLoading = true;
@@ -49,8 +51,9 @@ export const PhotoCarouselSlice = createSlice({
         state.editLoading = false;
         state.editError = null;
       })
-      .addCase(addNewPhoto.rejected, (state) => {
+      .addCase(addNewPhoto.rejected, (state,{ payload: error }) => {
         state.editLoading = false;
+        state.editError = error || null
       })
       .addCase(fetchPhoto.pending, (state) => {
         state.isLoading = true;

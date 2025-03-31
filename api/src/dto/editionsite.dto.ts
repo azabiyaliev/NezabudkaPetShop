@@ -1,13 +1,8 @@
-import {
-  IsArray,
-  IsNotEmpty,
-  IsOptional,
-  ValidateNested,
-} from 'class-validator';
-import { Type } from 'class-transformer';
-import { PhotoByCarouselDto } from './photoCarousel.dto';
+import { IsNotEmpty, IsOptional } from 'class-validator';
 
 export class EditionSitedDto {
+  @IsOptional()
+  id!: number;
   @IsNotEmpty({
     message: 'instagram Поле для instagram обязательно к заполнению',
   })
@@ -31,4 +26,9 @@ export class EditionSitedDto {
 
   @IsNotEmpty({ message: 'phone Поле для телефона обязательно к заполнению' })
   phone!: string;
+
+  @IsNotEmpty({
+    message: 'linkAddress Поле для ссылки для адреса обязательно к заполнению',
+  })
+  linkAddress!: string;
 }

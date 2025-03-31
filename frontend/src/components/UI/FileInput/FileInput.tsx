@@ -8,6 +8,8 @@ interface Props {
   file: File | null;
   id: string;
   className?: string;
+  error?: boolean;
+  helperText?: string;
 }
 
 const FileInput: React.FC<Props> = ({
@@ -17,6 +19,8 @@ const FileInput: React.FC<Props> = ({
   file,
   id,
   className,
+  error,
+  helperText
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [fileName, setFileName] = useState("");
@@ -41,24 +45,42 @@ const FileInput: React.FC<Props> = ({
     if (!file) setFileName("");
   }, [file]);
 
+  const inputStyle = error
+    ? {
+      backgroundColor: "#FFECEC",
+      borderColor: "#FF0000",
+    }
+    : {
+      backgroundColor: "white",
+      borderColor: "darkgreen",
+    };
+
+  const buttonStyle = error
+    ? {
+      borderColor: "#FF0000",
+      color: "#FF0000",
+    }
+    : {
+      borderColor: "darkgreen",
+      color: "darkgreen",
+    };
 
   return (
     <>
       <input
-        style={{ display: "none" }}
+        style={{ ...inputStyle, display: "none" }}
         type="file"
         name={name}
         ref={inputRef}
         onChange={onFileChange}
       />
-
       <div className="d-flex justify-content-start gap-4 align-items-center mb-3">
         <input
           style={{
-            backgroundColor: "white",
-            padding: "8px 30px",
-            borderRadius: "4px",
-            border: "1px solid lightgray",
+            ...inputStyle,
+            padding: "15px 30px",
+            borderRadius: "20px",
+            border: "1px solid",
           }}
           id={id}
           className={className}
@@ -70,19 +92,30 @@ const FileInput: React.FC<Props> = ({
         <button
           type="button"
           style={{
-            color: "gray",
-            border: "1px solid lightgray",
-            borderRadius: "4px",
+            ...buttonStyle,
+            borderRadius: "15px",
             backgroundColor: "white",
-            padding: "8px 20px",
+            padding: "15px 20px",
             cursor: "pointer",
           }}
           onClick={activateInput}
         >
           <AddPhotoAlternateIcon />
-          <i className="bi bi-file-earmark"></i>
         </button>
       </div>
+
+      {error && helperText && (
+        <div
+          style={{
+            color: "#FF0000",
+            fontSize: "12px",
+            marginLeft:"10px",
+            marginTop:"-5px"
+          }}
+        >
+          {helperText}
+        </div>
+      )}
     </>
   );
 };

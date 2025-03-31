@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
 
 export class PhotoByCarouselDto {
   @IsNotEmpty({
@@ -7,18 +7,16 @@ export class PhotoByCarouselDto {
   id?: number;
 
   @IsNotEmpty({
-    message: 'Поле для фотографии обязательно к заполнению',
+    message: 'photo Поле для фотографии обязательно к заполнению',
   })
-  @IsString({ message: 'Фото должно быть строкой (URL)' })
   photo!: string;
 
   @IsNotEmpty({
-    message: 'Поле для ссылки обязательно к заполнению',
+    message: 'link Поле для ссылки обязательно к заполнению',
   })
-  @IsString({ message: 'Ссылка должна быть строкой (URL)' })
   link!: string;
 
   @IsOptional()
-  @IsNumber({}, { message: 'Порядок должен быть числом' })
+  @IsNumber({}, { message: 'order Порядок должен быть числом' })
   order?: number;
 }

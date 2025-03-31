@@ -45,12 +45,13 @@ export class SeedService {
 
     await this.prisma.siteEdition.create({
       data: {
-        instagram: 'nezabudka.zoo',
-        whatsapp: '+(996)500-430-481',
+        instagram: 'https://www.instagram.com/nezabudka.zoo/',
+        whatsapp: 'https://api.whatsapp.com/send?phone=99655533889',
         schedule: '10:00-20:00',
         address: 'г. Бишкек, Гоголя 127',
         email: 'nezabudka.zoo@gmial.com',
         phone: '+(996)500-430-481',
+        linkAddress: 'https://go.2gis.com/ZA3mL',
       },
     });
 

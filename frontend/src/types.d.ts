@@ -62,6 +62,7 @@ export interface EditSiteMutation {
   address: string;
   email: string;
   phone: string;
+  linkAddress: string;
 }
 
 export interface EditSite {
@@ -72,6 +73,7 @@ export interface EditSite {
   address: string;
   email: string;
   phone: string;
+  linkAddress: string;
 }
 
 export interface PhotoCarousel {

@@ -3,13 +3,14 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import React, { useState, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
-import { updatePhoto } from '../../../store/photoCarousel/photoCarouselThunk.ts';
+import { fetchPhoto, updatePhoto } from '../../../store/photoCarousel/photoCarouselThunk.ts';
 import FileInput from '../../UI/FileInput/FileInput.tsx';
 import { PhotoCarousel, PhotoForm } from '../../../types';
 import { toast } from 'react-toastify';
-import { selectPhotoCarousel } from '../../../store/photoCarousel/photoCarouselSlice.ts';
+import { selectPhotoCarousel, selectPhotoError } from '../../../store/photoCarousel/photoCarouselSlice.ts';
 import { Box } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 interface FormEditPhotoProps {
   photoId: number;
@@ -17,8 +18,8 @@ interface FormEditPhotoProps {
 
 const FormEditPhoto: React.FC<FormEditPhotoProps> = ({ photoId }) => {
   const photos = useAppSelector(selectPhotoCarousel);
-  const photoToEdit = photos.find((p) => p.id === photoId);
   const navigate = useNavigate();
+  const errorPhoto = useAppSelector(selectPhotoError)
 
   const [editPhoto, setEditPhoto] = useState<PhotoCarousel>({
     id: photoId,
@@ -29,11 +30,18 @@ const FormEditPhoto: React.FC<FormEditPhotoProps> = ({ photoId }) => {
 
   const dispatch = useAppDispatch();
 
+
   useEffect(() => {
+    dispatch(fetchPhoto())
+      .unwrap()
+  }, [dispatch]);
+
+  useEffect(() => {
+    const photoToEdit = photos.find((p) => p.id === photoId);
     if (photoToEdit) {
       setEditPhoto(photoToEdit);
     }
-  }, [photoToEdit]);
+  }, [photos, photoId]);
 
   const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -65,6 +73,8 @@ const FormEditPhoto: React.FC<FormEditPhotoProps> = ({ photoId }) => {
     }
   };
 
+  const getFieldError = (fieldName: string) => errorPhoto?.errors?.[fieldName] || "";
+
   return (
    <div style={{marginTop:"50px"}}>
      <Box sx={{ padding: 4,
@@ -89,7 +99,49 @@ const FormEditPhoto: React.FC<FormEditPhotoProps> = ({ photoId }) => {
              variant="outlined"
              value={editPhoto.link}
              onChange={inputChangeHandler}
-             sx={{ width: '70%', marginBottom: 2 }}
+             error={!!getFieldError("link")}
+             helperText={getFieldError("link")}
+             sx={{
+               mb: 3,
+               width: '71%',
+               borderRadius: "20px",
+               "& .MuiOutlinedInput-root": {
+                 borderRadius: "20px",
+                 backgroundColor: "white",
+                 transition: "all 0.3s ease",
+                 height: "56px",
+                 "&.Mui-focused": {
+                   borderColor: "green",
+                 },
+                 "& .MuiOutlinedInput-notchedOutline": {
+                   borderColor: "green",
+                   transition: "border-color 0.3s ease",
+                 },
+                 "&:hover .MuiOutlinedInput-notchedOutline": {
+                   borderColor: "darkgreen",
+                 },
+               },
+               "& .MuiInputLabel-root.Mui-focused": {
+                 color: "green",
+               },
+               "& .MuiOutlinedInput-root.Mui-error": {
+                 backgroundColor: "#FFECEC",
+                 "& .MuiOutlinedInput-notchedOutline": {
+                   borderColor: "#FF0000",
+                 },
+               },
+               "& .MuiInputLabel-root.Mui-error": {
+                 color: "#FF0000",
+               },
+               "& .MuiFormHelperText-root": {
+                 minHeight: "20px",
+               },
+               "& .MuiFormHelperText-root.Mui-error": {
+                 color: "#FF0000",
+                 fontSize: "12px",
+                 fontWeight: 500,
+               },
+             }}
            />
 
            <div style={{ marginBottom: '16px' }}>
@@ -99,6 +151,8 @@ const FormEditPhoto: React.FC<FormEditPhotoProps> = ({ photoId }) => {
                label="Фото для карусели"
                onGetFile={onFileChange}
                file={editPhoto.photo}
+               error={!!getFieldError("photo")}
+               helperText={getFieldError("photo")}
              />
            </div>
          </Box>
@@ -108,10 +162,11 @@ const FormEditPhoto: React.FC<FormEditPhotoProps> = ({ photoId }) => {
              variant="contained"
              color="primary"
              sx={{
-               backgroundColor: "#738A6E",
-               color: 'white',
+               backgroundColor: "#FDE910",
+               color: "rgb(52, 51, 50)",
                fontSize: '16px',
                padding: '10px 20px',
+               borderRadius: '20px',
              }}
            >
              Сохранить
@@ -119,6 +174,10 @@ const FormEditPhoto: React.FC<FormEditPhotoProps> = ({ photoId }) => {
          </Box>
        </form>
      </Box>
+     <div style={{ marginTop: '50px', marginLeft:"60px" }}>
+       <NavLink to="/edit-carousel" style={{ color:"#738A6E", textDecoration:"none" }}><span><ArrowBackIcon sx={{width:"20px", marginRight:"10px"}}/>Вернуться к карусели</span></NavLink>
+     </div>
+
    </div>
   );
 };
