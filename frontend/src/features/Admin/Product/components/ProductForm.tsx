@@ -17,9 +17,10 @@ import TextField from "@mui/material/TextField";
 import { useAppDispatch, useAppSelector } from "../../../../app/hooks.ts";
 import { brandsFromSlice } from "../../../../store/brands/brandsSlice.ts";
 import { getBrands } from "../../../../store/brands/brandsThunk.ts";
-import { selectCategories } from "../../../../store/categories/categoriesSlice.ts";
-import { fetchCategoriesThunk } from "../../../../store/categories/categoriesThunk.ts";
-import TiptapEditor from "../../../../components/UI/TiptapEditor/TiptapEditor.tsx";
+import { selectCategories } from '../../../../store/categories/categoriesSlice.ts';
+import { fetchCategoriesThunk } from '../../../../store/categories/categoriesThunk.ts';
+// import TiptapEditor from "../../../../components/UI/TiptapEditor/TiptapEditor.tsx";
+import QuillEditor from '../../../../components/UI/QuillEditor/QuillEditor.tsx';
 import { orange } from "@mui/material/colors";
 import FormControl from "@mui/material/FormControl";
 import FileInput from '../../../../components/FileInput/FileInput.tsx';
@@ -39,7 +40,7 @@ const initialState = {
   existence: false,
   sales: false,
   brandId: "",
-  categoryId: "",
+  category: {id: "", parentId: "", subcategories: {id: "", title: "", parentId: 0 }},
 };
 
 const ProductForm: React.FC<Props> = ({ onSubmit, editProduct = initialState, isProduct = false }) => {
@@ -47,13 +48,15 @@ const ProductForm: React.FC<Props> = ({ onSubmit, editProduct = initialState, is
   const dispatch = useAppDispatch();
   const brands = useAppSelector(brandsFromSlice);
   const categories = useAppSelector(selectCategories);
+  const selectedCategory = categories.find((category) => category.id === Number(form.category.id));
 
-  const handleDescriptionChange = (html: string) => {
-    setForm((prevState) => ({
-      ...prevState,
-      productDescription: html,
-    }));
-  };
+
+  // const handleDescriptionChange = (html: string) => {
+  //   setForm((prevState) => ({
+  //     ...prevState,
+  //     productDescription: html,
+  //   }));
+  // };
 
   useEffect(() => {
     dispatch(getBrands()).unwrap();
@@ -87,7 +90,7 @@ const ProductForm: React.FC<Props> = ({ onSubmit, editProduct = initialState, is
       return toast.warning("Необходимо выбрать бренд!");
     }
 
-    if (!form.categoryId) {
+    if (!form.category) {
       return toast.warning("Необходимо выбрать категорию!");
     }
 
@@ -102,10 +105,40 @@ const ProductForm: React.FC<Props> = ({ onSubmit, editProduct = initialState, is
       return;
     }
   };
-
   const selectChangeHandler = (e: SelectChangeEvent) => {
     const { name, value } = e.target;
-    setForm((prevState) => ({ ...prevState, [name]: value }));
+
+    setForm((prevState) => {
+      if (name === "brandId") {
+        return { ...prevState, brandId: value };
+      }
+
+      if (name === "id") {
+        return {
+          ...prevState,
+          category: {
+            ...prevState.category,
+            id: value,
+            subcategories: { id: "", title: "", parentId: Number(value) },
+          },
+        };
+      }
+
+      if (name === "sid") {
+        return {
+          ...prevState,
+          category: {
+            ...prevState.category,
+            subcategories: {
+              ...prevState.category.subcategories,
+              id: value,
+            },
+          },
+        };
+      }
+
+      return prevState;
+    });
   };
 
   const fileEventChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -174,7 +207,14 @@ const ProductForm: React.FC<Props> = ({ onSubmit, editProduct = initialState, is
               />
             </Grid>
             <Grid size={{ xs: 12 }}>
-                <TiptapEditor content={form.productDescription} onChange={handleDescriptionChange} />
+                {/*<TiptapEditor content={form.productDescription} onChange={handleDescriptionChange} />*/}
+              <QuillEditor
+                value={form.productDescription}
+                onChange={(html) => setForm((prev) => ({
+                  ...prev,
+                  productDescription: html,
+                }))}
+              />
             </Grid>
             {brands.length === 0 ? <Typography>Брендов пока нет</Typography> : (
               <Grid size={{ xs: 12 }}>
@@ -223,12 +263,12 @@ const ProductForm: React.FC<Props> = ({ onSubmit, editProduct = initialState, is
                   },
                 }}
               >
-                <InputLabel id="category">Категория</InputLabel>
+                <InputLabel id="id">Категория</InputLabel>
                 <Select
-                  labelId="categoryId"
-                  id="categoryId"
-                  value={form.categoryId}
-                  name="categoryId"
+                  labelId="id"
+                  id="id"
+                  value={form.category.id}
+                  name="id"
                   label="Категория"
                   onChange={selectChangeHandler}
                 >
@@ -244,6 +284,40 @@ const ProductForm: React.FC<Props> = ({ onSubmit, editProduct = initialState, is
               </FormControl>
             </Grid>
           )}
+            {selectedCategory && selectedCategory?.subcategories?.length > 0 && (
+              <Grid size={{xs:12}}>
+                <FormControl
+                  fullWidth
+                  sx={{
+                  "& label.Mui-focused": { color: orange[500] },
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": { borderColor: "#ccc" },
+                    "&:hover fieldset": { borderColor: orange[500] },
+                    "&.Mui-focused fieldset": { borderColor: orange[500] },
+                  },
+                }}>
+                  <InputLabel id="sid">Подкатегория</InputLabel>
+                  <Select
+                    labelId="sid"
+                    id="sid"
+                    value={String(form.category.subcategories.id)}
+                    name="sid"
+                    label="Подкатегория"
+                    onChange={selectChangeHandler}
+                  >
+                    <MenuItem value="" disabled>Выберите подкатегорию</MenuItem>
+                    {categories
+                      .find((cat) => cat.id === Number(form.category.id))
+                      ?.subcategories.map((subcategory) => (
+                        <MenuItem key={subcategory.id} value={subcategory.id}>
+                          {subcategory.title}
+                        </MenuItem>
+                      ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+
+              )}
 
           <Grid size={{ xs: 12 }}>
             <FileInput

@@ -83,6 +83,7 @@ export interface PhotoCarousel{
 export interface ICategories {
   id: number;
   title: string;
+  subcategories: [{id: number; title: string, parentId: number}];
 }
 
 export interface CategoryMutation {
@@ -97,7 +98,7 @@ export interface ProductRequest {
   existence: boolean;
   sales: boolean;
   brandId: string;
-  categoryId: string;
+  category: {id: string, parentId: string, subcategories: {id: string, title: string, parentId: number }};
   id?: number;
 }
 

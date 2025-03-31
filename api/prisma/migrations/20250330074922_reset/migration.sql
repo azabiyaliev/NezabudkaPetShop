@@ -21,6 +21,17 @@ CREATE TABLE "users" (
 );
 
 -- CreateTable
+CREATE TABLE "passwordReset" (
+    "id" SERIAL NOT NULL,
+    "userId" INTEGER NOT NULL,
+    "resetCode" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "passwordReset_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "brands" (
     "id" SERIAL NOT NULL,
     "title" TEXT NOT NULL,
@@ -123,20 +134,12 @@ CREATE TABLE "comments" (
 );
 
 -- CreateTable
-<<<<<<<< HEAD:api/prisma/migrations/20250321184637_init/migration.sql
 CREATE TABLE "cart" (
-========
-CREATE TABLE "cards" (
->>>>>>>> origin/dev:api/prisma/migrations/20250321083931_init/migration.sql
     "id" SERIAL NOT NULL,
     "product_id" INTEGER NOT NULL,
     "quantity" INTEGER NOT NULL,
 
-<<<<<<<< HEAD:api/prisma/migrations/20250321184637_init/migration.sql
     CONSTRAINT "cart_pkey" PRIMARY KEY ("id")
-========
-    CONSTRAINT "cards_pkey" PRIMARY KEY ("id")
->>>>>>>> origin/dev:api/prisma/migrations/20250321083931_init/migration.sql
 );
 
 -- CreateIndex
@@ -156,6 +159,9 @@ CREATE UNIQUE INDEX "brands_title_key" ON "brands"("title");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "categories_title_key" ON "categories"("title");
+
+-- AddForeignKey
+ALTER TABLE "passwordReset" ADD CONSTRAINT "passwordReset_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "photo_by_carousel" ADD CONSTRAINT "photo_by_carousel_site_edition_id_fkey" FOREIGN KEY ("site_edition_id") REFERENCES "editionSite"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -191,8 +197,4 @@ ALTER TABLE "comments" ADD CONSTRAINT "comments_userId_fkey" FOREIGN KEY ("userI
 ALTER TABLE "comments" ADD CONSTRAINT "comments_reviewId_fkey" FOREIGN KEY ("reviewId") REFERENCES "reviews"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-<<<<<<<< HEAD:api/prisma/migrations/20250321184637_init/migration.sql
 ALTER TABLE "cart" ADD CONSTRAINT "cart_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "products"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-========
-ALTER TABLE "cards" ADD CONSTRAINT "cards_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "products"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
->>>>>>>> origin/dev:api/prisma/migrations/20250321083931_init/migration.sql

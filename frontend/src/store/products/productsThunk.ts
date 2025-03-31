@@ -23,6 +23,9 @@ export const addProduct = createAsyncThunk<
         }
       }
     });
+    for (const [key, value] of formData.entries()) {
+      console.log(key, value);
+    }
     await axiosApi.post("products/create", formData, {
       headers: { Authorization: token },
     });

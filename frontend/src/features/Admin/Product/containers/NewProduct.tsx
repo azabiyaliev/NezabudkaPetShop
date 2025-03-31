@@ -20,6 +20,7 @@ const NewProduct = () => {
     try {
       if (user && user.role === "admin") {
         await dispatch(addProduct({ product, token: user.token })).unwrap();
+        console.log(product);
         toast.success("Товар успешно добавлен!");
         navigate("/private/products");
       }
