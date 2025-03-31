@@ -1,5 +1,5 @@
 import { ProductResponse } from "../../../../types";
-import React from 'react';
+import React from "react";
 import ClearIcon from "@mui/icons-material/Clear";
 import EditIcon from "@mui/icons-material/Edit";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
@@ -10,10 +10,13 @@ import { apiUrl } from "../../../../globalConstants.ts";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { useNavigate } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from '../../../../app/hooks.ts';
+import { useAppDispatch, useAppSelector } from "../../../../app/hooks.ts";
 import { selectUser } from "../../../../store/users/usersSlice.ts";
-import { deleteProduct, getProducts } from '../../../../store/products/productsThunk.ts';
-import { toast } from 'react-toastify';
+import {
+  deleteProduct,
+  getProducts,
+} from "../../../../store/products/productsThunk.ts";
+import { toast } from "react-toastify";
 
 interface Props {
   products: ProductResponse[];
@@ -118,7 +121,10 @@ const Products: React.FC<Props> = ({ products }) => {
       renderCell: (params) => (
         <>
           <IconButton>
-            <ClearIcon sx={{ color: "red" }} onClick={ () => productDelete(params.row.id) }/>
+            <ClearIcon
+              sx={{ color: "red" }}
+              onClick={() => productDelete(params.row.id)}
+            />
           </IconButton>
 
           <IconButton>

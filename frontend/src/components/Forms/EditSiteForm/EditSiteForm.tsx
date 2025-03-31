@@ -1,16 +1,22 @@
-import { Box, Button, Container } from '@mui/material';
-import Typography from '@mui/material/Typography';
-import TextField from '@mui/material/TextField';
-import { toast, ToastContainer } from 'react-toastify';
-import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
-import { useNavigate } from 'react-router-dom';
-import React, { useEffect, useState } from 'react';
-import { EditSiteMutation } from '../../../types';
-import { fetchSite, updateSite } from '../../../store/editionSite/editionSiteThunk.ts';
-import { selectEditSite, selectError } from '../../../store/editionSite/editionSiteSlice.ts';
-import FileInput from '../../UI/FileInput/FileInput.tsx';
-import ClearIcon from '@mui/icons-material/Clear';
-import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
+import { Box, Button, Container } from "@mui/material";
+import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
+import { toast, ToastContainer } from "react-toastify";
+import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
+import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { EditSiteMutation } from "../../../types";
+import {
+  fetchSite,
+  updateSite,
+} from "../../../store/editionSite/editionSiteThunk.ts";
+import {
+  selectEditSite,
+  selectError,
+} from "../../../store/editionSite/editionSiteSlice.ts";
+import FileInput from "../../UI/FileInput/FileInput.tsx";
+import ClearIcon from "@mui/icons-material/Clear";
+import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 
 const initialState = {
   instagram: "",
@@ -19,8 +25,8 @@ const initialState = {
   address: "",
   email: "",
   phone: "",
-  PhotoByCarousel: []
-}
+  PhotoByCarousel: [],
+};
 
 const EditSiteForm = () => {
   const dispatch = useAppDispatch();
@@ -30,17 +36,20 @@ const EditSiteForm = () => {
   const editError = useAppSelector(selectError);
 
   useEffect(() => {
-    dispatch(fetchSite()).unwrap().then((siteEdit) => setForm({
-      instagram: siteEdit.instagram || "",
-      whatsapp: siteEdit.whatsapp || "",
-      schedule: siteEdit.schedule || "",
-      address: siteEdit.address || "",
-      email: siteEdit.email || "",
-      phone: siteEdit.phone || "",
-      PhotoByCarousel: siteEdit.PhotoByCarousel || [],
-    }));
-  }, [dispatch])
-
+    dispatch(fetchSite())
+      .unwrap()
+      .then((siteEdit) =>
+        setForm({
+          instagram: siteEdit.instagram || "",
+          whatsapp: siteEdit.whatsapp || "",
+          schedule: siteEdit.schedule || "",
+          address: siteEdit.address || "",
+          email: siteEdit.email || "",
+          phone: siteEdit.phone || "",
+          PhotoByCarousel: siteEdit.PhotoByCarousel || [],
+        }),
+      );
+  }, [dispatch]);
 
   const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -68,7 +77,6 @@ const EditSiteForm = () => {
     }
   };
 
-
   const getFieldError = (fieldName: string) => {
     if (!editError?.errors) return undefined;
     return editError.errors[fieldName] || editError.errors.general || undefined;
@@ -91,7 +99,17 @@ const EditSiteForm = () => {
     }
 
     try {
-      await dispatch(updateSite({ id: site.id, site: { ...form, PhotoByCarousel: form.PhotoByCarousel.filter(photo => photo.photo) } })).unwrap();
+      await dispatch(
+        updateSite({
+          id: site.id,
+          site: {
+            ...form,
+            PhotoByCarousel: form.PhotoByCarousel.filter(
+              (photo) => photo.photo,
+            ),
+          },
+        }),
+      ).unwrap();
       toast.success("Вы успешно отредактировали сайт!", {
         position: "top-right",
         autoClose: 5000,
@@ -110,7 +128,7 @@ const EditSiteForm = () => {
   const addPhotoField = () => {
     setForm((prevState: EditSiteMutation) => ({
       ...prevState,
-      PhotoByCarousel : [...prevState.PhotoByCarousel, { photo: null }],
+      PhotoByCarousel: [...prevState.PhotoByCarousel, { photo: null }],
     }));
   };
   const deletePhoto = (index: number) => {
@@ -140,7 +158,7 @@ const EditSiteForm = () => {
             noValidate
             onSubmit={submitHandler}
             sx={{ mt: 3 }}
-            width='100%'
+            width="100%"
           >
             <div className="row">
               <div className="col-md-6">
@@ -158,7 +176,7 @@ const EditSiteForm = () => {
                   sx={{
                     backgroundColor: "white",
                     borderRadius: "7px",
-                    mb: 3
+                    mb: 3,
                   }}
                 />
               </div>
@@ -198,7 +216,7 @@ const EditSiteForm = () => {
                   sx={{
                     backgroundColor: "white",
                     borderRadius: "7px",
-                    mt:3
+                    mt: 3,
                   }}
                 />
               </div>
@@ -269,7 +287,14 @@ const EditSiteForm = () => {
             <div className="row">
               <div className="col-7">
                 {form.PhotoByCarousel.map((photo, index) => (
-                  <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
+                  <div
+                    key={index}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      marginBottom: "16px",
+                    }}
+                  >
                     <Box sx={{ flex: 1 }}>
                       <FileInput
                         id="PhotoByCarousel"
@@ -284,12 +309,12 @@ const EditSiteForm = () => {
                       color="error"
                       onClick={() => deletePhoto(index)}
                       sx={{
-                        marginTop: '-16px',
-                        padding: '8px',
-                        height: '100%',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
+                        marginTop: "-16px",
+                        padding: "8px",
+                        height: "100%",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
                       }}
                     >
                       <ClearIcon />
@@ -305,11 +330,10 @@ const EditSiteForm = () => {
                     padding: "10px 20px",
                   }}
                 >
-                  <AddOutlinedIcon/>
+                  <AddOutlinedIcon />
                 </Button>
               </div>
             </div>
-
 
             <Button
               type="submit"

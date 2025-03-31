@@ -1,5 +1,10 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { GlobalError, ProductRequest, SubcategoryWithBrand, ProductResponse } from '../../types';
+import {
+  GlobalError,
+  ProductRequest,
+  SubcategoryWithBrand,
+  ProductResponse,
+} from "../../types";
 import { isAxiosError } from "axios";
 import axiosApi from "../../axiosApi.ts";
 
@@ -18,7 +23,7 @@ export const addProduct = createAsyncThunk<
       if (value !== undefined) {
         if (value instanceof File) {
           formData.append(key, value, value.name);
-        }  else {
+        } else {
           formData.append(key, String(value));
         }
       }
@@ -86,11 +91,17 @@ export const deleteProduct = createAsyncThunk<
     token: string;
   }
 >("products/deleteProduct", async ({ productId, token }) => {
-  await axiosApi.delete(`products/${productId}`, {headers: {Authorization: token}});
+  await axiosApi.delete(`products/${productId}`, {
+    headers: { Authorization: token },
+  });
 });
 
-export const getAllProductsByCategory = createAsyncThunk<SubcategoryWithBrand[], number>('product/getAllProductsByCategory',
-  async (id: number) => {
-  const response = await axiosApi<SubcategoryWithBrand[]>(`products/categoryID/${id}`);
+export const getAllProductsByCategory = createAsyncThunk<
+  SubcategoryWithBrand[],
+  number
+>("product/getAllProductsByCategory", async (id: number) => {
+  const response = await axiosApi<SubcategoryWithBrand[]>(
+    `products/categoryID/${id}`,
+  );
   return response.data || [];
 });

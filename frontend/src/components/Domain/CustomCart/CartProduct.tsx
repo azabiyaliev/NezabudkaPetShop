@@ -11,7 +11,7 @@ import { deleteProduct } from '../../../store/cart/cartSlice.ts';
 interface Props {
   productCart: ICart;
 }
-const CartProduct:React.FC<Props> = ({productCart}) => {
+const CartProduct: React.FC<Props> = ({ productCart }) => {
   const dispatch = useAppDispatch();
 
   const deleteProductFromCart = (id: number) => {

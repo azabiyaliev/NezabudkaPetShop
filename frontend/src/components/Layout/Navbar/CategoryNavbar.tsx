@@ -10,14 +10,16 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import { NavLink } from "react-router-dom";
 import { getAllProductsByCategory } from "../../../store/products/productsThunk.ts";
-import { SubcategoryWithBrand } from '../../../types';
+import { SubcategoryWithBrand } from "../../../types";
 import "./NavBar.css";
 
 const CategoryNavbar = () => {
   const categories = useAppSelector(selectCategories);
   const dispatch = useAppDispatch();
   const [openCategory, setOpenCategory] = useState<number | null>(null);
-  const [products, setProducts] = useState<Record<number, SubcategoryWithBrand[]>>({});
+  const [products, setProducts] = useState<
+    Record<number, SubcategoryWithBrand[]>
+  >({});
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -59,7 +61,7 @@ const CategoryNavbar = () => {
         background:
           "linear-gradient(90deg, rgba(250, 134, 1, 1) 0%, rgba(250, 179, 1, 1) 28%, rgba(250, 143, 1, 1) 100%)",
         width: "100vw",
-        boxShadow: 'none',
+        boxShadow: "none",
       }}
     >
       <Box
@@ -75,7 +77,6 @@ const CategoryNavbar = () => {
               key={category.id}
               component="div"
               disablePadding
-
               onMouseEnter={() => showMenu(category.id, category.title)}
               onMouseLeave={hideMenu}
             >
@@ -104,7 +105,11 @@ const CategoryNavbar = () => {
                       <h2 className="subcategory-title">{subcategory.title}</h2>
 
                       {subcategory.brands.map((brand) => (
-                        <NavLink key={brand.id} to={`/brand/${brand.id}`} className="brand-link">
+                        <NavLink
+                          key={brand.id}
+                          to={`/brand/${brand.id}`}
+                          className="brand-link"
+                        >
                           {brand.title}
                         </NavLink>
                       ))}
@@ -112,7 +117,6 @@ const CategoryNavbar = () => {
                   ))}
                 </Box>
               )}
-
             </ListItem>
           ))}
         </Toolbar>

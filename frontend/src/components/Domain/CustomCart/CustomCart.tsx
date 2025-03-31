@@ -23,30 +23,33 @@ const CustomCart:React.FC<Props> = ({openCart, closeCart}) => {
 
   const backToShop = () => {
     closeCart();
-    navigate('/all-products');
-  }
+    navigate("/all-products");
+  };
 
   const makeOrder = () => {
     closeCart();
     navigate('/my_cart');
   };
 
-  const checkProductInCart: {price: number, amount: number}[] = cart.map((product) => {
-    if (product.product) {
-      return {price: product.product.productPrice, amount: product.quantity};
-    } else {
-      return { price: 0, amount: 0 };
-    }
-  });
+  const checkProductInCart: { price: number; amount: number }[] = cart.map(
+    (product) => {
+      if (product.product) {
+        return {
+          price: product.product.productPrice,
+          amount: product.quantity,
+        };
+      } else {
+        return { price: 0, amount: 0 };
+      }
+    },
+  );
 
-  const sum: number = checkProductInCart.reduce((acc: number, item: { price: number, amount: number }) => {
-    return acc + (item.price * item.amount);
-  }, 0);
-
-  const amount: number = checkProductInCart.reduce((acc: number, item: { price: number, amount: number }) => {
-    acc = acc + item.amount;
-    return acc;
-  }, 0);
+  const sum: number = checkProductInCart.reduce(
+    (acc: number, item: { price: number; amount: number }) => {
+      return acc + item.price * item.amount;
+    },
+    0,
+  );
 
   return (
     <React.Fragment>
@@ -59,22 +62,22 @@ const CustomCart:React.FC<Props> = ({openCart, closeCart}) => {
         slotProps={{
           content: {
             sx: {
-              bgcolor: 'transparent',
+              bgcolor: "transparent",
               p: { md: 3, sm: 0 },
-              boxShadow: 'none',
+              boxShadow: "none",
             },
           },
         }}
       >
         <Sheet
           sx={{
-            borderRadius: 'md',
+            borderRadius: "md",
             p: 2,
-            display: 'flex',
-            flexDirection: 'column',
+            display: "flex",
+            flexDirection: "column",
             gap: 2,
-            height: '100%',
-            overflow: 'auto',
+            height: "100%",
+            overflow: "auto",
           }}
         >
           {cart.length > 0 ?  <DialogTitle sx={{fontFamily: 'Nunito, sans-serif', fontWeight: 600}}>В корзине <b>{amount}</b>
@@ -128,11 +131,13 @@ const CustomCart:React.FC<Props> = ({openCart, closeCart}) => {
               <Divider sx={{mt: 'auto'}}/>
               <Typography level="h2" sx={{fontFamily: 'Nunito, sans-serif', fontSize: 'xl', mb: 0.5, display: 'flex', justifyContent: 'space-between' }}>
                 Подытог:
-                <span style={{
-                  color: 'rgba(250, 179, 1, 1)',
-                  marginLeft: 'auto',
-                  fontWeight: 'bold',
-                }}>
+                <span
+                  style={{
+                    color: "rgba(250, 179, 1, 1)",
+                    marginLeft: "auto",
+                    fontWeight: "bold",
+                  }}
+                >
                   {sum.toLocaleString()} сом
                 </span>
               </Typography>

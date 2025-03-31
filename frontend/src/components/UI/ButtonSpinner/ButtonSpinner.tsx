@@ -1,4 +1,4 @@
-import './ButtonSpinner.css';
+import "./ButtonSpinner.css";
 
 const ButtonSpinner = () => {
   return (
