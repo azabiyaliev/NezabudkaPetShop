@@ -1,7 +1,13 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { ICart } from '../../types';
-import { addCart, cartDelete, editCart, emptyingTrash, getCart } from './cartThunk.ts';
-import { RootState } from '../../app/store.ts';
+import { createSlice } from "@reduxjs/toolkit";
+import { ICart } from "../../types";
+import {
+  addCart,
+  cartDelete,
+  editCart,
+  emptyingTrash,
+  getCart,
+} from "./cartThunk.ts";
+import { RootState } from "../../app/store.ts";
 
 interface CartSliceInterface {
   carts: ICart[];
@@ -14,7 +20,7 @@ interface CartSliceInterface {
   error: boolean;
 }
 
-const initialState:CartSliceInterface = {
+const initialState: CartSliceInterface = {
   carts: [],
   loadings: {
     addLoading: false,
@@ -23,12 +29,12 @@ const initialState:CartSliceInterface = {
     updateLoading: false,
   },
   error: false,
-}
+};
 
 export const cartsFromSlice = (state: RootState) => state.carts.carts;
 
 const cartSlice = createSlice({
-  name: 'cart',
+  name: "cart",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -49,7 +55,7 @@ const cartSlice = createSlice({
         state.loadings.getLoading = true;
         state.error = false;
       })
-      .addCase(getCart.fulfilled, (state, {payload: carts}) => {
+      .addCase(getCart.fulfilled, (state, { payload: carts }) => {
         state.loadings.getLoading = false;
         state.error = false;
         state.carts = carts;
@@ -86,7 +92,7 @@ const cartSlice = createSlice({
         state.loadings.deleteLoading = true;
         state.error = false;
       })
-      .addCase(emptyingTrash.fulfilled, (state, {payload: carts}) => {
+      .addCase(emptyingTrash.fulfilled, (state, { payload: carts }) => {
         state.loadings.deleteLoading = false;
         state.error = false;
         state.carts = carts || [];
@@ -95,7 +101,7 @@ const cartSlice = createSlice({
         state.loadings.deleteLoading = false;
         state.error = true;
       });
-  }
+  },
 });
 
 export const cartReducer = cartSlice.reducer;

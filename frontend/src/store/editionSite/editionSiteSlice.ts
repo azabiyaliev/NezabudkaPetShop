@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store.ts";
-import { EditSite, ValidationError } from '../../types';
-import { fetchSite, updateSite } from './editionSiteThunk.ts';
+import { EditSite, ValidationError } from "../../types";
+import { fetchSite, updateSite } from "./editionSiteThunk.ts";
 
 interface EditSiteState {
   editSite: EditSite | null;
@@ -34,9 +34,9 @@ export const editSiteSlice = createSlice({
         state.editLoading = false;
         state.editError = null;
       })
-      .addCase(updateSite.rejected, (state, action, ) => {
+      .addCase(updateSite.rejected, (state, action) => {
         state.editLoading = false;
-        state.editError =  action.payload || null;
+        state.editError = action.payload || null;
       })
       .addCase(fetchSite.pending, (state) => {
         state.editLoading = true;
@@ -45,7 +45,7 @@ export const editSiteSlice = createSlice({
         state.isLoading = false;
         state.editSite = action.payload;
       })
-      .addCase(fetchSite.rejected, (state, ) => {
+      .addCase(fetchSite.rejected, (state) => {
         state.isLoading = false;
       });
   },

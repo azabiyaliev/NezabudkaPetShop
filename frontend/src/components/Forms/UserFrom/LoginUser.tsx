@@ -1,27 +1,25 @@
 import React, { useState } from "react";
-import {
-  Avatar,
-  Box,
-  Button,
-  Container,
-  Divider,
-} from "@mui/material";
+import { Avatar, Box, Button, Container, Divider } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid2";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
 import Typography from "@mui/material/Typography";
-import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
+import { NavLink, useNavigate } from "react-router-dom";
 import { LogInMutation } from "../../../types";
-import { facebookLogin, googleLogin, login } from '../../../store/users/usersThunk.ts';
+import {
+  facebookLogin,
+  googleLogin,
+  login,
+} from "../../../store/users/usersThunk.ts";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { GoogleLogin } from '@react-oauth/google';
-import FacebookLogin from '@greatsumini/react-facebook-login';
+import { GoogleLogin } from "@react-oauth/google";
+import FacebookLogin from "@greatsumini/react-facebook-login";
 import FacebookIcon from "@mui/icons-material/Facebook";
-import { selectLoginError } from '../../../store/users/usersSlice.ts';
-import { regEmail } from './RegisterUser.tsx';
-import ModalWindow from '../../UI/ModalWindow/ModalWindowEmail.tsx';
+import { selectLoginError } from "../../../store/users/usersSlice.ts";
+import { regEmail } from "./RegisterUser.tsx";
+import ModalWindow from "../../UI/ModalWindow/ModalWindowEmail.tsx";
 
 const LoginUser = () => {
   const dispatch = useAppDispatch();
@@ -34,7 +32,6 @@ const LoginUser = () => {
   });
 
   const [emailError, setEmailError] = useState("");
-
 
   const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -55,7 +52,7 @@ const LoginUser = () => {
     e.preventDefault();
     try {
       await dispatch(login(form)).unwrap();
-      navigate('/')
+      navigate("/");
     } catch (error) {
       toast.error((error as { error: string }).error, {
         position: "top-right",
@@ -75,17 +72,19 @@ const LoginUser = () => {
   };
 
   const facebookLoginHandler = async (accessToken: string) => {
-    await dispatch(facebookLogin({accessToken})).unwrap();
-    navigate('/');
+    await dispatch(facebookLogin({ accessToken })).unwrap();
+    navigate("/");
   };
 
   const getFieldError = (fieldName: string) => {
     if (!registerError?.errors) return undefined;
 
-    return registerError.errors[fieldName] || registerError.errors.general || undefined;
+    return (
+      registerError.errors[fieldName] ||
+      registerError.errors.general ||
+      undefined
+    );
   };
-
-
 
   return (
     <div>
@@ -174,35 +173,51 @@ const LoginUser = () => {
               spacing={2}
             >
               <Grid>
-                <Typography variant="body2" color="textSecondary" align="center">
+                <Typography
+                  variant="body2"
+                  color="textSecondary"
+                  align="center"
+                >
                   У вас нет аккаунта?
                 </Typography>
-                <NavLink to="/register" style={{ textDecoration: 'none' }}>
-                  <Button variant="text" style={{ color: 'black' }}>
+                <NavLink to="/register" style={{ textDecoration: "none" }}>
+                  <Button variant="text" style={{ color: "black" }}>
                     Зарегистрироваться
                   </Button>
                 </NavLink>
               </Grid>
 
               <Grid>
-                <Typography variant="body2" color="textSecondary" align="center">
+                <Typography
+                  variant="body2"
+                  color="textSecondary"
+                  align="center"
+                >
                   Забыли пароль?
                 </Typography>
-                <Button variant="text" style={{ color: 'black' }} onClick={handleClickOpen}>
+                <Button
+                  variant="text"
+                  style={{ color: "black" }}
+                  onClick={handleClickOpen}
+                >
                   Восстановить пароль
                 </Button>
               </Grid>
             </Grid>
           </Box>
-          <Box sx={{ width: '100%', textAlign: 'center', mt: 2 }}>
-            <Divider sx={{ mb: 2, textTransform: "uppercase" }}>или войти с</Divider>
+          <Box sx={{ width: "100%", textAlign: "center", mt: 2 }}>
+            <Divider sx={{ mb: 2, textTransform: "uppercase" }}>
+              или войти с
+            </Divider>
           </Box>
-          <Grid container direction={'column'} size={12} spacing={2} mt={2}>
+          <Grid container direction={"column"} size={12} spacing={2} mt={2}>
             <Grid size={12}>
               <FacebookLogin
                 appId="1011210890854768"
-                onSuccess={response => facebookLoginHandler(response.accessToken)}
-                onFail={() => alert('Facebook Login failed!')}
+                onSuccess={(response) =>
+                  facebookLoginHandler(response.accessToken)
+                }
+                onFail={() => alert("Facebook Login failed!")}
                 render={({ onClick }) => (
                   <Button
                     onClick={onClick}

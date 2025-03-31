@@ -1,22 +1,21 @@
-import { Avatar, Box, Button, Container } from '@mui/material';
-import PersonIcon from '@mui/icons-material/Person';
-import Typography from '@mui/material/Typography';
-import TextField from '@mui/material/TextField';
-import { useNavigate, useParams } from 'react-router-dom';
-import { toast, ToastContainer } from 'react-toastify';
-import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
-import React, { useEffect, useState } from 'react';
-import { AdminRefactor } from '../../../types';
-import { fetchUserById, updateUser } from '../../../store/users/usersThunk.ts';
-import { selectUser } from '../../../store/users/usersSlice.ts';
+import { Avatar, Box, Button, Container } from "@mui/material";
+import PersonIcon from "@mui/icons-material/Person";
+import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
+import React, { useEffect, useState } from "react";
+import { AdminRefactor } from "../../../types";
+import { fetchUserById, updateUser } from "../../../store/users/usersThunk.ts";
+import { selectUser } from "../../../store/users/usersSlice.ts";
 import ModalWindowPasswordChange from "../../UI/ModalWindow/ModalWindowPasswordChange.tsx";
-import LockResetIcon from '@mui/icons-material/LockReset';
-
+import LockResetIcon from "@mui/icons-material/LockReset";
 
 const initialState = {
-  firstName: '',
-  secondName: '',
-  email: '',
+  firstName: "",
+  secondName: "",
+  email: "",
 };
 
 const UserFormEdition = () => {
@@ -29,17 +28,19 @@ const UserFormEdition = () => {
 
   useEffect(() => {
     if (!user) {
-      toast.error('Для редактирования данных пользователя необходимо войти в систему.');
-      navigate('/login');
+      toast.error(
+        "Для редактирования данных пользователя необходимо войти в систему.",
+      );
+      navigate("/login");
     }
     if (id) {
       dispatch(fetchUserById(id))
         .unwrap()
         .then((user) =>
           setForm({
-            firstName: user.firstName || '',
-            secondName: user.secondName || '',
-            email: user.email || '',
+            firstName: user.firstName || "",
+            secondName: user.secondName || "",
+            email: user.email || "",
           }),
         );
     }
@@ -54,8 +55,8 @@ const UserFormEdition = () => {
     e.preventDefault();
 
     if (!id) {
-      toast.error('Ваш id неверный!', {
-        position: 'top-right',
+      toast.error("Ваш id неверный!", {
+        position: "top-right",
         autoClose: 5000,
         hideProgressBar: true,
         closeOnClick: true,
@@ -70,8 +71,8 @@ const UserFormEdition = () => {
       await dispatch(updateUser({ id: parseInt(id), data: form })).unwrap();
       await dispatch(fetchUserById(id)).unwrap;
 
-      toast.success('Вы успешно отредактировали профиль!', {
-        position: 'top-right',
+      toast.success("Вы успешно отредактировали профиль!", {
+        position: "top-right",
         autoClose: 5000,
         hideProgressBar: true,
         closeOnClick: true,
@@ -80,14 +81,14 @@ const UserFormEdition = () => {
         progress: undefined,
       });
 
-      if (user && user.role === 'admin') {
+      if (user && user.role === "admin") {
         navigate(`/private/users/${user.id}`);
       } else {
         navigate(`/client/users/${user && user.id}`);
       }
     } catch (error) {
       toast.error((error as { error: string }).error, {
-        position: 'top-right',
+        position: "top-right",
         autoClose: 5000,
         hideProgressBar: true,
         closeOnClick: true,
@@ -104,32 +105,38 @@ const UserFormEdition = () => {
 
   return (
     <div>
-      <Container component="main" maxWidth="lg" sx={{ position: 'relative' }}>
+      <Container component="main" maxWidth="lg" sx={{ position: "relative" }}>
         <Box
           sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
             padding: 4,
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'white' }}>
-            <PersonIcon sx={{ color: 'black' }} />
+          <Avatar sx={{ m: 1, bgcolor: "white" }}>
+            <PersonIcon sx={{ color: "black" }} />
           </Avatar>
 
-          {user && user.role === 'admin' && (
-            <Typography component="h1" variant="h5" sx={{ color: 'black' }}>
+          {user && user.role === "admin" && (
+            <Typography component="h1" variant="h5" sx={{ color: "black" }}>
               Редактировать профиль
             </Typography>
           )}
 
-          {user && user.role === 'client' && (
-            <Typography component="h1" variant="h5" sx={{ color: 'black' }}>
+          {user && user.role === "client" && (
+            <Typography component="h1" variant="h5" sx={{ color: "black" }}>
               Мои данные
             </Typography>
           )}
 
-          <Box component="form" noValidate onSubmit={submitHandler} sx={{ mt: 3 }} width="100%">
+          <Box
+            component="form"
+            noValidate
+            onSubmit={submitHandler}
+            sx={{ mt: 3 }}
+            width="100%"
+          >
             <div className="row">
               <div className="col-md-6">
                 <TextField
@@ -142,8 +149,8 @@ const UserFormEdition = () => {
                   onChange={inputChangeHandler}
                   variant="outlined"
                   sx={{
-                    backgroundColor: 'white',
-                    borderRadius: '7px',
+                    backgroundColor: "white",
+                    borderRadius: "7px",
                     mb: 5,
                   }}
                 />
@@ -159,8 +166,8 @@ const UserFormEdition = () => {
                   onChange={inputChangeHandler}
                   variant="outlined"
                   sx={{
-                    backgroundColor: 'white',
-                    borderRadius: '7px',
+                    backgroundColor: "white",
+                    borderRadius: "7px",
                   }}
                 />
               </div>
@@ -178,37 +185,37 @@ const UserFormEdition = () => {
                   onChange={inputChangeHandler}
                   variant="outlined"
                   sx={{
-                    backgroundColor: 'white',
-                    borderRadius: '7px',
+                    backgroundColor: "white",
+                    borderRadius: "7px",
                   }}
                 />
               </div>
             </div>
 
-            {user && user.role === 'admin' && (
+            {user && user.role === "admin" && (
               <Button
                 type="submit"
                 variant="contained"
                 sx={{
                   mt: 3,
                   mb: 2,
-                  backgroundColor: '#FFEB3B',
-                  color: 'black',
+                  backgroundColor: "#FFEB3B",
+                  color: "black",
                 }}
               >
                 Cохранить изменения
               </Button>
             )}
 
-            {user && user.role === 'client' && (
+            {user && user.role === "client" && (
               <Button
                 type="submit"
                 variant="contained"
                 sx={{
                   mt: 3,
                   mb: 2,
-                  backgroundColor: '#FFEB3B',
-                  color: 'black',
+                  backgroundColor: "#FFEB3B",
+                  color: "black",
                 }}
               >
                 Изменить данные
@@ -220,17 +227,17 @@ const UserFormEdition = () => {
             type="button"
             variant="contained"
             sx={{
-              position: 'absolute',
+              position: "absolute",
               top: 16,
               right: 16,
-              backgroundColor: 'rgb(255, 247, 204)',
-              color: 'black',
-              marginTop:'20px',
-              marginRight:'40px'
+              backgroundColor: "rgb(255, 247, 204)",
+              color: "black",
+              marginTop: "20px",
+              marginRight: "40px",
             }}
             onClick={handlePasswordChangeOpen}
           >
-            <LockResetIcon style={{paddingRight: '8px'}}/>
+            <LockResetIcon style={{ paddingRight: "8px" }} />
             Сменить пароль
           </Button>
         </Box>

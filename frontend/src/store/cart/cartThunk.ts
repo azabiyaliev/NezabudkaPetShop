@@ -1,38 +1,40 @@
-import {createAsyncThunk} from "@reduxjs/toolkit";
-import {ICart, ICartMutation} from "../../types";
+import { createAsyncThunk } from "@reduxjs/toolkit";
+import { ICart, ICartMutation } from "../../types";
 import axiosApi from "../../axiosApi.ts";
 
 export const addCart = createAsyncThunk<void, ICartMutation>(
-  'cart/addCart',
+  "cart/addCart",
   async (cart) => {
-    await axiosApi.post('/cart', cart);
-  }
+    await axiosApi.post("/cart", cart);
+  },
 );
 
 export const editCart = createAsyncThunk<void, ICart>(
-  'cart/editCart',
-   async (cart) => {
-      await axiosApi.put(`/cart/${cart.id}`, cart);
-   }
+  "cart/editCart",
+  async (cart) => {
+    await axiosApi.put(`/cart/${cart.id}`, cart);
+  },
 );
 
 export const getCart = createAsyncThunk<ICart[], void>(
-  'cart/getCart',
+  "cart/getCart",
   async () => {
-    const response = await axiosApi('/cart');
+    const response = await axiosApi("/cart");
     return response.data;
-  }
+  },
 );
 
 export const cartDelete = createAsyncThunk<void, number>(
-  'cart/cartDelete',
+  "cart/cartDelete",
   async (id) => {
     await axiosApi.delete(`/cart/${id}`);
-});
+  },
+);
 
 export const emptyingTrash = createAsyncThunk<[], void>(
-  'cart/emptyingTrash',
+  "cart/emptyingTrash",
   async () => {
-    await axiosApi.delete('/cart');
+    await axiosApi.delete("/cart");
     return [];
-  });
+  },
+);

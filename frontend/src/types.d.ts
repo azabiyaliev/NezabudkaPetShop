@@ -62,7 +62,7 @@ export interface EditSiteMutation {
   address: string;
   email: string;
   phone: string;
-  PhotoByCarousel: PhotoCarousel []
+  PhotoByCarousel: PhotoCarousel[];
 }
 
 export interface EditSite {
@@ -72,11 +72,11 @@ export interface EditSite {
   schedule: string;
   address: string;
   email: string;
-  phone: string
-  PhotoByCarousel: PhotoCarousel []
+  phone: string;
+  PhotoByCarousel: PhotoCarousel[];
 }
 
-export interface PhotoCarousel{
+export interface PhotoCarousel {
   photo: File | null;
 }
 
@@ -105,7 +105,7 @@ export interface ICart {
   id: number;
   productId: number;
   quantity: number;
-  product: ProductResponse,
+  product: ProductResponse;
 }
 
 export interface ICartMutation {
@@ -166,4 +166,3 @@ export interface ProductResponse {
   brand: IBrand;
   category: ICategories;
 }
-

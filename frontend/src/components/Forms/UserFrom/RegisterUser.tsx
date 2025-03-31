@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from "react-router-dom";
 import Grid from "@mui/material/Grid2";
 import { RegisterMutation } from "../../../types";
 import { selectUserError } from "../../../store/users/usersSlice.ts";
@@ -26,7 +26,7 @@ const initialState = {
   email: "",
   password: "",
   phone: "",
-}
+};
 const RegisterUser = () => {
   const dispatch = useAppDispatch();
   const registerError = useAppSelector(selectUserError);
@@ -45,7 +45,9 @@ const RegisterUser = () => {
       if (value.trim() === "") {
         setPhoneError("");
       } else {
-        setPhoneError(regPhone.test(value) ? "" : "Неправильный формат телефона");
+        setPhoneError(
+          regPhone.test(value) ? "" : "Неправильный формат телефона",
+        );
       }
     }
     if (name === "email") {
@@ -57,9 +59,9 @@ const RegisterUser = () => {
     e.preventDefault();
     try {
       await dispatch(register(form)).unwrap();
-      setForm(initialState)
+      setForm(initialState);
       toast.success("Регистрация успешна!", { position: "top-right" });
-      navigate('/')
+      navigate("/");
     } catch (error) {
       console.log(error);
     }
@@ -85,8 +87,6 @@ const RegisterUser = () => {
 
     return undefined;
   };
-
-
 
   return (
     <div>
