@@ -21,7 +21,7 @@ const CartPage = () => {
           </Typography>
           <Box sx={{
             display: 'flex',
-            justifyContent: 'space-between',
+            justifyContent: 'space-around',
             flexWrap: 'wrap',
           }}>
             <Box>

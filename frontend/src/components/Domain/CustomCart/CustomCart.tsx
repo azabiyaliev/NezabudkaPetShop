@@ -21,8 +21,6 @@ const CustomCart:React.FC<Props> = ({openCart, closeCart}) => {
   const cart = useAppSelector(cartsFromSlice);
   const navigate = useNavigate();
 
-  console.log(cart);
-
   const backToShop = () => {
     closeCart();
     navigate('/all-products');
