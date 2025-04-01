@@ -1,13 +1,23 @@
-import { Button, Card, CardContent, CardMedia, Typography, } from '@mui/material';
-import React from 'react';
-import { ProductResponse } from '../../../types';
-import { apiUrl } from '../../../globalConstants.ts';
-import '../css/product.css';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import { useNavigate } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
-import { cartsFromSlice, productCardToAdd, setToLocalStorage } from '../../../store/cart/cartSlice.ts';
-import { enqueueSnackbar } from 'notistack';
+import {
+  Button,
+  Card,
+  CardContent,
+  CardMedia,
+  Typography,
+} from "@mui/material";
+import React from "react";
+import { ProductResponse } from "../../../types";
+import { apiUrl } from "../../../globalConstants.ts";
+import "../css/product.css";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import { useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
+import {
+  cartsFromSlice,
+  productCardToAdd,
+  setToLocalStorage,
+} from "../../../store/cart/cartSlice.ts";
+import { enqueueSnackbar } from "notistack";
 
 interface Props {
   product: ProductResponse;
@@ -21,10 +31,14 @@ const OneProductCard: React.FC<Props> = ({ product }) => {
   dispatch(setToLocalStorage(cart));
 
   const addProductToCart = async (product: ProductResponse) => {
-    const existingProduct = cart.find((productCart) => productCart.product.id === product.id);
+    const existingProduct = cart.find(
+      (productCart) => productCart.product.id === product.id,
+    );
 
     if (!existingProduct) {
-      enqueueSnackbar('Данный товар успешно добавлен в корзину!', { variant: 'success' });
+      enqueueSnackbar("Данный товар успешно добавлен в корзину!", {
+        variant: "success",
+      });
     }
     dispatch(productCardToAdd(product));
     dispatch(setToLocalStorage(cart));

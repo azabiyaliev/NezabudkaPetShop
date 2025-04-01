@@ -22,7 +22,10 @@ import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { selectUser } from "../../../store/users/usersSlice.ts";
 import React, { useEffect, useState } from "react";
 import CustomCart from "../../Domain/CustomCart/CustomCart.tsx";
-import { cartsFromSlice } from "../../../store/cart/cartSlice.ts";
+import {
+  cartsFromSlice,
+  getFromLocalStorage,
+} from "../../../store/cart/cartSlice.ts";
 import KeyboardArrowDownOutlinedIcon from "@mui/icons-material/KeyboardArrowDownOutlined";
 
 const MainToolbar = () => {
@@ -44,7 +47,7 @@ const MainToolbar = () => {
 
   useEffect(() => {
     dispatch(getFromLocalStorage());
-  }, [dispatch]);
+  }, [dispatch, user]);
 
   const closeCart = () => {
     setOpenCart(false);
@@ -288,7 +291,7 @@ const MainToolbar = () => {
                             position: "absolute",
                             top: "10px",
                             right: "17px",
-                            backgroundColor: "olive"
+                            backgroundColor: "olive",
                           }}
                         />
                       </Box>
@@ -342,18 +345,19 @@ const MainToolbar = () => {
                         transition: "background 0.3s ease",
                       }}
                     >
-                      <ShoppingCartIcon sx={{ color: "rgb(52, 51, 50)" }} />
                       <Badge
                         badgeContent={sum}
-                        color="warning"
                         overlap="circular"
-                        sx={{
-                          position: "absolute",
-                          top: "10px",
-                          right: "17px",
-                          backgroundColor: "olive"
-                        }}
-                      />
+                        color="warning"
+                      >
+                        <ShoppingCartIcon
+                          sx={{
+                            color: "rgb(52, 51, 50)",
+                            marginRight: "10px",
+                            marginTop: "3px",
+                          }}
+                        />
+                      </Badge>
                     </Box>
 
                     <NavLink
