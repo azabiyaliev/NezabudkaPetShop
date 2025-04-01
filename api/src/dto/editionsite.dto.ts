@@ -1,13 +1,8 @@
-import {
-  IsArray,
-  IsNotEmpty,
-  IsOptional,
-  ValidateNested,
-} from 'class-validator';
-import { Type } from 'class-transformer';
-import { PhotoByCarouselDto } from './photoCarousel.dto';
+import { IsNotEmpty, IsOptional } from 'class-validator';
 
 export class EditionSitedDto {
+  @IsOptional()
+  id!: number;
   @IsNotEmpty({
     message: 'instagram Поле для instagram обязательно к заполнению',
   })
@@ -32,12 +27,8 @@ export class EditionSitedDto {
   @IsNotEmpty({ message: 'phone Поле для телефона обязательно к заполнению' })
   phone!: string;
 
-  @IsOptional()
-  @IsArray({ message: 'Фото для карусели должно быть массивом' })
-  @ValidateNested({
-    each: true,
-    message: 'Каждый элемент фото для карусели должен быть объектом',
+  @IsNotEmpty({
+    message: 'linkAddress Поле для ссылки для адреса обязательно к заполнению',
   })
-  @Type(() => PhotoByCarouselDto)
-  PhotoByCarousel?: PhotoByCarouselDto[];
+  linkAddress!: string;
 }

@@ -13,6 +13,7 @@ export class SeedService {
     await this.prisma.customerCart.deleteMany({});
     await this.prisma.products.deleteMany({});
     await this.prisma.siteEdition.deleteMany({});
+    await this.prisma.photoByCarousel.deleteMany({});
     await this.prisma.brand.deleteMany({});
     await this.prisma.category.deleteMany({});
     await this.prisma.orderItem.deleteMany({});
@@ -44,22 +45,44 @@ export class SeedService {
 
     await this.prisma.siteEdition.create({
       data: {
-        instagram: 'nezabudka.zoo',
-        whatsapp: '+(996)500-430-481',
+        instagram: 'https://www.instagram.com/nezabudka.zoo/',
+        whatsapp: 'https://api.whatsapp.com/send?phone=99655533889',
         schedule: '10:00-20:00',
         address: 'г. Бишкек, Гоголя 127',
         email: 'nezabudka.zoo@gmial.com',
         phone: '+(996)500-430-481',
-        PhotoByCarousel: {
-          create: [
-            { photo: '/fixtures/editionSitePhoto/photo1.jpg' },
-            { photo: '/fixtures/editionSitePhoto/photo2.jpg' },
-            { photo: '/fixtures/editionSitePhoto/photo3.jpg' },
-            { photo: '/fixtures/editionSitePhoto/photo4.jpg' },
-            { photo: '/fixtures/editionSitePhoto/photo5.jpg' },
-          ],
-        },
+        linkAddress: 'https://go.2gis.com/ZA3mL',
       },
+    });
+
+    await this.prisma.photoByCarousel.createMany({
+      data: [
+        {
+          photo: '/fixtures/editionSitePhoto/photo1.jpg',
+          link: 'https://example.com/photo1.jpg',
+          order: 1,
+        },
+        {
+          photo: '/fixtures/editionSitePhoto/photo2.jpg',
+          link: 'https://example.com/photo2.jpg',
+          order: 2,
+        },
+        {
+          photo: '/fixtures/editionSitePhoto/photo2.jpg',
+          link: 'https://example.com/photo3.jpg',
+          order: 3,
+        },
+        {
+          photo: '/fixtures/editionSitePhoto/photo4.jpg',
+          link: 'https://example.com/photo3.jpg',
+          order: 3,
+        },
+        {
+          photo: '/fixtures/editionSitePhoto/photo5.jpg',
+          link: 'https://example.com/photo3.jpg',
+          order: 3,
+        },
+      ],
     });
 
     await this.prisma.brand.createMany({

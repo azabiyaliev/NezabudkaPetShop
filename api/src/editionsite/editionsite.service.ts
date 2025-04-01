@@ -1,122 +1,49 @@
 import {
-  ConflictException,
+  BadRequestException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { EditionSitedDto } from '../dto/editionsite.dto';
+
+const regEmail = /^(\w+[-.]?\w+)@(\w+)([.-]?\w+)?(\.[a-zA-Z]{2,3})$/;
+const regPhone = /^(\+996|0)\s?\d{3}\s?\d{3}\s?\d{3}$/;
 
 @Injectable()
 export class EditionSiteService {
   constructor(private readonly prisma: PrismaService) {}
 
   async getSite() {
-    return this.prisma.siteEdition.findFirst({
-      include: {
-        PhotoByCarousel: true,
-      },
-    });
+    return this.prisma.siteEdition.findFirst();
   }
 
   async createInfoSite(editionDto: EditionSitedDto) {
-    const {
-      instagram,
-      whatsapp,
-      schedule,
-      address,
-      email,
-      phone,
-      PhotoByCarousel,
-    } = editionDto;
-
-    try {
-      const photoData =
-        PhotoByCarousel?.map((photoDto) => ({
-          photo: photoDto.photo,
-        })) || [];
-
-      return await this.prisma.siteEdition.create({
-        data: {
-          instagram,
-          whatsapp,
-          schedule,
-          address,
-          email,
-          phone,
-          PhotoByCarousel: {
-            create: photoData,
-          },
-        },
-        include: {
-          PhotoByCarousel: true,
-        },
-      });
-    } catch (error) {
-      console.error('Ошибка при создании записи в Prisma:', error);
-      if (
-        error instanceof PrismaClientKnownRequestError &&
-        error.code === 'P2002'
-      ) {
-        throw new ConflictException(
-          `${address} уже существует и вы не можете его повторно добавить!`,
-        );
+    if (!regEmail.test(editionDto.email)) {
+      throw new BadRequestException('Неправильный формат для почты');
+    } else if (editionDto.phone) {
+      if (!regPhone.test(editionDto.phone))
+        editionDto.phone = editionDto.phone.replace(/\s/g, '');
+      if (!editionDto.phone.startsWith('+996')) {
+        editionDto.phone = '+996' + editionDto.phone.replace(/^0/, '');
       }
-      throw error;
     }
-  }
-
-  async updateSite(
-    id: string,
-    editionDto: EditionSitedDto,
-    files?: { photo: string }[],
-  ) {
-    const { instagram, whatsapp, schedule, address, email, phone } = editionDto;
-    const editId = parseInt(id);
-
-    const editSite = await this.prisma.siteEdition.findUnique({
-      where: { id: editId },
-      include: { PhotoByCarousel: true },
+    return await this.prisma.siteEdition.create({
+      data: {
+        ...editionDto,
+      },
     });
-
+  }
+  async updateSite(id: number, editionDto: EditionSitedDto) {
+    const editSite = await this.prisma.siteEdition.findUnique({
+      where: { id },
+    });
     if (!editSite) {
       throw new NotFoundException(`Сайт с id = ${id} не найден!`);
     }
 
-    const newPhotoByCarousel = [
-      ...editSite.PhotoByCarousel.map((photo) => ({ photo: photo.photo })),
-      ...(files?.map((file) => ({ photo: file.photo })) || []),
-    ];
-
-    const photosToDelete = editSite.PhotoByCarousel.filter(
-      (oldPhoto) =>
-        !newPhotoByCarousel.some(
-          (newPhoto) => newPhoto.photo === oldPhoto.photo,
-        ),
-    );
-
-    const photosToAdd = newPhotoByCarousel.filter(
-      (newPhoto) =>
-        !editSite.PhotoByCarousel.some(
-          (oldPhoto) => oldPhoto.photo === newPhoto.photo,
-        ),
-    );
-
     return this.prisma.siteEdition.update({
-      where: { id: editId },
-      data: {
-        instagram,
-        whatsapp,
-        schedule,
-        address,
-        email,
-        phone,
-        PhotoByCarousel: {
-          delete: photosToDelete.map((photo) => ({ id: photo.id })),
-          create: photosToAdd.length ? photosToAdd : undefined,
-        },
-      },
-      include: { PhotoByCarousel: true },
+      where: { id },
+      data: { ...editionDto },
     });
   }
 }
