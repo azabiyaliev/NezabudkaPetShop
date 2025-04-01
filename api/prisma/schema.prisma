@@ -15,6 +15,7 @@ datasource db {
 
 model User {
   id            Int             @id @default(autoincrement())
+  isProtected   Boolean         @default(false)
   email         String          @unique
   firstName     String
   secondName    String
@@ -35,6 +36,7 @@ model User {
 enum Role {
   client
   admin
+  superAdmin
 }
 
 model PasswordReset {

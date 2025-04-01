@@ -1,9 +1,11 @@
-import { IsNotEmpty, IsOptional } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsOptional, Matches } from 'class-validator';
+import { Role } from '@prisma/client';
 
-enum Role {
-  client = 'client',
-  admin = 'admin',
-}
+// enum Role {
+//   client = 'client',
+//   admin = 'admin',
+//   superAdmin = 'superAdmin',
+// }
 
 export class RegisterDto {
   @IsNotEmpty({ message: 'firstName Поле для Имени обязательно к заполнению' })
@@ -17,8 +19,14 @@ export class RegisterDto {
   @IsNotEmpty({ message: 'password Поле для Пароля обязательно к заполнению' })
   password!: string;
   @IsOptional()
+  @Matches(/^(\+996|0)\s?\d{3}\s?\d{3}\s?\d{3}$/, {
+    message:
+      'Номер телефона должен быть в формате +996 XXX XXX XXX или 0XXX XXX XXX',
+  })
   phone?: string;
-  role!: Role;
+  @IsOptional()
+  @IsEnum(Role, { message: 'Роль должна быть: client | admin' })
+  role?: Role;
 }
 
 export class LoginDto {
