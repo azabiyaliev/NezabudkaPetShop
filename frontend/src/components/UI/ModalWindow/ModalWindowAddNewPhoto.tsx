@@ -1,12 +1,13 @@
-import { DialogContent, Dialog, DialogTitle, Button } from "@mui/material";
+import { DialogContent, Dialog, DialogTitle, Button, Alert } from '@mui/material';
 import React, { useState } from 'react';
 import { PhotoForm } from '../../../types';
 import TextField from '@mui/material/TextField';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
 import { addNewPhoto, fetchPhoto } from '../../../store/photoCarousel/photoCarouselThunk.ts';
 import FileInput from '../FileInput/FileInput.tsx';
-import { toast, ToastContainer } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import { selectPhotoError } from '../../../store/photoCarousel/photoCarouselSlice.ts';
+import { enqueueSnackbar } from 'notistack';
 
 interface Props {
   open: boolean;
@@ -26,7 +27,7 @@ const ModalWindowAddNewPhoto: React.FC<Props> = ({open, onClose}) => {
     e.preventDefault();
     try {
       await dispatch(addNewPhoto(newPhoto)).unwrap();
-      toast.success("Вы успешно добавили новое фото в карусель;)");
+      enqueueSnackbar('Вы успешно добавили новое фото в карусель;)', { variant: 'success' });
       setNewPhoto({ ...initialState });
       onClose();
       await dispatch(fetchPhoto()).unwrap();
@@ -56,23 +57,17 @@ const ModalWindowAddNewPhoto: React.FC<Props> = ({open, onClose}) => {
       }));
     }
   };
-
-  const getFieldError = (fieldName: string) => {
-    if (!errorPhoto?.errors) return undefined;
-
-    return (
-      errorPhoto.errors[fieldName] ||
-      errorPhoto.errors.general ||
-      undefined
-    );
-  };
-
   return (
     <div>
       <Dialog open={open}>
         <DialogContent>
             <DialogTitle>Добавить новую фотографию</DialogTitle>
           <hr/>
+          {errorPhoto && (
+            <Alert severity="error" sx={{ width: "100%" }}>
+              {errorPhoto.message}
+            </Alert>
+          )}
           <form onSubmit={onFormSubmit} className="space-y-4" style={{ marginTop: '40px' }}>
             <div>
               <FileInput
@@ -81,8 +76,6 @@ const ModalWindowAddNewPhoto: React.FC<Props> = ({open, onClose}) => {
                 label="Фото для карусели"
                 onGetFile={onFileChange}
                 file={newPhoto.photo}
-                error={!!getFieldError("photo")}
-                helperText={getFieldError("photo")}
               />
             </div>
             <div>
@@ -93,8 +86,6 @@ const ModalWindowAddNewPhoto: React.FC<Props> = ({open, onClose}) => {
                 variant="outlined"
                 value={newPhoto.link}
                 onChange={onInputChange}
-                error={Boolean(getFieldError("link"))}
-                helperText={getFieldError("link")}
                 sx={{
                   mb: 3,
                   width: '95%',
@@ -117,23 +108,6 @@ const ModalWindowAddNewPhoto: React.FC<Props> = ({open, onClose}) => {
                   },
                   "& .MuiInputLabel-root.Mui-focused": {
                     color: "green",
-                  },
-                  "& .MuiOutlinedInput-root.Mui-error": {
-                    backgroundColor: "#FFECEC",
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#FF0000",
-                    },
-                  },
-                  "& .MuiInputLabel-root.Mui-error": {
-                    color: "#FF0000",
-                  },
-                  "& .MuiFormHelperText-root": {
-                    minHeight: "20px",
-                  },
-                  "& .MuiFormHelperText-root.Mui-error": {
-                    color: "#FF0000",
-                    fontSize: "12px",
-                    fontWeight: 500,
                   },
                 }}
               />

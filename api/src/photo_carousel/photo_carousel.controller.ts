@@ -3,13 +3,11 @@ import {
   Controller,
   Delete,
   Get,
-  NotFoundException,
   Param,
   Patch,
   Post,
   Put,
   UploadedFile,
-  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { PhotoByCarouselDto } from '../dto/photoCarousel.dto';
@@ -18,10 +16,6 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import * as crypto from 'crypto';
-import { TokenAuthGuard } from '../token.auth/token-auth.guard';
-import { RolesGuard } from '../token.auth/token.role.guard';
-import { Roles } from '../roles/roles.decorator';
-import { BrandDto } from '../dto/brands.dto';
 
 @Controller('photos')
 export class PhotoCarouselController {

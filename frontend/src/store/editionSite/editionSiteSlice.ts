@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store.ts";
-import { EditSite, ValidationError } from "../../types";
+import { EditSite, ValidationError } from '../../types';
 import { fetchSite, updateSite } from "./editionSiteThunk.ts";
 
 interface EditSiteState {

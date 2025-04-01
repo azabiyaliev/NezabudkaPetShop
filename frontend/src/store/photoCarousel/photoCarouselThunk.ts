@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { PhotoCarousel, PhotoForm, ValidationError } from '../../types';
+import { GlobalError, PhotoCarousel, PhotoForm } from '../../types';
 import axiosApi from '../../axiosApi.ts';
 import { isAxiosError } from 'axios';
 
@@ -19,7 +19,7 @@ export const fetchPhoto = createAsyncThunk<PhotoCarousel[], void>(
 export const addNewPhoto = createAsyncThunk<
   void,
   PhotoForm,
-  { rejectValue: ValidationError }
+  { rejectValue: GlobalError }
 >("brands/addBrand", async (photo, { rejectWithValue }) => {
   try {
     const formData = new FormData();
@@ -30,16 +30,12 @@ export const addNewPhoto = createAsyncThunk<
 
     await axiosApi.post("/photos", formData);
   } catch (error) {
-    if (isAxiosError(error) && error.response) {
-      const { data, status } = error.response;
-
-      if ([400, 401, 409].includes(status)) {
-        const formattedErrors =
-          typeof data.errors === "object"
-            ? data.errors
-            : { general: data.message };
-        return rejectWithValue({ errors: formattedErrors } as ValidationError);
-      }
+    if (
+      isAxiosError(error) &&
+      error.response &&
+      (error.response.status === 409 || error.response.status === 404)
+    ) {
+      return rejectWithValue(error.response.data as GlobalError);
     }
     throw error;
   }
@@ -48,7 +44,7 @@ export const addNewPhoto = createAsyncThunk<
 export const updatePhoto = createAsyncThunk<
   void,
   { photo: PhotoCarousel },
-  { rejectValue: ValidationError }
+  { rejectValue: GlobalError }
 >("photo_carousel/updatePhoto", async ({ photo }, { rejectWithValue }) => {
   try {
     const data = new FormData();
@@ -58,21 +54,17 @@ export const updatePhoto = createAsyncThunk<
     }
 
     data.append("link", photo.link);
-    data.append("order", String(photo.order));
+    data.append("order", String(Number(photo.order)));
 
     await axiosApi.put(`/photos/${photo.id}`, data);
 
   } catch (error) {
-    if (isAxiosError(error) && error.response) {
-      const { data, status } = error.response;
-
-      if ([400, 401, 409].includes(status)) {
-        const formattedErrors =
-          typeof data.errors === "object"
-            ? data.errors
-            : { general: data.message };
-        return rejectWithValue({ errors: formattedErrors } as ValidationError);
-      }
+    if (
+      isAxiosError(error) &&
+      error.response &&
+      (error.response.status === 409 || error.response.status === 404)
+    ) {
+      return rejectWithValue(error.response.data as GlobalError);
     }
     throw error;
   }

@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { EditSite, EditSiteMutation, ValidationError } from "../../types";
+import { EditSite, EditSiteMutation, ValidationError } from '../../types';
 import axiosApi from "../../axiosApi.ts";
 import { isAxiosError } from "axios";
 
@@ -15,11 +15,11 @@ export const updateSite = createAsyncThunk<
   } catch (error) {
     if (isAxiosError(error) && error.response) {
       const { data, status } = error.response;
+
       if ([400, 401, 409].includes(status)) {
         const formattedErrors =
-          typeof data.errors === "object"
-            ? data.errors
-            : { general: data.message };
+          typeof data.errors === 'object' ? data.errors : { general: data.message };
+
         return rejectWithValue({ errors: formattedErrors } as ValidationError);
       }
     }

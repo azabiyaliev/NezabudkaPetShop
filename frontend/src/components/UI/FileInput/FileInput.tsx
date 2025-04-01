@@ -20,29 +20,32 @@ const FileInput: React.FC<Props> = ({
   id,
   className,
   error,
-  helperText
+  helperText,
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [fileName, setFileName] = useState("");
 
-  const activateInput: () => void = () => {
-    if (inputRef.current) {
-      inputRef.current.click();
-    }
-  }
+  const activateInput = () => {
+    inputRef.current?.click();
+  };
 
-  const onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void = (
-    e: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setFileName(e.target.files[0].name);
-    } else setFileName("");
+      const selectedFile = e.target.files[0];
+      setFileName(selectedFile.name);
+    } else {
+      setFileName("");
+    }
 
     onGetFile(e);
   };
 
   useEffect(() => {
-    if (!file) setFileName("");
+    if (!file) {
+      setFileName("");
+    } else {
+      setFileName(file.name);
+    }
   }, [file]);
 
   const inputStyle = error
@@ -74,31 +77,35 @@ const FileInput: React.FC<Props> = ({
         ref={inputRef}
         onChange={onFileChange}
       />
+
       <div className="d-flex justify-content-start gap-4 align-items-center mb-3">
         <input
-          style={{
-            ...inputStyle,
-            padding: "15px 30px",
-            borderRadius: "20px",
-            border: "1px solid",
-          }}
           id={id}
           className={className}
           disabled
           placeholder={label}
           value={fileName}
           onClick={activateInput}
+          style={{
+            ...inputStyle,
+            padding: "15px 30px",
+            borderRadius: "20px",
+            border: `1px solid ${error ? "#FF0000" : "darkgreen"}`,
+            backgroundColor: error ? "#FFECEC" : "white",
+          }}
         />
         <button
           type="button"
+          onClick={activateInput}
           style={{
             ...buttonStyle,
+            border: `1px solid ${error ? "#FF0000" : "darkgreen"}`,
             borderRadius: "15px",
             backgroundColor: "white",
             padding: "15px 20px",
             cursor: "pointer",
+            color: error ? "#FF0000" : "darkgreen",
           }}
-          onClick={activateInput}
         >
           <AddPhotoAlternateIcon />
         </button>
@@ -109,8 +116,8 @@ const FileInput: React.FC<Props> = ({
           style={{
             color: "#FF0000",
             fontSize: "12px",
-            marginLeft:"10px",
-            marginTop:"-5px"
+            marginLeft: "10px",
+            marginTop: "-5px",
           }}
         >
           {helperText}

@@ -1,12 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from "../../app/store.ts";
-import { PhotoCarousel, ValidationError } from '../../types';
+import { GlobalError, PhotoCarousel } from '../../types';
 import { addNewPhoto, fetchPhoto, updatePhoto, updatePhotoOrders } from './photoCarouselThunk.ts';
 
 interface PhotoCarouselState {
   photos: PhotoCarousel[];
   editLoading: boolean;
-  editError: ValidationError | null;
+  editError: GlobalError | null;
   isLoading: boolean;
 }
 
@@ -35,7 +35,6 @@ export const PhotoCarouselSlice = createSlice({
         state.editError = null;
       })
       .addCase(updatePhoto.fulfilled, (state) => {
-
         state.editLoading = false;
         state.editError = null;
       })

@@ -17,6 +17,17 @@ export class PhotoCarouselService {
   }
 
   async createPhoto(photoDto: PhotoByCarouselDto) {
+    if (!photoDto.photo || photoDto.photo.trim() === '') {
+      throw new NotFoundException(
+          `Фото не может быть путым полем!`,
+      );
+    }
+
+    if (!photoDto.link || photoDto.link.trim() === '') {
+      throw new NotFoundException(
+          `Ссылка не может быть путым полем!`,
+      );
+    }
     return this.prisma.photoByCarousel.create({
       data: {
         ...photoDto,
@@ -36,24 +47,30 @@ export class PhotoCarouselService {
       photo = '/photo_carousel/' + file.filename;
     }
 
-    if (link.trim().length === 0 || photo.trim().length === 0) {
+    if (!photoDto.photo || photoDto.photo.trim() === '') {
       throw new NotFoundException(
-        `Ccылка и фото карусели не могут быть пустыми!`,
+        `Фото не может быть путым полем!`,
       );
     }
 
-    const brandId = parseInt(id);
+    if (!photoDto.link || photoDto.link.trim() === '') {
+      throw new NotFoundException(
+          `Ссылка не может быть путым полем!`,
+      );
+    }
+
+    const photoId = parseInt(id);
 
     const existingPhoto = await this.prisma.photoByCarousel.findFirst({
-      where: { id: brandId },
+      where: { id: photoId },
     });
 
     if (!existingPhoto) {
-      throw new BadRequestException('Фото не найдено');
+      throw new NotFoundException('Фото не найдено');
     }
 
     return this.prisma.photoByCarousel.update({
-      where: { id: brandId },
+      where: { id: photoId },
       data: {
         link,
         photo,
@@ -62,7 +79,11 @@ export class PhotoCarouselService {
   }
 
   async deletePhoto(id: string) {
-    const photoId = parseInt(id);
+    const photoId = Number(id);
+    if (isNaN(photoId)) {
+      throw new BadRequestException('Некорректный ID');
+    }
+
     const photo = await this.prisma.photoByCarousel.findFirst({
       where: { id: photoId },
     });

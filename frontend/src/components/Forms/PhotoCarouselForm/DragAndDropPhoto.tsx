@@ -10,8 +10,8 @@ import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Swal from "sweetalert2";
 import ModalWindowAddNewPhoto from '../../UI/ModalWindow/ModalWindowAddNewPhoto.tsx';
-import { toast, ToastContainer } from 'react-toastify';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { enqueueSnackbar } from 'notistack';
 
 const DragAndDropPhoto = () => {
   const photos = useAppSelector(selectPhotoCarousel) || [];
@@ -79,7 +79,7 @@ const DragAndDropPhoto = () => {
     try {
       await dispatch(updatePhotoOrders(updatedPhotos)).unwrap();
       navigate('/');
-      toast.success("Вы успешно изменили порядок фото в карусели;)");
+      enqueueSnackbar('Вы успешно изменили порядок фото в карусели;)', { variant: 'success' });
     } catch (error) {
       console.error("Ошибка обновления:", error);
     }
@@ -229,7 +229,6 @@ const DragAndDropPhoto = () => {
         onClose={() => setIsAddModalOpen(false)}
       />
       <NavLink to="/edition_site" style={{ color:"#738A6E", textDecoration:"none" }}><span><ArrowBackIcon sx={{width:"20px", marginRight:"10px"}}/>Вернуться к редактированию сайта</span></NavLink>
-      <ToastContainer />
     </>
   );
 };

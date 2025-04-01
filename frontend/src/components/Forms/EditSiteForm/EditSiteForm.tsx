@@ -1,4 +1,4 @@
-import { Box, Button, Container, Typography, TextField } from "@mui/material";
+import { Box, Button, Container, Typography, TextField } from '@mui/material';
 import { toast, ToastContainer } from "react-toastify";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
 import { useNavigate } from 'react-router-dom';
@@ -38,7 +38,6 @@ const EditSiteForm = () => {
           setForm(siteEdit);
         }
       })
-      .catch(() => toast.error("Ошибка загрузки данных сайта"));
   }, [dispatch]);
 
   const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,9 +56,7 @@ const EditSiteForm = () => {
     if (name === "email") {
       setEmailError(regEmail.test(value) ? "" : "Неправильный формат email");
     }
-  };
-
-  const getFieldError = (fieldName: string) => editError?.errors?.[fieldName] || "";
+};
 
   const submitHandler = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -81,6 +78,8 @@ const EditSiteForm = () => {
     navigate("/edit-carousel");
   };
 
+  const getFieldError = (fieldName: string) => editError?.errors?.[fieldName] || "";
+
   return (
     <Container component="main">
       <Box sx={{ marginTop: 3, display: "flex", flexDirection: "column", alignItems: "center", padding: 4, position: "relative" }}>
@@ -94,9 +93,9 @@ const EditSiteForm = () => {
             label="Ссылка на Instagram"
             value={form.instagram}
             onChange={inputChangeHandler}
+            variant="outlined"
             error={!!getFieldError("instagram")}
             helperText={getFieldError("instagram")}
-            variant="outlined"
             sx={{
               mb: 3,
               borderRadius: "20px",
@@ -105,7 +104,6 @@ const EditSiteForm = () => {
                 backgroundColor: "#E4E6D9",
                 transition: "all 0.3s ease",
                 height: "56px",
-
                 "&.Mui-focused": {
                   borderColor: "green",
                 },
@@ -145,9 +143,9 @@ const EditSiteForm = () => {
             label="Ссылка на WhatsApp"
             value={form.whatsapp}
             onChange={inputChangeHandler}
+            variant="outlined"
             error={!!getFieldError("whatsapp")}
             helperText={getFieldError("whatsapp")}
-            variant="outlined"
             sx={{
               mb: 3,
               borderRadius: "20px",
@@ -195,9 +193,9 @@ const EditSiteForm = () => {
             label="График работы"
             value={form.schedule}
             onChange={inputChangeHandler}
+            variant="outlined"
             error={!!getFieldError("schedule")}
             helperText={getFieldError("schedule")}
-            variant="outlined"
             sx={{
               mb: 3,
               borderRadius: "20px",
@@ -245,9 +243,9 @@ const EditSiteForm = () => {
             label="Адрес"
             value={form.address}
             onChange={inputChangeHandler}
+            variant="outlined"
             error={!!getFieldError("address")}
             helperText={getFieldError("address")}
-            variant="outlined"
             sx={{
               mb: 3,
               borderRadius: "20px",
@@ -295,9 +293,9 @@ const EditSiteForm = () => {
             label="Ссылка на местоположение на карте"
             value={form.linkAddress}
             onChange={inputChangeHandler}
+            variant="outlined"
             error={!!getFieldError("linkAddress")}
             helperText={getFieldError("linkAddress")}
-            variant="outlined"
             sx={{
               mb: 3,
               borderRadius: "20px",
@@ -346,9 +344,9 @@ const EditSiteForm = () => {
             type="email"
             value={form.email}
             onChange={inputChangeHandler}
+            variant="outlined"
             error={!!getFieldError("email") || Boolean(emailError)}
             helperText={getFieldError("email")|| emailError}
-            variant="outlined"
             sx={{
               mb: 3,
               borderRadius: "20px",
@@ -397,9 +395,9 @@ const EditSiteForm = () => {
             type="phone"
             value={form.phone}
             onChange={inputChangeHandler}
+            variant="outlined"
             error={!!getFieldError("phone") || Boolean(phoneError)}
             helperText={getFieldError("phone") || phoneError}
-            variant="outlined"
             sx={{
               mb: 3,
               borderRadius: "20px",

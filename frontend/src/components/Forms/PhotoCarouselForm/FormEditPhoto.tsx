@@ -4,13 +4,14 @@ import Button from '@mui/material/Button';
 import React, { useState, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
 import { fetchPhoto, updatePhoto } from '../../../store/photoCarousel/photoCarouselThunk.ts';
-import FileInput from '../../UI/FileInput/FileInput.tsx';
 import { PhotoCarousel, PhotoForm } from '../../../types';
 import { toast } from 'react-toastify';
 import { selectPhotoCarousel, selectPhotoError } from '../../../store/photoCarousel/photoCarouselSlice.ts';
-import { Box } from '@mui/material';
+import { Alert, Box } from '@mui/material';
 import { NavLink, useNavigate } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import FileInput from '../../UI/FileInput/FileInput.tsx';
+import { enqueueSnackbar } from 'notistack';
 
 interface FormEditPhotoProps {
   photoId: number;
@@ -21,6 +22,7 @@ const FormEditPhoto: React.FC<FormEditPhotoProps> = ({ photoId }) => {
   const navigate = useNavigate();
   const errorPhoto = useAppSelector(selectPhotoError)
 
+
   const [editPhoto, setEditPhoto] = useState<PhotoCarousel>({
     id: photoId,
     link: '',
@@ -30,7 +32,7 @@ const FormEditPhoto: React.FC<FormEditPhotoProps> = ({ photoId }) => {
 
   const dispatch = useAppDispatch();
 
-
+  console.log(editPhoto)
   useEffect(() => {
     dispatch(fetchPhoto())
       .unwrap()
@@ -61,22 +63,25 @@ const FormEditPhoto: React.FC<FormEditPhotoProps> = ({ photoId }) => {
     }
   };
 
+
   const handlePhotoSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
       await dispatch(updatePhoto({ photo: editPhoto })).unwrap();
       navigate('/edit-carousel');
+      enqueueSnackbar('Вы отредатировали фото для карусели;)', { variant: 'success' });
     } catch (error) {
       console.error('Ошибка обновления фото:', error);
       toast.error('Ошибка при обновлении фото.');
     }
   };
 
-  const getFieldError = (fieldName: string) => errorPhoto?.errors?.[fieldName] || "";
-
   return (
    <div style={{marginTop:"50px"}}>
+     <div style={{ marginTop: '50px', marginLeft:"60px" }}>
+       <NavLink to="/edit-carousel" style={{ color:"#738A6E", textDecoration:"none" }}><span><ArrowBackIcon sx={{width:"20px", marginRight:"10px"}}/>Вернуться к карусели</span></NavLink>
+     </div>
      <Box sx={{ padding: 4,
        backgroundColor: '#fff',
        borderRadius: 2,
@@ -90,6 +95,13 @@ const FormEditPhoto: React.FC<FormEditPhotoProps> = ({ photoId }) => {
        <Typography component="h1" variant="h4" sx={{ color: 'black', textAlign: 'center', marginBottom: 3 }}>
          Редактировать фото
        </Typography>
+
+       {errorPhoto && (
+         <Alert severity="error" sx={{ width: "100%" }}>
+           {errorPhoto.message}
+         </Alert>
+       )}
+
        <form onSubmit={handlePhotoSubmit} style={{ width: '100%' }}>
          <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 3, flexDirection: 'column', alignItems: 'center' }}>
            <TextField
@@ -99,8 +111,6 @@ const FormEditPhoto: React.FC<FormEditPhotoProps> = ({ photoId }) => {
              variant="outlined"
              value={editPhoto.link}
              onChange={inputChangeHandler}
-             error={!!getFieldError("link")}
-             helperText={getFieldError("link")}
              sx={{
                mb: 3,
                width: '71%',
@@ -124,23 +134,6 @@ const FormEditPhoto: React.FC<FormEditPhotoProps> = ({ photoId }) => {
                "& .MuiInputLabel-root.Mui-focused": {
                  color: "green",
                },
-               "& .MuiOutlinedInput-root.Mui-error": {
-                 backgroundColor: "#FFECEC",
-                 "& .MuiOutlinedInput-notchedOutline": {
-                   borderColor: "#FF0000",
-                 },
-               },
-               "& .MuiInputLabel-root.Mui-error": {
-                 color: "#FF0000",
-               },
-               "& .MuiFormHelperText-root": {
-                 minHeight: "20px",
-               },
-               "& .MuiFormHelperText-root.Mui-error": {
-                 color: "#FF0000",
-                 fontSize: "12px",
-                 fontWeight: 500,
-               },
              }}
            />
 
@@ -151,8 +144,6 @@ const FormEditPhoto: React.FC<FormEditPhotoProps> = ({ photoId }) => {
                label="Фото для карусели"
                onGetFile={onFileChange}
                file={editPhoto.photo}
-               error={!!getFieldError("photo")}
-               helperText={getFieldError("photo")}
              />
            </div>
          </Box>
@@ -174,9 +165,6 @@ const FormEditPhoto: React.FC<FormEditPhotoProps> = ({ photoId }) => {
          </Box>
        </form>
      </Box>
-     <div style={{ marginTop: '50px', marginLeft:"60px" }}>
-       <NavLink to="/edit-carousel" style={{ color:"#738A6E", textDecoration:"none" }}><span><ArrowBackIcon sx={{width:"20px", marginRight:"10px"}}/>Вернуться к карусели</span></NavLink>
-     </div>
 
    </div>
   );
