@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  NotFoundException,
   Param,
   Patch,
   Post,
@@ -53,13 +52,9 @@ export class BrandsController {
     @UploadedFile() file: Express.Multer.File,
     @Body() brandDTO: BrandDto,
   ) {
-    if (!brandDTO) {
-      throw new NotFoundException('Название бренда не было предоставлено!');
-    }
-    const logo = file && file.filename ? '/brands/' + file.filename : null;
     return await this.brandsService.createBrand({
       title: brandDTO.title,
-      logo: logo,
+      logo: file && file.filename ? '/brands/' + file.filename : null,
       description: brandDTO.description,
     });
   }
@@ -82,9 +77,6 @@ export class BrandsController {
     @UploadedFile() file: Express.Multer.File,
     @Body() brandDTO: BrandDto,
   ) {
-    if (!brandDTO) {
-      throw new NotFoundException('Название бренда не было предоставлено!');
-    }
     return await this.brandsService.updateBrand(id, brandDTO, file);
   }
 

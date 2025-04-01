@@ -11,13 +11,6 @@ export class BrandsService {
       orderBy: {
         id: 'desc',
       },
-      select: {
-        id: true,
-        title: true,
-        logo: true,
-        description: true,
-        products: true,
-      },
     });
     return brands || [];
   }
@@ -26,13 +19,6 @@ export class BrandsService {
     const brandId = parseInt(id);
     const brand = await this.prisma.brand.findFirst({
       where: { id: brandId },
-      select: {
-        id: true,
-        title: true,
-        logo: true,
-        description: true,
-        products: true,
-      },
     });
     if (!brand) {
       throw new NotFoundException(`Бренд с id = ${id} не найдена!`);
@@ -42,10 +28,7 @@ export class BrandsService {
 
   async createBrand(brandDTO: BrandDto) {
     const { title, logo, description } = brandDTO;
-    if (!title || title.trim() === '') {
-      throw new NotFoundException('Название бренда не может быть пустым!');
-    }
-    const brand = await this.prisma.brand.findUnique({
+    const brand = await this.prisma.brand.findFirst({
       where: { title },
     });
     if (brand) {
@@ -57,14 +40,7 @@ export class BrandsService {
       data: {
         title,
         logo,
-        description,
-      },
-      select: {
-        id: true,
-        title: true,
-        logo: true,
-        description: true,
-        products: true,
+        description: description === '' ? null : description,
       },
     });
     return { message: 'Новый бренд был успешно создан!', newBrand };
@@ -80,9 +56,6 @@ export class BrandsService {
     if (file) {
       logo = '/brands/' + file.filename;
     }
-    if (title.trim().length === 0) {
-      throw new NotFoundException(`Название бренда не может быть пустыми!`);
-    }
     const brandId = parseInt(id);
     const brand = await this.prisma.brand.findFirst({
       where: { id: brandId },
@@ -97,7 +70,7 @@ export class BrandsService {
       data: {
         title,
         logo,
-        description,
+        description: description === '' ? null : description,
       },
     });
     return { message: 'Данный бренд был успешно отредактирован!', updateBrand };
