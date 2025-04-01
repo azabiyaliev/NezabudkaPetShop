@@ -1,8 +1,6 @@
-import { IsNotEmpty } from 'class-validator';
-
 export class PhotoByCarouselDto {
-  @IsNotEmpty({
-    message: 'Поле для фотографии обязательно к заполнению',
-  })
+  id!: number;
   photo!: string;
+  link!: string;
+  order!: number;
 }

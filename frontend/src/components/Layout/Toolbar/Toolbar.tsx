@@ -27,6 +27,7 @@ import {
   getFromLocalStorage,
 } from "../../../store/cart/cartSlice.ts";
 import KeyboardArrowDownOutlinedIcon from "@mui/icons-material/KeyboardArrowDownOutlined";
+import { fetchSite } from '../../../store/editionSite/editionSiteThunk.ts';
 
 const MainToolbar = () => {
   const [openCart, setOpenCart] = useState<boolean>(false);
@@ -44,6 +45,10 @@ const MainToolbar = () => {
   const onClose = () => {
     setAnchorEl(null);
   };
+
+  useEffect(() => {
+    dispatch(fetchSite()).unwrap()
+  }, [dispatch]);
 
   useEffect(() => {
     dispatch(getFromLocalStorage());

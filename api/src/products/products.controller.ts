@@ -106,8 +106,6 @@ export class ProductsController {
 
   @Get('categoryId/:id')
   async getProductByCategory(@Param('id') categoryId: string) {
-    return await this.productsService.getBrandsByCategoryId(
-      Number(categoryId),
-    );
+    return await this.productsService.getBrandsByCategoryId(Number(categoryId));
   }
 }

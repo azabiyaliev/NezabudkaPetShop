@@ -19,6 +19,11 @@ import { OrdersModule } from './orders/orders.module';
 import { ConfigModule } from '@nestjs/config';
 import { SeedModule } from './seed/seed.module';
 import { ReviewsModule } from './reviews/reviews.module';
+import { CartController } from './cart/cart.controller';
+import { CartService } from './cart/cart.service';
+import { PhotoCarouselController } from './photo_carousel/photo_carousel.controller';
+import { PhotoCarouselModule } from './photo_carousel/photo_carousel.module';
+import { PhotoCarouselService } from './photo_carousel/photo_carousel.service';
 
 @Module({
   imports: [
@@ -33,8 +38,15 @@ import { ReviewsModule } from './reviews/reviews.module';
     SeedModule,
     ConfigModule.forRoot(),
     ReviewsModule,
+    PhotoCarouselModule,
   ],
-  controllers: [AppController, BrandsController, EditionSiteController],
+  controllers: [
+    AppController,
+    BrandsController,
+    EditionSiteController,
+    CartController,
+    PhotoCarouselController,
+  ],
   providers: [
     AppService,
     SeedService,
@@ -42,6 +54,7 @@ import { ReviewsModule } from './reviews/reviews.module';
     BrandsService,
     EditionSiteService,
     CategoryService,
+    CartService,
   ],
 })
 export class AppModule {}
