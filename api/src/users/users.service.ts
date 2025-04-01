@@ -1,9 +1,17 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import * as nodemailer from 'nodemailer';
 import * as process from 'node:process';
+import { RegisterDto } from '../dto/auth.dto';
+import { regEmail, regPhone } from '../auth/auth.service';
 
 @Injectable()
 export class UsersService {
@@ -112,14 +120,96 @@ export class UsersService {
     });
 
     return { message: 'Пароль успешно изменен' };
-    console.log('пароль изменен');
   }
+
+  async createAdmin(registerDto: RegisterDto) {
+    const { email, firstName, secondName, password, role } = registerDto;
+    let phone = registerDto.phone;
+
+    if (password.includes(' ')) {
+      throw new ConflictException('Пароль не должен содержать пустых отступов');
+    }
+
+    if (!regEmail.test(email)) {
+      throw new BadRequestException('Неправильный формат для почты');
+    }
+
+    if (phone) {
+      if (!regPhone.test(phone)) phone = phone.replace(/\s/g, '');
+      if (!phone.startsWith('+996')) {
+        phone = '+996' + phone.replace(/^0/, '');
+      }
+    }
+
+    const existingUser = await this.prisma.user.findUnique({
+      where: { email },
+    });
+    const existingPhone = phone
+      ? await this.prisma.user.findUnique({ where: { phone } })
+      : null;
+
+    if (existingUser) {
+      throw new ConflictException(
+        `Пользователь с таким Email ${email} уже существует`,
+      );
+    }
+
+    if (existingPhone) {
+      throw new ConflictException(
+        `Пользователь с таким номером ${phone} уже существует`,
+      );
+    }
+
+    if (role === 'superAdmin') {
+      const existingProtectedUser = await this.prisma.user.findFirst({
+        where: { isProtected: true },
+      });
+
+      if (existingProtectedUser) {
+        throw new ConflictException('Супер админ уже существует');
+      }
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    const user = await this.prisma.user.create({
+      data: {
+        email,
+        firstName,
+        secondName,
+        password: hashedPassword,
+        phone: phone?.trim() === '' ? null : phone,
+        role: role ? role : undefined,
+        token: crypto.randomUUID(),
+      },
+    });
+
+    return { message: 'Админ создан успешно', user };
+  }
+
+
 
   async findAll() {
     const result = await this.prisma.user.findMany();
     if (result.length === 0) {
       throw new NotFoundException('Пользователи не найдены');
     }
+    return result;
+  }
+
+  async findSuperAdmin() {
+    const result = await this.prisma.user.findFirst({
+      where: {
+        role: 'superAdmin',
+        isProtected: true,
+      },
+    });
+
+    if (!result) {
+      throw new NotFoundException('Суперадмин не найден');
+    }
+
     return result;
   }
 
@@ -142,16 +232,32 @@ export class UsersService {
 
   async delete(id: string) {
     const parsId = parseInt(id);
-    await this.validateUser(parsId);
+    const user = await this.validateUser(parsId);
+
+    if (user.role === 'superAdmin') {
+      throw new ForbiddenException('Суперадмина нельзя удалить');
+    }
+
+    if (user.isProtected) {
+      throw new ForbiddenException('Этот пользователь защищён от удаления');
+    }
 
     await this.prisma.user.delete({ where: { id: parsId } });
     return { message: `Пользователь с таким ID ${id} удален успешно` };
   }
 
-  async update(id: string, data: Partial<User>) {
+  async update(id: string, data: Partial<User>, currentUser: User) {
     const userId = parseInt(id);
+    const user = await this.validateUser(userId);
 
-    await this.validateUser(userId);
+    const isTargetSuperAdmin = user.role === 'superAdmin';
+    const isRequesterSuperAdmin = currentUser.role === 'superAdmin';
+    const isSelfEdit = currentUser.id === user.id;
+
+    if (isTargetSuperAdmin && (!isRequesterSuperAdmin || !isSelfEdit)) {
+      throw new ForbiddenException('У вас нет прав для редактирования');
+    }
+
 
     if (data.password !== undefined) {
       const salt = await bcrypt.genSalt(10);
