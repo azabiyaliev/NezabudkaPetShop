@@ -19,8 +19,6 @@ import { OrdersModule } from './orders/orders.module';
 import { ConfigModule } from '@nestjs/config';
 import { SeedModule } from './seed/seed.module';
 import { ReviewsModule } from './reviews/reviews.module';
-import { CartController } from './cart/cart.controller';
-import { CartService } from './cart/cart.service';
 
 @Module({
   imports: [
@@ -36,12 +34,7 @@ import { CartService } from './cart/cart.service';
     ConfigModule.forRoot(),
     ReviewsModule,
   ],
-  controllers: [
-    AppController,
-    BrandsController,
-    EditionSiteController,
-    CartController,
-  ],
+  controllers: [AppController, BrandsController, EditionSiteController],
   providers: [
     AppService,
     SeedService,
@@ -49,7 +42,6 @@ import { CartService } from './cart/cart.service';
     BrandsService,
     EditionSiteService,
     CategoryService,
-    CartService,
   ],
 })
 export class AppModule {}

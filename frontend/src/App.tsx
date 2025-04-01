@@ -18,7 +18,6 @@ import NewProduct from "./features/Admin/Product/containers/NewProduct.tsx";
 import AdminEditProfile from "./features/Admin/AdminProfile/AdminEditProfile.tsx";
 import ClientProfile from "./features/Client/ClientProfile/ClientProfile.tsx";
 import ClientEditProfile from "./features/Client/ClientProfile/ClientEditProfile.tsx";
-import OrderPage from "./features/Order/OrderPage.tsx";
 import ProductPage from "./features/Product/containers/ProductPage.tsx";
 import ProductsPage from "./features/Admin/Product/containers/ProductsPage.tsx";
 import EditProduct from "./features/Admin/Product/containers/EditProduct.tsx";
@@ -35,7 +34,6 @@ const App = () => {
           <Route path="/register" element={<RegisterUser />} />
           <Route path="/login" element={<LoginUser />} />
           <Route path="/my_cart" element={<CartPage />} />
-          <Route path="/my_order" element={<OrderPage />} />
           <Route
             path="/private_account"
             element={
