@@ -1,15 +1,14 @@
 import { Box, Typography, IconButton } from "@mui/material";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
-import logo from "../../../assets/logo.jpg";
+import logo_transparent from "../../../assets/logo_transparent.png";
 import NearMeOutlinedIcon from "@mui/icons-material/NearMeOutlined";
-import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
+import { useAppSelector, useAppDispatch } from "../../../app/hooks.ts";
 import { selectEditSite } from "../../../store/editionSite/editionSiteSlice.ts";
 import PhoneIphoneOutlinedIcon from "@mui/icons-material/PhoneIphoneOutlined";
 import AlternateEmailOutlinedIcon from "@mui/icons-material/AlternateEmailOutlined";
 import { useEffect } from 'react';
 import { fetchSite } from '../../../store/editionSite/editionSiteThunk.ts';
-
 const Footer = () => {
   const site = useAppSelector(selectEditSite);
   const dispatch = useAppDispatch();
@@ -43,7 +42,7 @@ const Footer = () => {
         <Box sx={{ display: "flex", alignItems: "center" }}>
           <Box
             component="img"
-            src={logo}
+            src={logo_transparent}
             alt="Nezabudka"
             sx={{
               height: "50px",
@@ -103,7 +102,6 @@ const Footer = () => {
         </Box>
       </Box>
 
-      {/* Авторские права внизу */}
       <Typography
         variant="body2"
         sx={{ color: "lightgray", marginTop: "20px" }}

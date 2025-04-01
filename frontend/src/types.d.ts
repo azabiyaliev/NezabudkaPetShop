@@ -174,3 +174,4 @@ export interface ProductResponse {
   brand: IBrand;
   category: ICategories;
 }
+

@@ -27,13 +27,16 @@ const UnknownUser = () => {
         >
           <AccountCircleIcon
             sx={{
-              color: "black",
+              color: "white",
+              width: "35px",
+              height: "35px",
             }}
           />
           <Typography
             sx={{
-              fontSize: "15px",
+              fontSize: "18px",
               textTransform: "lowercase",
+              color: "white",
             }}
           >
             Войти

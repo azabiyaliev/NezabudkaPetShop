@@ -100,7 +100,6 @@ const Carousel = () => {
             alignItems: "center",
           }}
         >
-          {/* Кнопка паузы и проигрывания с бейджами при наведении */}
           <button
             onClick={toggleAutoScroll}
             onMouseEnter={() => setIsHovered(true)} // Наведение

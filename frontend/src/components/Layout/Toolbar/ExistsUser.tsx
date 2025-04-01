@@ -7,7 +7,6 @@ import {
   ListItem,
   ListItemText,
   Divider,
-  Typography,
 } from "@mui/material";
 import { NavLink } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
@@ -16,6 +15,16 @@ import {
   addErrorFromSlice,
   clearError,
 } from "../../../store/brands/brandsSlice.ts";
+import PermIdentityOutlinedIcon from "@mui/icons-material/PermIdentityOutlined";
+import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
+import EditNoteOutlinedIcon from "@mui/icons-material/EditNoteOutlined";
+import CreditScoreOutlinedIcon from "@mui/icons-material/CreditScoreOutlined";
+import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined";
+import SettingsSuggestOutlinedIcon from "@mui/icons-material/SettingsSuggestOutlined";
+import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
+import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
+import FavoriteOutlinedIcon from "@mui/icons-material/FavoriteOutlined";
+import LocalMallOutlinedIcon from "@mui/icons-material/LocalMallOutlined";
 
 const ExistsUser = () => {
   const addError = useAppSelector(addErrorFromSlice);
@@ -41,26 +50,48 @@ const ExistsUser = () => {
   return (
     <>
       <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-        <Button onClick={toggleDrawer(true)} style={{ color: "black" }}>
-          Мой профиль
+        <Button
+          onClick={toggleDrawer(true)}
+          sx={{
+            color: "black",
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+          }}
+        >
+          <PermIdentityOutlinedIcon
+            sx={{ width: "30px", height: "30px", color: "white" }}
+          />
+          <span style={{ color: "white", fontSize: "16px", fontWeight: "500" }}>
+            Мой профиль
+          </span>
         </Button>
       </Box>
 
       <Drawer anchor="right" open={isDrawerOpen} onClose={toggleDrawer(false)}>
         <Box
           sx={{
-            width: 250,
+            width: 350,
             padding: 2,
+            backgroundColor: "white",
           }}
         >
-          <Typography
-            variant="h6"
+          <Box
             sx={{
-              marginBottom: 2,
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
             }}
           >
-            {user?.firstName} {user?.secondName}
-          </Typography>
+            <PermIdentityOutlinedIcon
+              sx={{ width: "30px", height: "30px", color: "#45624E" }}
+            />
+            <span
+              style={{ color: "#45624E", fontSize: "18px", fontWeight: "600" }}
+            >
+              {user && user.firstName} {user && user.secondName}
+            </span>
+          </Box>
           <Divider />
 
           {user && user.role === "admin" && (
@@ -70,6 +101,7 @@ const ExistsUser = () => {
                 to={`/private_account`}
                 onClick={toggleDrawer(false)}
               >
+                <HomeOutlinedIcon style={{ color: "#45624E" }} />
                 <ListItemText primary="Личный кабинет" className="text-black" />
               </ListItem>
               <ListItem
@@ -77,6 +109,7 @@ const ExistsUser = () => {
                 to={`/private/users/${user.id}`}
                 onClick={toggleDrawer(false)}
               >
+                <EditNoteOutlinedIcon style={{ color: "#45624E" }} />
                 <ListItemText
                   primary="Редактировать профиль"
                   className="text-black"
@@ -87,6 +120,7 @@ const ExistsUser = () => {
                 to="/private/client_orders"
                 onClick={toggleDrawer(false)}
               >
+                <CreditScoreOutlinedIcon style={{ color: "#45624E" }} />
                 <ListItemText primary="Заказы" className="text-black" />
               </ListItem>
               <ListItem
@@ -94,6 +128,7 @@ const ExistsUser = () => {
                 to="/private/clients"
                 onClick={toggleDrawer(false)}
               >
+                <GroupOutlinedIcon style={{ color: "#45624E" }} />
                 <ListItemText primary="Клиенты" className="text-black" />
               </ListItem>
               <ListItem
@@ -101,6 +136,7 @@ const ExistsUser = () => {
                 to={`/edition_site`}
                 onClick={toggleDrawer(false)}
               >
+                <SettingsSuggestOutlinedIcon style={{ color: "#45624E" }} />
                 <ListItemText
                   primary="Редактирование сайта"
                   className="text-black"
@@ -137,6 +173,7 @@ const ExistsUser = () => {
                 to={`/my_account`}
                 onClick={toggleDrawer(false)}
               >
+                <HomeOutlinedIcon style={{ color: "#45624E" }} />
                 <ListItemText primary="Личный кабинет" className="text-black" />
               </ListItem>
               <ListItem
@@ -144,6 +181,7 @@ const ExistsUser = () => {
                 to="/my_orders"
                 onClick={toggleDrawer(false)}
               >
+                <LocalMallOutlinedIcon style={{ color: "#45624E" }} />
                 <ListItemText primary="Мои Заказы" className="text-black" />
               </ListItem>
               <ListItem
@@ -151,6 +189,7 @@ const ExistsUser = () => {
                 to="/my_cart"
                 onClick={toggleDrawer(false)}
               >
+                <ShoppingCartOutlinedIcon style={{ color: "#45624E" }} />
                 <ListItemText primary="Корзина" className="text-black" />
               </ListItem>
               <ListItem
@@ -158,11 +197,14 @@ const ExistsUser = () => {
                 to="/my_whishlist"
                 onClick={toggleDrawer(false)}
               >
+                <FavoriteOutlinedIcon style={{ color: "#45624E" }} />
                 <ListItemText primary="Избранные" className="text-black" />
               </ListItem>
             </List>
           )}
-          <ListItem onClick={userLogout}>
+          <Divider />
+          <ListItem onClick={userLogout} style={{ marginTop: "30px" }}>
+            <LogoutOutlinedIcon style={{ color: "#45624E" }} />
             <ListItemText primary="Выйти" className="text-black" />
           </ListItem>
         </Box>
