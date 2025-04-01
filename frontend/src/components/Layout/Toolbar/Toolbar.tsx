@@ -3,7 +3,6 @@ import {
   Box,
   Button,
   Container,
-  InputBase,
   Menu,
   MenuItem,
   Toolbar,
@@ -18,7 +17,6 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import Typography from "@mui/material/Typography";
 import "./Fonts.css";
 import { selectEditSite } from "../../../store/editionSite/editionSiteSlice.ts";
-import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { selectUser } from "../../../store/users/usersSlice.ts";
 import React, { useEffect, useState } from "react";
 import CustomCart from "../../Domain/CustomCart/CustomCart.tsx";
@@ -28,6 +26,8 @@ import {
 } from "../../../store/cart/cartSlice.ts";
 import KeyboardArrowDownOutlinedIcon from "@mui/icons-material/KeyboardArrowDownOutlined";
 import { fetchSite } from '../../../store/editionSite/editionSiteThunk.ts';
+import { selectProducts } from '../../../store/products/productsSlice.ts';
+import { getProducts } from '../../../store/products/productsThunk.ts';
 
 const MainToolbar = () => {
   const [openCart, setOpenCart] = useState<boolean>(false);
@@ -37,6 +37,9 @@ const MainToolbar = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const products = useAppSelector(selectProducts);
+  const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState<string>('');
 
   const onClick = (e: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(e.currentTarget);
@@ -47,12 +50,27 @@ const MainToolbar = () => {
   };
 
   useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  }, [search]);
+
+  useEffect(() => {
     dispatch(fetchSite()).unwrap()
   }, [dispatch]);
 
+
   useEffect(() => {
+    if (search) {
+      dispatch(getProducts(debouncedSearch));
+    } else {
+      dispatch(getProducts(''));
+    }
+
     dispatch(getFromLocalStorage());
-  }, [dispatch, user]);
+  }, [dispatch, debouncedSearch, search, user]);
 
   const closeCart = () => {
     setOpenCart(false);
@@ -67,7 +85,6 @@ const MainToolbar = () => {
     acc = acc + i;
     return acc;
   }, 0);
-
   return (
     <div>
       <CustomCart openCart={openCart} closeCart={closeCart} />
@@ -226,40 +243,64 @@ const MainToolbar = () => {
                   </Typography>
                 </div>
               </NavLink>
-              <Box>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    width: "400px",
-                    border: "1px solid lightgray",
-                    backgroundColor: "white",
-                    borderTopLeftRadius: "100px",
-                    borderTopRightRadius: "100px",
-                    borderBottomLeftRadius: "100px",
-                    borderBottomRightRadius: "100px",
-                    overflow: "hidden",
+              <Box sx={{ position: 'relative', width: '100%', maxWidth: 400 }}>
+                <input
+                  style={{
+                    width: "100%",
+                    maxWidth: "400px",
+                    padding: "12px 16px",
+                    fontSize: "16px",
+                    color: "#fff",
+                    backgroundColor: "#5b7133",
+                    border: "2px solid #475726",
+                    borderRadius: "12px",
+                    outline: "none",
+                    transition: "all 0.3s ease-in-out",
+                    boxShadow: "0 4px 10px rgba(91, 113, 51, 0.3)",
                   }}
-                >
-                  <InputBase
-                    placeholder="Поиск товаров"
+                  placeholder="Поиск товара"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = "#d4d9c5";
+                    e.target.style.boxShadow = "0 0 8px rgba(91, 113, 51, 0.5)";
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = "#475726";
+                    e.target.style.boxShadow = "0 4px 10px rgba(91, 113, 51, 0.3)";
+                  }}
+                />
+
+                {search && (
+                  <Box
                     sx={{
-                      flex: 1,
-                      padding: "10px",
-                    }}
-                  />
-                  <Button
-                    sx={{
-                      minWidth: "50px",
-                      color: "#45624E",
-                      borderLeft: "1px solid lightgray",
-                      borderRadius: 0,
-                      height: "100%",
+                      position: 'absolute',
+                      top: '100%',
+                      left: 0,
+                      width: '100%',
+                      maxHeight: 300,
+                      overflowY: 'auto',
+                      backgroundColor: 'white',
+                      boxShadow: 3,
+                      zIndex: 1000,
+                      marginTop: 1,
+                      borderRadius: 1,
                     }}
                   >
-                    <SearchOutlinedIcon />
-                  </Button>
-                </Box>
+                    {products.length > 0 ? (
+                      products.map((product) => (
+                        <NavLink className='text-decoration-none text-black' to={`/product/${product.id}`} onClick={() => setSearch('')}>
+                          <div key={product.id} style={{ padding: '10px', borderBottom: '1px solid #ddd' }}>
+                            <h3>{product.productName}</h3>
+                            <p>{product.productDescription}</p>
+                          </div>
+                        </NavLink>
+                      ))
+                    ) : (
+                      <div style={{ padding: '10px' }}>Товаров не найдено</div>
+                    )}
+                  </Box>
+                )}
               </Box>
               {user ? (
                 user.role === "client" && (

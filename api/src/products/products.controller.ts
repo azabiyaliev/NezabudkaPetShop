@@ -20,7 +20,6 @@ import { TokenAuthGuard } from '../token.auth/token-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
-import { ProductQueryDto } from './dto/querySearchDto';
 
 @Controller('products')
 export class ProductsController {
@@ -28,8 +27,8 @@ export class ProductsController {
 
   //GET ALL PRODUCTS
   @Get('catalog')
-  async getProducts(@Query() query: ProductQueryDto) {
-    return await this.productsService.getAllProducts(query);
+  async getProducts(@Query('search') searchKeyword: string) {
+    return await this.productsService.getAllProducts(searchKeyword);
   }
 
   //GET ONE BY ID
