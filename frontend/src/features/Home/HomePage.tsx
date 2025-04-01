@@ -1,12 +1,13 @@
-import { useAppDispatch, useAppSelector } from "../../app/hooks.ts";
-import { brandsFromSlice } from "../../store/brands/brandsSlice.ts";
-import { useEffect, useState } from "react";
-import { getBrands } from "../../store/brands/brandsThunk.ts";
-import BrandForHomePage from "../../components/Domain/Brand/BrandForHomePage/BrandForHomePage.tsx";
-import { Box } from "@mui/material";
-import Typography from "@mui/joy/Typography";
-import Carousel from "../../components/UI/Carousel/Carousel.tsx";
-import CustomCart from "../../components/Domain/CustomCart/CustomCart.tsx";
+import { useAppDispatch, useAppSelector } from '../../app/hooks.ts';
+import { brandsFromSlice } from '../../store/brands/brandsSlice.ts';
+import { useEffect, useState } from 'react';
+import { getBrands } from '../../store/brands/brandsThunk.ts';
+import BrandForHomePage from '../../components/Domain/Brand/BrandForHomePage/BrandForHomePage.tsx';
+import { Box } from '@mui/material';
+import Typography from '@mui/joy/Typography';
+import Carousel from '../../components/UI/Carousel/Carousel.tsx';
+import CustomCart from '../../components/Domain/CustomCart/CustomCart.tsx';
+import CategoryMenuBox from '../Category/CategoryMenuBox/CategoryMenuBox.tsx';
 
 const HomePage = () => {
   const [openCart, setOpenCart] = useState<boolean>(false);
@@ -23,9 +24,10 @@ const HomePage = () => {
 
   return (
     <>
-      <CustomCart openCart={openCart} closeCart={closeCart} />
-      <div className="mb-5">
-        <Carousel />
+      <CustomCart openCart={openCart} closeCart={closeCart}/>
+      <div className='mb-5 d-flex justify-content-between'>
+        <CategoryMenuBox/>
+        <Carousel/>
       </div>
 
       {brands.length > 0 && (

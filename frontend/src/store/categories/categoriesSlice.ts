@@ -1,18 +1,20 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { RootState } from "../../app/store.ts";
-import { ICategories } from "../../types";
+import { createSlice } from '@reduxjs/toolkit';
+import { RootState } from '../../app/store.ts';
+import { ICategories, Subcategory } from '../../types';
 import {
-  addNewCategory,
+  addNewCategory, addNewSubcategory,
   deleteCategory,
   fetchCategoriesThunk,
-  fetchOneCategoryThunk,
-  updateCategoryThunk,
-} from "./categoriesThunk.ts";
+  fetchOneCategoryThunk, fetchSubcategories,
+  updateCategoryThunk
+} from './categoriesThunk.ts';
 
 export interface categoriesState {
   Categories: ICategories[];
   oneCategory: ICategories | null;
   fetchCategories: boolean;
+  SubCategories: Subcategory[];
+  createSubcategoryLoading: boolean;
   isLoading: boolean;
   error: string | null;
   createLoading: boolean;
@@ -24,6 +26,8 @@ const initialState: categoriesState = {
   Categories: [],
   oneCategory: null,
   fetchCategories: false,
+  SubCategories: [],
+  createSubcategoryLoading: false,
   isLoading: false,
   error: null,
   createLoading: false,
@@ -31,13 +35,13 @@ const initialState: categoriesState = {
   deleteLoading: false,
 };
 
-export const selectCategories = (state: RootState) =>
-  state.categories.Categories;
-export const selectOneCategory = (state: RootState) =>
-  state.categories.oneCategory;
+export const selectCategories = (state: RootState) => state.categories.Categories;
+export const selectOneCategory = (state: RootState) => state.categories.oneCategory;
+export const selectLoading = (state: RootState) => state.categories.isLoading;
+export const selectAllSubcategories = (state: RootState) => state.categories.SubCategories;
 
 const categoriesSlice = createSlice({
-  name: "categories",
+  name: 'categories',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -46,13 +50,10 @@ const categoriesSlice = createSlice({
         state.isLoading = true;
         state.error = null;
       })
-      .addCase(
-        fetchCategoriesThunk.fulfilled,
-        (state, { payload: category }) => {
-          state.isLoading = false;
-          state.Categories = category;
-        },
-      )
+      .addCase(fetchCategoriesThunk.fulfilled, (state, {payload: category}) => {
+        state.isLoading = false;
+        state.Categories = category;
+      })
       .addCase(fetchCategoriesThunk.rejected, (state) => {
         state.isLoading = false;
       })
@@ -80,13 +81,10 @@ const categoriesSlice = createSlice({
       .addCase(fetchOneCategoryThunk.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(
-        fetchOneCategoryThunk.fulfilled,
-        (state, { payload: oneCategory }) => {
-          state.oneCategory = oneCategory;
-          state.isLoading = false;
-        },
-      )
+      .addCase(fetchOneCategoryThunk.fulfilled, (state, {payload: oneCategory}) => {
+        state.oneCategory = oneCategory;
+        state.isLoading = false;
+      })
       .addCase(fetchOneCategoryThunk.rejected, (state) => {
         state.isLoading = false;
       })
@@ -95,13 +93,35 @@ const categoriesSlice = createSlice({
       })
       .addCase(deleteCategory.fulfilled, (state, action) => {
         state.deleteLoading = false;
-        state.Categories = state.Categories.filter(
-          (category) => category.id !== Number(action.meta.arg),
-        );
+        state.Categories = state.Categories.filter(category => category.id !== Number(action.meta.arg));
       })
       .addCase(deleteCategory.rejected, (state) => {
         state.deleteLoading = false;
-      });
+      })
+      .addCase(addNewSubcategory.pending, (state) => {
+        state.createSubcategoryLoading = true;
+      })
+      .addCase(addNewSubcategory.fulfilled, (state) => {
+        state.createSubcategoryLoading = false;
+      })
+      .addCase(addNewSubcategory.rejected, (state) => {
+        state.createSubcategoryLoading = false;
+      })
+      .addCase(fetchSubcategories.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchSubcategories.fulfilled, (state, {payload}) => {
+        state.SubCategories = payload.map((category: ICategories) => ({
+          id: category.id,
+          title: category.title,
+          parentId: category.parentId,
+          subcategories: [],
+        }));
+      })
+      .addCase(fetchSubcategories.rejected, (state) => {
+        state.isLoading = false;
+      })
   },
 });
 
