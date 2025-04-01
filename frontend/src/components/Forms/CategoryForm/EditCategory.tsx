@@ -1,17 +1,22 @@
 import { TextField, Button, Box, Typography } from "@mui/material";
 import React, { useCallback, useState } from "react";
 import { CategoryMutation } from "../../../types";
-import { selectUser } from '../../../store/users/usersSlice.ts';
-import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
-import { fetchCategoriesThunk, updateCategoryThunk } from '../../../store/categories/categoriesThunk.ts';
-import { toast } from 'react-toastify';
+import { selectUser } from "../../../store/users/usersSlice.ts";
+import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
+import {
+  fetchCategoriesThunk,
+  updateCategoryThunk,
+} from "../../../store/categories/categoriesThunk.ts";
+import { toast } from "react-toastify";
 
 interface EditCategoryProps {
   category: { id: string; title: string };
 }
 
 const EditCategory: React.FC<EditCategoryProps> = ({ category }) => {
-  const [editedCategory, setEditedCategory] = useState<CategoryMutation>({ title: category.title });
+  const [editedCategory, setEditedCategory] = useState<CategoryMutation>({
+    title: category.title,
+  });
   const user = useAppSelector(selectUser);
   const dispatch = useAppDispatch();
 
@@ -24,24 +29,29 @@ const EditCategory: React.FC<EditCategoryProps> = ({ category }) => {
 
     if (!user) return;
 
-    await dispatch(updateCategoryThunk({
-      id: category.id,
-      category: editedCategory,
-      token: user.token,
-    }));
+    await dispatch(
+      updateCategoryThunk({
+        id: category.id,
+        category: editedCategory,
+        token: user.token,
+      }),
+    );
     toast.success("Категория обновлена!");
 
     await dispatch(fetchCategoriesThunk());
   };
 
-  const inputChangeHandler = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+  const inputChangeHandler = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { name, value } = e.target;
 
-    setEditedCategory((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  }, []);
+      setEditedCategory((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
+    },
+    [],
+  );
 
   return (
     <Box
@@ -74,7 +84,11 @@ const EditCategory: React.FC<EditCategoryProps> = ({ category }) => {
         onChange={inputChangeHandler}
       />
 
-      <Button type="submit" variant="contained" sx={{ bgcolor: "#ffc107", color: "black" }}>
+      <Button
+        type="submit"
+        variant="contained"
+        sx={{ bgcolor: "#ffc107", color: "black" }}
+      >
         Сохранить изменения
       </Button>
     </Box>

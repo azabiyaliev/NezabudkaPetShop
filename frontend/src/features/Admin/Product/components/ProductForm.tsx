@@ -23,8 +23,7 @@ import { fetchCategoriesThunk } from '../../../../store/categories/categoriesThu
 import QuillEditor from '../../../../components/UI/QuillEditor/QuillEditor.tsx';
 import { orange } from "@mui/material/colors";
 import FormControl from "@mui/material/FormControl";
-import FileInput from '../../../../components/FileInput/FileInput.tsx';
-
+import FileInput from "../../../../components/FileInput/FileInput.tsx";
 
 interface Props {
   onSubmit: (product: ProductRequest) => void;
@@ -43,7 +42,11 @@ const initialState = {
   category: {id: "", parentId: "", subcategories: {id: "", title: "", parentId: 0 }},
 };
 
-const ProductForm: React.FC<Props> = ({ onSubmit, editProduct = initialState, isProduct = false }) => {
+const ProductForm: React.FC<Props> = ({
+  onSubmit,
+  editProduct = initialState,
+  isProduct = false,
+}) => {
   const [form, setForm] = useState<ProductRequest>(editProduct || initialState);
   const dispatch = useAppDispatch();
   const brands = useAppSelector(brandsFromSlice);
@@ -100,7 +103,7 @@ const ProductForm: React.FC<Props> = ({ onSubmit, editProduct = initialState, is
 
     onSubmit({ ...form });
 
-    if(!isProduct) {
+    if (!isProduct) {
       setForm(initialState);
       return;
     }
@@ -347,28 +350,35 @@ const ProductForm: React.FC<Props> = ({ onSubmit, editProduct = initialState, is
               label="Есть в наличии"
             />
 
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    sx={{
-                      "&.Mui-checked": {
-                        color: orange[500],
-                      },
-                    }}
-                    checked={form.sales}
-                    onChange={(e) => setForm((prev) => ({ ...prev, sales: e.target.checked }))}
-                  />
-                }
-                label="Участвует в акции"
-              />
-            </Grid>
-            <Grid>
-              <Button type="submit" sx={{ color: "#ff9800", width: "100%"}} variant="outlined" color="inherit" >
-                {!isProduct ? 'Добавить' : 'Сохранить'}
-              </Button>
-            </Grid>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  sx={{
+                    "&.Mui-checked": {
+                      color: orange[500],
+                    },
+                  }}
+                  checked={form.sales}
+                  onChange={(e) =>
+                    setForm((prev) => ({ ...prev, sales: e.target.checked }))
+                  }
+                />
+              }
+              label="Участвует в акции"
+            />
           </Grid>
-        </Box>
+          <Grid>
+            <Button
+              type="submit"
+              sx={{ color: "#ff9800", width: "100%" }}
+              variant="outlined"
+              color="inherit"
+            >
+              {!isProduct ? "Добавить" : "Сохранить"}
+            </Button>
+          </Grid>
+        </Grid>
+      </Box>
     </form>
   );
 };
