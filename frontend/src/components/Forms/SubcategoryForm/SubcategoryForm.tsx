@@ -17,7 +17,7 @@ import {
 } from "../../../store/categories/categoriesSlice.ts";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { fetchSubcategories } from "../../../store/categories/categoriesThunk.ts";
+import { fetchCategoriesThunk, fetchSubcategories } from '../../../store/categories/categoriesThunk.ts';
 
 const WARNING_SELECT_CATEGORY = "Выберите родительскую категорию!";
 const WARNING_SELECT_SUBCATEGORY = "Выберите хотя бы одну подкатегорию!";
@@ -38,10 +38,15 @@ const SubcategoryForm: React.FC<Props> = ({ onSubmit }) => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
+    dispatch(fetchCategoriesThunk());
+  }, [dispatch]);
+
+  useEffect(() => {
     if (parentId) {
       dispatch(fetchSubcategories(parentId));
     }
   }, [parentId, dispatch]);
+
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

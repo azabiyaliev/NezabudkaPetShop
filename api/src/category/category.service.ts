@@ -47,7 +47,7 @@ export class CategoryService {
     categoryId: number,
     subCategoryDtos: SubcategoryDto[],
   ) {
-    categoryId = parseInt(categoryId.toString(), 10);
+    categoryId = parseInt(categoryId.toString());
     await this.validateCategory(categoryId);
 
     for (const { title } of subCategoryDtos) {
@@ -58,6 +58,9 @@ export class CategoryService {
       const existingSubcategory = await this.prisma.category.findFirst({
         where: { title, parentId: categoryId },
       });
+
+      console.log('Category ID:', categoryId);
+      console.log('Subcategories:', subCategoryDtos);
 
       if (existingSubcategory) {
         throw new ConflictException(`Подкатегория "${title}" уже существует`);

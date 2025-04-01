@@ -15,18 +15,23 @@ const NewSubcategory = () => {
   const dispatch = useAppDispatch();
 
   const onSubmit = async (id: number, subcategories: string[]) => {
-    if (user) {
-      await dispatch(addNewSubcategory({
-        id,
-        subcategories,
-        token: user.token,
-      }));
+    try {
+      if (user) {
+        await dispatch(addNewSubcategory({
+          id,
+          subcategories,
+          token: user.token,
+        }));
 
-      await dispatch(fetchCategoriesThunk());
+        await dispatch(fetchCategoriesThunk());
 
-      toast.success('Подкатегория была добавлена ;)', { position: 'top-center' });
+        toast.success('Подкатегория была добавлена ;)', { position: 'top-center' });
+      }
+    } catch (error) {
+      toast.error('Произошла ошибка при добавлении подкатегории. Попробуйте снова.', { position: 'top-center' });
     }
   };
+
 
   return (
     <>

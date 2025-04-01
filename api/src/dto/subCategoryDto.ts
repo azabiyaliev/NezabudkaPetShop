@@ -1,7 +1,7 @@
 import { IsNotEmpty, IsOptional, IsNumber } from 'class-validator';
 
 export class SubcategoryDto {
-  @IsNotEmpty({ message: 'Title is required' })
+  @IsNotEmpty({ message: 'Название обязяательно' })
   title!: string;
 
   @IsOptional()
