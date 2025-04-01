@@ -17,7 +17,7 @@ interface Props {
   index: number;
 }
 
-const Brand:React.FC<Props> = ({brand, index}) => {
+const Brand: React.FC<Props> = ({ brand, index }) => {
   const user = useAppSelector(selectUser);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -33,19 +33,21 @@ const Brand:React.FC<Props> = ({brand, index}) => {
   }
 
   const deleteThisBrand = async (id: number) => {
-    if (user && user.role === 'admin') {
-      await dispatch(brandeDelete({brandId: id, token: user.token})).unwrap();
-      toast.success('Бренд успешно удален!');
+    if (user && user.role === "admin") {
+      await dispatch(brandeDelete({ brandId: id, token: user.token })).unwrap();
+      toast.success("Бренд успешно удален!");
       await dispatch(getBrands()).unwrap();
     }
-  }
+  };
 
   return (
     <>
       <tr>
-        <td style={{
-          fontSize: '15px'
-        }}>
+        <td
+          style={{
+            fontSize: "15px",
+          }}
+        >
           {index + 1}
         </td>
         <td>
@@ -58,27 +60,28 @@ const Brand:React.FC<Props> = ({brand, index}) => {
               objectFit: 'contain',
             }}/>
         </td>
-        <td style={{
-          fontSize: '18px'
-        }}>
+        <td
+          style={{
+            fontSize: "18px",
+          }}
+        >
           {brand.title}
         </td>
-        <td style={{
-          textAlign: 'center'
-        }}>
+        <td
+          style={{
+            textAlign: "center",
+          }}
+        >
           <Button
             variant="outlined"
             onClick={() => navigate(`/private/edit_brand/${brand.id}`)}
           >
-            <EditNoteOutlinedIcon fontSize='medium'/>
+            <EditNoteOutlinedIcon fontSize="medium" />
           </Button>
         </td>
         <td>
-          <Button
-            variant="outlined"
-            onClick={() => deleteThisBrand(brand.id)}
-          >
-            <DeleteSweepOutlinedIcon fontSize='medium'/>
+          <Button variant="outlined" onClick={() => deleteThisBrand(brand.id)}>
+            <DeleteSweepOutlinedIcon fontSize="medium" />
           </Button>
         </td>
         <td>

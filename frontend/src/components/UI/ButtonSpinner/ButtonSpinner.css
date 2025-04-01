@@ -15,7 +15,12 @@
   width: 13.33333px;
   height: 13.33333px;
   border-radius: 50%;
-  background: linear-gradient(90deg, rgba(250, 134, 1, 1) 0%, rgba(250, 179, 1, 1) 28%, rgba(250, 143, 1, 1) 100%);
+  background: linear-gradient(
+    90deg,
+    rgba(250, 134, 1, 1) 0%,
+    rgba(250, 179, 1, 1) 28%,
+    rgba(250, 143, 1, 1) 100%
+  );
   animation-timing-function: cubic-bezier(0, 1, 1, 0);
 }
 .lds-ellipsis div:nth-child(1) {

@@ -10,7 +10,6 @@ export class SeedService {
   async seed() {
     await this.prisma.passwordReset.deleteMany();
     await this.prisma.user.deleteMany({});
-    await this.prisma.customerCart.deleteMany({});
     await this.prisma.products.deleteMany({});
     await this.prisma.siteEdition.deleteMany({});
     await this.prisma.brand.deleteMany({});

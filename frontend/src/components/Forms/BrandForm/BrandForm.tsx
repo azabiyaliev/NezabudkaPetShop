@@ -20,18 +20,23 @@ interface Props {
 }
 
 const initialBrand = {
-  title: '',
+  title: "",
   logo: null,
   description: '',
 };
 
-const BrandForm:React.FC<Props> = ({addNewBrand, isLoading, editBrand = initialBrand, isBrand = false}) => {
+const BrandForm: React.FC<Props> = ({
+  addNewBrand,
+  isLoading,
+  editBrand = initialBrand,
+  isBrand = false,
+}) => {
   const [newBrand, setNewBrand] = useState<IBrandForm>(editBrand);
   const [resetFile, setResetFile] = useState<boolean>(false);
   const addError = useAppSelector(addErrorFromSlice);
 
-  const onChange = (e:React.ChangeEvent<HTMLInputElement>) => {
-    const {name, value} = e.target;
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
 
     setNewBrand((prevState) => ({
       ...prevState,
@@ -49,7 +54,7 @@ const BrandForm:React.FC<Props> = ({addNewBrand, isLoading, editBrand = initialB
   const onSubmit = (e:React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    addNewBrand({...newBrand});
+    addNewBrand({ ...newBrand });
 
     if (!isBrand) {
       setNewBrand(initialBrand);
@@ -74,28 +79,30 @@ const BrandForm:React.FC<Props> = ({addNewBrand, isLoading, editBrand = initialB
         <Sheet
           sx={{
             width: 800,
-            mx: 'auto',
+            mx: "auto",
             my: 4,
             py: 3,
             px: 2,
-            display: 'flex',
-            flexDirection: 'column',
+            display: "flex",
+            flexDirection: "column",
             gap: 2,
-            borderRadius: 'sm',
-            boxShadow: 'md',
-            backgroundColor: 'transparent'
+            borderRadius: "sm",
+            boxShadow: "md",
+            backgroundColor: "transparent",
           }}
           variant="outlined"
         >
           <div>
-            <Typography level="h2" component="h1"
-              sx={{textAlign: 'center', margin: '10px 0'}}
+            <Typography
+              level="h2"
+              component="h1"
+              sx={{ textAlign: "center", margin: "10px 0" }}
             >
-              {!isBrand ? 'Добавление нового' : 'Редактирование'} бренда
+              {!isBrand ? "Добавление нового" : "Редактирование"} бренда
             </Typography>
           </div>
           {addError && (
-            <Alert severity="error" sx={{ width: '100%'}}>
+            <Alert severity="error" sx={{ width: "100%" }}>
               {addError.message}
             </Alert>
           )}
@@ -115,27 +122,33 @@ const BrandForm:React.FC<Props> = ({addNewBrand, isLoading, editBrand = initialB
           {newBrand.logo && (
             <img
               style={{
-                width: '200px',
-                height: '200px',
-                textIndent: '-9999px',
-                display: 'block',
+                width: "200px",
+                height: "200px",
+                textIndent: "-9999px",
+                display: "block",
               }}
-              src={newBrand.logo instanceof File ? URL.createObjectURL(newBrand.logo) : apiUrl + newBrand.logo}
+              src={
+                newBrand.logo instanceof File
+                  ? URL.createObjectURL(newBrand.logo)
+                  : apiUrl + newBrand.logo
+              }
               alt={newBrand.title}
             />
           )}
           <Button
             variant="text"
             sx={{
-              color: 'white',
-              textTransform: 'uppercase',
-              background: isLoading ? 'transparent' : 'linear-gradient(90deg, rgba(250, 134, 1, 1) 0%, rgba(250, 179, 1, 1) 28%, rgba(250, 143, 1, 1) 100%)',
+              color: "white",
+              textTransform: "uppercase",
+              background: isLoading
+                ? "transparent"
+                : "linear-gradient(90deg, rgba(250, 134, 1, 1) 0%, rgba(250, 179, 1, 1) 28%, rgba(250, 143, 1, 1) 100%)",
             }}
             type="submit"
             disabled={isLoading}
           >
-            {!isBrand ? 'Создать' : 'Сохранить'}
-            {isLoading ? <ButtonSpinner/> : null}
+            {!isBrand ? "Создать" : "Сохранить"}
+            {isLoading ? <ButtonSpinner /> : null}
           </Button>
         </Sheet>
       </main>

@@ -1,12 +1,11 @@
-import { Box, Typography, Divider, CardMedia } from '@mui/material';
-import '../css/product.css'
-import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
-import { useEffect } from 'react';
-import { getOneProduct } from '../../../store/products/productsThunk.ts';
-import { useParams } from 'react-router-dom';
-import { selectProduct } from '../../../store/products/productsSlice.ts';
-import { apiUrl } from '../../../globalConstants.ts';
-
+import { Box, Typography, Divider, CardMedia } from "@mui/material";
+import "../css/product.css";
+import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
+import { useEffect } from "react";
+import { getOneProduct } from "../../../store/products/productsThunk.ts";
+import { useParams } from "react-router-dom";
+import { selectProduct } from "../../../store/products/productsSlice.ts";
+import { apiUrl } from "../../../globalConstants.ts";
 
 const ProductPage = () => {
   const dispatch = useAppDispatch();
@@ -14,7 +13,7 @@ const ProductPage = () => {
   const product = useAppSelector(selectProduct);
 
   useEffect(() => {
-    dispatch(getOneProduct(Number(id)))
+    dispatch(getOneProduct(Number(id)));
   }, [dispatch, id]);
 
   if (!product) {
@@ -22,18 +21,18 @@ const ProductPage = () => {
   }
 
   return (
-    <Box className='product-box'>
-      <Box className='product-grid'>
-        <Box sx={{width: '35%'}}>
+    <Box className="product-box">
+      <Box className="product-grid">
+        <Box sx={{ width: "35%" }}>
           <CardMedia
             component="img"
             image={apiUrl + "/" + product.productPhoto}
             alt="A Pro Сухой корм"
-            sx={{ width: "80%"}}
+            sx={{ width: "80%" }}
           />
         </Box>
-        <Box sx={{width: '65%'}} >
-          <Typography sx={{fontSize: '15px'}} gutterBottom>
+        <Box sx={{ width: "65%" }}>
+          <Typography sx={{ fontSize: "15px" }} gutterBottom>
             Главная / Собаки / Сухой корм / A Pro
           </Typography>
           <Typography variant="h5" fontWeight="normal">
@@ -41,17 +40,32 @@ const ProductPage = () => {
           </Typography>
 
           <Typography variant="h6" color="orange" mt={1}>
-            {product.existence ? "Есть" : 'Нет в наличии'}
+            {product.existence ? "Есть" : "Нет в наличии"}
           </Typography>
           <Divider sx={{ my: 2 }} />
           <Box component="ul" className="product-specs">
-            <li><strong>Бренд</strong> A Pro</li>
-            <li><strong>Страна-производитель</strong> Таиланд</li>
-            <li><strong>Класс корма</strong> Эконом</li>
-            <li><strong>Вес</strong> 20 кг</li>
-            <li><strong>Форма выпуска</strong> Крокет</li>
-            <li><strong>Возраст собаки</strong> Взрослые</li>
-            <li><strong>Размер собаки</strong> Маленькие породы, Средние породы, Крупные породы</li>
+            <li>
+              <strong>Бренд</strong> A Pro
+            </li>
+            <li>
+              <strong>Страна-производитель</strong> Таиланд
+            </li>
+            <li>
+              <strong>Класс корма</strong> Эконом
+            </li>
+            <li>
+              <strong>Вес</strong> 20 кг
+            </li>
+            <li>
+              <strong>Форма выпуска</strong> Крокет
+            </li>
+            <li>
+              <strong>Возраст собаки</strong> Взрослые
+            </li>
+            <li>
+              <strong>Размер собаки</strong> Маленькие породы, Средние породы,
+              Крупные породы
+            </li>
           </Box>
           <Typography variant="body2" mt={2}>
             Артикул: 6936363902146

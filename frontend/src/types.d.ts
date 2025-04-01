@@ -64,7 +64,7 @@ export interface EditSiteMutation {
   address: string;
   email: string;
   phone: string;
-  PhotoByCarousel: PhotoCarousel []
+  PhotoByCarousel: PhotoCarousel[];
 }
 
 export interface EditSite {
@@ -74,11 +74,11 @@ export interface EditSite {
   schedule: string;
   address: string;
   email: string;
-  phone: string
-  PhotoByCarousel: PhotoCarousel []
+  phone: string;
+  PhotoByCarousel: PhotoCarousel[];
 }
 
-export interface PhotoCarousel{
+export interface PhotoCarousel {
   photo: File | null;
 }
 
@@ -104,10 +104,8 @@ export interface ProductRequest {
 }
 
 export interface ICart {
-  id: number;
-  productId: number;
   quantity: number;
-  product: ProductResponse,
+  product: ProductResponse;
 }
 
 export interface ICartMutation {
@@ -139,22 +137,6 @@ interface ChangePasswordResponse {
   message: string;
 }
 
-///  productName        String  @map("product_name")
-//   productPhoto       String  @map("product_photo")
-//   productPrice       Int     @map("product_price")
-//   productDescription String  @map("product_description")
-//   productComment     String? @map("product_comment")
-//
-//   existence Boolean @default(true)
-//   sales     Boolean @default(false)
-//
-//   orderItem  OrderItem[]
-//   brandId    Int?        @map("brand_id")
-//   brand      Brand?      @relation(fields: [brandId], references: [id])
-//   categoryId Int?        @map("category_id")
-//   category   Category?   @relation(fields: [categoryId], references: [id])
-//
-//   reviews Review[]
 export interface ProductResponse {
   id: number;
   productName: string;
@@ -168,4 +150,3 @@ export interface ProductResponse {
   brand: IBrand;
   category: ICategories;
 }
-

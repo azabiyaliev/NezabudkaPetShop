@@ -1,8 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store.ts";
 import { GlobalError, User, ValidationError } from "../../types";
-import { changePasswordAsync, facebookLogin, googleLogin, sendPasswordCode, verifyResetCode } from './usersThunk.ts';
-import { login, register, updateUser } from './usersThunk.ts';
+import {
+  changePasswordAsync,
+  facebookLogin,
+  googleLogin,
+  sendPasswordCode,
+  verifyResetCode,
+} from "./usersThunk.ts";
+import { login, register, updateUser } from "./usersThunk.ts";
 
 interface UserState {
   user: User | null;
@@ -85,14 +91,14 @@ export const userSlice = createSlice({
         state.loginError = error || null;
       })
       .addCase(facebookLogin.pending, (state) => {
-        state.loginLoading = true
+        state.loginLoading = true;
         state.loginError = null;
       })
-      .addCase(facebookLogin.fulfilled, (state, {payload: user}) => {
+      .addCase(facebookLogin.fulfilled, (state, { payload: user }) => {
         state.user = user;
         state.loginLoading = false;
       })
-      .addCase(facebookLogin.rejected, (state, {payload: error}) => {
+      .addCase(facebookLogin.rejected, (state, { payload: error }) => {
         state.loginLoading = false;
         state.loginError = error || null;
       })
@@ -105,9 +111,9 @@ export const userSlice = createSlice({
         state.user = action.payload;
         state.editError = null;
       })
-      .addCase(updateUser.rejected, (state, ) => {
+      .addCase(updateUser.rejected, (state) => {
         state.editLoading = false;
-        state.editError =  null;
+        state.editError = null;
       })
       .addCase(sendPasswordCode.pending, (state) => {
         state.passwordCodeLoading = true;
@@ -118,7 +124,7 @@ export const userSlice = createSlice({
       })
       .addCase(sendPasswordCode.rejected, (state) => {
         state.passwordCodeLoading = false;
-        state.passwordCodeError = null
+        state.passwordCodeError = null;
       })
       .addCase(verifyResetCode.pending, (state) => {
         state.passwordCodeLoading = true;
@@ -129,7 +135,7 @@ export const userSlice = createSlice({
       })
       .addCase(verifyResetCode.rejected, (state) => {
         state.passwordCodeLoading = false;
-        state.passwordCodeError = null
+        state.passwordCodeError = null;
       })
       .addCase(changePasswordAsync.pending, (state) => {
         state.passwordCodeLoading = true;

@@ -1,13 +1,12 @@
-import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
-import CategoryForm from '../../../components/Forms/CategoryForm/CategoryForm.tsx';
-import { selectUser } from '../../../store/users/usersSlice.ts';
-import { CategoryMutation } from '../../../types';
+import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
+import CategoryForm from "../../../components/Forms/CategoryForm/CategoryForm.tsx";
+import { selectUser } from "../../../store/users/usersSlice.ts";
+import { CategoryMutation } from "../../../types";
 import {
   addNewCategory,
   fetchCategoriesThunk,
-} from '../../../store/categories/categoriesThunk.ts';
-import { toast, ToastContainer } from 'react-toastify';
-
+} from "../../../store/categories/categoriesThunk.ts";
+import { toast, ToastContainer } from "react-toastify";
 
 const NewCategory = () => {
   const user = useAppSelector(selectUser);
@@ -15,17 +14,17 @@ const NewCategory = () => {
 
   const onSubmit = async (category: CategoryMutation) => {
     if (user) {
-      await dispatch(addNewCategory({category, token: user.token}));
+      await dispatch(addNewCategory({ category, token: user.token }));
       await dispatch(fetchCategoriesThunk());
 
-      toast.success('Категория была добавлена ;)', {position: 'top-center'});
+      toast.success("Категория была добавлена ;)", { position: "top-center" });
     }
   };
 
   return (
     <>
-      <CategoryForm onSubmit={onSubmit}/>
-      <ToastContainer/>
+      <CategoryForm onSubmit={onSubmit} />
+      <ToastContainer />
     </>
   );
 };

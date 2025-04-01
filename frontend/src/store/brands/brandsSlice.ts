@@ -1,7 +1,13 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { GlobalError, IBrand, IBrandForm } from '../../types';
-import { addBrand, brandeDelete, editBrand, getBrands, getOneBrand } from './brandsThunk.ts';
-import { RootState } from '../../app/store.ts';
+import { createSlice } from "@reduxjs/toolkit";
+import { GlobalError, IBrand, IBrandForm } from "../../types";
+import {
+  addBrand,
+  brandeDelete,
+  editBrand,
+  getBrands,
+  getOneBrand,
+} from "./brandsThunk.ts";
+import { RootState } from "../../app/store.ts";
 
 interface BrandState {
   brands: IBrand[];
@@ -46,9 +52,14 @@ export const brandFromSlice = (state: RootState) => state.brands.brand;
 export const addLoadingFromSlice = (state: RootState) => state.brands.loadings.addLoading;
 export const editLoadingFromSlice = (state: RootState) => state.brands.loadings.editLoading;
 export const addErrorFromSlice = (state: RootState) => state.brands.errors.addError;
+export const addLoadingFromSlice = (state: RootState) =>
+  state.brands.loadings.addLoading;
+export const editLoadingFromSlice = (state: RootState) =>
+  state.brands.loadings.editLoading;
+export const addErrorFromSlice = (state: RootState) => state.brands.addError;
 
 const brandsSlice = createSlice({
-  name: 'brands',
+  name: "brands",
   initialState,
   reducers: {
     clearError: (state) => {
@@ -119,7 +130,7 @@ const brandsSlice = createSlice({
         state.loadings.editLoading = false;
         state.errors.editError = error || null;
       });
-  }
+  },
 });
 
 export const brandReducer = brandsSlice.reducer;

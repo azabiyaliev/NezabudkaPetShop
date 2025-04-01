@@ -31,9 +31,11 @@ const EditProduct = () => {
 
   const onSubmitForm = async (newProduct: ProductRequest) => {
     try {
-      console.log('Submitting product data:', newProduct);
+      console.log("Submitting product data:", newProduct);
       if (user && user.role === "admin") {
-        await dispatch(editProduct({ token: user.token, product: newProduct, })).unwrap();
+        await dispatch(
+          editProduct({ token: user.token, product: newProduct }),
+        ).unwrap();
         toast.success("Товар успешно обновлен!");
         navigate("/private/products");
       }

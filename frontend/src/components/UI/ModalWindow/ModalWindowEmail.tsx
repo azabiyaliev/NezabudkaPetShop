@@ -1,12 +1,15 @@
-import { Button, Dialog, DialogContent, DialogTitle } from '@mui/material';
-import Typography from '@mui/material/Typography';
-import TextField from '@mui/material/TextField';
-import { DialogActions } from '@mui/joy';
-import React, { useState } from 'react';
-import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
-import { useAppDispatch } from '../../../app/hooks.ts';
-import { sendPasswordCode, verifyResetCode } from '../../../store/users/usersThunk.ts';
-import { toast } from 'react-toastify';
+import { Button, Dialog, DialogContent, DialogTitle } from "@mui/material";
+import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
+import { DialogActions } from "@mui/joy";
+import React, { useState } from "react";
+import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
+import { useAppDispatch } from "../../../app/hooks.ts";
+import {
+  sendPasswordCode,
+  verifyResetCode,
+} from "../../../store/users/usersThunk.ts";
+import { toast } from "react-toastify";
 
 interface Props {
   open: boolean;
@@ -14,15 +17,15 @@ interface Props {
 }
 
 const ModalWindow: React.FC<Props> = ({ open, setOpen }) => {
-  const [email, setEmail] = useState('');
-  const [resetCode, setResetCode] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [step, setStep] = useState<'email' | 'verify'>('email');
+  const [email, setEmail] = useState("");
+  const [resetCode, setResetCode] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [step, setStep] = useState<"email" | "verify">("email");
   const dispatch = useAppDispatch();
 
   const handleClose = () => {
     setOpen(false);
-    setStep('email');
+    setStep("email");
   };
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,10 +44,10 @@ const ModalWindow: React.FC<Props> = ({ open, setOpen }) => {
     if (email) {
       try {
         await dispatch(sendPasswordCode(email));
-        toast.success('Вы востановили свой доступ;)');
-        setStep('verify');
+        toast.success("Вы востановили свой доступ;)");
+        setStep("verify");
       } catch (error) {
-        console.error('Ошибка при отправке кода:', error);
+        console.error("Ошибка при отправке кода:", error);
       }
     }
   };
@@ -64,25 +67,26 @@ const ModalWindow: React.FC<Props> = ({ open, setOpen }) => {
         <Button
           onClick={handleClose}
           sx={{
-            position: 'absolute',
+            position: "absolute",
             top: 8,
             right: 8,
-            backgroundColor: 'white',
-            color: 'red',
+            backgroundColor: "white",
+            color: "red",
           }}
         >
           <CloseOutlinedIcon />
         </Button>
 
-        <DialogTitle style={{ textAlign: 'center' }}>
-          {step === 'email' ? 'Восстановление пароля' : 'Сброс пароля'}
+        <DialogTitle style={{ textAlign: "center" }}>
+          {step === "email" ? "Восстановление пароля" : "Сброс пароля"}
         </DialogTitle>
         <hr />
         <DialogContent>
-          {step === 'email' ? (
+          {step === "email" ? (
             <>
               <Typography variant="body2" color="textSecondary" align="center">
-                Пожалуйста, введите ваш email, чтобы мы могли отправить вам код восстановления.
+                Пожалуйста, введите ваш email, чтобы мы могли отправить вам код
+                восстановления.
               </Typography>
               <TextField
                 label="Email"
@@ -90,7 +94,7 @@ const ModalWindow: React.FC<Props> = ({ open, setOpen }) => {
                 fullWidth
                 value={email}
                 onChange={handleEmailChange}
-                style={{ marginTop: '30px' }}
+                style={{ marginTop: "30px" }}
               />
             </>
           ) : (
@@ -104,7 +108,7 @@ const ModalWindow: React.FC<Props> = ({ open, setOpen }) => {
                 fullWidth
                 value={resetCode}
                 onChange={handleResetCodeChange}
-                style={{ marginTop: '30px' }}
+                style={{ marginTop: "30px" }}
               />
               <TextField
                 label="Введите новый пароль"
@@ -113,28 +117,28 @@ const ModalWindow: React.FC<Props> = ({ open, setOpen }) => {
                 type="password"
                 value={newPassword}
                 onChange={handleNewPasswordChange}
-                style={{ marginTop: '30px' }}
+                style={{ marginTop: "30px" }}
               />
             </>
           )}
         </DialogContent>
         <DialogActions
           style={{
-            marginBottom: '40px',
-            display: 'flex',
-            justifyContent: 'center',
+            marginBottom: "40px",
+            display: "flex",
+            justifyContent: "center",
           }}
         >
-          {step === 'email' ? (
+          {step === "email" ? (
             <Button
               onClick={handleSubmitEmail}
               variant="contained"
               sx={{
                 mt: 3,
                 mb: 2,
-                backgroundColor: '#FFEB3B',
-                color: 'black',
-                width: 'auto',
+                backgroundColor: "#FFEB3B",
+                color: "black",
+                width: "auto",
               }}
             >
               Отправить код
@@ -146,9 +150,9 @@ const ModalWindow: React.FC<Props> = ({ open, setOpen }) => {
               sx={{
                 mt: 3,
                 mb: 2,
-                backgroundColor: '#FFEB3B',
-                color: 'black',
-                width: 'auto',
+                backgroundColor: "#FFEB3B",
+                color: "black",
+                width: "auto",
               }}
             >
               Изменить пароль
