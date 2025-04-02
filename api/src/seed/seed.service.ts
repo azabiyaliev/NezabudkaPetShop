@@ -260,11 +260,5 @@ export class SeedService {
         },
       ],
     });
-    await this.prisma.orderItem.create({
-      data: {
-        quantity: 2,
-        createdAt: new Date(),
-      },
-    });
   }
 }

@@ -111,6 +111,7 @@ export interface ICart {
 export interface ICartMutation {
   productId: number;
   quantity: number;
+  orderAmount: number;
 }
 
 export interface SubcategoryWithBrand {
@@ -167,3 +168,40 @@ export interface ProductResponse {
   category: ICategories;
 }
 
+export interface IOrder {
+  id: number;
+  status: string;
+  address: string;
+  guestEmail: string;
+  guestPhone: string;
+  guestName: string;
+  guestLastName: string;
+  orderComment: string;
+  paymentMethod: PaymentMethod;
+  userId: number;
+  user: User;
+  items: ICartMutation[];
+
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface OrderMutation {
+  address: string;
+  guestEmail: string;
+  guestPhone: string;
+  guestName: string;
+  guestLastName: string;
+  orderComment: string;
+  paymentMethod: string;
+  userId: string;
+  items: ICartMutation[];
+}
+
+export interface OrderItem {
+  id: number;
+  quantity: number;
+  productId: number;
+  product: ProductResponse;
+  orderAmount: number;
+}
