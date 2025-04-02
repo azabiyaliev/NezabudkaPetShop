@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { BrandDto } from '../dto/brands.dto';
 
@@ -26,8 +30,8 @@ export class BrandsService {
     return brand;
   }
 
-  async createBrand(brandDTO: BrandDto) {
-    const { title, logo, description } = brandDTO;
+  async createBrand(brandDTO: BrandDto, file?: Express.Multer.File) {
+    const { title, description } = brandDTO;
     const brand = await this.prisma.brand.findFirst({
       where: { title },
     });
@@ -39,7 +43,7 @@ export class BrandsService {
     const newBrand = await this.prisma.brand.create({
       data: {
         title,
-        logo,
+        logo: file && file.filename ? '/brands/' + file.filename : null,
         description: description === '' ? null : description,
       },
     });
@@ -52,28 +56,48 @@ export class BrandsService {
     file?: Express.Multer.File,
   ) {
     const { title, description } = brandDTO;
+    const brandId = parseInt(id);
+    const updateBrand: Partial<BrandDto> = {};
+
+    const brand = await this.prisma.brand.findFirst({
+      where: { id: brandId },
+    });
+
+    if (!brand) {
+      throw new NotFoundException(
+        `Бренд с идентификатором равное ${id} не найден!`,
+      );
+    }
+
+    if (title !== brand.title) {
+      const existingBrand = await this.prisma.brand.findFirst({
+        where: { title: title },
+      });
+      if (existingBrand) {
+        throw new ConflictException(
+          `Бренд с названием "${title}" уже существует!`,
+        );
+      }
+      updateBrand.title = title;
+    }
+
     let logo = file ? '/brands/' + file.filename : null;
     if (file) {
       logo = '/brands/' + file.filename;
     }
-    const brandId = parseInt(id);
-    const brand = await this.prisma.brand.findFirst({
-      where: { id: brandId },
-    });
-    if (!brand) {
-      throw new NotFoundException(
-        `Бренд с идентификатором равное ${id} не найдена!`,
-      );
+
+    updateBrand.logo = logo;
+
+    if (description !== brand.description || description === '') {
+      updateBrand.description = description === '' ? null : description;
     }
-    const updateBrand = await this.prisma.brand.update({
+
+    const changeBrand = await this.prisma.brand.update({
       where: { id: brandId },
-      data: {
-        title,
-        logo,
-        description: description === '' ? null : description,
-      },
+      data: updateBrand,
     });
-    return { message: 'Данный бренд был успешно отредактирован!', updateBrand };
+
+    return { message: 'Данный бренд был успешно отредактирован!', changeBrand };
   }
 
   async deleteBrand(id: string) {

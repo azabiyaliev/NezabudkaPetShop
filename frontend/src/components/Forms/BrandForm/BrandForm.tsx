@@ -2,14 +2,12 @@ import Sheet from '@mui/joy/Sheet';
 import Typography from '@mui/joy/Typography';
 import FormControl from '@mui/joy/FormControl';
 import React, { useState } from 'react';
-import { IBrandForm } from '../../../types';
+import { BrandError, IBrandForm } from '../../../types';
 import FileInputForBrand from '../../Domain/Brand/FileInputForBrand/FileInputForBrand.tsx';
 import { Alert, Button } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import ButtonSpinner from '../../UI/ButtonSpinner/ButtonSpinner.tsx';
 import { apiUrl } from '../../../globalConstants.ts';
-import { useAppSelector } from '../../../app/hooks.ts';
-import { addErrorFromSlice } from '../../../store/brands/brandsSlice.ts';
 import TextEditor from '../../TextEditor/TextEditor.tsx';
 
 interface Props {
@@ -17,12 +15,13 @@ interface Props {
   isLoading?: boolean;
   editBrand?: IBrandForm;
   isBrand?: boolean;
+  brandError: BrandError | null;
 }
 
 const initialBrand = {
   title: "",
   logo: null,
-  description: '',
+  description: "",
 };
 
 const BrandForm: React.FC<Props> = ({
@@ -30,10 +29,10 @@ const BrandForm: React.FC<Props> = ({
   isLoading,
   editBrand = initialBrand,
   isBrand = false,
+  brandError,
 }) => {
   const [newBrand, setNewBrand] = useState<IBrandForm>(editBrand);
   const [resetFile, setResetFile] = useState<boolean>(false);
-  const addError = useAppSelector(addErrorFromSlice);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -101,9 +100,9 @@ const BrandForm: React.FC<Props> = ({
               {!isBrand ? "Добавление нового" : "Редактирование"} бренда
             </Typography>
           </div>
-          {addError && (
+          {brandError && (
             <Alert severity="error" sx={{ width: "100%" }}>
-              {addError.message}
+              {brandError.errors ? brandError.errors.title : brandError.message}
             </Alert>
           )}
           <FormControl>

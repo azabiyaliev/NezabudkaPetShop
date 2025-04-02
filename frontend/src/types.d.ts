@@ -57,6 +57,15 @@ export interface IBrandForm {
   description: string;
 }
 
+export interface BrandError {
+  error: string;
+  errors: {
+    title: string;
+  };
+  message: string;
+  statusCode: number;
+}
+
 export interface EditSiteMutation {
   instagram: string;
   whatsapp: string;

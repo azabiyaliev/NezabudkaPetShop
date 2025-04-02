@@ -52,12 +52,9 @@ export class BrandsController {
     @UploadedFile() file: Express.Multer.File,
     @Body() brandDTO: BrandDto,
   ) {
-    return await this.brandsService.createBrand({
-      title: brandDTO.title,
-      logo: file && file.filename ? '/brands/' + file.filename : null,
-      description: brandDTO.description,
-    });
+    return await this.brandsService.createBrand(brandDTO, file);
   }
+
   @UseGuards(TokenAuthGuard, RolesGuard)
   @Roles('admin')
   @Patch(':id')

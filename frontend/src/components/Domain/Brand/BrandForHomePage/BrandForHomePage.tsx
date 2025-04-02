@@ -60,16 +60,19 @@ const BrandForHomePage:React.FC<Props> = ({brands}) => {
           <SwiperSlide key={index} style={{
             textAlign: 'center',
             cursor: 'pointer',
+            display: brand.logo ? 'block' : 'none',
           }}>
-            <img
-              src={`${apiUrl + brand.logo}`}
-              alt={brand.title}
-              style={{
-                width: '80px',
-                height: '80px',
-                objectFit: 'contain',
-              }}
-            />
+            {brand.logo !== null && (
+              <img
+                src={`${apiUrl + brand.logo}`}
+                alt={brand.title}
+                style={{
+                  width: '80px',
+                  height: '80px',
+                  objectFit: 'contain',
+                }}
+              />
+            )}
           </SwiperSlide>
         ))}
       </Swiper>

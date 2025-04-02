@@ -1,12 +1,12 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { GlobalError, IBrand, IBrandForm } from "../../types";
+import { BrandError, GlobalError, IBrand, IBrandForm } from '../../types';
 import axiosApi from "../../axiosApi.ts";
 import { isAxiosError } from "axios";
 
 export const addBrand = createAsyncThunk<
   void,
   { brand: IBrandForm; token: string },
-  { rejectValue: GlobalError }
+  { rejectValue: BrandError }
 >("brands/addBrand", async ({ brand, token }, { rejectWithValue }) => {
   try {
     const formData = new FormData();
@@ -30,21 +30,21 @@ export const addBrand = createAsyncThunk<
     if (
       isAxiosError(error) &&
       error.response &&
-      (error.response.status === 409 || error.response.status === 404)
+      (error.response.status === 409 || error.response.status === 404 || error.response.status === 400)
     ) {
-      return rejectWithValue(error.response.data as GlobalError);
+      return rejectWithValue(error.response.data as BrandError);
     }
     throw error;
   }
 });
 
-export const editBrand = createAsyncThunk<void, {brand: IBrandForm, token: string }, {rejectValue: GlobalError}>(
+export const editBrand = createAsyncThunk<void, {brand: IBrandForm, token: string }, {rejectValue: BrandError}>(
   'brands/editBrand',
-  async ({brand, token}, {rejectWithValue}) => {
+  async ({ brand, token}, {rejectWithValue}) => {
     try {
       const formData = new FormData();
-
-      const keys = Object.keys(brand) as (keyof IBrand)[];
+      const { id, ...brandData } = brand;
+      const keys = Object.keys(brandData) as (keyof IBrand)[];
 
       keys.forEach((key) => {
         const value = brand[key];
@@ -58,10 +58,10 @@ export const editBrand = createAsyncThunk<void, {brand: IBrandForm, token: strin
         }
       });
 
-      await axiosApi.patch(`/brands/${brand.id}`, formData, {headers: {'Authorization': token}});
+      await axiosApi.patch(`/brands/${id}`, formData, {headers: {'Authorization': token}});
     } catch (error) {
-      if (isAxiosError(error) && error.response && (error.response.status === 409 || error.response.status === 404)) {
-        return rejectWithValue(error.response.data as GlobalError);
+      if (isAxiosError(error) && error.response && (error.response.status === 409 || error.response.status === 404 || error.response.status === 400)) {
+        return rejectWithValue(error.response.data as BrandError);
       }
       throw error;
     }
@@ -83,7 +83,7 @@ export const getOneBrand = createAsyncThunk<IBrandForm, number, {rejectValue: Gl
       const response = await axiosApi.get(`/brands/${brandId}`);
       return response.data || null;
     } catch (error) {
-      if (isAxiosError(error) && error.response && (error.response.status === 409 || error.response.status === 404)) {
+      if (isAxiosError(error) && error.response && (error.response.status === 409 || error.response.status === 404 || error.response.status === 400)) {
         return rejectWithValue(error.response.data as GlobalError);
       }
       throw error;
