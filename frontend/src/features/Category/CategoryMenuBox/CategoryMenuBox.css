@@ -70,3 +70,9 @@
   }
 }
 
+@media (max-width: 935px) {
+  .nav {
+    font-size: 12px;
+  }
+}
+
