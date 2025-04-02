@@ -10,8 +10,8 @@ import { User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import * as nodemailer from 'nodemailer';
 import * as process from 'node:process';
-import { RegisterDto } from '../dto/auth.dto';
 import { regEmail, regPhone } from '../auth/auth.service';
+import { CreateDto } from '../dto/user.dto';
 
 @Injectable()
 export class UsersService {
@@ -122,9 +122,9 @@ export class UsersService {
     return { message: 'Пароль успешно изменен' };
   }
 
-  async createAdmin(registerDto: RegisterDto) {
-    const { email, firstName, secondName, password, role } = registerDto;
-    let phone = registerDto.phone;
+  async createAdmin(createDto: CreateDto) {
+    const { email, firstName, secondName, password, role } = createDto;
+    let phone = createDto.phone;
 
     if (password.includes(' ')) {
       throw new ConflictException('Пароль не должен содержать пустых отступов');
@@ -188,8 +188,6 @@ export class UsersService {
     return { message: 'Админ создан успешно', user };
   }
 
-
-
   async findAll() {
     const result = await this.prisma.user.findMany();
     if (result.length === 0) {
@@ -211,6 +209,42 @@ export class UsersService {
     }
 
     return result;
+  }
+
+  async findALlAdmins() {
+    const result = await this.prisma.user.findMany({
+      where: { role: 'admin' },
+    });
+
+    if (!result) {
+      throw new NotFoundException('Аккаунтов админа не найдено');
+    }
+
+    return result;
+  }
+
+  async findOneAdmin(id: string) {
+    try {
+      const parsId = parseInt(id);
+      const user = await this.prisma.user.findFirst({
+        where: { id: parsId },
+      });
+
+      if (!user) {
+        throw new NotFoundException(`Пользователь с ID ${id} не найдена`);
+      }
+
+      return {
+        firstName: user.firstName,
+        secondName: user.secondName,
+        email: user.email,
+        phone: user.phone,
+        role: user.role,
+      };
+    } catch (error) {
+      console.error('findOne error:', error);
+      throw error;
+    }
   }
 
   async findOne(id: string) {
@@ -257,7 +291,6 @@ export class UsersService {
     if (isTargetSuperAdmin && (!isRequesterSuperAdmin || !isSelfEdit)) {
       throw new ForbiddenException('У вас нет прав для редактирования');
     }
-
 
     if (data.password !== undefined) {
       const salt = await bcrypt.genSalt(10);

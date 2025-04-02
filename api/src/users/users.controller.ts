@@ -11,16 +11,15 @@ import {
   Post,
   Put,
   Req,
-  UseGuards, ValidationPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { TokenAuthGuard } from '../token.auth/token-auth.guard';
 import { RolesGuard } from '../token.auth/token.role.guard';
 import { Roles } from '../roles/roles.decorator';
-import { User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
-import {AuthRequest, RequestUser} from '../types';
-import { RegisterDto } from '../dto/auth.dto';
+import { AuthRequest, RequestUser } from '../types';
+import { CreateDto, UpdateDto } from '../dto/user.dto';
 
 @Controller('users')
 export class UsersController {
@@ -34,8 +33,8 @@ export class UsersController {
   @UseGuards(TokenAuthGuard, RolesGuard)
   @Roles('superAdmin')
   @Post()
-  async create(@Body() registerDto: RegisterDto) {
-    return this.userService.createAdmin(registerDto);
+  async create(@Body() createDto: CreateDto) {
+    return this.userService.createAdmin(createDto);
   }
 
   @Post('send-password-code')
@@ -110,6 +109,16 @@ export class UsersController {
     return this.userService.findSuperAdmin();
   }
 
+  @Get('admins')
+  async findAdmins() {
+    return this.userService.findALlAdmins();
+  }
+
+  @Get('admin/:id')
+  async findOneAdmin(@Param('id') id: string) {
+    return this.userService.findOneAdmin(id);
+  }
+
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return this.userService.findOne(id);
@@ -125,7 +134,11 @@ export class UsersController {
   @UseGuards(TokenAuthGuard, RolesGuard)
   @Roles('admin', 'client', 'superAdmin')
   @Put(':id')
-  async update(@Param('id') id: string, @Body() data: Partial<User>, @Req() req: AuthRequest) {
+  async update(
+    @Param('id') id: string,
+    @Body() data: UpdateDto,
+    @Req() req: AuthRequest,
+  ) {
     return this.userService.update(id, data, req.user);
   }
 }
