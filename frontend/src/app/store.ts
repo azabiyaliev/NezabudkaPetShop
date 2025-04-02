@@ -15,6 +15,7 @@ import { categoriesReducer } from '../store/categories/categoriesSlice.ts';
 import { brandReducer } from '../store/brands/brandsSlice.ts';
 import { productsReducer } from '../store/products/productsSlice.ts';
 import { cartReducer } from '../store/cart/cartSlice.ts';
+import { adminReducer } from '../store/admins/adminSlice.ts';
 
 const userPersistConfig = {
   key: "store:users",
@@ -29,6 +30,7 @@ const rootReducer = combineReducers({
   categories: categoriesReducer,
   products: productsReducer,
   carts: cartReducer,
+  admins: adminReducer,
 });
 
 export const store = configureStore({

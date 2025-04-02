@@ -137,22 +137,6 @@ interface ChangePasswordResponse {
   message: string;
 }
 
-///  productName        String  @map("product_name")
-//   productPhoto       String  @map("product_photo")
-//   productPrice       Int     @map("product_price")
-//   productDescription String  @map("product_description")
-//   productComment     String? @map("product_comment")
-//
-//   existence Boolean @default(true)
-//   sales     Boolean @default(false)
-//
-//   orderItem  OrderItem[]
-//   brandId    Int?        @map("brand_id")
-//   brand      Brand?      @relation(fields: [brandId], references: [id])
-//   categoryId Int?        @map("category_id")
-//   category   Category?   @relation(fields: [categoryId], references: [id])
-//
-//   reviews Review[]
 export interface ProductResponse {
   id: number;
   productName: string;
@@ -165,5 +149,24 @@ export interface ProductResponse {
   brandId: string;
   brand: IBrand;
   category: ICategories;
+}
+
+// export interface AdminFormData {
+//   firstName: string;
+//   secondName: string;
+//   email: string;
+//   phone: string;
+//   password: string;
+//   role: string;
+// }
+
+export interface AdminDataMutation {
+  id?: number;
+  firstName: string;
+  secondName: string;
+  email: string;
+  phone: string;
+  password: string;
+  role: string;
 }
 
