@@ -3,6 +3,8 @@
   border: 1px solid #c8ddb9;
   box-shadow: 0 1px 2px rgba(9, 39, 9, 0.16);
   border-radius: 10px;
+  width: 30%;
+  transition: all 0.3s ease-in-out;
 }
 
 .nav {
@@ -20,8 +22,6 @@
   border-bottom: 3px solid #F6F7FB;
   background: #F6F7FB;
   border-radius: 10px 10px 0 0;
-  border-bottom-color: transparent;
-  top: 1px;
   text-decoration: none;
 }
 
@@ -49,3 +49,24 @@
   background: #dcffe6;
   color: #45833f;
 }
+
+@media (max-width: 1200px) {
+  .menu-box {
+    width: 34%;
+  }
+  .nav {
+    margin: 5px;
+  }
+
+  .nav-item-category a {
+    display: block;
+    width: 100%;
+    padding: 8px;
+  }
+
+  .nav-category-link {
+    font-size: 12px;
+    padding: 8px;
+  }
+}
+

@@ -19,8 +19,6 @@ import { OrdersModule } from './orders/orders.module';
 import { ConfigModule } from '@nestjs/config';
 import { SeedModule } from './seed/seed.module';
 import { ReviewsModule } from './reviews/reviews.module';
-import { CartController } from './cart/cart.controller';
-import { CartService } from './cart/cart.service';
 import { PhotoCarouselController } from './photo_carousel/photo_carousel.controller';
 import { PhotoCarouselModule } from './photo_carousel/photo_carousel.module';
 import { PhotoCarouselService } from './photo_carousel/photo_carousel.service';
@@ -44,7 +42,6 @@ import { PhotoCarouselService } from './photo_carousel/photo_carousel.service';
     AppController,
     BrandsController,
     EditionSiteController,
-    CartController,
     PhotoCarouselController,
   ],
   providers: [
@@ -54,7 +51,7 @@ import { PhotoCarouselService } from './photo_carousel/photo_carousel.service';
     BrandsService,
     EditionSiteService,
     CategoryService,
-    CartService,
+    PhotoCarouselService
   ],
 })
 export class AppModule {}

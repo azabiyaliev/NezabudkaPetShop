@@ -28,6 +28,11 @@ import KeyboardArrowDownOutlinedIcon from "@mui/icons-material/KeyboardArrowDown
 import { fetchSite } from '../../../store/editionSite/editionSiteThunk.ts';
 import { selectProducts } from '../../../store/products/productsSlice.ts';
 import { getProducts } from '../../../store/products/productsThunk.ts';
+import SearchIcon from '@mui/icons-material/Search';
+import LocalMallOutlinedIcon from "@mui/icons-material/LocalMallOutlined";
+import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined";
+import SettingsIcon from '@mui/icons-material/Settings';
+import MenuIcon from '@mui/icons-material/Menu';
 
 const MainToolbar = () => {
   const [openCart, setOpenCart] = useState<boolean>(false);
@@ -119,9 +124,17 @@ const MainToolbar = () => {
                   borderRight: "1px solid black",
                   paddingRight: "10px",
                 }}
-                to="https://go.2gis.com/vbcPZ"
+                to={site?.linkAddress || "/"}
               >
-                {site?.address}
+                <Typography
+                  sx={{
+                    color: "black",
+                    fontSize: 16,
+                    "@media (max-width: 800px)": { fontSize: 13 },
+                  }}
+                >
+                  {site?.address}
+                </Typography>
               </NavLink>
               <Button
                 onClick={onClick}
@@ -131,9 +144,10 @@ const MainToolbar = () => {
                   color: "black",
                   gap: "5px",
                   textTransform: "none",
+                  "@media (max-width: 460px)": { display:"none" }
                 }}
               >
-                <Typography>Покупателям</Typography>
+                <Typography sx={{ color: "black", fontSize: 16,  "@media (max-width: 800px)": { fontSize: 13 } }}> Покупателям</Typography>
                 <KeyboardArrowDownOutlinedIcon />
               </Button>
               <Menu
@@ -188,11 +202,24 @@ const MainToolbar = () => {
               }}
             >
               <Typography
-                style={{ borderRight: "1px solid black", paddingRight: "10px" }}
+                sx={{
+                  borderRight: "1px solid black",
+                  paddingRight: "10px",
+                  "@media (max-width: 800px)": { fontSize: 13 },
+                  "@media (max-width: 560px)": {borderRight:"none", paddingRight: "0px", },
+                }}
               >
                 {site && site.phone}
               </Typography>
-              <Typography>({site && site.schedule})</Typography>
+
+              <Typography
+                sx={{
+                  "@media (max-width: 800px)": { fontSize: 13 },
+                  "@media (max-width: 560px)": {display:"none" },
+                }}
+              >
+                ({site && site.schedule})
+              </Typography>
             </Box>
           </Box>
         </Container>
@@ -211,65 +238,125 @@ const MainToolbar = () => {
                 alignItems: "center",
                 paddingTop: "15px",
                 paddingBottom: "15px",
+                "@media (max-width: 1100px)": {
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                },
+                "@media (max-width: 800px)": {
+                  paddingTop: "5px",
+                  paddingBottom: "5px",
+                },
               }}
             >
-              <NavLink
-                to="/"
-                className="text-decoration-none d-flex align-items-center gap-2"
-              >
+              <div style={{display: "flex",alignItems: "center"}}>
                 <Box
-                  component="img"
-                  src={logo_transparent}
-                  alt="Nezabudka"
+                  onClick={() => setOpenCart(true)}
                   sx={{
-                    height: "65px",
-                    width: "65px",
-                    cursor: "pointer",
-                    marginRight: "8px",
-                  }}
-                />
-                <div>
-                  <Typography
-                    sx={{
-                      fontSize: "28px",
-                      textTransform: "uppercase",
-                      fontWeight: "bold",
-                      fontFamily: "COMIC SANS MS, Roboto, Arial, sans-serif",
-                      color: "white",
+                    display:"none",
+                    "@media (max-width: 800px)": {
+                      paddingTop: "7px",
+                      paddingBottom: "7px",
+                      borderRadius: "10px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
                       cursor: "pointer",
+                      transition: "background 0.3s ease",
+                      position: "relative",
+                      marginRight: "20px",
+                    }
+                  }}
+                >
+                  <MenuIcon sx={{ color: "white" }} />
+                </Box>
+                <NavLink
+                  to="/"
+                  className="text-decoration-none d-flex align-items-center gap-2"
+                >
+                  <Box
+                    component="img"
+                    src={logo_transparent}
+                    alt="Nezabudka"
+                    sx={{
+                      height: "65px",
+                      width: "65px",
+                      cursor: "pointer",
+                      marginRight: "8px",
+                      "@media (max-width: 800px)": {
+                        height: "50px",
+                        width: "50px",
+                      },
+                    }}
+                  />
+                  <div>
+                    <Typography
+                      sx={{
+                        fontSize: "28px",
+                        textTransform: "uppercase",
+                        fontWeight: "bold",
+                        fontFamily: "COMIC SANS MS, Roboto, Arial, sans-serif",
+                        color: "white",
+                        cursor: "pointer",
+                        "@media (max-width: 800px)": {
+                          fontSize: "26px",
+                        },
+                      }}
+                    >
+                      Незабудка
+                    </Typography>
+                  </div>
+                </NavLink>
+              </div>
+              <Box sx={{ position: 'relative', width: '100%', maxWidth: 400, "@media (max-width: 800px)": { display: "none" } }}>
+                <Box sx={{
+                  position: "relative",
+                  display: "flex",
+                  alignItems: "center",
+                  width: "100%",
+                  maxWidth: "400px",
+                }}>
+                  <input
+                    style={{
+                      width: "100%",
+                      padding: "12px 40px 12px 16px",
+                      fontSize: "16px",
+                      color: "#333",
+                      backgroundColor: "white",
+                      border: "2px solid rgb(195, 190, 182)",
+                      borderRadius: "30px",
+                      outline: "none",
+                      transition: "all 0.3s ease-in-out",
+                      boxShadow: "0 4px 10px rgba(91, 113, 51, 0.3)"
+                    }}
+                    placeholder="Поиск товара"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = "#d4d9c5";
+                      e.target.style.boxShadow = "0 0 8px rgba(91, 113, 51, 0.5)";
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = "#475726";
+                      e.target.style.boxShadow = "0 4px 10px rgba(91, 113, 51, 0.3)";
+                    }}
+                  />
+                  <button
+                    style={{
+                      position: "absolute",
+                      right: "10px",
+                      background: "transparent",
+                      border: "none",
+                      cursor: "pointer",
+                      color: "#8EA58C",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center"
                     }}
                   >
-                    Незабудка
-                  </Typography>
-                </div>
-              </NavLink>
-              <Box sx={{ position: 'relative', width: '100%', maxWidth: 400 }}>
-                <input
-                  style={{
-                    width: "100%",
-                    maxWidth: "400px",
-                    padding: "12px 16px",
-                    fontSize: "16px",
-                    color: "#fff",
-                    backgroundColor: "#5b7133",
-                    border: "2px solid #475726",
-                    borderRadius: "12px",
-                    outline: "none",
-                    transition: "all 0.3s ease-in-out",
-                    boxShadow: "0 4px 10px rgba(91, 113, 51, 0.3)",
-                  }}
-                  placeholder="Поиск товара"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  onFocus={(e) => {
-                    e.target.style.borderColor = "#d4d9c5";
-                    e.target.style.boxShadow = "0 0 8px rgba(91, 113, 51, 0.5)";
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor = "#475726";
-                    e.target.style.boxShadow = "0 4px 10px rgba(91, 113, 51, 0.3)";
-                  }}
-                />
+                    <SearchIcon />
+                  </button>
+                </Box>
 
                 {search && (
                   <Box
@@ -302,6 +389,58 @@ const MainToolbar = () => {
                   </Box>
                 )}
               </Box>
+              {user && user.role ==="admin" && (
+                <Box
+                  sx={{
+                    "@media (max-width: 1100px)": {
+                      backgroundColor: "#FDE910",
+                      borderRadius: "10px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      cursor: "pointer",
+                      transition: "background 0.3s ease",
+                      position: "relative",
+                    },
+                    "@media (max-width: 800px)": {
+                      borderRadius: "50%",
+                    },
+                    "@media (max-width: 400px)": {
+                      display:"none"
+                    },
+                  }}
+                >
+                  <NavLink
+                    to="/edition_site"
+                    style={{ textDecoration: "none" }}
+                  >
+                    <Box
+                      sx={{
+                        backgroundColor: "#FDE910",
+                        paddingTop: "10px",
+                        paddingBottom: "10px",
+                        paddingRight: "20px",
+                        paddingLeft: "20px",
+                        borderRadius: "10px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        cursor: "pointer",
+                        transition: "background 0.3s ease",
+                        "@media (max-width: 800px)": {
+                          borderRadius: "50%",
+                          paddingTop: "10px",
+                          paddingBottom: "10px",
+                          paddingRight: "10px",
+                          paddingLeft: "10px",
+                        },
+                      }}
+                    >
+                      <SettingsIcon sx={{ color: "rgb(52, 51, 50)" }} />
+                    </Box>
+                  </NavLink>
+                </Box>
+              )}
               {user ? (
                 user.role === "client" && (
                   <Box
@@ -326,6 +465,20 @@ const MainToolbar = () => {
                           cursor: "pointer",
                           transition: "background 0.3s ease",
                           position: "relative",
+                          "@media (max-width: 800px)": {
+                            borderRadius: "50%",
+                            paddingTop: "10px",
+                            paddingBottom: "10px",
+                            paddingRight: "10px",
+                            paddingLeft: "10px",
+                          },
+                          "@media (max-width: 400px)": {
+                            borderRadius: "50%",
+                            paddingTop: "5px",
+                            paddingBottom: "5px",
+                            paddingRight: "5px",
+                            paddingLeft: "5px",
+                          },
                         }}
                       >
                         <ShoppingCartIcon sx={{ color: "rgb(52, 51, 50)" }} />
@@ -359,11 +512,108 @@ const MainToolbar = () => {
                             justifyContent: "center",
                             cursor: "pointer",
                             transition: "background 0.3s ease",
+                            "@media (max-width: 1100px)": { display: "none" }
                           }}
                         >
                           <FavoriteIcon sx={{ color: "rgb(52, 51, 50)" }} />
                         </Box>
                       </NavLink>
+                    </Box>
+                    <Box
+                      sx={{
+                        position: "fixed",
+                        bottom: 0,
+                        left: 0,
+                        width: "100%",
+                        backgroundColor: "#fff",
+                        boxShadow: "0px -2px 5px #8EA58C",
+                        padding: "20px 0",
+                        display: "none",
+                        justifyContent: "space-around",
+                        alignItems: "center",
+                        zIndex: 1000,
+                        "@media (max-width: 1100px)": {
+                          display: "flex",
+                        },
+                      }}
+                    >
+                      <NavLink to="/my_orders" style={{ textDecoration: "none", marginTop:"5px" }}>
+                        <Badge
+                          badgeContent={sum}
+                          overlap="circular"
+                          color="warning"
+                        >
+                        <Button
+                          sx={{
+                            color: "black",
+                            display: "flex",
+                            flexDirection: "row",
+                            alignItems: "center",
+                            padding: 0,
+                            gap: "8px",
+                          }}
+                        >
+                          <LocalMallOutlinedIcon
+                            sx={{
+                              width: "27px",
+                              height: "27px",
+                              color: "black",
+                            }}
+                          />
+                        </Button>
+                      </Badge>
+                        <Typography
+                          sx={{
+                            color: "black",
+                            fontSize: "14px",
+                            textTransform: "uppercase",
+                            marginTop: "7px",
+                          }}
+                        >
+                          Заказы
+                        </Typography>
+                      </NavLink>
+
+                      <NavLink to="/my_favorites" style={{ textDecoration: "none" }}>
+                        <Badge
+                          badgeContent={sum}
+                          overlap="circular"
+                          color="warning"
+                        >
+                        <Button
+                          sx={{
+                            color: "black",
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            padding: 0,
+                            gap: "8px",
+                          }}
+                        >
+                          <FavoriteIcon
+                            sx={{
+                              width: "27px",
+                              height: "27px",
+                              color: "black",
+                              marginLeft:"20px",
+                            }}
+                          />
+                        </Button>
+                      </Badge>
+                        <Typography
+                          sx={{
+                            color: "black",
+                            fontSize: "14px",
+                            textTransform: "uppercase",
+                            marginTop: "7px",
+                            textAlign: "center",
+                          }}
+                        >
+                          Избранные
+                        </Typography>
+                      </NavLink>
+
+                      {user ? <ExistsUser /> : <UnknownUser />}
                     </Box>
                   </Box>
                 )
@@ -429,10 +679,326 @@ const MainToolbar = () => {
                       </Box>
                     </NavLink>
                   </Box>
+                  <Box
+                    sx={{
+                      position: "fixed",
+                      bottom: 0,
+                      left: 0,
+                      width: "100%",
+                      backgroundColor: "#fff",
+                      boxShadow: "0px -2px 5px #8EA58C",
+                      padding: "20px 0",
+                      display: "none",
+                      justifyContent: "space-around",
+                      alignItems: "center",
+                      zIndex: 1000,
+                      "@media (max-width: 1100px)": {
+                        display: "flex",
+                      },
+                    }}
+                  >
+                    <NavLink to="/my_orders" style={{ textDecoration: "none", marginTop:"5px" }}>
+                      <Badge
+                        badgeContent={sum}
+                        overlap="circular"
+                        color="warning"
+                      >
+                      <Button
+                        sx={{
+                          color: "black",
+                          display: "flex",
+                          flexDirection: "row",
+                          alignItems: "center",
+                          padding: 0,
+                          gap: "8px",
+                        }}
+                      >
+                        <LocalMallOutlinedIcon
+                          sx={{
+                            width: "27px",
+                            height: "27px",
+                            color: "black",
+                          }}
+                        />
+                      </Button>
+                      </Badge>
+                      <Typography
+                        sx={{
+                          color: "black",
+                          fontSize: "14px",
+                          textTransform: "uppercase",
+                          marginTop: "7px",
+                        }}
+                      >
+                        Заказы
+                      </Typography>
+                    </NavLink>
+
+                    <NavLink to="/my_favorites" style={{ textDecoration: "none" }}>
+                      <Badge
+                        badgeContent={sum}
+                        overlap="circular"
+                        color="warning"
+                      >
+                      <Button
+                        sx={{
+                          color: "black",
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          padding: 0,
+                          gap: "8px",
+                        }}
+                      >
+                        <FavoriteIcon
+                          sx={{
+                            width: "30px",
+                            height: "27px",
+                            color: "black",
+                            marginLeft:"20px",
+                          }}
+                        />
+                      </Button>
+                      </Badge>
+                      <Typography
+                        sx={{
+                          color: "black",
+                          fontSize: "14px",
+                          textTransform: "uppercase",
+                          marginTop: "7px",
+                          textAlign: "center",
+                        }}
+                      >
+                        Избранные
+                      </Typography>
+                    </NavLink>
+                    {user ? <ExistsUser /> : <UnknownUser />}
+                  </Box>
+                </Box>
+
+              )}
+
+              {user && user.role === "admin" && (
+                <Box
+                  sx={{
+                    position: "fixed",
+                    bottom: 0,
+                    left: 0,
+                    width: "100%",
+                    backgroundColor: "#fff",
+                    boxShadow: "0px -2px 5px #8EA58C",
+                    padding: "20px 0",
+                    display: "none",
+                    justifyContent: "space-around",
+                    alignItems: "center",
+                    zIndex: 1000,
+                    "@media (max-width: 1100px)": {
+                      display: "flex",
+                    },
+                  }}
+                >
+                  <NavLink to="/private/client_orders" style={{ textDecoration: "none", marginTop:"5px" }}>
+                    <Badge
+                      badgeContent={sum}
+                      overlap="circular"
+                      color="warning"
+                    >
+                      <Button
+                        sx={{
+                          color: "black",
+                          display: "flex",
+                          flexDirection: "row",
+                          alignItems: "center",
+                          padding: 0,
+                          gap: "8px",
+                        }}
+                      >
+                        <LocalMallOutlinedIcon
+                          sx={{
+                            width: "27px",
+                            height: "27px",
+                            color: "black",
+                          }}
+                        />
+                      </Button>
+                    </Badge>
+                    <Typography
+                      sx={{
+                        color: "black",
+                        fontSize: "14px",
+                        textTransform: "uppercase",
+                        marginTop: "7px",
+                      }}
+                    >
+                      Заказы
+                    </Typography>
+                  </NavLink>
+
+                  <NavLink to="/private/clients" style={{ textDecoration: "none" }}>
+                    <Badge
+                      badgeContent={sum}
+                      overlap="circular"
+                      color="warning"
+                    >
+                      <Button
+                        sx={{
+                          color: "black",
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          padding: 0,
+                          gap: "8px",
+                        }}
+                      >
+                        <GroupOutlinedIcon
+                          sx={{
+                            width: "30px",
+                            height: "30px",
+                            color: "black",
+                            marginTop:"5px"
+
+                          }}
+                        />
+                      </Button>
+                    </Badge>
+                    <Typography
+                      sx={{
+                        color: "black",
+                        fontSize: "14px",
+                        textTransform: "uppercase",
+                        marginTop: "7px",
+                        textAlign: "center",
+                      }}
+                    >
+                      Клиенты
+                    </Typography>
+                  </NavLink>
+                  {user ? <ExistsUser /> : <UnknownUser />}
                 </Box>
               )}
-              {user ? <ExistsUser /> : <UnknownUser />}
+              <Box sx={{  "@media (max-width: 1100px)": { display: "none" }}}>
+                {user ? <ExistsUser /> : <UnknownUser />}
+              </Box>
             </Toolbar>
+            <Box
+              sx={{
+                "@media (max-width: 800px)": {
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  paddingBottom: 3 }
+              }}
+            >
+              <Box sx={{
+                display:"none",
+                "@media (max-width: 800px)": {
+                  display:"flex",
+                  position: 'relative',
+                  width: '100%',
+                  maxWidth: 400,
+                  marginTop:"-10px",
+                  marginBottom:"-10px"
+                },
+                "@media (max-width: 600px)": {
+                  display:"flex",
+                  position: 'relative',
+                  width: '100%',
+                  maxWidth: 400,
+                  marginTop:"0px",
+                  marginBottom:"-10px"
+                },
+                "@media (max-width: 400px)": {
+                  display:"flex",
+                  position: 'relative',
+                  width: '100%',
+                  maxWidth: 350,
+                  marginTop:"0px",
+                  marginBottom:"-10px"
+                }
+              }}>
+                <Box
+                  sx={{
+                    position: "relative",
+                    display: "flex",
+                    alignItems: "center",
+                    width: "100%",
+                    maxWidth: "400px",
+                  }}
+                >
+                  <input
+                    style={{
+                      width: "100%",
+                      padding: "10px 40px 10px 16px",
+                      fontSize: "16px",
+                      color: "#333",
+                      backgroundColor: "white",
+                      border: "2px solid rgb(195, 190, 182)",
+                      borderRadius: "30px",
+                      outline: "none",
+                      transition: "all 0.3s ease-in-out",
+                      boxShadow: "0 4px 10px rgba(91, 113, 51, 0.3)",
+                    }}
+                    placeholder="Поиск товара"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = "#d4d9c5";
+                      e.target.style.boxShadow = "0 0 8px rgba(91, 113, 51, 0.5)";
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = "#475726";
+                      e.target.style.boxShadow = "0 4px 10px rgba(91, 113, 51, 0.3)";
+                    }}
+                  />
+                  <button
+                    style={{
+                      position: "absolute",
+                      right: "10px",
+                      background: "transparent",
+                      border: "none",
+                      cursor: "pointer",
+                      color: "#8EA58C",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center"
+                    }}
+                  >
+                    <SearchIcon />
+                  </button>
+                </Box>
+
+                {search && (
+                  <Box
+                    sx={{
+                      position: 'absolute',
+                      top: '100%',
+                      left: 0,
+                      width: '100%',
+                      maxHeight: 300,
+                      overflowY: 'auto',
+                      backgroundColor: 'white',
+                      boxShadow: 3,
+                      zIndex: 1000,
+                      marginTop: 1,
+                      borderRadius: 1,
+                    }}
+                  >
+                    {products.length > 0 ? (
+                      products.map((product) => (
+                        <NavLink className='text-decoration-none text-black' to={`/product/${product.id}`} onClick={() => setSearch('')}>
+                          <div key={product.id} style={{ padding: '10px', borderBottom: '1px solid #ddd' }}>
+                            <h3>{product.productName}</h3>
+                            <p>{product.productDescription}</p>
+                          </div>
+                        </NavLink>
+                      ))
+                    ) : (
+                      <div style={{ padding: '10px' }}>Товаров не найдено</div>
+                    )}
+                  </Box>
+                )}
+              </Box>
+            </Box>
           </Box>
         </Container>
       </div>

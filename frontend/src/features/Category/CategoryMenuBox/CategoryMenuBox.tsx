@@ -28,7 +28,7 @@ const CategoryMenuBox = () => {
     selectedCategory === "Собаки" || selectedCategory === "Кошки";
 
   return (
-    <div className="menu-box mt-5 col-lg-3 col-md-4 hidden-sm hidden-xs">
+    <div className="menu-box mt-5 col-lg-3 col-md-4 d-none d-md-block">
       <ul className="nav category-nav">
         <li className="nav-item-category">
           <a
