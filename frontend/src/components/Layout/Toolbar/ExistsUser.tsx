@@ -6,8 +6,8 @@ import {
   List,
   ListItem,
   ListItemText,
-  Divider,
-} from "@mui/material";
+  Divider, Typography,
+} from '@mui/material';
 import { NavLink } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
 import { selectUser, unsetUser } from "../../../store/users/usersSlice.ts";
@@ -49,23 +49,58 @@ const ExistsUser = () => {
 
   return (
     <>
-      <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 2,
+          "@media (min-width: 1100px)": {
+            flexDirection: "row",
+          },
+        }}
+      >
         <Button
           onClick={toggleDrawer(true)}
           sx={{
             color: "black",
             display: "flex",
+            flexDirection: "column",
             alignItems: "center",
-            gap: "8px",
+            padding: 0,
+            gap: "4px",
+            "@media (min-width: 1100px)": {
+              flexDirection: "row",
+              gap: "8px",
+            },
           }}
         >
           <PermIdentityOutlinedIcon
-            sx={{ width: "30px", height: "30px", color: "white" }}
+            sx={{
+              width: "30px",
+              height: "30px",
+              color: "white",
+              "@media (max-width: 1100px)": { color: "black" },
+            }}
           />
-          <span style={{ color: "white", fontSize: "16px", fontWeight: "500" }}>
-            Мой профиль
-          </span>
         </Button>
+        <Typography
+          sx={{
+            color: "white",
+            fontSize: "16px",
+            fontWeight: "500",
+            textTransform: "uppercase",
+            marginLeft:"-20px",
+            "@media (max-width: 1100px)": {
+              color: "black",
+              fontSize: "14px",
+              marginTop: "-10px",
+              marginLeft:0
+            },
+          }}
+        >
+          Мой аккаунт
+        </Typography>
       </Box>
 
       <Drawer anchor="right" open={isDrawerOpen} onClose={toggleDrawer(false)}>
@@ -74,6 +109,12 @@ const ExistsUser = () => {
             width: 350,
             padding: 2,
             backgroundColor: "white",
+            "@media (max-width: 700px)": {
+              width: 250,
+            },
+            "@media (max-width: 400px)": {
+              width: 230,
+            },
           }}
         >
           <Box

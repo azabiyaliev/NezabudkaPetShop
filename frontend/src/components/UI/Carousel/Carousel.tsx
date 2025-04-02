@@ -6,6 +6,7 @@ import { fetchPhoto } from '../../../store/photoCarousel/photoCarouselThunk.ts';
 import { selectPhotoCarousel } from '../../../store/photoCarousel/photoCarouselSlice.ts';
 import PauseIcon from '@mui/icons-material/Pause';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import { Box } from '@mui/joy';
 
 const Carousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -51,24 +52,23 @@ const Carousel = () => {
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "flex-end",
+    <Box
+      sx={{
         padding: "20px",
         width: "100%",
         position: "relative",
-        flexDirection: "column",
-        alignItems: "center",
         cursor: "pointer",
+        marginTop: "30px",
+        "@media (max-width: 990px)": { padding: "10px", }
       }}
     >
-      <div
-        style={{
+      <Box
+        sx={{
           position: "relative",
-          width: "70%",
-          height: "400px",
-          marginLeft: "auto",
+          width: "100%",
+          height: "100%",
+          marginLeft: "40px",
+          "@media (max-width: 990px)": {marginLeft: "0px", }
         }}
       >
         <div
@@ -92,8 +92,8 @@ const Carousel = () => {
             }}
           />
         </div>
-        <div
-          style={{
+        <Box
+          sx={{
             display: "flex",
             justifyContent: "center",
             marginTop: "10px",
@@ -102,8 +102,8 @@ const Carousel = () => {
         >
           <button
             onClick={toggleAutoScroll}
-            onMouseEnter={() => setIsHovered(true)} // Наведение
-            onMouseLeave={() => setIsHovered(false)} // Уход мыши
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
             style={{
               color: "rgb(35, 120, 3)",
               cursor: "pointer",
@@ -166,9 +166,10 @@ const Carousel = () => {
               }}
             ></button>
           ))}
-        </div>
-      </div>
-    </div>
+        </Box>
+      </Box>
+    </Box>
+
   );
 };
 
