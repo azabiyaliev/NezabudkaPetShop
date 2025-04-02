@@ -33,9 +33,11 @@ import LocalMallOutlinedIcon from "@mui/icons-material/LocalMallOutlined";
 import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined";
 import SettingsIcon from '@mui/icons-material/Settings';
 import MenuIcon from '@mui/icons-material/Menu';
+import CategoryNavMenu from '../../Domain/CategoryNavMenu.tsx';
 
 const MainToolbar = () => {
   const [openCart, setOpenCart] = useState<boolean>(false);
+  const [openCategoryMenu, setOpenCategoryMenu] = useState<boolean>(false);
   const user = useAppSelector(selectUser);
   const site = useAppSelector(selectEditSite);
   const cart = useAppSelector(cartsFromSlice);
@@ -82,6 +84,11 @@ const MainToolbar = () => {
     navigate("/");
   };
 
+  const closeMenu = () => {
+    setOpenCategoryMenu(false);
+    navigate("/");
+  }
+
   const checkProductInCart: number[] = cart.map((product) => {
     return product.quantity;
   });
@@ -92,6 +99,7 @@ const MainToolbar = () => {
   }, 0);
   return (
     <div>
+      <CategoryNavMenu openMenu={openCategoryMenu} closeMenu={closeMenu}/>
       <CustomCart openCart={openCart} closeCart={closeCart} />
       <Box
         sx={{
@@ -251,10 +259,10 @@ const MainToolbar = () => {
             >
               <div style={{display: "flex",alignItems: "center"}}>
                 <Box
-                  onClick={() => setOpenCart(true)}
+                  onClick={() => setOpenCategoryMenu(true)}
                   sx={{
                     display:"none",
-                    "@media (max-width: 800px)": {
+                    "@media (max-width: 900px)": {
                       paddingTop: "7px",
                       paddingBottom: "7px",
                       borderRadius: "10px",
@@ -269,6 +277,9 @@ const MainToolbar = () => {
                   }}
                 >
                   <MenuIcon sx={{ color: "white" }} />
+                  {
+                    // категориешки
+                  }
                 </Box>
                 <NavLink
                   to="/"

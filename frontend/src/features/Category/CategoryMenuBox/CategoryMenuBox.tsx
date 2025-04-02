@@ -22,10 +22,6 @@ const CategoryMenuBox = () => {
     (cat) => cat.title === selectedCategory,
   );
 
-  console.log(categories);
-
-  const showSubcategories =
-    selectedCategory === "Собаки" || selectedCategory === "Кошки";
 
   return (
     <div className="menu-box mt-5 col-lg-3 col-md-4 d-none d-md-block">
@@ -60,7 +56,7 @@ const CategoryMenuBox = () => {
       </ul>
 
       <div className="subcategory-content">
-        {showSubcategories && currentCategory && (
+        { currentCategory && (
           <div className="subcategory-menu-desktop">
             {currentCategory.subcategories?.map((sub) => (
               <a key={sub.id} href="#" className="nav-category-link">
