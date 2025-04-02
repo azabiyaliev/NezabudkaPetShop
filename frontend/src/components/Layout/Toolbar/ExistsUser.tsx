@@ -135,7 +135,7 @@ const ExistsUser = () => {
           </Box>
           <Divider />
 
-          {user && user.role === "admin" && (
+          {user && user.role === "admin" || user && user.role === 'superAdmin' && (
             <List>
               <ListItem
                 component={NavLink}
@@ -144,6 +144,12 @@ const ExistsUser = () => {
               >
                 <HomeOutlinedIcon style={{ color: "#45624E" }} />
                 <ListItemText primary="Личный кабинет" className="text-black" />
+              </ListItem>
+              <ListItem  component={NavLink} to={`/admin-table`} onClick={toggleDrawer(false)}>
+                <ListItemText primary="Администраторы" className='text-black'/>
+              </ListItem>
+              <ListItem  component={NavLink} to={`/admin-create`} onClick={toggleDrawer(false)}>
+                <ListItemText primary="Создать администратора" className='text-black'/>
               </ListItem>
               <ListItem
                 component={NavLink}

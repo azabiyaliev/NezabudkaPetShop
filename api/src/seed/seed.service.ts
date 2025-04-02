@@ -22,6 +22,16 @@ export class SeedService {
     await this.prisma.user.createMany({
       data: [
         {
+          email: 'superAdmin@gmail.com',
+          password: password,
+          token: randomUUID(),
+          firstName: 'Super',
+          secondName: 'Admin',
+          role: 'superAdmin',
+          phone: '+996555100333',
+          isProtected: true,
+        },
+        {
           email: 'kama@gmail.com',
           password: password,
           token: randomUUID(),

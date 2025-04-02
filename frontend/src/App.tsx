@@ -18,6 +18,7 @@ import NewProduct from "./features/Admin/Product/containers/NewProduct.tsx";
 import AdminEditProfile from "./features/Admin/AdminProfile/AdminEditProfile.tsx";
 import ClientProfile from "./features/Client/ClientProfile/ClientProfile.tsx";
 import ClientEditProfile from "./features/Client/ClientProfile/ClientEditProfile.tsx";
+import OrderPage from './features/Order/OrderPage.tsx';
 import ProductPage from "./features/Product/containers/ProductPage.tsx";
 import ProductsPage from "./features/Admin/Product/containers/ProductsPage.tsx";
 import EditProduct from "./features/Admin/Product/containers/EditProduct.tsx";
@@ -25,6 +26,8 @@ import AllProductsCardsPage from "./features/Product/containers/AllProductsCards
 import CartPage from "./features/Cart/CartPage.tsx";
 import DragAndDropPhoto from './components/Forms/PhotoCarouselForm/DragAndDropPhoto.tsx';
 import Photo from './components/Forms/PhotoCarouselForm/Photo.tsx';
+import AdminForm from './components/Forms/AdminForm/AdminForm.tsx';
+import AdminTable from './features/SuperAdmin/container/AdminTable.tsx';
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -36,6 +39,7 @@ const App = () => {
           <Route path="/register" element={<RegisterUser />} />
           <Route path="/login" element={<LoginUser />} />
           <Route path="/my_cart" element={<CartPage />} />
+          <Route path="/my_order" element={<OrderPage />} />
           <Route path="/edit-carousel" element={<DragAndDropPhoto />} />
           <Route path="/photos/:id" element={<Photo/>}/>
           <Route
@@ -135,6 +139,21 @@ const App = () => {
           />
           <Route path="/product/:id" element={<ProductPage />} />
           <Route path="/all-products" element={<AllProductsCardsPage />} />
+          <Route path="/admin-create" element={
+            <ProtectedRoute isAllowed={user && user.role === 'superAdmin'}>
+              <AdminForm/>
+            </ProtectedRoute>
+          }/>
+          <Route path="/admin-edit/:id" element={
+            <ProtectedRoute isAllowed={user && user.role === 'superAdmin'}>
+              <AdminForm/>
+            </ProtectedRoute>
+          } />
+          <Route path='/admin-table' element={
+            <ProtectedRoute isAllowed={user && user.role === 'superAdmin'}>
+              <AdminTable/>
+            </ProtectedRoute>
+          }/>
         </Routes>
       </Layout>
     </div>

@@ -18,8 +18,8 @@ import { GoogleLogin } from "@react-oauth/google";
 import FacebookLogin from "@greatsumini/react-facebook-login";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import { selectLoginError } from "../../../store/users/usersSlice.ts";
-import { regEmail } from "./RegisterUser.tsx";
 import ModalWindow from "../../UI/ModalWindow/ModalWindowEmail.tsx";
+import { regEmail } from '../../../globalConstants.ts';
 
 const LoginUser = () => {
   const dispatch = useAppDispatch();

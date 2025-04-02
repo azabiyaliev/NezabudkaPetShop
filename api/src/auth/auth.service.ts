@@ -11,8 +11,8 @@ import { OAuth2Client } from 'google-auth-library';
 import { ConfigService } from '@nestjs/config';
 import * as crypto from 'crypto';
 
-const regEmail = /^(\w+[-.]?\w+)@(\w+)([.-]?\w+)?(\.[a-zA-Z]{2,3})$/;
-const regPhone = /^(\+996|0)\s?\d{3}\s?\d{3}\s?\d{3}$/;
+export const regEmail = /^(\w+[-.]?\w+)@(\w+)([.-]?\w+)?(\.[a-zA-Z]{2,3})$/;
+export const regPhone = /^(\+996|0)\s?\d{3}\s?\d{3}\s?\d{3}$/;
 
 interface FacebookPayload {
   email: string;
@@ -86,10 +86,6 @@ export class AuthService {
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-
-    if (role && !Object.values(Role).includes(role as Role)) {
-      throw new BadRequestException('Неверная роль');
-    }
 
     const defaultPhone = phone?.trim() === '' ? null : phone;
 
