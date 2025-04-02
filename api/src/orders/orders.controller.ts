@@ -1,80 +1,89 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
   Get,
+  HttpCode,
   Param,
   Patch,
   Post,
-  Put,
+  Query,
   Req,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
-import { Roles } from '../roles/roles.decorator';
-import { RolesGuard } from '../token.auth/token.role.guard';
-import { TokenAuthGuard } from '../token.auth/token-auth.guard';
 import { CreateOrderDto } from '../dto/createOrderDto';
-import { CheckoutOrderDto } from '../dto/checkoutOrderDto';
 import { AuthRequest } from '../types';
-import { OrderStatus } from '@prisma/client';
+import { TokenAuthGuard } from '../token.auth/token-auth.guard';
+import { RolesGuard } from '../token.auth/token.role.guard';
+import { Roles } from '../roles/roles.decorator';
 
 @Controller('orders')
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
-  //FOR ADMINS
   @UseGuards(TokenAuthGuard, RolesGuard)
   @Roles('admin')
-  @Get('')
+  @Get('all-orders')
   async findAll() {
     return await this.ordersService.getAllOrders();
   }
 
-  @Get('all_orders')
-  async allOrders() {
-    return await this.ordersService.getUserOrders();
+  @UseGuards(TokenAuthGuard, RolesGuard)
+  @Get('my-orders')
+  async userOrders(@Req() req: AuthRequest) {
+    const userId = req.user?.id;
+    console.log(userId);
+    if (!userId) {
+      throw new UnauthorizedException('Необходима авторизация');
+    }
+    return await this.ordersService.getUserOrders(userId);
+  }
+  @Get('guest-orders')
+  async guestOrder(@Query('email') guestEmail: string) {
+    if (!guestEmail) {
+      throw new BadRequestException('Email гостя обязателен');
+    }
+    return await this.ordersService.getUserOrders(undefined, guestEmail);
   }
 
-  //FOR ADMINS
+  @UseGuards(TokenAuthGuard)
+  @HttpCode(200)
+  @Post('checkout')
+  async registerOrder(
+    @Body() orderDto: CreateOrderDto,
+    @Req() req: AuthRequest,
+  ) {
+    const userId = req.user?.id;
+    return this.ordersService.createOrder(orderDto, userId);
+  }
+
+  @HttpCode(200)
+  @Post('guest-checkout')
+  async createGuestOrder(@Body() orderDto: CreateOrderDto) {
+    try {
+      return this.ordersService.createOrder(orderDto);
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
   @UseGuards(TokenAuthGuard, RolesGuard)
   @Roles('admin')
-  @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return await this.ordersService.getOneOrder(Number(id));
-  }
-
-  //FOR USERS && ADMIN
-  @UseGuards(TokenAuthGuard)
-  @Post('make_delivery')
-  async createOrder(@Body() orderDto: CreateOrderDto, @Req() req: AuthRequest) {
-    const userId = req.user.id;
-    return await this.ordersService.createOrder(userId, orderDto);
-  }
-
-  //FOR ADMIN
-  // Req: http://localhost:8000/orders/cm84bik2g0002wkvj5jzdkgj9/approve_delivery
-  @UseGuards(TokenAuthGuard, RolesGuard)
-  @Roles('admin')
-  @Put(':id/approve_delivery')
-  async accessDelivery(@Param() id: CheckoutOrderDto) {
-    return await this.ordersService.acceptOrder(id);
-  }
-
-  //FOR ADMINS
-  @UseGuards(TokenAuthGuard)
-  @Patch(':id/status')
+  @Patch(':id')
   async updateOrderStatus(
     @Param('id') orderId: string,
-    @Body('status') status: OrderStatus,
+    @Body() orderDto: CreateOrderDto,
   ) {
-    return await this.ordersService.orderStatus(Number(orderId), status);
+    return await this.ordersService.updateStatus(orderDto, Number(orderId));
   }
 
   @UseGuards(TokenAuthGuard, RolesGuard)
   @Roles('admin')
   @Delete(':id')
-  async deleteDeliveredOrder(@Param('id') id: string) {
-    return await this.ordersService.deleteOrder(Number(id));
+  async deleteOrder(@Param('id') orderId: string) {
+    return await this.ordersService.deleteOrder(Number(orderId));
   }
 }

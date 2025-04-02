@@ -123,9 +123,19 @@ model Order {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  userId    Int         @map("user_id")
-  user      User        @relation(fields: [userId], references: [id])
-  orderItem OrderItem[]
+  status OrderStatus @default(inProcess)
+
+  address       String
+  guestEmail    String?       @map("guest_email")
+  guestName     String?       @map("guest_name")
+  guestLastName String?       @map("guest_lastname")
+  guestPhone    String?       @map("guest_phone")
+  orderComment  String?       @map("order_comment")
+  paymentMethod PaymentMethod @default(ByCash)
+
+  userId Int?        @map("user_id")
+  user   User?       @relation(fields: [userId], references: [id])
+  items  OrderItem[]
 
   @@map("orders")
 }
@@ -133,13 +143,13 @@ model Order {
 model OrderItem {
   id Int @id @default(autoincrement())
 
-  quantity Int
-  status   OrderStatus @default(inProcess)
+  quantity    Int
+  orderAmount Int @map("order_amount")
 
-  productId Int?      @map("product_id")
-  products  Products? @relation(fields: [productId], references: [id])
-  orderId   Int?      @map("order_id")
-  order     Order?    @relation(fields: [orderId], references: [id])
+  productId Int      @map("product_id")
+  product   Products @relation(fields: [productId], references: [id])
+  orderId   Int      @map("order_id")
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -152,6 +162,11 @@ enum OrderStatus {
   onTheWay
   isDelivered
   Canceled
+}
+
+enum PaymentMethod {
+  ByCard
+  ByCash
 }
 
 model Review {
