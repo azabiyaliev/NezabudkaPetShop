@@ -25,6 +25,7 @@ import AllProductsCardsPage from "./features/Product/containers/AllProductsCards
 import CartPage from "./features/Cart/CartPage.tsx";
 import DragAndDropPhoto from './components/Forms/PhotoCarouselForm/DragAndDropPhoto.tsx';
 import Photo from './components/Forms/PhotoCarouselForm/Photo.tsx';
+import NewSubcategory from './features/Category/NewSubcategory/NewSubcategory.tsx';
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -130,6 +131,14 @@ const App = () => {
             element={
               <ProtectedRoute isAllowed={user && user.role === "admin"}>
                 <NewCategory />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/private/add_subcategory"
+            element={
+              <ProtectedRoute isAllowed={user && user.role === "admin"}>
+                <NewSubcategory />
               </ProtectedRoute>
             }
           />

@@ -140,92 +140,28 @@ export class SeedService {
     });
     await this.prisma.category.createMany({
       data: [
-        {
-          id: 1,
-          title: 'Собаки',
-        },
-        {
-          id: 2,
-          title: 'Кошки',
-        },
-        {
-          id: 3,
-          title: 'Птицы',
-        },
-        {
-          id: 4,
-          title: 'Кролики',
-        },
-        {
-          id: 5,
-          title: 'Рыбы',
-        },
-        {
-          id: 6,
-          title: 'Драконы',
-        },
-        {
-          id: 111,
-          title: 'Сухой корм',
-          parentId: 1,
-        },
-        {
-          id: 112,
-          title: 'Влажные корма',
-          parentId: 1,
-        },
-        {
-          id: 113,
-          title: 'Сухие корма',
-          parentId: 2,
-        },
-        {
-          id: 114,
-          title: 'Влажные корм',
-          parentId: 2,
-        },
-        {
-          id: 115,
-          title: 'Амуниция',
-          parentId: 1,
-        },
-        {
-          id: 116,
-          title: 'Ветеринарная аптека',
-          parentId: 2,
-        },
-        {
-          id: 117,
-          title: 'Витамины и добавки',
-          parentId: 1,
-        },
-        {
-          id: 118,
-          title: 'Домики и лежанки',
-          parentId: 1,
-        },
-        {
-          id: 119,
-          title: 'Ошейники и шлейки',
-          parentId: 2,
-        },
-        {
-          id: 120,
-          title: 'Лакомства',
-          parentId: 1,
-        },
-        {
-          id: 121,
-          title: 'Игрушки',
-          parentId: 2,
-        },
-        {
-          id: 122,
-          title: 'Сено',
-          parentId: 1,
-        },
+        { id: 1, title: 'Собаки' },
+        { id: 2, title: 'Кошки' },
+        { id: 3, title: 'Другие питомцы' },
       ],
     });
+    await this.prisma.category.createMany({
+      data: [
+        { id: 111, title: 'Сухой корм', parentId: 1 },
+        { id: 112, title: 'Влажные корма', parentId: 1 },
+        { id: 113, title: 'Сухие корма', parentId: 2 },
+        { id: 114, title: 'Влажные корм', parentId: 2 },
+        { id: 115, title: 'Амуниция', parentId: 1 },
+        { id: 116, title: 'Ветеринарная аптека', parentId: 2 },
+        { id: 117, title: 'Витамины и добавки', parentId: 1 },
+        { id: 118, title: 'Домики и лежанки', parentId: 1 },
+        { id: 119, title: 'Ошейники и шлейки', parentId: 2 },
+        { id: 120, title: 'Лакомства', parentId: 1 },
+        { id: 121, title: 'Игрушки', parentId: 2 },
+        { id: 122, title: 'Сено', parentId: 3 },
+      ],
+    });
+
     await this.prisma.products.createMany({
       data: [
         {
