@@ -16,9 +16,9 @@ import { selectUserError } from "../../../store/users/usersSlice.ts";
 import { register } from "../../../store/users/usersThunk.ts";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { regEmail, regPhone } from '../../../globalConstants.ts';
 
-const regPhone = /^(\+996|0)\s?\d{3}\s?\d{3}\s?\d{3}$/;
-export const regEmail = /^(\w+[-.]?\w+)@(\w+)([.-]?\w+)?(\.[a-zA-Z]{2,3})$/;
+
 
 const initialState = {
   firstName: "",

@@ -62,7 +62,14 @@ export const updateAdmin = createAsyncThunk<
     return response.data;
   } catch (error) {
     if (isAxiosError(error) && error.response) {
-      return rejectWithValue(error.response.data as ValidationError);
+      const { data, status } = error.response;
+      if ([400, 401, 409].includes(status)) {
+        const formattedErrors =
+          typeof data.errors === "object"
+            ? data.errors
+            : { general: data.message };
+        return rejectWithValue({ errors: formattedErrors } as ValidationError);
+      }
     }
     throw error;
   }

@@ -37,7 +37,7 @@ const AdminBar = () => {
 
   return (
     <div className="admin-bar">
-      {user && user.role === "admin" && (
+      {user && user.role === "admin" || user && user.role === 'superAdmin' && (
         <List>
           <ListItem component={NavLink} to={`/private_account`}>
             <b className="text-uppercase text-black">Личный кабинет</b>

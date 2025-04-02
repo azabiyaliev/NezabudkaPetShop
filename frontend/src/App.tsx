@@ -24,6 +24,8 @@ import ProductsPage from './features/Admin/Product/containers/ProductsPage.tsx';
 import EditProduct from './features/Admin/Product/containers/EditProduct.tsx';
 import AllProductsCardsPage from './features/Product/containers/AllProductsCardsPage.tsx';
 import CartPage from './features/Cart/CartPage.tsx';
+import AdminForm from './components/Forms/AdminForm/AdminForm.tsx';
+import AdminTable from './features/SuperAdmin/container/AdminTable.tsx';
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -37,7 +39,7 @@ const App = () => {
           <Route path="/my_cart" element={<CartPage />} />
           <Route path="/my_order" element={<OrderPage />} />
           <Route path="/private_account" element={
-            <ProtectedRoute isAllowed={user && user.role === 'admin'}>
+            <ProtectedRoute isAllowed={user && user.role === 'admin' || user && user.role === 'superAdmin'}>
               <AdminProfile />
             </ProtectedRoute>
           } />
@@ -47,43 +49,43 @@ const App = () => {
             </ProtectedRoute>
           } />
           <Route path="/private/users/:id" element={
-            <ProtectedRoute isAllowed={user && user.role === 'admin'}>
+            <ProtectedRoute isAllowed={user && user.role === 'admin' || user && user.role === 'superAdmin'}>
               <AdminEditProfile />
             </ProtectedRoute>
           } />
           <Route path="/client/users/:id" element={<ClientEditProfile/>}/>
           <Route path="/private/brands" element={
-            <ProtectedRoute isAllowed={user && user.role === 'admin'}>
+            <ProtectedRoute isAllowed={user && user.role === 'admin' || user && user.role === 'superAdmin'}>
               <BrandsPage />
             </ProtectedRoute>
           } />
           <Route path="/private/add_brand" element={
-            <ProtectedRoute isAllowed={user && user.role === 'admin'}>
+            <ProtectedRoute isAllowed={user && user.role === 'admin' || user && user.role === 'superAdmin'}>
               <NewBrandPage />
             </ProtectedRoute>
           } />
           <Route path="/private/edit_brand/:id" element={
-            <ProtectedRoute isAllowed={user && user.role === 'admin'}>
+            <ProtectedRoute isAllowed={user && user.role === 'admin' || user && user.role === 'superAdmin'}>
               <EditBrandPage />
             </ProtectedRoute>
           } />
           <Route path="/edition_site" element={
-            <ProtectedRoute isAllowed={user && user.role === 'admin'}>
+            <ProtectedRoute isAllowed={user && user.role === 'admin' || user && user.role === 'superAdmin'}>
               <EditionSitePage />
             </ProtectedRoute>
           } />
           <Route path="/private/add_product" element={
-            <ProtectedRoute isAllowed={user && user.role === 'admin'}>
+            <ProtectedRoute isAllowed={user && user.role === 'admin' || user && user.role === 'superAdmin'}>
               <NewProduct />
             </ProtectedRoute>
           }/>
           <Route path="/private/products" element={
-            <ProtectedRoute isAllowed={user && user.role === 'admin'}>
+            <ProtectedRoute isAllowed={user && user.role === 'admin' || user && user.role === 'superAdmin'}>
               <ProductsPage />
             </ProtectedRoute>
           }/>
           <Route path="/private/edit_product/:id" element={
-            <ProtectedRoute isAllowed={user && user.role === 'admin'}>
+            <ProtectedRoute isAllowed={user && user.role === 'admin' || user && user.role === 'superAdmin'}>
               <EditProduct />
             </ProtectedRoute>
           }/>
@@ -91,12 +93,27 @@ const App = () => {
           <Route path="/category/:id" element={<OneCategory/>}/>
           <Route path="*" element={<h1>Not found</h1>} />
           <Route path="/private/add_category" element={
-            <ProtectedRoute isAllowed={user && user.role === 'admin'}>
+            <ProtectedRoute isAllowed={user && user.role === 'admin' || user && user.role === 'superAdmin'}>
               <NewCategory/>
             </ProtectedRoute>
           } />
           <Route path="/product/:id" element={<ProductPage/>}/>
           <Route path="/all-products" element={<AllProductsCardsPage/>}/>
+          <Route path="/admin-create" element={
+            <ProtectedRoute isAllowed={user && user.role === 'superAdmin'}>
+            <AdminForm/>
+            </ProtectedRoute>
+          }/>
+          <Route path="/admin-edit/:id" element={
+            <ProtectedRoute isAllowed={user && user.role === 'superAdmin'}>
+              <AdminForm/>
+            </ProtectedRoute>
+          } />
+          <Route path='/admin-table' element={
+            <ProtectedRoute isAllowed={user && user.role === 'superAdmin'}>
+              <AdminTable/>
+            </ProtectedRoute>
+          }/>
         </Routes>
       </Layout>
     </div>

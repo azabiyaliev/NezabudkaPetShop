@@ -1,16 +1,16 @@
-import React from 'react';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { Divider, IconButton, Typography } from '@mui/material';
-import Grid from '@mui/material/Grid2';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import { ruRU } from '@mui/x-data-grid/locales';
-import { useNavigate } from 'react-router-dom';
-import { AdminDataMutation } from '../../../types';
-import { useAppDispatch } from '../../../app/hooks.ts';
-import { deleteAdmin, getAdmins } from '../../../store/admins/adminThunks.ts';
-import { toast } from 'react-toastify';
-
+import React, { useState } from 'react';
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { Divider, IconButton, Typography } from "@mui/material";
+import Grid from "@mui/material/Grid2";
+import { ruRU } from "@mui/x-data-grid/locales";
+import { useNavigate } from "react-router-dom";
+import { AdminDataMutation } from "../../../types";
+import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
+import { deleteAdmin, getAdmins } from "../../../store/admins/adminThunks.ts";
+import { toast } from "react-toastify";
+import { deleteLoading } from '../../../store/admins/adminSlice.ts';
+import EditNoteOutlinedIcon from '@mui/icons-material/EditNoteOutlined';
+import DeleteSweepOutlinedIcon from '@mui/icons-material/DeleteSweepOutlined';
 
 interface Props {
   admins: AdminDataMutation[];
@@ -19,24 +19,26 @@ interface Props {
 const AdminList: React.FC<Props> = ({ admins }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-
+  const [selectDelete, setSelectDelete] = useState<string>("");
+  const isDelete = useAppSelector(deleteLoading);
 
   const handleDelete = async (id: number) => {
-      await dispatch(deleteAdmin(id)).unwrap();
-      toast.success('Админ успешно удалён');
-      await dispatch(getAdmins()).unwrap();
+    setSelectDelete(String(Number(id)));
+    await dispatch(deleteAdmin(id)).unwrap();
+    await dispatch(getAdmins()).unwrap();
+    toast.success("Админ успешно удалён");
   };
 
   const columns: GridColDef<AdminDataMutation>[] = [
-    { field: 'id', headerName: 'ID', width: 60 },
-    { field: 'firstName', headerName: 'Имя', width: 130 },
-    { field: 'secondName', headerName: 'Фамилия', width: 130 },
-    { field: 'email', headerName: 'Email', width: 200 },
-    { field: 'phone', headerName: 'Телефон', width: 140 },
-    { field: 'role', headerName: 'Роль', width: 100 },
+    { field: "id", headerName: "ID", width: 60 },
+    { field: "firstName", headerName: "Имя", width: 130 },
+    { field: "secondName", headerName: "Фамилия", width: 130 },
+    { field: "email", headerName: "Email", width: 200 },
+    { field: "phone", headerName: "Телефон", width: 140 },
+    { field: "role", headerName: "Роль", width: 100 },
     {
-      field: 'actions',
-      headerName: 'Действия',
+      field: "actions",
+      headerName: "Действия",
       width: 120,
       sortable: false,
       filterable: false,
@@ -44,12 +46,19 @@ const AdminList: React.FC<Props> = ({ admins }) => {
         <>
           <IconButton
             onClick={() => handleDelete(Number(params.row.id))}
-            disabled={params.row.role === 'superAdmin'}
+            disabled={
+              params.row.role === "superAdmin" ||
+              (isDelete && selectDelete === String(params.row.id))
+            }
+            color="primary"
           >
-            <DeleteIcon sx={{ color: 'red' }} />
+            <DeleteSweepOutlinedIcon />
           </IconButton>
-          <IconButton onClick={() => navigate(`/admin-edit/${params.row.id}`)}>
-            <EditIcon sx={{ color: '#ff9800' }} />
+          <IconButton
+            onClick={() => navigate(`/admin-edit/${params.row.id}`)}
+            color="primary"
+          >
+            <EditNoteOutlinedIcon fontSize="medium" />
           </IconButton>
         </>
       ),
@@ -61,7 +70,7 @@ const AdminList: React.FC<Props> = ({ admins }) => {
       <Typography
         variant="h5"
         component="div"
-        sx={{ flexGrow: 1, textAlign: 'center', mt: 3, mb: 3 }}
+        sx={{ flexGrow: 1, textAlign: "center", mt: 3, mb: 3 }}
       >
         Список администраторов
       </Typography>
@@ -82,6 +91,33 @@ const AdminList: React.FC<Props> = ({ admins }) => {
           checkboxSelection
           disableRowSelectionOnClick
           localeText={ruRU.components.MuiDataGrid.defaultProps.localeText}
+          sx={{
+            "& .MuiDataGrid-footerContainer": {
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            },
+            "& .MuiTablePagination-toolbar": {
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              width: "100%",
+            },
+            "& .MuiTablePagination-spacer": {
+              flex: 1,
+            },
+            "& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows":
+              {
+                margin: 0,
+              },
+            "& .MuiTablePagination-select": {
+              minWidth: "auto",
+            },
+            "& .MuiTablePagination-actions": {
+              display: "flex",
+              gap: "8px",
+            },
+          }}
         />
       </Grid>
     </Grid>
