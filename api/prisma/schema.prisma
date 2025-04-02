@@ -61,35 +61,34 @@ model Brand {
 }
 
 model SiteEdition {
-  id              Int               @id @default(autoincrement())
-  instagram       String
-  whatsapp        String
-  schedule        String
-  address         String
-  email           String
-  phone           String
-  PhotoByCarousel PhotoByCarousel[] @relation("SiteEditionPhotoCarousel")
+  id          Int    @id @default(autoincrement())
+  instagram   String
+  whatsapp    String
+  schedule    String
+  address     String
+  email       String
+  phone       String
+  linkAddress String
 
   @@map("editionSite")
 }
 
 model PhotoByCarousel {
-  id            Int          @id @default(autoincrement())
-  photo         String
-  siteEditionId Int?         @map("site_edition_id")
-  siteEdition   SiteEdition? @relation("SiteEditionPhotoCarousel", fields: [siteEditionId], references: [id])
+  id    Int    @id @default(autoincrement())
+  photo String
+  link  String @default("")
+  order Int    @default(0)
 
   @@map("photo_by_carousel")
 }
 
 model Category {
-  id            Int        @id @default(autoincrement())
-  title         String     @unique
+  id            Int          @id @default(autoincrement())
+  title         String
   parentId      Int?       @map("parent_id")
-  parent        Category?  @relation("Subcategories", fields: [parentId], references: [id])
-  subcategories Category[] @relation("Subcategories")
-
-  products Products[]
+  parent        Category?  @relation("CategorySubcategories", fields: [parentId], references: [id])
+  subcategories Category[] @relation("CategorySubcategories")
+  products      Products[]
 
   @@map("categories")
 }

@@ -11,7 +11,7 @@ const AllProductsCardsPage = () => {
   const [columns, setColumns] = useState(4);
 
   useEffect(() => {
-    dispatch(getProducts());
+    dispatch(getProducts(''));
   }, [dispatch]);
 
   return (

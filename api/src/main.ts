@@ -21,12 +21,17 @@ async function bootstrap() {
     process.exit(1);
   }
 
+  console.log(result.parsed);
+
+  console.log(process.env.EMAIL_USER);
+
   app.useStaticAssets(join(__dirname, '..', 'public'));
   app.enableCors({
     origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     allowedHeaders: 'Content-Type, Accept, Authorization',
   });
+
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,

@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CategoryDto } from '../dto/category.dto';
+import { SubcategoryDto } from '../dto/subCategoryDto';
 
 @Injectable()
 export class CategoryService {
@@ -31,23 +32,46 @@ export class CategoryService {
       );
     }
 
-    const existingCategory = await this.prisma.category.findUnique({
-      where: {
-        title: title,
-      },
-    });
-
-    if (existingCategory) {
-      throw new ConflictException('Категория с таким названием уже существует');
-    }
-
     if (parentId) {
       await this.validateCategory(parentId);
     }
 
-    return this.prisma.category.create({
-      data: { title, parentId },
+    const newCategory = await this.prisma.category.create({
+      data: { title, parentId: parentId ?? null },
     });
+
+    return newCategory;
+  }
+
+  async createSubcategory(
+    categoryId: number,
+    subCategoryDtos: SubcategoryDto[],
+  ) {
+    categoryId = parseInt(categoryId.toString());
+    await this.validateCategory(categoryId);
+
+    for (const { title } of subCategoryDtos) {
+      if (!title.trim()) {
+        throw new BadRequestException('Название подкатегории отсутствует');
+      }
+
+      const existingSubcategory = await this.prisma.category.findFirst({
+        where: { title, parentId: categoryId },
+      });
+
+      console.log('Category ID:', categoryId);
+      console.log('Subcategories:', subCategoryDtos);
+
+      if (existingSubcategory) {
+        throw new ConflictException(`Подкатегория "${title}" уже существует`);
+      }
+
+      await this.prisma.category.create({
+        data: { title, parentId: categoryId },
+      });
+    }
+
+    return { message: 'Подкатегории успешно добавлены' };
   }
 
   async getAllCategories() {
@@ -62,49 +86,43 @@ export class CategoryService {
     return result;
   }
 
-  async getAllSubCategories() {
-    const result = await this.prisma.category.findMany({
-      where: { parentId: { not: null } },
+  async getSubcategories(categoryId: number) {
+    await this.validateCategory(categoryId);
+
+    const subcategories = await this.prisma.category.findMany({
+      where: { parentId: categoryId },
     });
 
-    if (result.length === 0) {
+    if (subcategories.length === 0) {
       throw new NotFoundException('Подкатегории не найдены');
     }
-    return result;
+
+    return subcategories;
   }
 
-  async getOneCategory(parentId: string) {
-    const parsId = parseInt(parentId);
-
-    await this.validateCategory(parsId);
-
-    return this.prisma.category.findMany({
-      where: { id: parsId },
+  async getOneCategory(id: number) {
+    return this.prisma.category.findUnique({
+      where: { id },
+      include: { subcategories: true },
     });
   }
 
-  async updateCategory(id: string, categoryDto: CategoryDto) {
-    const parsId = parseInt(id);
-
-    await this.validateCategory(parsId);
+  async updateCategory(id: number, categoryDto: CategoryDto) {
+    await this.validateCategory(id);
 
     await this.prisma.category.update({
-      where: { id: parsId },
-      data: {
-        title: categoryDto.title,
-      },
+      where: { id },
+      data: { title: categoryDto.title },
     });
+
     return { message: 'Категория обновлена успешно' };
   }
 
-  async deleteCategory(id: string) {
-    const parsId = parseInt(id);
+  async deleteCategory(id: number) {
+    await this.validateCategory(id);
 
-    await this.validateCategory(parsId);
+    await this.prisma.category.delete({ where: { id } });
 
-    await this.prisma.category.delete({
-      where: { id: parsId },
-    });
     return { message: 'Категория успешно удалена' };
   }
 }

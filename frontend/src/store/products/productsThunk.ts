@@ -66,10 +66,10 @@ export const editProduct = createAsyncThunk<
   });
 });
 
-export const getProducts = createAsyncThunk<ProductResponse[]>(
+export const getProducts = createAsyncThunk<ProductResponse[], string>(
   "products/getProducts",
-  async () => {
-    const response = await axiosApi<ProductResponse[]>("/products/catalog");
+  async (searchKeyword = '') => {
+    const response = await axiosApi<ProductResponse[]>(`/products/catalog?search=${searchKeyword}`);
     return response.data || [];
   },
 );

@@ -3,13 +3,19 @@ import InstagramIcon from "@mui/icons-material/Instagram";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import logo_transparent from "../../../assets/logo_transparent.png";
 import NearMeOutlinedIcon from "@mui/icons-material/NearMeOutlined";
-import { useAppSelector } from "../../../app/hooks.ts";
+import { useAppSelector, useAppDispatch } from "../../../app/hooks.ts";
 import { selectEditSite } from "../../../store/editionSite/editionSiteSlice.ts";
 import PhoneIphoneOutlinedIcon from "@mui/icons-material/PhoneIphoneOutlined";
 import AlternateEmailOutlinedIcon from "@mui/icons-material/AlternateEmailOutlined";
-
+import { useEffect } from 'react';
+import { fetchSite } from '../../../store/editionSite/editionSiteThunk.ts';
 const Footer = () => {
   const site = useAppSelector(selectEditSite);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(fetchSite()).unwrap()
+  }, [dispatch]);
 
   return (
     <Box

@@ -23,6 +23,8 @@ import ProductsPage from "./features/Admin/Product/containers/ProductsPage.tsx";
 import EditProduct from "./features/Admin/Product/containers/EditProduct.tsx";
 import AllProductsCardsPage from "./features/Product/containers/AllProductsCardsPage.tsx";
 import CartPage from "./features/Cart/CartPage.tsx";
+import DragAndDropPhoto from './components/Forms/PhotoCarouselForm/DragAndDropPhoto.tsx';
+import Photo from './components/Forms/PhotoCarouselForm/Photo.tsx';
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -34,6 +36,8 @@ const App = () => {
           <Route path="/register" element={<RegisterUser />} />
           <Route path="/login" element={<LoginUser />} />
           <Route path="/my_cart" element={<CartPage />} />
+          <Route path="/edit-carousel" element={<DragAndDropPhoto />} />
+          <Route path="/photos/:id" element={<Photo/>}/>
           <Route
             path="/private_account"
             element={

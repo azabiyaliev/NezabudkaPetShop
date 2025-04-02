@@ -12,6 +12,7 @@ export class SeedService {
     await this.prisma.user.deleteMany({});
     await this.prisma.products.deleteMany({});
     await this.prisma.siteEdition.deleteMany({});
+    await this.prisma.photoByCarousel.deleteMany({});
     await this.prisma.brand.deleteMany({});
     await this.prisma.category.deleteMany({});
     await this.prisma.orderItem.deleteMany({});
@@ -43,22 +44,44 @@ export class SeedService {
 
     await this.prisma.siteEdition.create({
       data: {
-        instagram: 'nezabudka.zoo',
-        whatsapp: '+(996)500-430-481',
+        instagram: 'https://www.instagram.com/nezabudka.zoo/',
+        whatsapp: 'https://api.whatsapp.com/send?phone=99655533889',
         schedule: '10:00-20:00',
         address: 'г. Бишкек, Гоголя 127',
         email: 'nezabudka.zoo@gmial.com',
         phone: '+(996)500-430-481',
-        PhotoByCarousel: {
-          create: [
-            { photo: '/fixtures/editionSitePhoto/photo1.jpg' },
-            { photo: '/fixtures/editionSitePhoto/photo2.jpg' },
-            { photo: '/fixtures/editionSitePhoto/photo3.jpg' },
-            { photo: '/fixtures/editionSitePhoto/photo4.jpg' },
-            { photo: '/fixtures/editionSitePhoto/photo5.jpg' },
-          ],
-        },
+        linkAddress: 'https://go.2gis.com/ZA3mL',
       },
+    });
+
+    await this.prisma.photoByCarousel.createMany({
+      data: [
+        {
+          photo: '/fixtures/editionSitePhoto/photo1.jpg',
+          link: 'https://example.com/photo1.jpg',
+          order: 1,
+        },
+        {
+          photo: '/fixtures/editionSitePhoto/photo2.jpg',
+          link: 'https://example.com/photo2.jpg',
+          order: 2,
+        },
+        {
+          photo: '/fixtures/editionSitePhoto/photo2.jpg',
+          link: 'https://example.com/photo3.jpg',
+          order: 3,
+        },
+        {
+          photo: '/fixtures/editionSitePhoto/photo4.jpg',
+          link: 'https://example.com/photo3.jpg',
+          order: 3,
+        },
+        {
+          photo: '/fixtures/editionSitePhoto/photo5.jpg',
+          link: 'https://example.com/photo3.jpg',
+          order: 3,
+        },
+      ],
     });
 
     await this.prisma.brand.createMany({
@@ -134,28 +157,8 @@ export class SeedService {
           title: 'Собаки',
         },
         {
-          id: 22,
-          title: 'Сухой корм',
-          parentId: 1,
-        },
-        {
-          id: 23,
-          title: 'Влажные корма',
-          parentId: 1,
-        },
-        {
           id: 2,
           title: 'Кошки',
-        },
-        {
-          id: 25,
-          title: 'Сухие корма',
-          parentId: 2,
-        },
-        {
-          id: 26,
-          title: 'Влажные корм',
-          parentId: 2,
         },
         {
           id: 3,
@@ -173,6 +176,66 @@ export class SeedService {
           id: 6,
           title: 'Драконы',
         },
+        {
+          id: 111,
+          title: 'Сухой корм',
+          parentId: 1,
+        },
+        {
+          id: 112,
+          title: 'Влажные корма',
+          parentId: 1,
+        },
+        {
+          id: 113,
+          title: 'Сухие корма',
+          parentId: 2,
+        },
+        {
+          id: 114,
+          title: 'Влажные корм',
+          parentId: 2,
+        },
+        {
+          id: 115,
+          title: 'Амуниция',
+          parentId: 1,
+        },
+        {
+          id: 116,
+          title: 'Ветеринарная аптека',
+          parentId: 2,
+        },
+        {
+          id: 117,
+          title: 'Витамины и добавки',
+          parentId: 1,
+        },
+        {
+          id: 118,
+          title: 'Домики и лежанки',
+          parentId: 1,
+        },
+        {
+          id: 119,
+          title: 'Ошейники и шлейки',
+          parentId: 2,
+        },
+        {
+          id: 120,
+          title: 'Лакомства',
+          parentId: 1,
+        },
+        {
+          id: 121,
+          title: 'Игрушки',
+          parentId: 2,
+        },
+        {
+          id: 122,
+          title: 'Сено',
+          parentId: 1,
+        },
       ],
     });
     await this.prisma.products.createMany({
@@ -188,9 +251,9 @@ export class SeedService {
           sales: false,
         },
         {
-          productName: 'Сухой корм',
+          productName: 'Сухой корм для кошек',
           productPrice: 1200,
-          productDescription: 'Качественный сухой корм для взрослых собак.',
+          productDescription: 'Качественный сухой корм для кошек.',
           brandId: 1,
           categoryId: 22,
           productPhoto: '/fixtures/products/dog_food.jpg',
@@ -200,7 +263,8 @@ export class SeedService {
         {
           productName: 'Щебень для собак',
           productPrice: 1200,
-          productDescription: 'Качественный сухой корм для взрослых собак.',
+          productDescription:
+            'Щебень для создания ландшафтных решений для собак.',
           brandId: 1,
           categoryId: 23,
           productPhoto: '/fixtures/products/dog_food.jpg',

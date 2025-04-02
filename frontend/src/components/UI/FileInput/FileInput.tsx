@@ -25,30 +25,53 @@ const FileInput: React.FC<Props> = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const [fileName, setFileName] = useState("");
 
-  const activateInput: () => void = () => {
-    if (inputRef.current) {
-      inputRef.current.click();
-    }
+  const activateInput = () => {
+    inputRef.current?.click();
   };
 
-  const onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void = (
-    e: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setFileName(e.target.files[0].name);
-    } else setFileName("");
+      const selectedFile = e.target.files[0];
+      setFileName(selectedFile.name);
+    } else {
+      setFileName("");
+    }
 
     onGetFile(e);
   };
 
   useEffect(() => {
-    if (!file) setFileName("");
+    if (!file) {
+      setFileName("");
+    } else {
+      setFileName(file.name);
+    }
   }, [file]);
+
+  const inputStyle = error
+    ? {
+      backgroundColor: "#FFECEC",
+      borderColor: "#FF0000",
+    }
+    : {
+      backgroundColor: "white",
+      borderColor: "darkgreen",
+    };
+
+  const buttonStyle = error
+    ? {
+      borderColor: "#FF0000",
+      color: "#FF0000",
+    }
+    : {
+      borderColor: "darkgreen",
+      color: "darkgreen",
+    };
 
   return (
     <>
       <input
-        style={{ display: "none" }}
+        style={{ ...inputStyle, display: "none" }}
         type="file"
         name={name}
         ref={inputRef}
@@ -57,38 +80,48 @@ const FileInput: React.FC<Props> = ({
 
       <div className="d-flex justify-content-start gap-4 align-items-center mb-3">
         <input
-          style={{
-            backgroundColor: "white",
-            padding: "8px 30px",
-            borderRadius: "4px",
-            border: "1px solid lightgray",
-          }}
           id={id}
           className={className}
           disabled
           placeholder={label}
           value={fileName}
           onClick={activateInput}
+          style={{
+            ...inputStyle,
+            padding: "15px 30px",
+            borderRadius: "20px",
+            border: `1px solid ${error ? "#FF0000" : "darkgreen"}`,
+            backgroundColor: error ? "#FFECEC" : "white",
+          }}
         />
         <button
           type="button"
-          style={{
-            color: "gray",
-            border: "1px solid lightgray",
-            borderRadius: "4px",
-            backgroundColor: "white",
-            padding: "8px 20px",
-            cursor: "pointer",
-          }}
           onClick={activateInput}
+          style={{
+            ...buttonStyle,
+            border: `1px solid ${error ? "#FF0000" : "darkgreen"}`,
+            borderRadius: "15px",
+            backgroundColor: "white",
+            padding: "15px 20px",
+            cursor: "pointer",
+            color: error ? "#FF0000" : "darkgreen",
+          }}
         >
           <AddPhotoAlternateIcon />
-          <i className="bi bi-file-earmark"></i>
         </button>
       </div>
 
       {error && helperText && (
-        <div style={{ color: "red", fontSize: "12px" }}>{helperText}</div>
+        <div
+          style={{
+            color: "#FF0000",
+            fontSize: "12px",
+            marginLeft: "10px",
+            marginTop: "-5px",
+          }}
+        >
+          {helperText}
+        </div>
       )}
     </>
   );
