@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 import { EditSiteMutation } from "../../../types";
 import { fetchSite, updateSite } from "../../../store/editionSite/editionSiteThunk.ts";
 import { selectEditSite, selectError } from "../../../store/editionSite/editionSiteSlice.ts";
+import { enqueueSnackbar } from 'notistack';
 
 const initialState: EditSiteMutation = {
   instagram: "",
@@ -28,6 +29,11 @@ const EditSiteForm = () => {
   const editError = useAppSelector(selectError);
   const [phoneError, setPhoneError] = useState("");
   const [emailError, setEmailError] = useState("");
+  const [instaError, setInstaError] = useState("");
+  const [whatsError, setWhatsError] = useState("");
+  const [scheduleError, setScheduleError] = useState("");
+  const [addressError, setAddressError] = useState("");
+  const [linkAddressError, setLinkAddressError] = useState("");
 
 
   useEffect(() => {
@@ -56,7 +62,29 @@ const EditSiteForm = () => {
     if (name === "email") {
       setEmailError(regEmail.test(value) ? "" : "Неправильный формат email");
     }
-};
+
+    if (name === "instagram") setInstaError("");
+    if (name === "whatsapp") setWhatsError("");
+    if (name === "schedule") setScheduleError("");
+    if (name === "address") setAddressError("");
+    if (name === "linkAddress") setLinkAddressError("");
+
+    if (name === "linkAddress" && value.trim() === "") {
+      setLinkAddressError("Поле для ссылки на адрес магазина не может быть пустым");
+    }
+    if (name === "instagram" && value.trim() === "") {
+      setInstaError("Поле для ссылки Instagram не может быть пустым");
+    }
+    if (name === "whatsapp" && value.trim() === "") {
+      setWhatsError("Поле для ссылки WhatsApp не может быть пустым");
+    }
+    if (name === "schedule" && value.trim() === "") {
+      setScheduleError("Поле для графика работы не может быть пустым");
+    }
+    if (name === "address" && value.trim() === "") {
+      setAddressError("Поле для адреса магазина не может быть пустым");
+    }
+  };
 
   const submitHandler = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,7 +94,7 @@ const EditSiteForm = () => {
     }
     try {
       await dispatch(updateSite({ id: site.id, data: form })).unwrap();
-      toast.success("Вы успешно отредактировали сайт!");
+      enqueueSnackbar('Вы успешно отредактировали сайт!', { variant: 'success' });
       navigate(`/`);
       await dispatch(fetchSite())
     } catch (error) {
@@ -79,6 +107,16 @@ const EditSiteForm = () => {
   };
 
   const getFieldError = (fieldName: string) => editError?.errors?.[fieldName] || "";
+
+  const isButtonFormInvalid =
+    Object.values(form).some(value => typeof value === "string" && value.trim() === "") ||
+    Boolean(phoneError) ||
+    Boolean(emailError) ||
+    Boolean(instaError) ||
+    Boolean(whatsError) ||
+    Boolean(scheduleError) ||
+    Boolean(addressError) ||
+    Boolean(linkAddressError);
 
   return (
     <Container component="main">
@@ -94,8 +132,8 @@ const EditSiteForm = () => {
             value={form.instagram}
             onChange={inputChangeHandler}
             variant="outlined"
-            error={!!getFieldError("instagram")}
-            helperText={getFieldError("instagram")}
+            error={!!getFieldError("instagram") || Boolean(instaError)}
+            helperText={getFieldError("instagram") || instaError}
             sx={{
               mb: 3,
               borderRadius: "20px",
@@ -144,8 +182,8 @@ const EditSiteForm = () => {
             value={form.whatsapp}
             onChange={inputChangeHandler}
             variant="outlined"
-            error={!!getFieldError("whatsapp")}
-            helperText={getFieldError("whatsapp")}
+            error={!!getFieldError("whatsapp") || Boolean(whatsError)}
+            helperText={getFieldError("whatsapp") || whatsError}
             sx={{
               mb: 3,
               borderRadius: "20px",
@@ -194,8 +232,8 @@ const EditSiteForm = () => {
             value={form.schedule}
             onChange={inputChangeHandler}
             variant="outlined"
-            error={!!getFieldError("schedule")}
-            helperText={getFieldError("schedule")}
+            error={!!getFieldError("schedule") || Boolean(scheduleError)}
+            helperText={getFieldError("schedule") || scheduleError}
             sx={{
               mb: 3,
               borderRadius: "20px",
@@ -244,8 +282,8 @@ const EditSiteForm = () => {
             value={form.address}
             onChange={inputChangeHandler}
             variant="outlined"
-            error={!!getFieldError("address")}
-            helperText={getFieldError("address")}
+            error={!!getFieldError("address") || Boolean(addressError)}
+            helperText={getFieldError("address") || addressError}
             sx={{
               mb: 3,
               borderRadius: "20px",
@@ -294,8 +332,8 @@ const EditSiteForm = () => {
             value={form.linkAddress}
             onChange={inputChangeHandler}
             variant="outlined"
-            error={!!getFieldError("linkAddress")}
-            helperText={getFieldError("linkAddress")}
+            error={!!getFieldError("linkAddress") || Boolean(linkAddressError)}
+            helperText={getFieldError("linkAddress") || linkAddressError}
             sx={{
               mb: 3,
               borderRadius: "20px",
@@ -444,6 +482,7 @@ const EditSiteForm = () => {
             <Button
               type="submit"
               variant="contained"
+              disabled={isButtonFormInvalid}
               sx={{
                 mt: 3,
                 mb: 2,

@@ -17,17 +17,6 @@ export class PhotoCarouselService {
   }
 
   async createPhoto(photoDto: PhotoByCarouselDto) {
-    if (!photoDto.photo || photoDto.photo.trim() === '') {
-      throw new NotFoundException(
-          `Фото не может быть путым полем!`,
-      );
-    }
-
-    if (!photoDto.link || photoDto.link.trim() === '') {
-      throw new NotFoundException(
-          `Ссылка не может быть путым полем!`,
-      );
-    }
     return this.prisma.photoByCarousel.create({
       data: {
         ...photoDto,
@@ -45,18 +34,6 @@ export class PhotoCarouselService {
 
     if (file) {
       photo = '/photo_carousel/' + file.filename;
-    }
-
-    if (!photoDto.photo || photoDto.photo.trim() === '') {
-      throw new NotFoundException(
-        `Фото не может быть путым полем!`,
-      );
-    }
-
-    if (!photoDto.link || photoDto.link.trim() === '') {
-      throw new NotFoundException(
-          `Ссылка не может быть путым полем!`,
-      );
     }
 
     const photoId = parseInt(id);

@@ -1,12 +1,11 @@
-import { DialogContent, Dialog, DialogTitle, Button, Alert } from '@mui/material';
+import { DialogContent, Dialog, DialogTitle, Button } from '@mui/material';
 import React, { useState } from 'react';
 import { PhotoForm } from '../../../types';
 import TextField from '@mui/material/TextField';
-import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
+import { useAppDispatch } from '../../../app/hooks.ts';
 import { addNewPhoto, fetchPhoto } from '../../../store/photoCarousel/photoCarouselThunk.ts';
 import FileInput from '../FileInput/FileInput.tsx';
 import { ToastContainer } from 'react-toastify';
-import { selectPhotoError } from '../../../store/photoCarousel/photoCarouselSlice.ts';
 import { enqueueSnackbar } from 'notistack';
 
 interface Props {
@@ -18,10 +17,11 @@ const initialState = {
   link: "",
   photo: null,
 };
-const ModalWindowAddNewPhoto: React.FC<Props> = ({open, onClose}) => {
-  const [newPhoto, setNewPhoto] = useState<PhotoForm>({...initialState});
-  const dispatch = useAppDispatch()
-  const errorPhoto = useAppSelector(selectPhotoError)
+
+const ModalWindowAddNewPhoto: React.FC<Props> = ({ open, onClose }) => {
+  const [newPhoto, setNewPhoto] = useState<PhotoForm>({ ...initialState });
+  const dispatch = useAppDispatch();
+  const [linkError, setLinkError] = useState<string>("");
 
   const onFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,55 +39,60 @@ const ModalWindowAddNewPhoto: React.FC<Props> = ({open, onClose}) => {
   const onInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
-    setNewPhoto((prevState:PhotoForm) => ({
-      ...prevState,
-      [e.target.name]: e.target.value,
-    }));
+    const { name, value } = e.target;
+    if (name === 'link' && value.trim() !== "") {
+      setLinkError("");
+    }
+
+    setNewPhoto((prevState) => ({ ...prevState, [name]: value }));
+
+    if (name === 'link' && value.trim() === "") {
+      setLinkError("Поле для ссылки не может быть пустым");
+    }
   };
 
   const onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void = (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const { name, files } = e.target;
-
-    if (files) {
+    if (files && files[0]) {
       setNewPhoto((prevState: PhotoForm) => ({
         ...prevState,
-        [name]: files[0] || null,
+        [name]: files[0],
       }));
     }
   };
+
+  const isButtonFormInvalid = Boolean(linkError) || !newPhoto.photo;
+
   return (
     <div>
       <Dialog open={open}>
         <DialogContent>
-            <DialogTitle>Добавить новую фотографию</DialogTitle>
-          <hr/>
-          {errorPhoto && (
-            <Alert severity="error" sx={{ width: "100%" }}>
-              {errorPhoto.message}
-            </Alert>
-          )}
-          <form onSubmit={onFormSubmit} className="space-y-4" style={{ marginTop: '40px' }}>
-            <div>
-              <FileInput
-                id="photo"
-                name="photo"
-                label="Фото для карусели"
-                onGetFile={onFileChange}
-                file={newPhoto.photo}
-              />
-            </div>
+          <DialogTitle sx={{
+            "@media (max-width: 450px)": {
+              fontSize: "16px",
+            },
+            "@media (max-width: 390px)": {
+              fontSize: "14px",
+            },
+          }}>
+            Добавить новую фотографию
+          </DialogTitle>
+          <hr />
+          <form onSubmit={onFormSubmit} className="space-y-4" style={{ marginTop: '20px', fontSize: "10px" }}>
             <div>
               <TextField
                 id="outlined-basic"
-                label="Ccылка"
+                label="Ссылка"
                 name="link"
                 variant="outlined"
                 value={newPhoto.link}
                 onChange={onInputChange}
+                error={Boolean(linkError)}
+                helperText={linkError}
                 sx={{
-                  mb: 3,
+                  marginBottom:"30px",
                   width: '95%',
                   borderRadius: "20px",
                   "& .MuiOutlinedInput-root": {
@@ -109,13 +114,52 @@ const ModalWindowAddNewPhoto: React.FC<Props> = ({open, onClose}) => {
                   "& .MuiInputLabel-root.Mui-focused": {
                     color: "green",
                   },
+                  "& .MuiOutlinedInput-root.Mui-error": {
+                    backgroundColor: "white",
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "#FF0000",
+                    },
+                  },
+                  "& .MuiInputLabel-root.Mui-error": {
+                    color: "#FF0000",
+                  },
+                  "& .MuiFormHelperText-root": {
+                    minHeight: "20px",
+                  },
+                  "& .MuiFormHelperText-root.Mui-error": {
+                    color: "#FF0000",
+                    fontSize: "0.9rem",
+                    fontWeight: 500,
+                  },
                 }}
               />
             </div>
-             <div style={{ marginTop: '20px' }}>
-               <Button variant="contained" style={{backgroundColor:"#FDE910", color: "rgb(52, 51, 50)", borderRadius:"20px"}} type="submit">Добавить</Button>
-               <Button style={{color: "red"}} onClick={onClose}>Отмена</Button>
-             </div>
+            <div>
+              <FileInput
+                id="photo"
+                name="photo"
+                label="Фото для карусели"
+                onGetFile={onFileChange}
+                file={newPhoto.photo}
+              />
+            </div>
+            <div style={{ marginTop: '20px' }}>
+              <Button
+                disabled={isButtonFormInvalid}
+                variant="contained"
+                style={{
+                  backgroundColor: isButtonFormInvalid ? "lightgray" : "#FDE910",
+                  color: "rgb(52, 51, 50)",
+                  borderRadius: "20px",
+                }}
+                type="submit"
+              >
+                Добавить
+              </Button>
+              <Button style={{ color: "red", marginLeft: '10px' }} onClick={onClose}>
+                Отмена
+              </Button>
+            </div>
           </form>
         </DialogContent>
       </Dialog>

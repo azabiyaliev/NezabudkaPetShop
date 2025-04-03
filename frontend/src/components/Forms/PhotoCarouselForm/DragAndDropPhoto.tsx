@@ -12,6 +12,9 @@ import Swal from "sweetalert2";
 import ModalWindowAddNewPhoto from '../../UI/ModalWindow/ModalWindowAddNewPhoto.tsx';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { enqueueSnackbar } from 'notistack';
+import {Box} from "@mui/joy";
+import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
+import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 
 const DragAndDropPhoto = () => {
   const photos = useAppSelector(selectPhotoCarousel) || [];
@@ -24,10 +27,6 @@ const DragAndDropPhoto = () => {
   useEffect(() => {
     dispatch(fetchPhoto());
   }, [dispatch]);
-
-  useEffect(() => {
-    console.log('Текущие фото:', photos);
-  }, [photos]);
 
   const dragStart = (e: DragEvent<HTMLDivElement>, image: PhotoCarousel) => {
     if (image.id !== undefined) {
@@ -74,8 +73,6 @@ const DragAndDropPhoto = () => {
       }))
       .filter(photo => photo.id !== undefined);
 
-    console.log("Отправляем обновлённые данные:", updatedPhotos);
-
     try {
       await dispatch(updatePhotoOrders(updatedPhotos)).unwrap();
       navigate('/');
@@ -118,26 +115,32 @@ const DragAndDropPhoto = () => {
       <Typography
         component="h1"
         variant="h4"
-        sx={{ color: "black", textAlign: "center", marginTop:"30px" }}
+        sx={{ color: "black", textAlign: "center", marginTop:"30px",  "@media (max-width: 900px)": { fontSize: 24 } }}
       >
         Редактирование карусели
       </Typography>
       <hr/>
-      <div
-        style={{
+      <Box
+        sx={{
           display: "flex",
           flexWrap: "wrap",
-          gap: "15px",
+          gap: "50px",
           marginTop: "40px",
+          justifyContent: "center",
+          "@media (max-width: 900px)": {
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "20px",
+          }
         }}
       >
         {isLoading ? (
           <div>Загрузка...</div>
         ) : Array.isArray(photos) ? (
           photos.map((image, index) => (
-            <div
+            <Box
               key={image.id}
-              style={{
+              sx={{
                 width: "400px",
                 height: "200px",
                 overflow: "hidden",
@@ -149,6 +152,10 @@ const DragAndDropPhoto = () => {
                 alignItems: "center",
                 cursor: "grab",
                 position: "relative",
+                "@media (max-width: 420px)": {
+                  width: "auto",
+                  height: "auto",
+                }
               }}
               draggable={true}
               onDragStart={(e) => dragStart(e, image)}
@@ -191,27 +198,44 @@ const DragAndDropPhoto = () => {
               >
                 <DeleteIcon style={{ color: "#B00000" }} />
               </Button>
-              <img
+              <Box
+                  component="img"
                 src={`${apiUrl}/${image.photo}`}
                 alt={`Slide ${index}`}
-                style={{
+                sx={{
                   width: "100%",
                   height: "100%",
                   objectFit: "cover",
+                  "@media (max-width: 420px)": {
+                    width: "100%",
+                    height: "auto",
+                  }
                 }}
               />
-            </div>
+            </Box>
           ))
         ) : (
           <div>Данные не загружены.</div>
         )}
-      </div>
-      <div style={{ marginTop: "40px", display: "flex", justifyContent: "center", marginBottom:"50px" }}>
+      </Box>
+      <Box sx={{ marginTop: "40px", display: "flex", justifyContent: "center", marginBottom:"50px",
+        "@media (max-width: 550px)": {
+          display:"none"
+        }
+      }}>
         <Button
           onClick={handleSave}
           variant="contained"
           color="primary"
-          style={{ backgroundColor: "#738A6E", color: "white", marginRight: "20px", fontSize: "16px",  borderRadius:"20px", }}
+          sx={{
+            backgroundColor: "#738A6E",
+            color: "white",
+            marginRight: "20px",
+            fontSize: "16px",
+            borderRadius:"20px",
+            "@media (max-width: 550px)": {
+              display:"none"
+            }}}
         >
           Сохранить порядок
         </Button>
@@ -219,9 +243,60 @@ const DragAndDropPhoto = () => {
           onClick={() => setIsAddModalOpen(true)}
           variant="contained"
           color="primary"
-          style={{ backgroundColor: "#FDE910", color: "rgb(52, 51, 50)", fontSize: "16px",  borderRadius:"20px", }}
+          sx={{
+            backgroundColor: "#FDE910",
+            color: "rgb(52, 51, 50)",
+            fontSize: "16px",
+            borderRadius:"20px",
+            "@media (max-width: 550px)": {
+              display:"none"
+            }
+          }}
         >
           Добавить новое фото
+        </Button>
+      </Box>
+      <div style={{ marginTop: "10px", display: "flex", justifyContent: "center", gap: "20px",marginBottom:"30px" }}>
+        <Button
+            onClick={handleSave}
+            variant="contained"
+            color="primary"
+            sx={{
+              display:"none",
+              "@media (max-width: 550px)": {
+                display:"flex",
+                backgroundColor: "#738A6E",
+                color: "white",
+                borderRadius: "50%",
+                width: "45px",
+                height: "45px",
+                minWidth: "45px",
+                justifyContent: "center",
+                alignItems: "center",
+              }}}
+        >
+          <PublishedWithChangesIcon style={{ width: "25px", height: "25px" }}/>
+        </Button>
+        <Button
+            onClick={() => setIsAddModalOpen(true)}
+            variant="contained"
+            color="primary"
+            sx={{
+              display: "none",
+              "@media (max-width: 550px)": {
+                display: "flex",
+                backgroundColor: "#FDE910",
+                color: "rgb(52, 51, 50)",
+                borderRadius: "50%",
+                width: "45px",
+                height: "45px",
+                minWidth: "45px",
+                justifyContent: "center",
+                alignItems: "center",
+              },
+            }}
+        >
+          <AddPhotoAlternateIcon style={{ width: "25px", height: "25px" }} />
         </Button>
       </div>
       <ModalWindowAddNewPhoto

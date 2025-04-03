@@ -23,13 +23,13 @@ export class EditionSiteController {
   }
 
   @UseGuards(TokenAuthGuard, RolesGuard)
-  @Roles('admin')
+  @Roles('admin', 'superAdmin')
   @Post()
   async createSite(@Body() editionDto: EditionSitedDto) {
     return this.editionSite.createInfoSite(editionDto);
   }
   @UseGuards(TokenAuthGuard, RolesGuard)
-  @Roles('admin')
+  @Roles('admin', 'superAdmin')
   @Put(':id')
   async updateSite(
     @Param('id') id: string,
