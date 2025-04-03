@@ -28,6 +28,7 @@ import Photo from './components/Forms/PhotoCarouselForm/Photo.tsx';
 import AdminForm from './components/Forms/AdminForm/AdminForm.tsx';
 import AdminTable from './features/SuperAdmin/container/AdminTable.tsx';
 import OrderForm from './features/Order/OrderForm.tsx';
+import NewSubcategory from './features/Category/NewSubcategory/NewSubcategory.tsx';
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -134,6 +135,14 @@ const App = () => {
             element={
               <ProtectedRoute isAllowed={user && user.role === "admin"}>
                 <NewCategory />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/private/add_subcategory"
+            element={
+              <ProtectedRoute isAllowed={user && user.role === "admin"}>
+                <NewSubcategory />
               </ProtectedRoute>
             }
           />

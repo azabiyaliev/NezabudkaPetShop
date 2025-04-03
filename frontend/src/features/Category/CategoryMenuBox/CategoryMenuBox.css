@@ -46,7 +46,7 @@
 }
 
 .nav-category-link:hover {
-  background: #dcffe6;
+  background: rgba(176, 225, 132, 0.22);
   color: #45833f;
 }
 
@@ -69,4 +69,18 @@
     padding: 8px;
   }
 }
+
+@media (max-width: 935px) {
+  .nav {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 899px) {
+  .menu-box {
+    display: none !important;
+  }
+}
+
+
 
