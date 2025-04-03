@@ -77,17 +77,10 @@ const Products: React.FC<Props> = ({ products }) => {
       renderCell: (params) => (
         <div
           dangerouslySetInnerHTML={{
-            __html: params.value, // Вставляем HTML-содержимое описания
+            __html: params.value,
           }}
         />
       ),
-    },
-    {
-      field: "categoryId",
-      headerName: "Категория",
-      width: 100,
-      editable: false,
-      valueGetter: (_value, row: ProductResponse) => row.category.title,
     },
     {
       field: "brandId",
@@ -95,6 +88,20 @@ const Products: React.FC<Props> = ({ products }) => {
       width: 100,
       editable: false,
       valueGetter: (_value, row: ProductResponse) => row.brand.title,
+    },
+    {
+      field: "category",
+      headerName: "Категория",
+      width: 100,
+      editable: false,
+      valueGetter: (_value, row: ProductResponse) => row.category.parentId ? row.category.parent.title : row.category.title,
+    },
+    {
+      field: "subcategory",
+      headerName: "Подкатегория",
+      width: 100,
+      editable: false,
+      valueGetter: (_value, row: ProductResponse) => row.category.parentId ? row.category.title : null,
     },
     {
       field: "existence",

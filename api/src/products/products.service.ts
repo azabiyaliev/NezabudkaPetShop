@@ -32,7 +32,19 @@ export class ProductsService {
         productDescription: true,
         productPrice: true,
         brand: true,
-        category: true,
+        category: {
+          select: {
+            id: true,
+            title: true,
+            parentId: true,
+            parent: {
+              select: {
+                id: true,
+                title: true,
+              },
+            },
+          },
+        },
         sales: true,
         existence: true,
       },
@@ -109,7 +121,11 @@ export class ProductsService {
       },
       include: {
         brand: true,
-        category: true,
+        category: {
+          include: {
+            parent: true,
+          },
+        },
         reviews: {
           include: {
             user: {

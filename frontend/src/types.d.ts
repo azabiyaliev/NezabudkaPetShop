@@ -84,6 +84,8 @@ export interface ICategories {
   id: number;
   title: string;
   subcategories: [{id: number; title: string, parentId: number}];
+  parentId: number;
+  parent: { id:number, title: string };
 }
 
 export interface CategoryMutation {
@@ -98,8 +100,11 @@ export interface ProductRequest {
   existence: boolean;
   sales: boolean;
   brandId: string;
-  category: {id: string, parentId: string, subcategories: {id: string, title: string, parentId: number }};
+  categoryId: string;
+  subcategoryId: string;
+  parentId: string;
   id?: number;
+  category?: ICategories;
 }
 
 export interface ICart {
