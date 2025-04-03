@@ -3,7 +3,12 @@ import AdminBar from '../AdminProfile/AdminBar.tsx';
 import BrandForm from '../../../components/Forms/BrandForm/BrandForm.tsx';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
 import { selectUser } from '../../../store/users/usersSlice.ts';
-import { brandFromSlice, editErrorFromSlice, editLoadingFromSlice, } from '../../../store/brands/brandsSlice.ts';
+import {
+  brandFromSlice,
+  clearBrand,
+  editErrorFromSlice,
+  editLoadingFromSlice,
+} from '../../../store/brands/brandsSlice.ts';
 import { IBrandForm } from '../../../types';
 import { useEffect } from 'react';
 import { editBrand, getOneBrand } from '../../../store/brands/brandsThunk.ts';
@@ -21,12 +26,12 @@ const EditBrandPage = () => {
 
   useEffect(() => {
     if (id) {
+      dispatch(clearBrand());
       dispatch(getOneBrand(Number(id))).unwrap();
     }
   }, [dispatch, id]);
 
   const addNewBrand = async (newBrand: IBrandForm) => {
-    console.log(newBrand);
     if (user) {
       if (id) {
         await dispatch(
@@ -42,7 +47,7 @@ const EditBrandPage = () => {
     <Box
       sx={{
         display: "flex",
-        justifyContent: "space-between",
+        // justifyContent: "space-between",
         alignItems: "center",
         margin: "30px 0",
       }}

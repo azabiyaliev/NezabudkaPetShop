@@ -125,6 +125,7 @@ const BrandForm: React.FC<Props> = ({
                 height: "200px",
                 textIndent: "-9999px",
                 display: "block",
+                objectFit: 'contain',
               }}
               src={
                 newBrand.logo instanceof File

@@ -60,6 +60,9 @@ const brandsSlice = createSlice({
   name: "brands",
   initialState,
   reducers: {
+    clearBrand: (state) => {
+      state.brand = null;
+    },
     clearError: (state) => {
       state.errors.addError = null;
     },
@@ -96,9 +99,10 @@ const brandsSlice = createSlice({
         state.errors.getOneError = null;
       })
       .addCase(getOneBrand.fulfilled, (state, {payload: brand}) => {
+        // state.brand = null;
         state.loadings.getOneLoading = false;
         state.errors.getOneError = null;
-        state.brand = brand;
+        state.brand = { ...brand};
       })
       .addCase(getOneBrand.rejected, (state, {payload: error}) => {
         state.loadings.getOneLoading = false;
@@ -132,4 +136,4 @@ const brandsSlice = createSlice({
 });
 
 export const brandReducer = brandsSlice.reducer;
-export const { clearError } = brandsSlice.actions;
+export const { clearError, clearBrand } = brandsSlice.actions;

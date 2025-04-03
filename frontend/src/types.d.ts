@@ -131,15 +131,8 @@ export interface ProductRequest {
 }
 
 export interface ICart {
-  id: number;
-  productId: number;
   quantity: number;
   product: ProductResponse;
-}
-
-export interface ICartMutation {
-  productId: number;
-  quantity: number;
 }
 
 export interface SubcategoryWithBrand {
