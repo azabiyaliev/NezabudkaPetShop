@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
+import { Box, Input, Button, FormHelperText } from "@mui/material";
 
 interface Props {
   name: string;
@@ -48,9 +49,9 @@ const FileInput: React.FC<Props> = ({
     }
   }, [file]);
 
-  const inputStyle = error
+  const inputStyle = error || !fileName
     ? {
-      backgroundColor: "#FFECEC",
+      backgroundColor: "white",
       borderColor: "#FF0000",
     }
     : {
@@ -58,18 +59,20 @@ const FileInput: React.FC<Props> = ({
       borderColor: "darkgreen",
     };
 
-  const buttonStyle = error
-    ? {
-      borderColor: "#FF0000",
-      color: "#FF0000",
-    }
-    : {
-      borderColor: "darkgreen",
-      color: "darkgreen",
-    };
+  const finalHelperText = helperText || "Фото обязательно для загрузки";
 
   return (
-    <>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 2,
+        width: "100%",
+        "@media (max-width: 600px)": {
+          flexDirection: "column",
+        },
+      }}
+    >
       <input
         style={{ ...inputStyle, display: "none" }}
         type="file"
@@ -78,52 +81,51 @@ const FileInput: React.FC<Props> = ({
         onChange={onFileChange}
       />
 
-      <div className="d-flex justify-content-start gap-4 align-items-center mb-3">
-        <input
+      <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+        <Input
           id={id}
           className={className}
           disabled
           placeholder={label}
-          value={fileName}
+          value={fileName || ""}
           onClick={activateInput}
-          style={{
-            ...inputStyle,
+          sx={{
             padding: "15px 30px",
             borderRadius: "20px",
-            border: `1px solid ${error ? "#FF0000" : "darkgreen"}`,
-            backgroundColor: error ? "#FFECEC" : "white",
+            border: `1px solid ${error || !fileName ? "#FF0000" : "darkgreen"}`,
+            backgroundColor: "white",
+            width: "100%",
+            "@media (max-width: 600px)": {
+              width: "100%",
+              padding: "12px 20px",
+            },
           }}
         />
-        <button
-          type="button"
+        <Button
+          variant="outlined"
           onClick={activateInput}
-          style={{
-            ...buttonStyle,
-            border: `1px solid ${error ? "#FF0000" : "darkgreen"}`,
+          sx={{
+            borderColor: error || !fileName ? "#FF0000" : "darkgreen",
             borderRadius: "15px",
             backgroundColor: "white",
             padding: "15px 20px",
             cursor: "pointer",
-            color: error ? "#FF0000" : "darkgreen",
+            color: error || !fileName ? "#FF0000" : "darkgreen",
+            "@media (max-width: 600px)": {
+              padding: "10px 15px",
+            },
           }}
         >
           <AddPhotoAlternateIcon />
-        </button>
-      </div>
+        </Button>
+      </Box>
 
-      {error && helperText && (
-        <div
-          style={{
-            color: "#FF0000",
-            fontSize: "12px",
-            marginLeft: "10px",
-            marginTop: "-5px",
-          }}
-        >
-          {helperText}
-        </div>
+      {(error || !fileName) && (
+        <FormHelperText sx={{ color: "#FF0000", fontSize: "12px", marginTop:"-10px", marginLeft: "10px", marginBottom: "10px" }}>
+          {finalHelperText}
+        </FormHelperText>
       )}
-    </>
+    </Box>
   );
 };
 

@@ -51,7 +51,7 @@ import { PhotoCarouselService } from './photo_carousel/photo_carousel.service';
     BrandsService,
     EditionSiteService,
     CategoryService,
-    PhotoCarouselService
+    PhotoCarouselService,
   ],
 })
 export class AppModule {}

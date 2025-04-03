@@ -1,19 +1,19 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from "../../app/store.ts";
-import { GlobalError, PhotoCarousel } from '../../types';
+import { PhotoCarousel } from '../../types';
 import { addNewPhoto, fetchPhoto, updatePhoto, updatePhotoOrders } from './photoCarouselThunk.ts';
 
 interface PhotoCarouselState {
   photos: PhotoCarousel[];
   editLoading: boolean;
-  editError: GlobalError | null;
+  editError: boolean;
   isLoading: boolean;
 }
 
 const initialState: PhotoCarouselState = {
   photos: [],
   editLoading: false,
-  editError: null,
+  editError: false,
   isLoading: false,
 };
 
@@ -32,27 +32,25 @@ export const PhotoCarouselSlice = createSlice({
     build
       .addCase(updatePhoto.pending, (state) => {
         state.editLoading = true;
-        state.editError = null;
+        state.editError = false;
       })
       .addCase(updatePhoto.fulfilled, (state) => {
         state.editLoading = false;
-        state.editError = null;
       })
-      .addCase(updatePhoto.rejected, (state, { payload: error }) => {
+      .addCase(updatePhoto.rejected, (state) => {
         state.editLoading = false;
-        state.editError = error || null
+        state.editError = true;
       })
       .addCase(addNewPhoto.pending, (state) => {
         state.editLoading = true;
-        state.editError = null;
+        state.editError = false;
       })
       .addCase(addNewPhoto.fulfilled, (state) => {
         state.editLoading = false;
-        state.editError = null;
       })
-      .addCase(addNewPhoto.rejected, (state,{ payload: error }) => {
+      .addCase(addNewPhoto.rejected, (state) => {
         state.editLoading = false;
-        state.editError = error || null
+        state.editError = true;
       })
       .addCase(fetchPhoto.pending, (state) => {
         state.isLoading = true;
@@ -66,7 +64,7 @@ export const PhotoCarouselSlice = createSlice({
       })
       .addCase(updatePhotoOrders.pending, (state) => {
         state.editLoading = true;
-        state.editError = null;
+        state.editError = false;
       })
       .addCase(updatePhotoOrders.fulfilled, (state, action) => {
         state.editLoading = false;

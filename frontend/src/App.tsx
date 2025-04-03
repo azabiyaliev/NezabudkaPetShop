@@ -94,7 +94,7 @@ const App = () => {
           <Route
             path="/edition_site"
             element={
-              <ProtectedRoute isAllowed={user && user.role === "admin"}>
+              <ProtectedRoute isAllowed={user && user.role === "superAdmin"}>
                 <EditionSitePage />
               </ProtectedRoute>
             }

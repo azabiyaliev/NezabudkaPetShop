@@ -1,7 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { GlobalError, PhotoCarousel, PhotoForm } from '../../types';
+import { PhotoCarousel, PhotoForm } from '../../types';
 import axiosApi from '../../axiosApi.ts';
-import { isAxiosError } from 'axios';
 
 export const fetchPhoto = createAsyncThunk<PhotoCarousel[], void>(
   "photo_carouse/fetchPhoto",
@@ -18,9 +17,8 @@ export const fetchPhoto = createAsyncThunk<PhotoCarousel[], void>(
 
 export const addNewPhoto = createAsyncThunk<
   void,
-  PhotoForm,
-  { rejectValue: GlobalError }
->("brands/addBrand", async (photo, { rejectWithValue }) => {
+  PhotoForm
+>("brands/addBrand", async (photo) => {
   try {
     const formData = new FormData();
     if (photo.photo instanceof File) {
@@ -30,22 +28,15 @@ export const addNewPhoto = createAsyncThunk<
 
     await axiosApi.post("/photos", formData);
   } catch (error) {
-    if (
-      isAxiosError(error) &&
-      error.response &&
-      (error.response.status === 409 || error.response.status === 404)
-    ) {
-      return rejectWithValue(error.response.data as GlobalError);
-    }
+    console.error(error);
     throw error;
   }
 });
 
 export const updatePhoto = createAsyncThunk<
   void,
-  { photo: PhotoCarousel },
-  { rejectValue: GlobalError }
->("photo_carousel/updatePhoto", async ({ photo }, { rejectWithValue }) => {
+  { photo: PhotoCarousel }
+>("photo_carousel/updatePhoto", async ({ photo }) => {
   try {
     const data = new FormData();
 
@@ -53,19 +44,15 @@ export const updatePhoto = createAsyncThunk<
       data.append("photo", photo.photo, photo.photo.name);
     }
 
-    data.append("link", photo.link);
-    data.append("order", String(Number(photo.order)));
-
+    if (photo.link) {
+      data.append("link", photo.link);
+    }
     await axiosApi.put(`/photos/${photo.id}`, data);
 
+    console.log(photo.link)
+
   } catch (error) {
-    if (
-      isAxiosError(error) &&
-      error.response &&
-      (error.response.status === 409 || error.response.status === 404)
-    ) {
-      return rejectWithValue(error.response.data as GlobalError);
-    }
+    console.error(error);
     throw error;
   }
 });
