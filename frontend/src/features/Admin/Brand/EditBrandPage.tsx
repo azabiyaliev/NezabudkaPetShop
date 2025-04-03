@@ -17,7 +17,7 @@ import { toast } from 'react-toastify';
 
 const EditBrandPage = () => {
   const user = useAppSelector(selectUser);
-  const brand = useAppSelector(brandFromSlice);
+  let brand = useAppSelector(brandFromSlice);
   const editError = useAppSelector(editErrorFromSlice);
   const dispatch = useAppDispatch();
   const loading = useAppSelector(editLoadingFromSlice);
@@ -30,6 +30,10 @@ const EditBrandPage = () => {
       dispatch(getOneBrand(Number(id))).unwrap();
     }
   }, [dispatch, id]);
+
+  if (brand && brand.description === null) {
+    brand = { ...brand, description: "" };
+  }
 
   const addNewBrand = async (newBrand: IBrandForm) => {
     if (user) {
@@ -47,7 +51,6 @@ const EditBrandPage = () => {
     <Box
       sx={{
         display: "flex",
-        // justifyContent: "space-between",
         alignItems: "center",
         margin: "30px 0",
       }}

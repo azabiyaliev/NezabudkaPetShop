@@ -32,7 +32,7 @@ const BrandForm: React.FC<Props> = ({
   brandError,
 }) => {
   const [newBrand, setNewBrand] = useState<IBrandForm>(editBrand);
-  const [resetFile, setResetFile] = useState<boolean>(false);
+  // const [resetFile, setResetFile] = useState<boolean>(false);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -53,13 +53,15 @@ const BrandForm: React.FC<Props> = ({
   const onSubmit = (e:React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    addNewBrand({ ...newBrand });
+    addNewBrand({
+      ...newBrand,
+      logo: newBrand.logo instanceof File ? newBrand.logo : newBrand.logo, });
 
-    if (!isBrand) {
-      setNewBrand(initialBrand);
-      setResetFile(true);
-      return;
-    }
+    // if (!isBrand) {
+    //   setNewBrand(initialBrand);
+    //   // setResetFile(true);
+    //   return;
+    // }
   };
 
   const fileInputChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -117,7 +119,13 @@ const BrandForm: React.FC<Props> = ({
             />
           </FormControl>
           <TextEditor value={newBrand.description} onChange={onChangeEditor}/>
-          <FileInputForBrand label="Выберите изображение для логотипа бренда" name="logo" onChange={fileInputChangeHandler} resetFile={resetFile} />
+          <FileInputForBrand
+            label="Выберите изображение для логотипа бренда"
+            name="logo"
+            onChange={fileInputChangeHandler}
+            initialValue={newBrand.logo}
+          />
+          {/*<FileInputForBrand label="Выберите изображение для логотипа бренда" name="logo" onChange={fileInputChangeHandler} resetFile={resetFile} />*/}
           {newBrand.logo && (
             <img
               style={{

@@ -55,9 +55,10 @@ export class BrandsService {
     brandDTO: BrandDto,
     file?: Express.Multer.File,
   ) {
-    const { title, description } = brandDTO;
+    const { title, description, editLogo } = brandDTO;
     const brandId = parseInt(id);
     const updateBrand: Partial<BrandDto> = {};
+    const editLogoValue = Boolean(editLogo);
 
     const brand = await this.prisma.brand.findFirst({
       where: { id: brandId },
@@ -81,12 +82,13 @@ export class BrandsService {
       updateBrand.title = title;
     }
 
-    let logo = file ? '/brands/' + file.filename : null;
-    if (file) {
-      logo = '/brands/' + file.filename;
+    if (editLogoValue) {
+      updateBrand.logo = null;
+    } else {
+      if (file) {
+        updateBrand.logo = '/brands/' + file.filename;
+      }
     }
-
-    updateBrand.logo = logo;
 
     if (description !== brand.description || description === '') {
       updateBrand.description = description === '' ? null : description;
