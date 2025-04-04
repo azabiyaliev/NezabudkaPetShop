@@ -99,7 +99,6 @@ const brandsSlice = createSlice({
         state.errors.getOneError = null;
       })
       .addCase(getOneBrand.fulfilled, (state, {payload: brand}) => {
-        // state.brand = null;
         state.loadings.getOneLoading = false;
         state.errors.getOneError = null;
         state.brand = { ...brand};

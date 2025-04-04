@@ -32,6 +32,7 @@ const CartProduct: React.FC<Props> = ({ productCart }) => {
           style={{
             width: "80px",
             height: "80px",
+            objectFit: 'contain',
           }}
           src={apiUrl + productCart.product.productPhoto}
           alt={productCart.product.productName}

@@ -25,6 +25,7 @@ import AllProductsCardsPage from "./features/Product/containers/AllProductsCards
 import CartPage from "./features/Cart/CartPage.tsx";
 import DragAndDropPhoto from './components/Forms/PhotoCarouselForm/DragAndDropPhoto.tsx';
 import Photo from './components/Forms/PhotoCarouselForm/Photo.tsx';
+import BrandPage from './features/Brand/BrandPage.tsx';
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -134,6 +135,7 @@ const App = () => {
             }
           />
           <Route path="/product/:id" element={<ProductPage />} />
+          <Route path="/brand/:id" element={<BrandPage />} />
           <Route path="/all-products" element={<AllProductsCardsPage />} />
         </Routes>
       </Layout>

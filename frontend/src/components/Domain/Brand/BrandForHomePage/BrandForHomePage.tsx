@@ -7,12 +7,14 @@ import { IBrand } from '../../../../types';
 import { Navigation, Pagination, Autoplay } from 'swiper/modules';
 import React from 'react';
 import { apiUrl } from '../../../../globalConstants.ts';
+import { useNavigate } from 'react-router-dom';
 
 interface Props {
   brands: IBrand[];
 }
 
 const BrandForHomePage:React.FC<Props> = ({brands}) => {
+  const navigate = useNavigate();
   return (
     <Box sx={{
       width: "100%",
@@ -57,7 +59,10 @@ const BrandForHomePage:React.FC<Props> = ({brands}) => {
         }}
       >
         {brands.map((brand, index) => (
-          <SwiperSlide key={index} style={{
+          <SwiperSlide
+            onClick={() => navigate(`/brand/${brand.id}`)}
+            key={index}
+            style={{
             textAlign: 'center',
             cursor: 'pointer',
             display: brand.logo ? 'block' : 'none',

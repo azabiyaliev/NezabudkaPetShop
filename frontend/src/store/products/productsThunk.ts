@@ -105,3 +105,11 @@ export const getAllProductsByCategory = createAsyncThunk<
   );
   return response.data || [];
 });
+
+export const getProductsByBrand = createAsyncThunk<ProductResponse[], number>(
+  "products/getProductsByBrand",
+  async (id) => {
+    const products = await axiosApi<ProductResponse[]>(`products/catalog?brand=${id}`);
+    return products.data || [];
+  }
+);
