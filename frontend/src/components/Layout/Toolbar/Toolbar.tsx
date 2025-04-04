@@ -8,7 +8,7 @@ import {
   Toolbar,
 } from "@mui/material";
 import { NavLink, useNavigate } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
+import { useAppDispatch, useAppSelector, usePermission } from '../../../app/hooks.ts';
 import ExistsUser from "./ExistsUser.tsx";
 import UnknownUser from "./UnknownUser.tsx";
 import logo_transparent from "../../../assets/logo_transparent.png";
@@ -47,6 +47,7 @@ const MainToolbar = () => {
   const products = useAppSelector(selectProducts);
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState<string>('');
+  const can = usePermission(user);
 
   const onClick = (e: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(e.currentTarget);
@@ -400,7 +401,7 @@ const MainToolbar = () => {
                   </Box>
                 )}
               </Box>
-              {user && user.role ==="admin" && (
+              {user && can(["admin", "superAdmin"]) && (
                 <Box
                   sx={{
                     display:"none",
@@ -453,8 +454,7 @@ const MainToolbar = () => {
                   </NavLink>
                 </Box>
               )}
-              {user ? (
-                user.role === "client" && (
+              {user ? (can(["user"]) && (
                   <Box
                     sx={{
                       display: "flex",
@@ -790,7 +790,7 @@ const MainToolbar = () => {
 
               )}
 
-              {user && user.role === "admin" && (
+              {user && can(["admin", "superAdmin"]) && (
                 <Box
                   sx={{
                     position: "fixed",

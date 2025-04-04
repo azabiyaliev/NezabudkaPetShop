@@ -11,6 +11,8 @@ import {
 import { NavLink } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
 import { selectUser, unsetUser } from "../../../store/users/usersSlice.ts";
+import { usePermission} from '../../../app/hooks.ts';
+
 import {
   addErrorFromSlice,
   clearError,
@@ -31,6 +33,8 @@ const ExistsUser = () => {
   const dispatch = useAppDispatch();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const user = useAppSelector(selectUser);
+  const can = usePermission(user);
+
 
   const toggleDrawer = (open: boolean) => () => {
     setIsDrawerOpen(open);
@@ -135,7 +139,7 @@ const ExistsUser = () => {
           </Box>
           <Divider />
 
-          {user && user.role === "admin" || user && user.role === 'superAdmin' && (
+          {user && can(["admin", "superAdmin"]) && (
             <List>
               <ListItem
                 component={NavLink}
@@ -145,12 +149,16 @@ const ExistsUser = () => {
                 <HomeOutlinedIcon style={{ color: "#45624E" }} />
                 <ListItemText primary="Личный кабинет" className="text-black" />
               </ListItem>
-              <ListItem  component={NavLink} to={`/admin-table`} onClick={toggleDrawer(false)}>
-                <ListItemText primary="Администраторы" className='text-black'/>
-              </ListItem>
-              <ListItem  component={NavLink} to={`/admin-create`} onClick={toggleDrawer(false)}>
-                <ListItemText primary="Создать администратора" className='text-black'/>
-              </ListItem>
+              {can(["superAdmin"]) && (
+                <>
+                  <ListItem component={NavLink} to={`/admin-table`} onClick={toggleDrawer(false)}>
+                    <ListItemText primary="Администраторы" className="text-black" />
+                  </ListItem>
+                  <ListItem component={NavLink} to={`/admin-create`} onClick={toggleDrawer(false)}>
+                    <ListItemText primary="Создать администратора" className="text-black"/>
+                  </ListItem>
+                </>
+              )}
               <ListItem
                 component={NavLink}
                 to={`/private/users/${user.id}`}
@@ -213,7 +221,7 @@ const ExistsUser = () => {
             </List>
           )}
 
-          {user && user.role === "client" && (
+          {user && can(["client"]) && (
             <List>
               <ListItem
                 component={NavLink}
