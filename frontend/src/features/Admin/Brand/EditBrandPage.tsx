@@ -1,21 +1,24 @@
-import { Box } from "@mui/material";
-import AdminBar from "../AdminProfile/AdminBar.tsx";
-import BrandForm from "../../../components/Forms/BrandForm/BrandForm.tsx";
-import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
-import { selectUser } from "../../../store/users/usersSlice.ts";
+import { Box } from '@mui/material';
+import AdminBar from '../AdminProfile/AdminBar.tsx';
+import BrandForm from '../../../components/Forms/BrandForm/BrandForm.tsx';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
+import { selectUser } from '../../../store/users/usersSlice.ts';
 import {
   brandFromSlice,
+  clearBrand,
+  editErrorFromSlice,
   editLoadingFromSlice,
-} from "../../../store/brands/brandsSlice.ts";
-import { IBrandForm } from "../../../types";
-import { useEffect } from "react";
-import { editBrand, getOneBrand } from "../../../store/brands/brandsThunk.ts";
-import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
+} from '../../../store/brands/brandsSlice.ts';
+import { IBrandForm } from '../../../types';
+import { useEffect } from 'react';
+import { editBrand, getOneBrand } from '../../../store/brands/brandsThunk.ts';
+import { useNavigate, useParams } from 'react-router-dom';
+import { enqueueSnackbar } from 'notistack';
 
 const EditBrandPage = () => {
   const user = useAppSelector(selectUser);
-  const brand = useAppSelector(brandFromSlice);
+  let brand = useAppSelector(brandFromSlice);
+  const editError = useAppSelector(editErrorFromSlice);
   const dispatch = useAppDispatch();
   const loading = useAppSelector(editLoadingFromSlice);
   const { id } = useParams();
@@ -23,18 +26,24 @@ const EditBrandPage = () => {
 
   useEffect(() => {
     if (id) {
+      dispatch(clearBrand());
       dispatch(getOneBrand(Number(id))).unwrap();
     }
   }, [dispatch, id]);
 
+  if (brand && brand.description === null) {
+    brand = { ...brand, description: "" };
+  }
+
   const addNewBrand = async (newBrand: IBrandForm) => {
-    console.log(newBrand);
     if (user) {
-      await dispatch(
-        editBrand({ token: user.token, brand: newBrand }),
-      ).unwrap();
-      toast.success("Бренд успешно отредактирован!");
-      navigate("/private/brands");
+      if (id) {
+        await dispatch(
+          editBrand({ token: user.token, brand: newBrand }),
+        ).unwrap();
+        enqueueSnackbar("Бренд успешно отредактирован!", { variant: 'success' });
+        navigate("/private/brands");
+      }
     }
   };
 
@@ -42,7 +51,6 @@ const EditBrandPage = () => {
     <Box
       sx={{
         display: "flex",
-        justifyContent: "space-between",
         alignItems: "center",
         margin: "30px 0",
       }}
@@ -54,6 +62,7 @@ const EditBrandPage = () => {
           isLoading={loading}
           editBrand={brand}
           isBrand
+          brandError={editError}
         />
       )}
     </Box>

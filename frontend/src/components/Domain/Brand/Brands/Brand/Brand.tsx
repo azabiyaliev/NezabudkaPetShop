@@ -1,17 +1,16 @@
-import { IBrand } from "../../../../../types";
-import React from "react";
-import { apiUrl } from "../../../../../globalConstants.ts";
-import EditNoteOutlinedIcon from "@mui/icons-material/EditNoteOutlined";
-import { Button } from "@mui/material";
-import DeleteSweepOutlinedIcon from "@mui/icons-material/DeleteSweepOutlined";
-import { useNavigate } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../../../../app/hooks.ts";
-import { selectUser } from "../../../../../store/users/usersSlice.ts";
-import {
-  brandeDelete,
-  getBrands,
-} from "../../../../../store/brands/brandsThunk.ts";
-import { toast } from "react-toastify";
+import { IBrand } from '../../../../../types';
+import React from 'react';
+import { apiUrl } from '../../../../../globalConstants.ts';
+import EditNoteOutlinedIcon from '@mui/icons-material/EditNoteOutlined';
+import { Button } from '@mui/material';
+import DeleteSweepOutlinedIcon from '@mui/icons-material/DeleteSweepOutlined';
+import { useNavigate } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../../../../../app/hooks.ts';
+import { selectUser } from '../../../../../store/users/usersSlice.ts';
+import { brandeDelete, getBrands } from '../../../../../store/brands/brandsThunk.ts';
+import { toast } from 'react-toastify';
+import noImage from '../../../../../assets/no-image.jpg';
+import { Link } from '@mui/joy';
 
 interface Props {
   brand: IBrand;
@@ -22,6 +21,11 @@ const Brand: React.FC<Props> = ({ brand, index }) => {
   const user = useAppSelector(selectUser);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  let brandImage = noImage;
+
+  if (brand.logo) {
+    brandImage = apiUrl + brand.logo;
+  }
 
   const deleteThisBrand = async (id: number) => {
     if (user && user.role === "admin") {
@@ -37,27 +41,40 @@ const Brand: React.FC<Props> = ({ brand, index }) => {
         <td
           style={{
             fontSize: "15px",
+            fontFamily: "Nunito, sans-serif",
+            fontWeight: 400
           }}
         >
           {index + 1}
         </td>
         <td>
           <img
-            src={apiUrl + "/" + brand.logo}
+            onClick={() => navigate(`/brand/${brand.id}`)}
+            src={brandImage}
             alt={brand.title}
             style={{
-              width: "90px",
-              height: "60px",
-              margin: "10px 0",
-            }}
-          />
+              width: '80px',
+              height: '80px',
+              objectFit: 'contain',
+            }}/>
         </td>
         <td
           style={{
             fontSize: "18px",
           }}
         >
-          {brand.title}
+          <Link
+            href={`/brand/${brand.id}`}
+            sx={{
+              fontFamily: "Nunito, sans-serif",
+              color: "black",
+              textDecoration: "none",
+              fontWeight: 600,
+              '&:hover': {
+                color: "rgba(250, 179, 1, 1)",
+              },
+            }}
+          >{brand.title}</Link>
         </td>
         <td
           style={{

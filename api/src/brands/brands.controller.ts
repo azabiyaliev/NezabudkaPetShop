@@ -3,10 +3,9 @@ import {
   Controller,
   Delete,
   Get,
-  NotFoundException,
   Param,
+  Patch,
   Post,
-  Put,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -53,21 +52,12 @@ export class BrandsController {
     @UploadedFile() file: Express.Multer.File,
     @Body() brandDTO: BrandDto,
   ) {
-    if (!brandDTO) {
-      throw new NotFoundException(
-        'Название и логотип бренда не был предоставлен!',
-      );
-    }
-    const logo = file && file.filename && '/brands/' + file.filename;
-    return await this.brandsService.createBrand({
-      title: brandDTO.title,
-      logo,
-    });
+    return await this.brandsService.createBrand(brandDTO, file);
   }
 
   @UseGuards(TokenAuthGuard, RolesGuard)
   @Roles('admin')
-  @Put(':id')
+  @Patch(':id')
   @UseInterceptors(
     FileInterceptor('logo', {
       storage: diskStorage({
@@ -84,11 +74,6 @@ export class BrandsController {
     @UploadedFile() file: Express.Multer.File,
     @Body() brandDTO: BrandDto,
   ) {
-    if (!brandDTO) {
-      throw new NotFoundException(
-        'Название и логотип бренда не был предоставлен!',
-      );
-    }
     return await this.brandsService.updateBrand(id, brandDTO, file);
   }
 

@@ -52,11 +52,11 @@ model PasswordReset {
 }
 
 model Brand {
-  id    Int    @id @default(autoincrement())
-  title String @unique
-  logo  String
-
-  products Products[]
+  id          Int        @id @default(autoincrement())
+  title       String     @unique
+  logo        String?
+  description String?
+  products    Products[]
 
   @@map("brands")
 }
@@ -84,7 +84,7 @@ model PhotoByCarousel {
 }
 
 model Category {
-  id            Int          @id @default(autoincrement())
+  id            Int        @id @default(autoincrement())
   title         String
   parentId      Int?       @map("parent_id")
   parent        Category?  @relation("CategorySubcategories", fields: [parentId], references: [id])

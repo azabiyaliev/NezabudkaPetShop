@@ -47,12 +47,23 @@ export interface IBrand {
   id: number;
   title: string;
   logo: string | null;
+  description: string | null;
 }
 
 export interface IBrandForm {
   id?: number;
   title: string;
   logo: File | null;
+  description: string;
+}
+
+export interface BrandError {
+  error: string;
+  errors: {
+    title: string;
+  };
+  message: string;
+  statusCode: number;
 }
 
 export interface EditSiteMutation {
@@ -120,8 +131,6 @@ export interface ProductRequest {
 }
 
 export interface ICart {
-  id: number;
-  productId: number;
   quantity: number;
   product: ProductResponse;
 }

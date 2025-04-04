@@ -29,6 +29,7 @@ import AdminForm from './components/Forms/AdminForm/AdminForm.tsx';
 import AdminTable from './features/SuperAdmin/container/AdminTable.tsx';
 import OrderForm from './features/Order/OrderForm.tsx';
 import NewSubcategory from './features/Category/NewSubcategory/NewSubcategory.tsx';
+import BrandPage from './features/Brand/BrandPage.tsx';
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -147,6 +148,7 @@ const App = () => {
             }
           />
           <Route path="/product/:id" element={<ProductPage />} />
+          <Route path="/brand/:id" element={<BrandPage />} />
           <Route path="/all-products" element={<AllProductsCardsPage />} />
           <Route path="/admin-create" element={
             <ProtectedRoute isAllowed={user && user.role === 'superAdmin'}>

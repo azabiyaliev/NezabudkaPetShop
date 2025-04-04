@@ -38,7 +38,7 @@ const Cart: React.FC<Props> = ({ product, products }) => {
     dispatch(deleteProduct(id));
     const updatedProducts = products.filter(
       (product) => product.product.id !== id,
-    ); // Фильтруем товары
+    );
     dispatch(setToLocalStorage(updatedProducts));
     enqueueSnackbar("Данный товар успешно удален из списка в корзине!", {
       variant: "success",

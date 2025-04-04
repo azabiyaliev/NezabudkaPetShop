@@ -1,22 +1,30 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Box, Button, TextField } from "@mui/material";
-import Grid from "@mui/material/Grid2";
+import React, { useEffect, useRef, useState } from 'react';
+import { Box, Button, TextField } from '@mui/material';
+import Grid from '@mui/material/Grid2';
 
 interface Props {
   onChange: React.ChangeEventHandler<HTMLInputElement>;
   name: string;
   label: string;
-  resetFile: boolean;
+  initialValue: File | string | null;
 }
 
 const FileInputForBrand: React.FC<Props> = ({
   onChange,
   name,
   label,
-  resetFile,
+  initialValue,
 }) => {
   const [filename, setFilename] = useState("");
   const inputRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    if (initialValue) {
+      setFilename(initialValue instanceof File ? initialValue.name : initialValue);
+    } else {
+      setFilename("");
+    }
+  }, [initialValue]);
 
   const activateInput = () => {
     if (inputRef.current) {
@@ -33,12 +41,6 @@ const FileInputForBrand: React.FC<Props> = ({
 
     onChange(e);
   };
-
-  useEffect(() => {
-    if (resetFile) {
-      setFilename("");
-    }
-  }, [resetFile]);
 
   return (
     <>

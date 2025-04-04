@@ -100,51 +100,63 @@ export class SeedService {
           id: 1,
           title: 'AVZ',
           logo: '/fixtures/brands/avz.png',
+          description:
+            'НВЦ Агроветзащита был основан в 1993 году. Вот уже более 20 лет компания занимается разработкой, производством и продажей ветеринарных препаратов для сельскохозяйственных животных и птицы, для домашних животных, рептилий, декоративных птиц, грызунов, лошадей и товарной рыбы.',
         },
         {
           id: 2,
           title: 'BAYER',
           logo: '/fixtures/brands/bayer.png',
+          description:
+            'Bayer – продукция, которая создана для оздоровления домашних животных. Компания выпускает эффективные препараты, отличное качество которых контролируется в каждой товарной партии. Особое внимание уделяется совершенствованию проверенных решений, своевременному выпуску новинок с лучшими потребительскими параметрами. В ассортименте представлены следующие группы защитных продуктов: средства от клещей, блох, иных наружных паразитов, разносчиков заболеваний; средства от гельминтов и других внутренних паразитов; комплексные средства; антибактериальные препараты. Все продукты Bayer при правильном применении совершенно безвредны для домашних любимцев и людей.',
         },
         {
           id: 3,
           title: 'Catchow',
           logo: '/fixtures/brands/catchow_logofina.jpg',
+          description: null,
         },
         {
           id: 4,
           title: 'Dog-Chow',
           logo: '/fixtures/brands/dog-chow-logo.png',
+          description: null,
         },
         {
           id: 5,
           title: 'Flexi',
           logo: '/fixtures/brands/flexi-logo.png',
+          description: null,
         },
         {
           id: 6,
           title: 'Friskies',
           logo: '/fixtures/brands/friskies.png',
+          description: null,
         },
         {
           id: 7,
           title: 'Gourmet',
           logo: '/fixtures/brands/gourmet.png',
+          description: null,
         },
         {
           id: 8,
-          title: 'Happy-cat',
+          title: 'Happy Сat',
           logo: '/fixtures/brands/happy-cat.png',
+          description: null,
         },
         {
           id: 9,
-          title: 'Happy-dog',
+          title: 'Happy Dog',
           logo: '/fixtures/brands/happy-dog.png',
+          description: null,
         },
         {
           id: 10,
-          title: 'Proplan',
+          title: 'Purina Pro Plan',
           logo: '/fixtures/brands/proplan.png',
+          description: null,
         },
       ],
     });

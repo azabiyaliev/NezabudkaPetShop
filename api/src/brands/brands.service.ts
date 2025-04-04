@@ -5,7 +5,6 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { BrandDto } from '../dto/brands.dto';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class BrandsService {
@@ -16,12 +15,6 @@ export class BrandsService {
       orderBy: {
         id: 'desc',
       },
-      select: {
-        id: true,
-        title: true,
-        logo: true,
-        products: true,
-      },
     });
     return brands || [];
   }
@@ -30,12 +23,6 @@ export class BrandsService {
     const brandId = parseInt(id);
     const brand = await this.prisma.brand.findFirst({
       where: { id: brandId },
-      select: {
-        id: true,
-        title: true,
-        logo: true,
-        products: true,
-      },
     });
     if (!brand) {
       throw new NotFoundException(`Бренд с id = ${id} не найдена!`);
@@ -43,37 +30,24 @@ export class BrandsService {
     return brand;
   }
 
-  async createBrand(brandDTO: BrandDto) {
-    const { title, logo } = brandDTO;
-    if (!title || title.trim() === '' || !logo || logo.trim() === '') {
+  async createBrand(brandDTO: BrandDto, file?: Express.Multer.File) {
+    const { title, description } = brandDTO;
+    const brand = await this.prisma.brand.findFirst({
+      where: { title },
+    });
+    if (brand) {
       throw new NotFoundException(
-        'Название и логотип бренда не могут быть пустым!',
+        'Данный бренд уже существует и вы не можете повторно его добавить!',
       );
     }
-    try {
-      return await this.prisma.brand.create({
-        data: {
-          title,
-          logo,
-        },
-        select: {
-          id: true,
-          title: true,
-          logo: true,
-          products: true,
-        },
-      });
-    } catch (error) {
-      if (
-        error instanceof PrismaClientKnownRequestError &&
-        error.code === 'P2002'
-      ) {
-        throw new ConflictException(
-          `Данный бренд уже существует. Вы не можете повторно его добавить!`,
-        );
-      }
-      throw error;
-    }
+    const newBrand = await this.prisma.brand.create({
+      data: {
+        title,
+        logo: file && file.filename ? '/brands/' + file.filename : null,
+        description: description === '' ? null : description,
+      },
+    });
+    return { message: 'Новый бренд был успешно создан!', newBrand };
   }
 
   async updateBrand(
@@ -81,37 +55,59 @@ export class BrandsService {
     brandDTO: BrandDto,
     file?: Express.Multer.File,
   ) {
-    const { title } = brandDTO;
-    let logo = brandDTO.logo;
-    if (file) {
-      logo = '/brands/' + file.filename;
-    }
-    if (title.trim().length === 0 || logo.trim().length === 0) {
-      throw new NotFoundException(
-        `Название и логотип бренда не могут быть пустыми!`,
-      );
-    }
+    const { title, description } = brandDTO;
     const brandId = parseInt(id);
+    const updateBrand: Partial<BrandDto> = {};
+
     const brand = await this.prisma.brand.findFirst({
       where: { id: brandId },
     });
+
     if (!brand) {
-      throw new NotFoundException(`Бренд с id = ${id} не найдена!`);
+      throw new NotFoundException(
+        `Бренд с идентификатором равное ${id} не найден!`,
+      );
     }
-    return this.prisma.brand.update({
+
+    if (title !== brand.title) {
+      const existingBrand = await this.prisma.brand.findFirst({
+        where: { title: title },
+      });
+      if (existingBrand) {
+        throw new ConflictException(
+          `Бренд с названием "${title}" уже существует!`,
+        );
+      }
+      updateBrand.title = title;
+    }
+
+    if (file) {
+      updateBrand.logo = '/brands/' + file?.filename;
+    } else if (brandDTO.logo === brand.logo) {
+      updateBrand.logo = brandDTO.logo;
+    } else if (!file || (brandDTO.logo != null && brandDTO.logo === '')) {
+      updateBrand.logo = null;
+    }
+
+    if (description !== brand.description || description === '') {
+      updateBrand.description = description === '' ? null : description;
+    }
+
+    const changeBrand = await this.prisma.brand.update({
       where: { id: brandId },
-      data: {
-        title,
-        logo,
-      },
+      data: updateBrand,
     });
+
+    return { message: 'Данный бренд был успешно отредактирован!', changeBrand };
   }
 
   async deleteBrand(id: string) {
     const brandId = parseInt(id);
     const brand = await this.prisma.brand.findFirst({ where: { id: brandId } });
     if (!brand) {
-      throw new NotFoundException(`Бренд с id = ${id} не найдена!`);
+      throw new NotFoundException(
+        `Бренд с идентификатором равное ${id} не найдена!`,
+      );
     }
     await this.prisma.brand.delete({ where: { id: brandId } });
     return { message: 'Данный бренд был успешно удален!' };
