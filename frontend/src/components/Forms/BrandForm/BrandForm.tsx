@@ -77,7 +77,12 @@ const BrandForm: React.FC<Props> = ({
   };
 
   return (
-    <form onSubmit={onSubmit}>
+    <form
+      onSubmit={onSubmit}
+      style={{
+        marginLeft: '30px'
+      }}
+    >
       <main>
         <Sheet
           sx={{

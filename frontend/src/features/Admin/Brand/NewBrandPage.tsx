@@ -28,7 +28,6 @@ const NewBrandPage = () => {
     <Box
       sx={{
         display: "flex",
-        justifyContent: "space-between",
         alignItems: "center",
         margin: "30px 0",
       }}

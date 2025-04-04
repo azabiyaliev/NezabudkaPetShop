@@ -40,7 +40,7 @@ const TextEditor: React.FC<Props> = ({ value, onChange }) => {
   return (
     <Box sx={{ padding: 2 }}>
       <Paper elevation={3} sx={{ padding: 2 }}>
-        <div ref={quillRef} style={{ height: "200px", border: "1px solid red", borderRadius: "4px" }} />
+        <div ref={quillRef} style={{ height: "200px", borderRadius: "4px" }} />
       </Paper>
     </Box>
   );

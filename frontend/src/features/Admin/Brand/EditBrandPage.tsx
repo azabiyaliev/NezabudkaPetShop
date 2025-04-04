@@ -13,7 +13,7 @@ import { IBrandForm } from '../../../types';
 import { useEffect } from 'react';
 import { editBrand, getOneBrand } from '../../../store/brands/brandsThunk.ts';
 import { useNavigate, useParams } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import { enqueueSnackbar } from 'notistack';
 
 const EditBrandPage = () => {
   const user = useAppSelector(selectUser);
@@ -41,7 +41,7 @@ const EditBrandPage = () => {
         await dispatch(
           editBrand({ token: user.token, brand: newBrand }),
         ).unwrap();
-        toast.success("Бренд успешно отредактирован!");
+        enqueueSnackbar("Бренд успешно отредактирован!", { variant: 'success' });
         navigate("/private/brands");
       }
     }

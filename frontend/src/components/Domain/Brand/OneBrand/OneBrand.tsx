@@ -4,6 +4,7 @@ import { Box, Typography } from '@mui/joy';
 import { apiUrl } from '../../../../globalConstants';
 import ReactHtmlParser from 'html-react-parser';
 import OneProductCard from '../../../../features/Product/components/OneProductCard.tsx';
+import noImage from '../../../../assets/no-image.jpg';
 
 interface Props {
   brand: IBrandForm;
@@ -14,28 +15,40 @@ const OneBrand:React.FC<Props> = ({ brand, products }) => {
   return (
     <>
       <Box sx={{ position: 'relative', overflow: 'hidden', marginTop: '60px' }}>
-        {brand.logo && (
+        <Box sx={{
+          "& img": {
+            width: '25%',
+            height: 'auto',
+            objectFit: 'contain',
+            float: 'left',
+            marginRight: '30px',
+            marginBottom: '20px',
+            "@media (max-width: 830px)": {
+              float: 'none',
+              width: '200px',
+              marginRight: '0',
+            },
+          },
+          "@media (max-width: 830px)": {
+            textAlign: "center",
+          },
+        }}>
           <img
-            src={apiUrl + brand.logo}
+            src={brand.logo ? apiUrl + brand.logo : noImage}
             alt={brand.title}
-            style={{
-              width: "25%",
-              height: "auto",
-              objectFit: 'contain',
-              float: 'left',
-              marginRight: '30px',
-              marginBottom: '20px',
-            }}
           />
-        )}
+        </Box>
         <Typography
           level="h1"
           sx={{
-            fontFamily: "Nunito, sans-serif",
-            color: "#237803",
+            fontFamily: 'Nunito, sans-serif',
+            color: '#237803',
             fontSize: '50px',
-            textAlign: "center",
-            margin: '30px 0'
+            textAlign: 'center',
+            margin: '30px 0',
+            "@media (max-width: 650px)": {
+              fontSize: '40px',
+            },
           }}
         >
           {brand.title}
@@ -44,6 +57,7 @@ const OneBrand:React.FC<Props> = ({ brand, products }) => {
           <Typography
             sx={{
               fontFamily: "Nunito, sans-serif",
+              textAlign: "justify",
             }}
           >
             { ReactHtmlParser(brand.description)}
@@ -60,15 +74,25 @@ const OneBrand:React.FC<Props> = ({ brand, products }) => {
               fontFamily: "Nunito, sans-serif",
               color: "#FFC107",
               fontSize: '30px',
-              margin: '30px 0'
+              margin: '30px 0',
+              "@media (max-width: 830px)": {
+                textAlign: "center",
+              },
+              "@media (max-width: 650px)": {
+                fontSize: '25px',
+              },
             }}
           >
-            Товары по данной категории
+            Товары по данному бренду
           </Typography>
           <Box sx={{
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
+            flexWrap: "wrap",
+            "@media (max-width: 630px)": {
+              display: "block",
+            },
           }}>
             {products.map((product) => (
               <OneProductCard key={product.id} product={product}/>

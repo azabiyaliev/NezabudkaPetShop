@@ -9,8 +9,8 @@ import { useAppDispatch, useAppSelector } from '../../../../../app/hooks.ts';
 import { selectUser } from '../../../../../store/users/usersSlice.ts';
 import { brandeDelete, getBrands } from '../../../../../store/brands/brandsThunk.ts';
 import { toast } from 'react-toastify';
-import DOMPurify from 'dompurify';
 import noImage from '../../../../../assets/no-image.jpg';
+import { Link } from '@mui/joy';
 
 interface Props {
   brand: IBrand;
@@ -21,15 +21,10 @@ const Brand: React.FC<Props> = ({ brand, index }) => {
   const user = useAppSelector(selectUser);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  let sanitizedDescription = '';
   let brandImage = noImage;
 
   if (brand.logo) {
     brandImage = apiUrl + brand.logo;
-  }
-
-  if (brand.description !== null) {
-    sanitizedDescription = DOMPurify.sanitize(brand.description);
   }
 
   const deleteThisBrand = async (id: number) => {
@@ -46,12 +41,15 @@ const Brand: React.FC<Props> = ({ brand, index }) => {
         <td
           style={{
             fontSize: "15px",
+            fontFamily: "Nunito, sans-serif",
+            fontWeight: 400
           }}
         >
           {index + 1}
         </td>
         <td>
           <img
+            onClick={() => navigate(`/brand/${brand.id}`)}
             src={brandImage}
             alt={brand.title}
             style={{
@@ -65,7 +63,18 @@ const Brand: React.FC<Props> = ({ brand, index }) => {
             fontSize: "18px",
           }}
         >
-          {brand.title}
+          <Link
+            href={`/brand/${brand.id}`}
+            sx={{
+              fontFamily: "Nunito, sans-serif",
+              color: "black",
+              textDecoration: "none",
+              fontWeight: 600,
+              '&:hover': {
+                color: "rgba(250, 179, 1, 1)",
+              },
+            }}
+          >{brand.title}</Link>
         </td>
         <td
           style={{
@@ -83,17 +92,6 @@ const Brand: React.FC<Props> = ({ brand, index }) => {
           <Button variant="outlined" onClick={() => deleteThisBrand(brand.id)}>
             <DeleteSweepOutlinedIcon fontSize="medium" />
           </Button>
-        </td>
-        <td>
-          <div
-            style={{
-              height: '10%',
-              width: '10%',
-              border: '1px solid #ccc',
-              padding: '10px',
-            }}
-            dangerouslySetInnerHTML={{__html: sanitizedDescription}}
-          />
         </td>
       </tr>
     </>
