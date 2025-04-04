@@ -23,6 +23,7 @@ import QuillEditor from '../../../../components/UI/QuillEditor/QuillEditor.tsx';
 import { orange } from "@mui/material/colors";
 import FormControl from "@mui/material/FormControl";
 import FileInput from "../../../../components/FileInput/FileInput.tsx";
+import { addProductLoading } from '../../../../store/products/productsSlice.ts';
 
 interface Props {
   onSubmit: (product: ProductRequest) => void;
@@ -51,6 +52,7 @@ const ProductForm: React.FC<Props> = ({
   const dispatch = useAppDispatch();
   const brands = useAppSelector(brandsFromSlice);
   const categories = useAppSelector(selectCategories);
+  const loading = useAppSelector(addProductLoading);
   console.log(categories);
   const selectedCategory = categories.find((category) => category.id === Number(form.categoryId));
 
@@ -80,10 +82,6 @@ const ProductForm: React.FC<Props> = ({
 
     if (!form.productDescription.trim()) {
       return toast.warning("Необходимо добавить описание товара!");
-    }
-
-    if (!form.brandId) {
-      return toast.warning("Необходимо выбрать бренд!");
     }
 
     if (!form.categoryId) {
@@ -339,6 +337,7 @@ const ProductForm: React.FC<Props> = ({
               sx={{ color: "#ff9800", width: "100%" }}
               variant="outlined"
               color="inherit"
+              disabled={loading}
             >
               {!isProduct ? "Добавить" : "Сохранить"}
             </Button>

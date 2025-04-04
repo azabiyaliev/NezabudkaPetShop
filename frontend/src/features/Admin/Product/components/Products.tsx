@@ -87,7 +87,13 @@ const Products: React.FC<Props> = ({ products }) => {
       headerName: "Бренд",
       width: 100,
       editable: false,
-      valueGetter: (_value, row: ProductResponse) => row.brand.title,
+      // valueGetter: (_value, row: ProductResponse) => !row.brand ? "" : row.brand.title,
+      renderCell: ({ row }: { row: ProductResponse }) =>
+        row.brand ? (
+          row.brand.title
+        ) : (
+          <CancelIcon sx={{ color: "error.main" }} />
+        ),
     },
     {
       field: "category",

@@ -63,13 +63,15 @@ export class ProductsService {
       sales,
       brandId,
       categoryId,
+      startDateSales,
+      endDateSales,
     } = createProductsDto;
 
-    if (!brandId) {
-      throw new BadRequestException({
-        message: 'Заполните поле Бренда товара',
-      });
-    }
+    // if (!brandId) {
+    //   throw new BadRequestException({
+    //     message: 'Заполните поле Бренда товара',
+    //   });
+    // }
 
     if (!categoryId) {
       throw new BadRequestException({
@@ -88,11 +90,13 @@ export class ProductsService {
         productName,
         productPhoto,
         productDescription,
-        brandId: Number(brandId),
+        brandId: Number(brandId) || null,
         categoryId: Number(categoryId),
         productPrice: Number(productPrice),
         sales: sales === 'true',
         existence: existence === 'true',
+        startDateSales: startDateSales ? new Date(startDateSales) : null,
+        endDateSales: endDateSales ? new Date(endDateSales) : null,
       },
       select: {
         id: true,
@@ -103,6 +107,8 @@ export class ProductsService {
         category: true,
         sales: true,
         existence: true,
+        startDateSales: true,
+        endDateSales: true,
       },
     });
     if (!newProduct) {
@@ -239,6 +245,7 @@ export class ProductsService {
     });
     return { message: 'Товар был успешно удалён!' };
   }
+
   async getBrandsByCategoryId(id: number) {
     const subcategories = await this.prismaService.category.findMany({
       where: { parentId: id },

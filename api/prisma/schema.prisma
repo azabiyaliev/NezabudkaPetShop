@@ -102,8 +102,10 @@ model Products {
   productDescription String  @map("product_description")
   productComment     String? @map("product_comment")
 
-  existence Boolean @default(true)
-  sales     Boolean @default(false)
+  existence      Boolean   @default(true)
+  sales          Boolean   @default(false)
+  startDateSales DateTime?
+  endDateSales   DateTime?
 
   orderItem  OrderItem[]
   brandId    Int?        @map("brand_id")
