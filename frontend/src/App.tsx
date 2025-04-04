@@ -5,7 +5,7 @@ import AdminProfile from "./features/Admin/AdminProfile/AdminProfile.tsx";
 import NewBrandPage from "./features/Admin/Brand/NewBrandPage.tsx";
 import HomePage from "./features/Home/HomePage.tsx";
 import ProtectedRoute from "./components/UI/ProtectedRoute/ProtectedRoute.tsx";
-import { useAppSelector } from "./app/hooks.ts";
+import { useAppSelector, usePermission } from './app/hooks.ts';
 import { selectUser } from "./store/users/usersSlice.ts";
 import Layout from "./components/Layout/Layout/Layout.tsx";
 import EditBrandPage from "./features/Admin/Brand/EditBrandPage.tsx";
@@ -33,6 +33,7 @@ import BrandPage from './features/Brand/BrandPage.tsx';
 
 const App = () => {
   const user = useAppSelector(selectUser);
+  const can = usePermission(user);
   return (
     <div>
       <Layout>
@@ -47,7 +48,7 @@ const App = () => {
           <Route
             path="/private_account"
             element={
-              <ProtectedRoute isAllowed={user && user.role === "admin"}>
+              <ProtectedRoute isAllowed={user && can(["admin", "superAdmin"])}>
                 <AdminProfile />
               </ProtectedRoute>
             }
@@ -55,7 +56,7 @@ const App = () => {
           <Route
             path="/my_account"
             element={
-              <ProtectedRoute isAllowed={user && user.role === "client"}>
+              <ProtectedRoute isAllowed={user && can(["client"])}>
                 <ClientProfile />
               </ProtectedRoute>
             }
@@ -63,7 +64,7 @@ const App = () => {
           <Route
             path="/private/users/:id"
             element={
-              <ProtectedRoute isAllowed={user && user.role === "admin"}>
+              <ProtectedRoute isAllowed={user && can(["admin", "superAdmin"])}>
                 <AdminEditProfile />
               </ProtectedRoute>
             }
@@ -72,7 +73,7 @@ const App = () => {
           <Route
             path="/private/brands"
             element={
-              <ProtectedRoute isAllowed={user && user.role === "admin"}>
+              <ProtectedRoute isAllowed={user && can(["admin", "superAdmin"])}>
                 <BrandsPage />
               </ProtectedRoute>
             }
@@ -80,7 +81,7 @@ const App = () => {
           <Route
             path="/private/add_brand"
             element={
-              <ProtectedRoute isAllowed={user && user.role === "admin"}>
+              <ProtectedRoute isAllowed={user && can(["admin", "superAdmin"])}>
                 <NewBrandPage />
               </ProtectedRoute>
             }
@@ -88,7 +89,7 @@ const App = () => {
           <Route
             path="/private/edit_brand/:id"
             element={
-              <ProtectedRoute isAllowed={user && user.role === "admin"}>
+              <ProtectedRoute isAllowed={user && can(["admin", "superAdmin"])}>
                 <EditBrandPage />
               </ProtectedRoute>
             }
@@ -96,7 +97,7 @@ const App = () => {
           <Route
             path="/edition_site"
             element={
-              <ProtectedRoute isAllowed={user && user.role === "superAdmin"}>
+              <ProtectedRoute isAllowed={user && can(["admin", "superAdmin"])}>
                 <EditionSitePage />
               </ProtectedRoute>
             }
@@ -104,7 +105,7 @@ const App = () => {
           <Route
             path="/private/add_product"
             element={
-              <ProtectedRoute isAllowed={user && user.role === "admin"}>
+              <ProtectedRoute isAllowed={user && can(["admin", "superAdmin"])}>
                 <NewProduct />
               </ProtectedRoute>
             }
@@ -112,7 +113,7 @@ const App = () => {
           <Route
             path="/private/products"
             element={
-              <ProtectedRoute isAllowed={user && user.role === "admin"}>
+              <ProtectedRoute isAllowed={user && can(["admin", "superAdmin"])}>
                 <ProductsPage />
               </ProtectedRoute>
             }
@@ -120,7 +121,7 @@ const App = () => {
           <Route
             path="/private/edit_product/:id"
             element={
-              <ProtectedRoute isAllowed={user && user.role === "admin"}>
+              <ProtectedRoute isAllowed={user && can(["admin", "superAdmin"])}>
                 <EditProduct />
               </ProtectedRoute>
             }
@@ -134,7 +135,7 @@ const App = () => {
           <Route
             path="/private/add_category"
             element={
-              <ProtectedRoute isAllowed={user && user.role === "admin"}>
+              <ProtectedRoute isAllowed={user && can(["admin", "superAdmin"])}>
                 <NewCategory />
               </ProtectedRoute>
             }
@@ -142,7 +143,7 @@ const App = () => {
           <Route
             path="/private/add_subcategory"
             element={
-              <ProtectedRoute isAllowed={user && user.role === "admin"}>
+              <ProtectedRoute isAllowed={user && can(["admin", "superAdmin"])}>
                 <NewSubcategory />
               </ProtectedRoute>
             }
@@ -151,17 +152,17 @@ const App = () => {
           <Route path="/brand/:id" element={<BrandPage />} />
           <Route path="/all-products" element={<AllProductsCardsPage />} />
           <Route path="/admin-create" element={
-            <ProtectedRoute isAllowed={user && user.role === 'superAdmin'}>
+            <ProtectedRoute isAllowed={user && can(["superAdmin"])}>
               <AdminForm/>
             </ProtectedRoute>
           }/>
           <Route path="/admin-edit/:id" element={
-            <ProtectedRoute isAllowed={user && user.role === 'superAdmin'}>
+            <ProtectedRoute isAllowed={user && can(["superAdmin"])}>
               <AdminForm/>
             </ProtectedRoute>
           } />
           <Route path='/admin-table' element={
-            <ProtectedRoute isAllowed={user && user.role === 'superAdmin'}>
+            <ProtectedRoute isAllowed={user && can(["superAdmin"])}>
               <AdminTable/>
             </ProtectedRoute>
           }/>

@@ -17,7 +17,7 @@ import {
   addErrorFromSlice,
   clearError,
 } from "../../../store/brands/brandsSlice.ts";
-import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
+import { useAppDispatch, useAppSelector, usePermission } from '../../../app/hooks.ts';
 import { selectUser } from "../../../store/users/usersSlice.ts";
 
 const AdminBar = () => {
@@ -26,6 +26,7 @@ const AdminBar = () => {
   const addError = useAppSelector(addErrorFromSlice);
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
+  const can = usePermission(user);
 
   const handleClick = () => {
     setOpen(!open);
@@ -37,7 +38,7 @@ const AdminBar = () => {
 
   return (
     <div className="admin-bar">
-      {user && user.role === "admin" || user && user.role === 'superAdmin' && (
+      {user && can(["admin", "superAdmin"]) && (
         <List>
           <ListItem component={NavLink} to={`/private_account`}>
             <b className="text-uppercase text-black">Личный кабинет</b>
