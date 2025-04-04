@@ -9,6 +9,8 @@ import TextField from '@mui/material/TextField';
 import ButtonSpinner from '../../UI/ButtonSpinner/ButtonSpinner.tsx';
 import { apiUrl } from '../../../globalConstants.ts';
 import TextEditor from '../../TextEditor/TextEditor.tsx';
+import { Box } from '@mui/joy';
+import CloseIcon from '@mui/icons-material/Close';
 
 interface Props {
   addNewBrand: (brand: IBrandForm) => void;
@@ -32,7 +34,6 @@ const BrandForm: React.FC<Props> = ({
   brandError,
 }) => {
   const [newBrand, setNewBrand] = useState<IBrandForm>(editBrand);
-  // const [resetFile, setResetFile] = useState<boolean>(false);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -56,12 +57,6 @@ const BrandForm: React.FC<Props> = ({
     addNewBrand({
       ...newBrand,
       logo: newBrand.logo instanceof File ? newBrand.logo : newBrand.logo, });
-
-    // if (!isBrand) {
-    //   setNewBrand(initialBrand);
-    //   // setResetFile(true);
-    //   return;
-    // }
   };
 
   const fileInputChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -72,6 +67,13 @@ const BrandForm: React.FC<Props> = ({
       ...prevState,
       [name]: value,
     }));
+  };
+
+  const deleteLogo = () => {
+    setNewBrand({
+      ...newBrand,
+      logo: null,
+    });
   };
 
   return (
@@ -123,25 +125,29 @@ const BrandForm: React.FC<Props> = ({
             label="Выберите изображение для логотипа бренда"
             name="logo"
             onChange={fileInputChangeHandler}
-            initialValue={newBrand.logo}
+            initialValue={newBrand.logo !== null ? newBrand.logo : ""}
           />
-          {/*<FileInputForBrand label="Выберите изображение для логотипа бренда" name="logo" onChange={fileInputChangeHandler} resetFile={resetFile} />*/}
           {newBrand.logo && (
-            <img
-              style={{
-                width: "200px",
-                height: "200px",
-                textIndent: "-9999px",
-                display: "block",
-                objectFit: 'contain',
-              }}
-              src={
-                newBrand.logo instanceof File
-                  ? URL.createObjectURL(newBrand.logo)
-                  : apiUrl + newBrand.logo
-              }
-              alt={newBrand.title}
-            />
+            <Box sx={{
+              display: "flex",
+            }}>
+              <img
+                style={{
+                  width: "200px",
+                  height: "200px",
+                  textIndent: "-9999px",
+                  display: "block",
+                  objectFit: "contain",
+                }}
+                src={
+                  newBrand.logo instanceof File
+                    ? URL.createObjectURL(newBrand.logo)
+                    : apiUrl + newBrand.logo
+                }
+                alt={newBrand.title}
+              />
+              <CloseIcon onClick={() => deleteLogo()}/>
+            </Box>
           )}
           <Button
             variant="text"

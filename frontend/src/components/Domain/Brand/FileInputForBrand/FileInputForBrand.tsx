@@ -21,6 +21,8 @@ const FileInputForBrand: React.FC<Props> = ({
   useEffect(() => {
     if (initialValue) {
       setFilename(initialValue instanceof File ? initialValue.name : initialValue);
+    } else {
+      setFilename("");
     }
   }, [initialValue]);
 
@@ -39,12 +41,6 @@ const FileInputForBrand: React.FC<Props> = ({
 
     onChange(e);
   };
-
-  // useEffect(() => {
-  //   if (resetFile) {
-  //     setFilename("");
-  //   }
-  // }, [resetFile]);
 
   return (
     <>

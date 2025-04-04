@@ -7,6 +7,4 @@ export class BrandDto {
   logo?: string | null;
   @IsOptional()
   description?: null | string;
-  @IsOptional()
-  editLogo?: boolean;
 }
