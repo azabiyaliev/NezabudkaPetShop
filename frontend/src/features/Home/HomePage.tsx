@@ -8,6 +8,7 @@ import Typography from '@mui/joy/Typography';
 import Carousel from '../../components/UI/Carousel/Carousel.tsx';
 import CustomCart from '../../components/Domain/CustomCart/CustomCart.tsx';
 import CategoryMenuBox from '../Category/CategoryMenuBox/CategoryMenuBox.tsx';
+import CategoryCard from '../Category/CategoryCard/CategoryCard.tsx';
 
 const HomePage = () => {
   const [openCart, setOpenCart] = useState<boolean>(false);
@@ -40,6 +41,10 @@ const HomePage = () => {
       >
         <CategoryMenuBox />
         <Carousel />
+      </Box>
+
+      <Box className="mb-5">
+        <CategoryCard/>
       </Box>
 
       {brands.length > 0 && (
