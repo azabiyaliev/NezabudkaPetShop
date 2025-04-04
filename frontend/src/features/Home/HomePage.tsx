@@ -44,6 +44,16 @@ const HomePage = () => {
       </Box>
 
       <Box className="mb-5">
+        <Typography
+          sx={{
+            fontSize: "30px",
+            mb: 3,
+            color: "rgb(88,138,84)",
+            textAlign: "center",
+          }}
+        >
+          Купите для своего питомца
+        </Typography>
         <CategoryCard/>
       </Box>
 
