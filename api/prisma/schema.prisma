@@ -29,6 +29,7 @@ model User {
   Review        Review[]
   Comment       Comment[]
   PasswordReset PasswordReset[]
+  Favorite      Favorite[]
 
   @@map("users")
 }
@@ -112,7 +113,8 @@ model Products {
   categoryId Int?        @map("category_id")
   category   Category?   @relation(fields: [categoryId], references: [id])
 
-  reviews Review[]
+  reviews  Review[]
+  Favorite Favorite[]
 
   @@map("products")
 }
@@ -193,4 +195,16 @@ model Comment {
   createdAt DateTime @default(now())
 
   @@map("comments")
+}
+
+model Favorite {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @map("user_id")
+  user      User     @relation(fields: [userId], references: [id])
+  productId Int      @map("product_id")
+  product   Products @relation(fields: [productId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([userId, productId])
+  @@map("favorites")
 }

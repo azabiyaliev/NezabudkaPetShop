@@ -22,6 +22,9 @@ import { ReviewsModule } from './reviews/reviews.module';
 import { PhotoCarouselController } from './photo_carousel/photo_carousel.controller';
 import { PhotoCarouselModule } from './photo_carousel/photo_carousel.module';
 import { PhotoCarouselService } from './photo_carousel/photo_carousel.service';
+import { FavoritesModule } from './favorites/favorites.module';
+import { FavoritesService } from './favorites/favorites.service';
+import { FavoritesController } from './favorites/favorites.controller';
 
 @Module({
   imports: [
@@ -37,12 +40,14 @@ import { PhotoCarouselService } from './photo_carousel/photo_carousel.service';
     ConfigModule.forRoot(),
     ReviewsModule,
     PhotoCarouselModule,
+    FavoritesModule,
   ],
   controllers: [
     AppController,
     BrandsController,
     EditionSiteController,
     PhotoCarouselController,
+    FavoritesController,
   ],
   providers: [
     AppService,
@@ -52,6 +57,7 @@ import { PhotoCarouselService } from './photo_carousel/photo_carousel.service';
     EditionSiteService,
     CategoryService,
     PhotoCarouselService,
+    FavoritesService,
   ],
 })
 export class AppModule {}
