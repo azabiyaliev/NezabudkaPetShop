@@ -24,6 +24,7 @@ import { selectUser } from "../../../store/users/usersSlice.ts";
 import AdminBar from "../../Admin/AdminProfile/AdminBar.tsx";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { toast, ToastContainer } from "react-toastify";
+import { Subcategory } from '../../../types';
 
 const AllCategoriesPage = () => {
   const categories = useAppSelector(selectCategories);
@@ -31,16 +32,20 @@ const AllCategoriesPage = () => {
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<{
-    id: string;
+    id: number;
     title: string;
+    subcategories?: Subcategory[];
   } | null>(null);
 
   useEffect(() => {
     dispatch(fetchCategoriesThunk());
   }, [dispatch, user]);
 
-  const handleOpen = (category: { id: string; title: string }) => {
-    setSelectedCategory(category);
+  const handleOpen = (category: { id: number; title: string; subcategories?: Subcategory[] }) => {
+    setSelectedCategory({
+      ...category,
+      subcategories: category.subcategories || [],
+    });
     setOpen(true);
   };
 
@@ -155,7 +160,7 @@ const AllCategoriesPage = () => {
                       <Box sx={{ display: "flex", gap: 1 }}>
                         <IconButton
                           onClick={() =>
-                            handleOpen({ ...category, id: String(category.id) })
+                            handleOpen({ ...category, id: Number(category.id) })
                           }
                           color="primary"
                         >

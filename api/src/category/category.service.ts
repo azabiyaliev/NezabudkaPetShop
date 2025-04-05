@@ -107,14 +107,38 @@ export class CategoryService {
 
     await this.prisma.category.update({
       where: { id },
-      data: { title: categoryDto.title },
+      data: {
+        title: categoryDto.title,
+        parentId: categoryDto.parentId ?? null,
+      },
     });
+
+    if (categoryDto.subcategories) {
+      for (const subcategory of categoryDto.subcategories) {
+        await this.prisma.category.update({
+          where: { id: subcategory.id },
+          data: {
+            title: subcategory.title,
+            parentId: id,
+          },
+        });
+      }
+    }
 
     return { message: 'Категория обновлена успешно' };
   }
 
   async deleteCategory(id: number) {
     await this.validateCategory(id);
+
+    const subcategories = await this.prisma.category.findMany({
+      where: { parentId: id },
+    });
+    for (const subcategory of subcategories) {
+      await this.prisma.category.delete({
+        where: { id: subcategory.id },
+      });
+    }
 
     await this.prisma.category.delete({ where: { id } });
 
