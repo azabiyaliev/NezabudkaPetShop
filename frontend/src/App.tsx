@@ -29,6 +29,7 @@ import AdminForm from './components/Forms/AdminForm/AdminForm.tsx';
 import AdminTable from './features/SuperAdmin/container/AdminTable.tsx';
 import OrderForm from './features/Order/OrderForm.tsx';
 import NewSubcategory from './features/Category/NewSubcategory/NewSubcategory.tsx';
+import RestorationPasswordFrom from './components/Forms/UserFrom/RestorationPasswordFrom.tsx';
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -43,6 +44,7 @@ const App = () => {
           <Route path="/my_order" element={<OrderForm />} />
           <Route path="/edit-carousel" element={<DragAndDropPhoto />} />
           <Route path="/photos/:id" element={<Photo/>}/>
+          <Route path="/change-password" element={<RestorationPasswordFrom/>}/>
           <Route
             path="/private_account"
             element={

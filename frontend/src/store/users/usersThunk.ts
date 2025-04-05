@@ -4,7 +4,7 @@ import { isAxiosError } from "axios";
 import {
   AdminRefactor,
   ChangePasswordPayload,
-  ChangePasswordResponse,
+  ChangePasswordResponse, ErrorMutation,
   GlobalError,
   LogInMutation,
   RegisterMutation,
@@ -13,7 +13,7 @@ import {
   ValidationError,
   VerifyResetCodePayload,
   VerifyResetCodeResponse,
-} from "../../types";
+} from '../../types';
 import { RootState } from "../../app/store.ts";
 
 export const register = createAsyncThunk<
@@ -181,14 +181,14 @@ export const sendPasswordCode = createAsyncThunk<
 export const verifyResetCode = createAsyncThunk<
   VerifyResetCodeResponse,
   VerifyResetCodePayload,
-  { rejectValue: ValidationError }
+  { rejectValue: ErrorMutation }
 >(
   "user/verifyResetCode",
-  async ({ resetCode, newPassword }, { rejectWithValue }) => {
+  async ({ resetToken, newPassword }, { rejectWithValue }) => {
     try {
-      console.log("Data sent to backend : ", { resetCode, newPassword });
+      console.log("Data sent to backend : ", { resetToken, newPassword });
       const response = await axiosApi.put("/users/change-password", {
-        resetCode,
+        resetToken,
         newPassword,
       });
       return response.data;
@@ -198,7 +198,7 @@ export const verifyResetCode = createAsyncThunk<
         error.response &&
         error.response.status === 400
       ) {
-        return rejectWithValue(error.response.data as ValidationError);
+        return rejectWithValue(error.response.data as ErrorMutation);
       }
       throw error;
     }
@@ -208,7 +208,7 @@ export const verifyResetCode = createAsyncThunk<
 export const changePasswordAsync = createAsyncThunk<
   ChangePasswordResponse,
   ChangePasswordPayload,
-  { state: RootState; rejectValue: ValidationError }
+  { state: RootState; rejectValue: ErrorMutation }
 >(
   "user/changePassword",
   async ({ currentPassword, newPassword }, { getState, rejectWithValue }) => {
@@ -230,14 +230,14 @@ export const changePasswordAsync = createAsyncThunk<
       );
       return response.data;
     } catch (error) {
-      if (
-        isAxiosError(error) &&
-        error.response &&
-        error.response.status === 400
-      ) {
-        return rejectWithValue(error.response.data as ValidationError);
+      if (isAxiosError(error) && error.response) {
+        if (error.response.status === 400) {
+          return rejectWithValue(error.response.data as ErrorMutation);
+        }
+        throw new Error('Unexpected error occurred.');
       }
       throw error;
     }
-  },
+  }
 );
+

@@ -12,14 +12,15 @@ import {
   Put,
   Req,
   UseGuards,
+  BadRequestException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { TokenAuthGuard } from '../token.auth/token-auth.guard';
 import { RolesGuard } from '../token.auth/token.role.guard';
 import { Roles } from '../roles/roles.decorator';
-import * as bcrypt from 'bcrypt';
 import { AuthRequest, RequestUser } from '../types';
 import { CreateDto, UpdateDto } from '../dto/user.dto';
+import * as bcrypt from 'bcrypt';
 
 @Controller('users')
 export class UsersController {
@@ -39,40 +40,45 @@ export class UsersController {
 
   @Post('send-password-code')
   async sendPasswordResetCode(@Body() body: { email: string }) {
-    return this.userService.sendPasswordTheCode(body.email);
+    return this.userService.sendPasswordResetLink(body.email);
   }
 
   @Post('validate-reset-code')
-  async validateResetCode(@Body() body: { email: string; resetCode: string }) {
-    const user = await this.userService.findOne(body.email);
-    return this.userService.validateResetCode(user.id, body.resetCode);
+  async validateResetCode(@Body() body: { email: string; resetToken: string }) {
+    const user = await this.userService.findByEmail(body.email);
+    if (!user) {
+      throw new NotFoundException('Пользователь с таким email не найден');
+    }
+    return this.userService.validateResetToken(user.id, body.resetToken);
   }
 
   @Put('change-password')
   async changePassword(
-    @Body() body: { resetCode: string; newPassword: string },
+    @Body() body: { resetToken: string; newPassword: string },
   ) {
     try {
       const passwordResetRecord =
-        await this.userService.findPasswordResetRecord(body.resetCode);
+        await this.userService.findPasswordResetRecordByToken(body.resetToken);
 
       if (!passwordResetRecord) {
         throw new NotFoundException(
-          'Неверный код или срок действия кода истек',
+          'Неверная ссылка или срок действия ссылки истек',
         );
       }
 
       const userId = passwordResetRecord.userId;
 
-      const user = await this.userService.findOne(userId.toString());
-
+      const user = await this.userService.findOne(userId);
       if (!user) {
         throw new NotFoundException('Пользователь не найден');
       }
 
-      await this.userService.validateResetCode(userId, body.resetCode);
-
-      return this.userService.updatePassword(userId, body.newPassword);
+      await this.userService.validateResetToken(userId, body.resetToken);
+      return this.userService.updatePassword(
+        userId,
+        body.newPassword,
+        body.resetToken,
+      );
     } catch (error) {
       console.error(error);
       throw error;
@@ -83,17 +89,19 @@ export class UsersController {
   @Patch('new-password')
   async changeAuthorizedPassword(
     @Req() req: Request & { user: RequestUser },
-    @Body() body: { currentPassword: string; newPassword: string },
+    @Body() body: { currentPassword?: string; newPassword: string },
   ) {
-    const userId = req.user.id;
-    const user = await this.userService.findOne(userId.toString());
+    if (!body.currentPassword) {
+      throw new BadRequestException('Текущий пароль обязателен');
+    }
 
+    const userId = req.user.id;
+    const user = await this.userService.findOne(userId);
     if (!user) {
       throw new HttpException('Пользователь не найден', HttpStatus.NOT_FOUND);
     }
 
     const isMatch = await bcrypt.compare(body.currentPassword, user.password);
-
     if (!isMatch) {
       throw new HttpException(
         'Неверный текущий пароль',
@@ -101,7 +109,11 @@ export class UsersController {
       );
     }
 
-    return this.userService.updatePassword(userId, body.newPassword);
+    return this.userService.updatePassword(
+      userId,
+      body.newPassword,
+      body.currentPassword,
+    );
   }
 
   @Get('superAdmin')
@@ -116,19 +128,31 @@ export class UsersController {
 
   @Get('admin/:id')
   async findOneAdmin(@Param('id') id: string) {
+    const userId = parseInt(id);
+    if (isNaN(userId)) {
+      throw new BadRequestException('Некорректный ID');
+    }
     return this.userService.findOneAdmin(id);
   }
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    return this.userService.findOne(id);
+    const userId = parseInt(id);
+    if (isNaN(userId)) {
+      throw new BadRequestException('Некорректный ID');
+    }
+    return this.userService.findOne(userId);
   }
 
   @UseGuards(TokenAuthGuard, RolesGuard)
   @Roles('admin', 'superAdmin')
   @Delete(':id')
   async delete(@Param('id') id: string) {
-    return this.userService.delete(id);
+    const userId = parseInt(id);
+    if (isNaN(userId)) {
+      throw new BadRequestException('Некорректный ID');
+    }
+    return await this.userService.delete(id);
   }
 
   @UseGuards(TokenAuthGuard, RolesGuard)
@@ -139,6 +163,10 @@ export class UsersController {
     @Body() data: UpdateDto,
     @Req() req: AuthRequest,
   ) {
-    return this.userService.update(id, data, req.user);
+    const userId = parseInt(id);
+    if (isNaN(userId)) {
+      throw new BadRequestException('Некорректный ID');
+    }
+    return await this.userService.update(id, data, req.user);
   }
 }
