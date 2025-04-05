@@ -54,14 +54,14 @@ const OneBrand:React.FC<Props> = ({ brand, products }) => {
           {brand.title}
         </Typography>
         {brand.description && (
-          <Typography
+          <Box
             sx={{
               fontFamily: "Nunito, sans-serif",
               textAlign: "justify",
             }}
           >
-            { ReactHtmlParser(brand.description)}
-          </Typography>
+            { ReactHtmlParser(brand.description) }
+          </Box>
         )}
       </Box>
       {products.length > 0 && (

@@ -34,6 +34,7 @@ const BrandForm: React.FC<Props> = ({
   brandError,
 }) => {
   const [newBrand, setNewBrand] = useState<IBrandForm>(editBrand);
+  const [titleError, setTitleError] = useState("");
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -42,12 +43,18 @@ const BrandForm: React.FC<Props> = ({
       ...prevState,
       [name]: value,
     }));
+
+    if (name === "title") setTitleError("");
+    if (name === "title" && value.trim() === "") {
+      setTitleError("Название бренда является обязательным полем и не может быть пустым.");
+    }
   };
 
   const onChangeEditor = (html: string) => {
+    const clearTags = html.replace(/<\/?p>/g, '');
     setNewBrand((prevState) => ({
       ...prevState,
-      description: html,
+      description: clearTags,
     }));
   };
 
@@ -109,11 +116,11 @@ const BrandForm: React.FC<Props> = ({
               {!isBrand ? "Добавление нового" : "Редактирование"} бренда
             </Typography>
           </div>
-          {brandError && (
+          {brandError && brandError.errors ?
             <Alert severity="error" sx={{ width: "100%" }}>
-              {brandError.errors ? brandError.errors.title : brandError.message}
-            </Alert>
-          )}
+              {brandError.errors.title}
+            </Alert> : null
+          }
           <FormControl>
             <TextField
               sx={{ width: "100%" }}
@@ -123,6 +130,8 @@ const BrandForm: React.FC<Props> = ({
               variant="outlined"
               value={newBrand.title}
               onChange={onChange}
+              error={Boolean(titleError || (brandError && brandError.message))}
+              helperText={titleError || (brandError && brandError.message)}
             />
           </FormControl>
           <TextEditor value={newBrand.description} onChange={onChangeEditor}/>
@@ -159,12 +168,13 @@ const BrandForm: React.FC<Props> = ({
             sx={{
               color: "white",
               textTransform: "uppercase",
-              background: isLoading
+              border: newBrand.title.trim().length === 0 ? "1px solid lightgrey" : null,
+              background: isLoading || newBrand.title.trim().length === 0
                 ? "transparent"
                 : "linear-gradient(90deg, rgba(250, 134, 1, 1) 0%, rgba(250, 179, 1, 1) 28%, rgba(250, 143, 1, 1) 100%)",
             }}
             type="submit"
-            disabled={isLoading}
+            disabled={isLoading || newBrand.title.trim().length === 0}
           >
             {!isBrand ? "Создать" : "Сохранить"}
             {isLoading ? <ButtonSpinner /> : null}
