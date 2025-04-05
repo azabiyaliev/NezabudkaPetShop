@@ -84,7 +84,7 @@ model PhotoByCarousel {
 }
 
 model Category {
-  id            Int          @id @default(autoincrement())
+  id            Int        @id @default(autoincrement())
   title         String
   parentId      Int?       @map("parent_id")
   parent        Category?  @relation("CategorySubcategories", fields: [parentId], references: [id])
@@ -106,7 +106,7 @@ model Products {
   existence Boolean @default(true)
   sales     Boolean @default(false)
 
-  orderItem  OrderItem[]
+  items      OrderItem[]
   brandId    Int?        @map("brand_id")
   brand      Brand?      @relation(fields: [brandId], references: [id])
   categoryId Int?        @map("category_id")

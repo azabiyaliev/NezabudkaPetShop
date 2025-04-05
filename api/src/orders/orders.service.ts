@@ -1,19 +1,21 @@
 import {
   BadRequestException,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateOrderDto } from '../dto/createOrderDto';
 import { OrderStatus } from '@prisma/client';
-
-// const regEmail = /^(\w+[-.]?\w+)@(\w+)([.-]?\w+)?(\.[a-zA-Z]{2,3})$/;
-// const regPhone = /^(\+996|0)\s?\d{3}\s?\d{3}\s?\d{3}$/;
-// const regAddress = /^[a-zA-Zа-яА-Я0-9\s,.-]+$/;
+import { TelegramService } from '../telegram/telegram.service';
 
 @Injectable()
 export class OrdersService {
-  constructor(private prisma: PrismaService) {}
+  private readonly logger = new Logger(OrdersService.name);
+  constructor(
+    private prisma: PrismaService,
+    private telegramBot: TelegramService,
+  ) {}
 
   async getAllOrders() {
     const order = await this.prisma.order.findMany({
@@ -100,6 +102,10 @@ export class OrdersService {
       paymentMethod,
     } = createOrderDto;
 
+    let personEmail = guestEmail;
+    let personPhone = guestPhone;
+    let personName = guestName;
+
     if (userId) {
       const user = await this.prisma.user.findUnique({
         where: { id: userId },
@@ -107,6 +113,10 @@ export class OrdersService {
       if (!user) {
         throw new NotFoundException('Пользователь не найден');
       }
+
+      personEmail = guestEmail || user.email;
+      personPhone = guestPhone || user.phone;
+      personName = guestName || user.firstName;
     } else {
       if (!guestEmail || !guestPhone || !guestName) {
         throw new BadRequestException(
@@ -124,15 +134,16 @@ export class OrdersService {
       data: {
         address,
         userId: userId || null,
-        guestEmail: userId ? null : guestEmail,
-        guestPhone: userId ? null : guestPhone,
-        guestName: userId ? null : guestName,
+        guestEmail: personEmail,
+        guestPhone: personPhone,
+        guestName: personName,
         guestLastName: userId ? null : guestLastName,
         orderComment,
         paymentMethod,
         items: {
           create: items.map((item) => ({
             productId: item.productId,
+            products: item.products,
             quantity: item.quantity,
             orderAmount,
           })),
@@ -143,6 +154,25 @@ export class OrdersService {
         user: true,
       },
     });
+
+    try {
+      const message = `
+      Новый заказ: #${order.id}
+      Адрес: ${order.address}
+      Комментарий: ${order.orderComment || 'нет'}
+      Способ оплаты: ${order.paymentMethod}
+      Заказчик: ${order.guestName}
+      Номер заказчика: ${order.guestPhone}
+      Состав заказа:${items.map((item) => ` Номер: ${item.productId} - ${item.quantity}шт.  (${item.orderAmount} сом)`).join('\n')}
+      Статус заказа: ${order.status}
+      Итого: ${orderAmount} сом;`;
+      setTimeout(() => {
+        this.telegramBot.sendMessage(message);
+      }, 3000);
+    } catch (e) {
+      this.logger.error('Не удалось отправить уведомление в Telegram', e);
+    }
+
     return order;
   }
 

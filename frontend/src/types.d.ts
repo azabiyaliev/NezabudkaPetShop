@@ -201,7 +201,7 @@ export interface IOrder {
   paymentMethod: PaymentMethod;
   userId: number;
   user: User;
-  items: ICartMutation[];
+  items: ICart[];
 
   createdAt: string;
   updatedAt: string;

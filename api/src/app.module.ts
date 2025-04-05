@@ -22,6 +22,10 @@ import { ReviewsModule } from './reviews/reviews.module';
 import { PhotoCarouselController } from './photo_carousel/photo_carousel.controller';
 import { PhotoCarouselModule } from './photo_carousel/photo_carousel.module';
 import { PhotoCarouselService } from './photo_carousel/photo_carousel.service';
+import { TelegramModule } from './telegram/telegram.module';
+import { TelegramService } from './telegram/telegram.service';
+import {OrdersService} from "./orders/orders.service";
+import {TelegramController} from "./telegram/telegram.controller";
 
 @Module({
   imports: [
@@ -37,12 +41,14 @@ import { PhotoCarouselService } from './photo_carousel/photo_carousel.service';
     ConfigModule.forRoot(),
     ReviewsModule,
     PhotoCarouselModule,
+    TelegramModule,
   ],
   controllers: [
     AppController,
     BrandsController,
     EditionSiteController,
     PhotoCarouselController,
+    TelegramController,
   ],
   providers: [
     AppService,
@@ -52,6 +58,8 @@ import { PhotoCarouselService } from './photo_carousel/photo_carousel.service';
     EditionSiteService,
     CategoryService,
     PhotoCarouselService,
+    TelegramService,
+    OrdersService,
   ],
 })
 export class AppModule {}
