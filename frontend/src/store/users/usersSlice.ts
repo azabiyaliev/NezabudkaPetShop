@@ -1,6 +1,6 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from "../../app/store.ts";
-import { GlobalError, User, ValidationError } from "../../types";
+import { ErrorMutation, GlobalError, User, ValidationError } from '../../types';
 import {
   changePasswordAsync,
   facebookLogin,
@@ -21,6 +21,8 @@ interface UserState {
   passwordCodeLoading: boolean;
   passwordCodeError: GlobalError | null;
   passwordCodeMessage: string | null;
+  message: string | null;
+  error: string | null;
 }
 
 const initialState: UserState = {
@@ -34,6 +36,8 @@ const initialState: UserState = {
   passwordCodeLoading: false,
   passwordCodeError: null,
   passwordCodeMessage: null,
+  message: null,
+  error: null,
 };
 
 export const selectUser = (state: RootState) => state.users.user;
@@ -130,8 +134,9 @@ export const userSlice = createSlice({
         state.passwordCodeLoading = true;
         state.passwordCodeError = null;
       })
-      .addCase(verifyResetCode.fulfilled, (state) => {
+      .addCase(verifyResetCode.fulfilled, (state,action: PayloadAction<ErrorMutation>) => {
         state.passwordCodeLoading = false;
+        state.message = action.payload.message;
       })
       .addCase(verifyResetCode.rejected, (state) => {
         state.passwordCodeLoading = false;

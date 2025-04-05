@@ -4,12 +4,10 @@ import TextField from "@mui/material/TextField";
 import { DialogActions } from "@mui/joy";
 import React, { useState } from "react";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
-import { useAppDispatch } from "../../../app/hooks.ts";
-import {
-  sendPasswordCode,
-  verifyResetCode,
-} from "../../../store/users/usersThunk.ts";
-import { toast } from "react-toastify";
+import { useAppDispatch } from '../../../app/hooks.ts';
+import { sendPasswordCode } from "../../../store/users/usersThunk.ts";
+import { enqueueSnackbar } from 'notistack';
+
 
 interface Props {
   open: boolean;
@@ -18,146 +16,146 @@ interface Props {
 
 const ModalWindow: React.FC<Props> = ({ open, setOpen }) => {
   const [email, setEmail] = useState("");
-  const [resetCode, setResetCode] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [step, setStep] = useState<"email" | "verify">("email");
   const dispatch = useAppDispatch();
 
-  const handleClose = () => {
+  const handelCloseModal = () => {
     setOpen(false);
-    setStep("email");
   };
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
   };
 
-  const handleResetCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setResetCode(e.target.value);
-  };
-
-  const handleNewPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNewPassword(e.target.value);
-  };
-
   const handleSubmitEmail = async () => {
-    if (email) {
-      try {
-        await dispatch(sendPasswordCode(email));
-        toast.success("Вы востановили свой доступ;)");
-        setStep("verify");
-      } catch (error) {
-        console.error("Ошибка при отправке кода:", error);
-      }
-    }
-  };
 
-  const handleSubmitVerify = async () => {
+    if (!email) {
+      enqueueSnackbar('Пожалуйста, введите ваш email.', { variant: 'error' });
+      return;
+    }
+
+
     try {
-      await dispatch(verifyResetCode({ resetCode, newPassword }));
-      setOpen(false);
+      const response = await dispatch(sendPasswordCode(email));
+
+      if (sendPasswordCode.fulfilled.match(response)) {
+        enqueueSnackbar('Проверьте почту, вам поступило сообщение для восстановления пароля!', { variant: 'success' });
+        setEmail("");
+        setOpen(false);
+      } else {
+        enqueueSnackbar('Такой почты не существует. Проверьте введенные данные.', { variant: 'error' });
+      }
     } catch (error) {
       console.error(error);
+      enqueueSnackbar('Ошибка при отправке сообщения на почту', { variant: 'error' });
     }
   };
 
   return (
     <div>
-      <Dialog open={open} onClose={handleClose}>
+      <Dialog
+        open={open}
+        onClose={handelCloseModal}
+        PaperProps={{
+          sx: {
+            border: "1px solid #344C3D",
+            borderRadius: "12px",
+            boxShadow: "0px 8px 24px #344C3D",
+            padding: "10px",
+          },
+        }}
+      >
         <Button
-          onClick={handleClose}
+          onClick={handelCloseModal}
           sx={{
             position: "absolute",
             top: 8,
             right: 8,
             backgroundColor: "white",
             color: "red",
+            zIndex: 10,
+            minWidth: "32px",
+            height: "32px",
+            padding: 0,
           }}
         >
           <CloseOutlinedIcon />
         </Button>
-
-        <DialogTitle style={{ textAlign: "center" }}>
-          {step === "email" ? "Восстановление пароля" : "Сброс пароля"}
+        <DialogTitle
+          sx={{
+            textAlign: "center",
+            fontWeight: 600,
+            fontSize: "24px",
+            color: "#344C3D",
+            "@media (max-width: 650px)": {
+              fontSize: "20px",
+            }
+          }}
+        >
+          Восстановить пароль
         </DialogTitle>
         <hr />
         <DialogContent>
-          {step === "email" ? (
-            <>
-              <Typography variant="body2" color="textSecondary" align="center">
-                Пожалуйста, введите ваш email, чтобы мы могли отправить вам код
-                восстановления.
-              </Typography>
-              <TextField
-                label="Email"
-                variant="outlined"
-                fullWidth
-                value={email}
-                onChange={handleEmailChange}
-                style={{ marginTop: "30px" }}
-              />
-            </>
-          ) : (
-            <>
-              <Typography variant="body2" color="textSecondary" align="center">
-                Введите код из письма и новый пароль.
-              </Typography>
-              <TextField
-                label="Код из письма"
-                variant="outlined"
-                fullWidth
-                value={resetCode}
-                onChange={handleResetCodeChange}
-                style={{ marginTop: "30px" }}
-              />
-              <TextField
-                label="Введите новый пароль"
-                variant="outlined"
-                fullWidth
-                type="password"
-                value={newPassword}
-                onChange={handleNewPasswordChange}
-                style={{ marginTop: "30px" }}
-              />
-            </>
-          )}
+          <Typography
+            variant="body2"
+            color="textSecondary"
+            align="center"
+            sx={{
+              mt: 1,
+              fontSize: "16px",
+              "@media (max-width: 650px)": {
+                fontSize: "12px",
+              }
+            }}
+          >
+            Пожалуйста, введите ваш email, чтобы мы могли отправить вам сообщение для восстановления пароля.
+          </Typography>
+          <TextField
+            label="Email"
+            variant="standard"
+            fullWidth
+            value={email}
+            onChange={handleEmailChange}
+            sx={{
+              mt: 4,
+              mb: 3,
+              "& .MuiInputLabel-root": {
+                color: "#738A6E",
+              },
+              "& .MuiInput-underline:before": {
+                borderBottom: "2px solid #344C3D",
+              },
+              "& .MuiInput-underline:hover:before": {
+                borderBottom: "2px solid #344C3D",
+              },
+              "& .MuiInput-underline:after": {
+                borderBottom: "2px solid #344C3D",
+              },
+            }}
+            InputProps={{
+              disableUnderline: false,
+            }}
+          />
         </DialogContent>
         <DialogActions
-          style={{
-            marginBottom: "40px",
+          sx={{
+            mb: 5,
             display: "flex",
             justifyContent: "center",
           }}
         >
-          {step === "email" ? (
-            <Button
-              onClick={handleSubmitEmail}
-              variant="contained"
-              sx={{
-                mt: 3,
-                mb: 2,
-                backgroundColor: "#FFEB3B",
-                color: "black",
-                width: "auto",
-              }}
-            >
-              Отправить код
-            </Button>
-          ) : (
-            <Button
-              onClick={handleSubmitVerify}
-              variant="contained"
-              sx={{
-                mt: 3,
-                mb: 2,
-                backgroundColor: "#FFEB3B",
-                color: "black",
-                width: "auto",
-              }}
-            >
-              Изменить пароль
-            </Button>
-          )}
+          <Button
+            onClick={handleSubmitEmail}
+            variant="contained"
+            sx={{
+              backgroundColor: "#FFEB3B",
+              color: "black",
+              width: "auto",
+              maxWidth: "300px",
+              borderRadius: "20px",
+            }}
+          >
+            Отправить сообщение
+          </Button>
         </DialogActions>
       </Dialog>
     </div>

@@ -12,6 +12,7 @@ import * as nodemailer from 'nodemailer';
 import * as process from 'node:process';
 import { regEmail, regPhone } from '../auth/auth.service';
 import { CreateDto } from '../dto/user.dto';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class UsersService {
@@ -27,11 +28,18 @@ export class UsersService {
     });
   }
 
-  async findPasswordResetRecord(resetCode: string) {
+  async findPasswordResetRecordByToken(resetToken: string) {
     return this.prisma.passwordReset.findFirst({
-      where: { resetCode: resetCode },
+      where: { resetToken },
     });
   }
+
+  async findByEmail(email: string): Promise<User | null> {
+    return this.prisma.user.findUnique({
+      where: { email },
+    });
+  }
+
   private async validateUser(id: number) {
     const user = await this.prisma.user.findFirst({
       where: { id },
@@ -43,74 +51,98 @@ export class UsersService {
     return user;
   }
 
-  async sendPasswordTheCode(email: string): Promise<{ message: string }> {
-    const user = await this.prisma.user.findFirst({
-      where: { email },
-    });
+  async sendPasswordResetLink(email: string): Promise<{ message: string }> {
+    const user = await this.prisma.user.findUnique({ where: { email } });
 
     if (!user) {
       throw new NotFoundException(`Пользователь с таким email не найден`);
     }
 
-    const existingResetCode = await this.prisma.passwordReset.findFirst({
-      where: { userId: user.id },
+    const resetToken: string = uuidv4();
+    const resetLink = `${process.env.FRONTEND_URL}/change-password?token=${resetToken}`;
+
+    await this.prisma.passwordReset.create({
+      data: {
+        userId: user.id,
+        resetToken,
+        createdAt: new Date(),
+      },
     });
 
-    if (existingResetCode) {
-      await this.prisma.passwordReset.delete({
-        where: { id: existingResetCode.id },
-      });
-    }
-
-    const resetCode = Math.random().toString(36).substring(2, 8);
-
-    const enailOptions = {
+    const emailOptions = {
       from: process.env.EMAIL_USER,
       to: email,
-      subject: 'Код для сброса пароля',
-      text: `Ваш код для сброса пароля: ${resetCode}`,
+      subject: 'Сброс пароля',
+      html: `
+  <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9;">
+    <h2 style="color: #344C3D;">🔐 Восстановление пароля</h2>
+    <p style="font-size: 16px; color: #333;">
+      Мы получили запрос на сброс пароля для вашего аккаунта. Если это были вы — перейдите по ссылке ниже:
+    </p>
+    <div style="text-align: center; margin: 30px 0;">
+     <a href="${resetLink}">${resetLink}</a>
+    </div>
+    <p style="font-size: 14px; color: #666;">
+      Если вы не запрашивали сброс пароля, просто проигнорируйте это письмо.
+    </p>
+    <hr style="margin: 30px 0;" />
+    <p style="font-size: 12px; color: #999;">
+      С уважением,<br />
+      Команда поддержки Nezabudka 🐾
+    </p>
+  </div>
+`,
     };
 
     try {
-      await this.transporter.sendMail(enailOptions);
+      await this.transporter.sendMail(emailOptions);
     } catch (error) {
       console.error('Ошибка при отправке письма:', error);
       throw new Error('Ошибка при отправке письма');
     }
 
-    await this.prisma.passwordReset.create({
-      data: {
-        userId: user.id,
-        resetCode,
-        createdAt: new Date(),
+    return { message: 'Ссылка для сброса пароля отправлена на почту' };
+  }
+
+  async validateResetToken(
+    userId: number,
+    resetToken: string,
+  ): Promise<boolean> {
+    const record = await this.prisma.passwordReset.findFirst({
+      where: {
+        userId,
+        resetToken,
+        createdAt: { gte: new Date(Date.now() - 60 * 60 * 1000) },
       },
     });
 
-    return { message: 'Код отправлен на почту' };
-  }
-
-  async validateResetCode(userId: number, resetCode: string): Promise<boolean> {
-    const record = await this.prisma.passwordReset.findFirst({
-      where: { userId, resetCode },
-    });
-
     if (!record) {
-      throw new NotFoundException('Неверный код или срок действия кода истек');
-    }
-    const currentTime = new Date().getTime();
-    const recordTime = new Date(record.createdAt).getTime();
-    const expirationTime = 15 * 60 * 1000;
-
-    if (currentTime - recordTime > expirationTime) {
-      throw new NotFoundException('Неверный код или срок действия кода истек');
+      throw new NotFoundException(
+        'Неверная ссылка или срок действия ссылки истек',
+      );
     }
 
     return true;
   }
+
   async updatePassword(
     userId: number,
+    currentPassword: string,
     newPassword: string,
   ): Promise<{ message: string }> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new NotFoundException('Пользователь не найден');
+    }
+
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) {
+      throw new BadRequestException('Неверный текущий пароль');
+    }
+
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(newPassword, salt);
 
@@ -247,11 +279,10 @@ export class UsersService {
     }
   }
 
-  async findOne(id: string) {
+  async findOne(id: number) {
     try {
-      const parsId = parseInt(id);
       const user = await this.prisma.user.findFirst({
-        where: { id: parsId },
+        where: { id },
       });
 
       if (!user) {

@@ -38,6 +38,11 @@ export interface ValidationError {
   };
 }
 
+interface ErrorMutation {
+  message: string;
+  field?: string;
+}
+
 export interface GlobalError {
   error: string;
   message: string;
@@ -148,7 +153,7 @@ export interface SubcategoryWithBrand {
 }
 
 interface VerifyResetCodePayload {
-  resetCode: string;
+  resetToken: string;
   newPassword: string;
 }
 
