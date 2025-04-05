@@ -13,11 +13,13 @@ import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
 import {
   selectAllSubcategories,
   selectCategories,
-  selectLoading,
 } from "../../../store/categories/categoriesSlice.ts";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { fetchCategoriesThunk, fetchSubcategories } from '../../../store/categories/categoriesThunk.ts';
+import {
+  fetchCategoriesThunk,
+  fetchSubcategories,
+} from "../../../store/categories/categoriesThunk.ts";
 
 const WARNING_SELECT_CATEGORY = "Выберите родительскую категорию!";
 const WARNING_SELECT_SUBCATEGORY = "Выберите хотя бы одну подкатегорию!";
@@ -31,7 +33,6 @@ export interface Props {
 const SubcategoryForm: React.FC<Props> = ({ onSubmit }) => {
   const categories = useAppSelector(selectCategories);
   const allSubcategories = useAppSelector(selectAllSubcategories);
-  const isLoading = useAppSelector(selectLoading);
   const [parentId, setParentId] = useState<number | null>(null);
   const [subcategories, setSubcategories] = useState<string[]>([]);
   const [newSubcategory, setNewSubcategory] = useState("");
@@ -46,7 +47,6 @@ const SubcategoryForm: React.FC<Props> = ({ onSubmit }) => {
       dispatch(fetchSubcategories(parentId));
     }
   }, [parentId, dispatch]);
-
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -114,10 +114,14 @@ const SubcategoryForm: React.FC<Props> = ({ onSubmit }) => {
       </Typography>
 
       <FormControl fullWidth>
-        <InputLabel>Родительская категория</InputLabel>
+        <InputLabel htmlFor="parent-category">
+          Родительская категория
+        </InputLabel>
         <Select
+          labelId="parent-category"
           value={parentId ? String(parentId) : ""}
           onChange={handleSelectParentChange}
+          label="Родительская категория"
         >
           {categories.map((cat) => (
             <MenuItem key={cat.id} value={cat.id}>
@@ -128,11 +132,13 @@ const SubcategoryForm: React.FC<Props> = ({ onSubmit }) => {
       </FormControl>
 
       <FormControl fullWidth>
-        <InputLabel>Подкатегории</InputLabel>
+        <InputLabel htmlFor="subcategory">Подкатегории</InputLabel>
         <Select
+          labelId="subcategory"
           multiple
           value={subcategories}
           onChange={handleSelectSubcategoriesChange}
+          label="Подкатегории"
           renderValue={(selected) => selected.join(", ")}
         >
           {availableSubcategories.map((sub) => (
@@ -161,7 +167,7 @@ const SubcategoryForm: React.FC<Props> = ({ onSubmit }) => {
         sx={{
           textTransform: "uppercase",
           color: "white",
-          background: isLoading ? "transparent" : "#237803",
+          background: "#237803",
           borderRadius: "10px",
           "&:hover": {
             backgroundColor: "#1e6600",

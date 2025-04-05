@@ -92,11 +92,6 @@ export class CategoryService {
     const subcategories = await this.prisma.category.findMany({
       where: { parentId: categoryId },
     });
-
-    if (subcategories.length === 0) {
-      throw new NotFoundException('Подкатегории не найдены');
-    }
-
     return subcategories;
   }
 
