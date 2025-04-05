@@ -114,13 +114,14 @@ export interface ICategories {
 
 export interface CategoryMutation {
   title: string;
+  subcategories?: Subcategory[];
 }
 
 export interface Subcategory {
   id: number;
   title: string;
-  parentId: string | number | undefined | null;
-  subcategories?: string[];
+  parentId: string | number | null;
+  subcategories?: Subcategory[];
 }
 
 export interface ProductRequest {

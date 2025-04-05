@@ -134,18 +134,22 @@ const SubcategoryForm: React.FC<Props> = ({ onSubmit }) => {
       <FormControl fullWidth>
         <InputLabel htmlFor="subcategory">Подкатегории</InputLabel>
         <Select
-          labelId="subcategory"
-          multiple
-          value={subcategories}
-          onChange={handleSelectSubcategoriesChange}
-          label="Подкатегории"
-          renderValue={(selected) => selected.join(", ")}
+            labelId="subcategory"
+            multiple
+            value={subcategories}
+            onChange={handleSelectSubcategoriesChange}
+            label="Подкатегории"
+            renderValue={(selected) => selected.join(", ")}
         >
-          {availableSubcategories.map((sub) => (
-            <MenuItem key={sub} value={sub}>
-              {sub}
-            </MenuItem>
-          ))}
+          {availableSubcategories.length === 0 ? (
+              <MenuItem disabled>Нет доступных подкатегорий</MenuItem>
+          ) : (
+              availableSubcategories.map((sub) => (
+                  <MenuItem key={sub} value={sub}>
+                    {sub}
+                  </MenuItem>
+              ))
+          )}
         </Select>
       </FormControl>
 

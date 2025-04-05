@@ -107,8 +107,23 @@ export class CategoryService {
 
     await this.prisma.category.update({
       where: { id },
-      data: { title: categoryDto.title },
+      data: {
+        title: categoryDto.title,
+        parentId: categoryDto.parentId ?? null,
+      },
     });
+
+    if (categoryDto.subcategories) {
+      for (const subcategory of categoryDto.subcategories) {
+        await this.prisma.category.update({
+          where: { id: subcategory.id },
+          data: {
+            title: subcategory.title,
+            parentId: id,
+          },
+        });
+      }
+    }
 
     return { message: 'Категория обновлена успешно' };
   }
