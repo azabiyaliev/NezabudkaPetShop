@@ -36,7 +36,7 @@ export class BrandsService {
       where: { title },
     });
     if (brand) {
-      throw new NotFoundException(
+      throw new ConflictException(
         'Данный бренд уже существует и вы не можете повторно его добавить!',
       );
     }

@@ -5,7 +5,7 @@ import {
   CardMedia,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import { ProductResponse } from "../../../types";
 import { apiUrl } from "../../../globalConstants.ts";
 import "../css/product.css";
@@ -28,7 +28,9 @@ const OneProductCard: React.FC<Props> = ({ product }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  dispatch(setToLocalStorage(cart));
+  useEffect(() => {
+    dispatch(setToLocalStorage(cart));
+  }, [cart, dispatch]);
 
   const addProductToCart = async (product: ProductResponse) => {
     const existingProduct = cart.find(
