@@ -56,11 +56,6 @@ const EditCategory: React.FC<EditCategoryProps> = ({ category }) => {
         gap: 2,
         maxWidth: 400,
         mx: "auto",
-        mt: 4,
-        p: 3,
-        border: "1px solid #ccc",
-        borderRadius: 2,
-        boxShadow: 2,
       }}
     >
       <Typography variant="h6" textAlign="center">
