@@ -17,13 +17,13 @@ import TextField from "@mui/material/TextField";
 import { useAppDispatch, useAppSelector } from "../../../../app/hooks.ts";
 import { brandsFromSlice } from "../../../../store/brands/brandsSlice.ts";
 import { getBrands } from "../../../../store/brands/brandsThunk.ts";
-import { selectCategories } from '../../../../store/categories/categoriesSlice.ts';
-import { fetchCategoriesThunk } from '../../../../store/categories/categoriesThunk.ts';
-import QuillEditor from '../../../../components/UI/QuillEditor/QuillEditor.tsx';
+import { selectCategories } from "../../../../store/categories/categoriesSlice.ts";
+import { fetchCategoriesThunk } from "../../../../store/categories/categoriesThunk.ts";
+import QuillEditor from "../../../../components/UI/QuillEditor/QuillEditor.tsx";
 import { orange } from "@mui/material/colors";
 import FormControl from "@mui/material/FormControl";
 import FileInput from "../../../../components/FileInput/FileInput.tsx";
-import { addProductLoading } from '../../../../store/products/productsSlice.ts';
+import { addProductLoading } from "../../../../store/products/productsSlice.ts";
 
 interface Props {
   onSubmit: (product: ProductRequest) => void;
@@ -41,7 +41,10 @@ const initialState = {
   brandId: "",
   categoryId: "",
   subcategoryId: "",
-  parentId: "",};
+  parentId: "",
+  startDateSales: null,
+  endDateSales: null,
+};
 
 const ProductForm: React.FC<Props> = ({
   onSubmit,
@@ -53,13 +56,32 @@ const ProductForm: React.FC<Props> = ({
   const brands = useAppSelector(brandsFromSlice);
   const categories = useAppSelector(selectCategories);
   const loading = useAppSelector(addProductLoading);
-  console.log(categories);
-  const selectedCategory = categories.find((category) => category.id === Number(form.categoryId));
+  console.log(form);
+  const selectedCategory = categories.find(
+    (category) => category.id === Number(form.categoryId),
+  );
+  console.log(selectedCategory);
 
   useEffect(() => {
     dispatch(getBrands()).unwrap();
     dispatch(fetchCategoriesThunk()).unwrap();
   }, [dispatch]);
+
+  useEffect(() => {
+    if (categories.length > 0 && form.categoryId) {
+      const categoryWithSub = categories.find((cat) =>
+        cat.subcategories?.some((sub) => sub.id === Number(form.categoryId)),
+      );
+
+      if (categoryWithSub) {
+        setForm((prev) => ({
+          ...prev,
+          categoryId: String(categoryWithSub.id),
+          subcategoryId: prev.subcategoryId || prev.categoryId,
+        }));
+      }
+    }
+  }, [categories, form.categoryId]);
 
   const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -92,7 +114,9 @@ const ProductForm: React.FC<Props> = ({
       return toast.warning("Необходимо изображение товара!");
     }
 
-    const categoryIdToSend = form.subcategoryId ? form.subcategoryId : form.categoryId;
+    const categoryIdToSend = form.subcategoryId
+      ? form.subcategoryId
+      : form.categoryId;
     onSubmit({ ...form, categoryId: categoryIdToSend });
 
     if (!isProduct) {
@@ -101,13 +125,15 @@ const ProductForm: React.FC<Props> = ({
     }
   };
 
-    const selectChangeHandler = (e: SelectChangeEvent) => {
-      const { name, value } = e.target;
+  const selectChangeHandler = (e: SelectChangeEvent) => {
+    const { name, value } = e.target;
 
-      setForm((prevState) => ({ ...prevState, [name]: value,
-        ...(name === "categoryId" ? { subcategoryId: "" } : {})
-      }));
-    };
+    setForm((prevState) => ({
+      ...prevState,
+      [name]: value,
+      ...(name === "categoryId" ? { subcategoryId: "" } : {}),
+    }));
+  };
 
   const fileEventChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, files } = e.target;
@@ -122,70 +148,76 @@ const ProductForm: React.FC<Props> = ({
 
   return (
     <form onSubmit={submitFormHandler}>
-        <Typography variant={"h5"} sx={{ mt: 4, textAlign: "center" }}>
-          {!isProduct ? 'Добавление товара' : 'Редактирование товара'}
-        </Typography>
-        <Box
-          sx={{
-            width: "100%",
-            marginTop: 5,
-            mx: "auto",
-            p: 2,
-          }}
-        >
-          <Grid container direction="column" spacing={2}>
-            <Grid size={{ xs: 12 }}>
-              <TextField
-                sx={{
-                  width: "100%",
-                  "& label.Mui-focused": { color: orange[500] },
-                  "& .MuiOutlinedInput-root": {
-                    "& fieldset": { borderColor: "#ccc" },
-                    "&:hover fieldset": { borderColor: orange[500] },
-                    "&.Mui-focused fieldset": { borderColor: orange[500] },
-                  }
-                }}
-                id="productName"
-                name="productName"
-                label="Название"
-                required
-                value={form.productName}
-                onChange={inputChangeHandler}
-              />
-            </Grid>
-            <Grid size={{ xs: 12 }}>
-              <TextField
-                sx={{
-                  width: "100%",
-                  "& label.Mui-focused": { color: orange[500] },
-                  "& .MuiOutlinedInput-root": {
-                    "& fieldset": { borderColor: "#ccc" },
-                    "&:hover fieldset": { borderColor: orange[500] },
-                    "&.Mui-focused fieldset": { borderColor: orange[500] },
-                  }
-                }}
-                type="number"
-                id="productPrice"
-                name="productPrice"
-                label="Цена"
-                required
-                value={form.productPrice}
-                onChange={inputChangeHandler}
-                inputProps={{ min: 0}}
-              />
-            </Grid>
-            <Grid size={{ xs: 12 }}>
-              <QuillEditor
-                value={form.productDescription}
-                onChange={(html) => setForm((prev) => ({
+      <Typography variant={"h5"} sx={{ mt: 4, textAlign: "center" }}>
+        {!isProduct ? "Добавление товара" : "Редактирование товара"}
+      </Typography>
+      <Box
+        sx={{
+          width: "100%",
+          marginTop: 5,
+          mx: "auto",
+          p: 2,
+        }}
+      >
+        <Grid container direction="column" spacing={2}>
+          <Grid size={{ xs: 12 }}>
+            <TextField
+              sx={{
+                width: "100%",
+                "& label.Mui-focused": { color: orange[500] },
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": { borderColor: "#ccc" },
+                  "&:hover fieldset": { borderColor: orange[500] },
+                  "&.Mui-focused fieldset": { borderColor: orange[500] },
+                },
+              }}
+              id="productName"
+              name="productName"
+              label="Название"
+              required
+              value={form.productName}
+              onChange={inputChangeHandler}
+            />
+          </Grid>
+          <Grid size={{ xs: 12 }}>
+            <TextField
+              sx={{
+                width: "100%",
+                "& label.Mui-focused": { color: orange[500] },
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": { borderColor: "#ccc" },
+                  "&:hover fieldset": { borderColor: orange[500] },
+                  "&.Mui-focused fieldset": { borderColor: orange[500] },
+                },
+              }}
+              type="number"
+              id="productPrice"
+              name="productPrice"
+              label="Цена"
+              required
+              value={form.productPrice}
+              onChange={inputChangeHandler}
+              inputProps={{ min: 0 }}
+            />
+          </Grid>
+          <Grid size={{ xs: 12 }}>
+            <QuillEditor
+              value={form.productDescription}
+              onChange={(html) =>
+                setForm((prev) => ({
                   ...prev,
                   productDescription: html,
-                }))}
-              />
-            </Grid>
-            {brands.length === 0 ? <Typography>Брендов пока нет</Typography> : (
-              <Grid size={{ xs: 12 }}>
-                <FormControl fullWidth sx={{
+                }))
+              }
+            />
+          </Grid>
+          {brands.length === 0 ? (
+            <Typography>Брендов пока нет</Typography>
+          ) : (
+            <Grid size={{ xs: 12 }}>
+              <FormControl
+                fullWidth
+                sx={{
                   "& label.Mui-focused": { color: orange[500] },
                   "& .MuiOutlinedInput-root": {
                     "& fieldset": { borderColor: "#ccc" },
@@ -234,7 +266,13 @@ const ProductForm: React.FC<Props> = ({
                 <Select
                   labelId="categoryId"
                   id="categoryId"
-                  value={categories.some(cat => cat.id === Number(form.categoryId)) ? form.categoryId : (form.category ? String(form.category?.parentId) : "")}
+                  value={
+                    categories.some((cat) => cat.id === Number(form.categoryId))
+                      ? form.categoryId
+                      : form.category
+                        ? String(form.category?.parentId)
+                        : ""
+                  }
                   name="categoryId"
                   label="categoryId"
                   onChange={selectChangeHandler}
@@ -251,41 +289,42 @@ const ProductForm: React.FC<Props> = ({
               </FormControl>
             </Grid>
           )}
-            {selectedCategory && selectedCategory?.subcategories?.length > 0 && (
-              <Grid size={{xs:12}}>
-                <FormControl
-                  fullWidth
-                  sx={{
+          {selectedCategory && selectedCategory?.subcategories?.length > 0 && (
+            <Grid size={{ xs: 12 }}>
+              <FormControl
+                fullWidth
+                sx={{
                   "& label.Mui-focused": { color: orange[500] },
                   "& .MuiOutlinedInput-root": {
                     "& fieldset": { borderColor: "#ccc" },
                     "&:hover fieldset": { borderColor: orange[500] },
                     "&.Mui-focused fieldset": { borderColor: orange[500] },
                   },
-                }}>
-                  <InputLabel id="subcategoryId">Подкатегория</InputLabel>
-                  <Select
-                    labelId="subcategoryId"
-                    id="subcategoryId"
-                    value={categories.some(cat => cat.parentId) ? form.categoryId : form.subcategoryId}
-                    name="subcategoryId"
-                    label="Подкатегория"
-                    onChange={selectChangeHandler}
-                  >
-                    <MenuItem value="" disabled>Выберите подкатегорию</MenuItem>
-                    {categories
-                      .find((cat) => cat.id === Number(form.categoryId))
-                      ?.subcategories.map((subcategory) => (
-                        <MenuItem key={subcategory.id} value={subcategory.id}>
-                          {subcategory.title}
-                        </MenuItem>
-                      ))}
-                  </Select>
-                </FormControl>
-              </Grid>
-
-              )}
-
+                }}
+              >
+                <InputLabel id="subcategoryId">Подкатегория</InputLabel>
+                <Select
+                  labelId="subcategoryId"
+                  id="subcategoryId"
+                  value={form.subcategoryId}
+                  name="subcategoryId"
+                  label="Подкатегория"
+                  onChange={selectChangeHandler}
+                >
+                  <MenuItem value="" disabled>
+                    Выберите подкатегорию
+                  </MenuItem>
+                  {categories
+                    .find((cat) => cat.id === Number(form.categoryId))
+                    ?.subcategories.map((subcategory) => (
+                      <MenuItem key={subcategory.id} value={subcategory.id}>
+                        {subcategory.title}
+                      </MenuItem>
+                    ))}
+                </Select>
+              </FormControl>
+            </Grid>
+          )}
           <Grid size={{ xs: 12 }}>
             <FileInput
               name="productPhoto"
@@ -330,6 +369,48 @@ const ProductForm: React.FC<Props> = ({
               }
               label="Участвует в акции"
             />
+            {form.sales && (
+              <Grid container spacing={2}>
+                <Grid size={{ xs: 3 }} >
+                  <TextField
+                    label="Дата начала акции"
+                    type="date"
+                    name="startDateSales"
+                    InputLabelProps={{ shrink: true }}
+                    value={form.startDateSales}
+                    onChange={inputChangeHandler}
+                    sx={{
+                      width: "100%",
+                      "& label.Mui-focused": { color: orange[500] },
+                      "& .MuiOutlinedInput-root": {
+                        "& fieldset": { borderColor: "#ccc" },
+                        "&:hover fieldset": { borderColor: orange[500] },
+                        "&.Mui-focused fieldset": { borderColor: orange[500] },
+                      }
+                    }}
+                  />
+                </Grid>
+                <Grid size={{ xs: 3 }}>
+                  <TextField
+                    label="Дата окончания акции"
+                    type="date"
+                    name="endDateSales"
+                    InputLabelProps={{ shrink: true }}
+                    value={form.endDateSales}
+                    onChange={inputChangeHandler}
+                    sx={{
+                      width: "100%",
+                      "& label.Mui-focused": { color: orange[500] },
+                      "& .MuiOutlinedInput-root": {
+                        "& fieldset": { borderColor: "#ccc" },
+                        "&:hover fieldset": { borderColor: orange[500] },
+                        "&.Mui-focused fieldset": { borderColor: orange[500] },
+                      }
+                    }}
+                  />
+                </Grid>
+              </Grid>
+            )}
           </Grid>
           <Grid>
             <Button

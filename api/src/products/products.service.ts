@@ -47,6 +47,8 @@ export class ProductsService {
         },
         sales: true,
         existence: true,
+        startDateSales: true,
+        endDateSales: true,
       },
     });
     return products || [];
@@ -66,12 +68,6 @@ export class ProductsService {
       startDateSales,
       endDateSales,
     } = createProductsDto;
-
-    // if (!brandId) {
-    //   throw new BadRequestException({
-    //     message: 'Заполните поле Бренда товара',
-    //   });
-    // }
 
     if (!categoryId) {
       throw new BadRequestException({

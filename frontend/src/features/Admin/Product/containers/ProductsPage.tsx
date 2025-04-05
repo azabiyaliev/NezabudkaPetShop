@@ -10,6 +10,7 @@ import Grid from "@mui/material/Grid2";
 const ProductsPage = () => {
   const dispatch = useAppDispatch();
   const products = useAppSelector(selectProducts);
+  console.log(products);
 
   useEffect(() => {
     dispatch(getProducts());

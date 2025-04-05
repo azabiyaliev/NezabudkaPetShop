@@ -105,6 +105,8 @@ export interface ProductRequest {
   parentId: string;
   id?: number;
   category?: ICategories;
+  startDateSales?: Date | null;
+  endDateSales?: Date | null;
 }
 
 export interface ICart {

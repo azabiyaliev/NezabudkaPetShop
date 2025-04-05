@@ -24,7 +24,6 @@ const EditProduct = () => {
   const user = useAppSelector(selectUser);
   const product = useAppSelector(selectProduct);
   const { id } = useParams();
-  console.log(product)
 
   useEffect(() => {
     if (id) dispatch(getOneProduct(Number(id))).unwrap();
