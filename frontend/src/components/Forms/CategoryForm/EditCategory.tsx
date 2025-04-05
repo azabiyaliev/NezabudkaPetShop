@@ -21,7 +21,7 @@ interface EditCategoryProps {
   };
 }
 
-const WARNING_SELECT_CATEGORY = "Заполните все поля!!";
+const WARNING_SELECT_CATEGORY = "Не оставляйте поля пустыми!!";
 const SUCCESSFUL_CATEGORY_UPDATE = "Категория успешно обновлена!";
 
 const EditCategory: React.FC<EditCategoryProps> = ({ category }) => {
@@ -38,6 +38,13 @@ const EditCategory: React.FC<EditCategoryProps> = ({ category }) => {
     if (editedCategory.title.trim() === "") {
       toast.warning(WARNING_SELECT_CATEGORY, { position: 'top-center' });
       return;
+    }
+
+    for (const subcategory of subcategories) {
+      if (subcategory.title.trim() === "") {
+        toast.warning("Не оставляйте поля подкатегорий пустыми!", { position: 'top-center' });
+        return;
+      }
     }
 
     if (!user) return;
@@ -120,7 +127,6 @@ const EditCategory: React.FC<EditCategoryProps> = ({ category }) => {
                 label="Название Подкатегории"
                 variant="outlined"
                 fullWidth
-                required
                 value={sub.title}
                 onChange={(e) => handleSubcategoryChange(sub.id, e.target.value)}
               />
