@@ -115,7 +115,7 @@ const categoriesSlice = createSlice({
         state.SubCategories = payload.map((category: ICategories) => ({
           id: category.id,
           title: category.title,
-          parentId: category.parentId,
+          parentId: category.parentId ?? null,
           subcategories: [],
         }));
       })

@@ -10,6 +10,8 @@ import { Box } from '@mui/material';
 import AdminBar from '../../Admin/AdminProfile/AdminBar.tsx';
 
 
+const ERROR_CATEGORY = "Ошибка при добавлении подкатегории!";
+
 const NewSubcategory = () => {
   const user = useAppSelector(selectUser);
   const dispatch = useAppDispatch();
@@ -28,7 +30,8 @@ const NewSubcategory = () => {
         toast.success('Подкатегория была добавлена ;)', { position: 'top-center' });
       }
     } catch (error) {
-      toast.error('Произошла ошибка при добавлении подкатегории. Попробуйте снова.', { position: 'top-center' });
+      console.log(error)
+      toast.error(ERROR_CATEGORY, { position: 'top-center' });
     }
   };
 

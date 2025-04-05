@@ -131,6 +131,15 @@ export class CategoryService {
   async deleteCategory(id: number) {
     await this.validateCategory(id);
 
+    const subcategories = await this.prisma.category.findMany({
+      where: { parentId: id },
+    });
+    for (const subcategory of subcategories) {
+      await this.prisma.category.delete({
+        where: { id: subcategory.id },
+      });
+    }
+
     await this.prisma.category.delete({ where: { id } });
 
     return { message: 'Категория успешно удалена' };

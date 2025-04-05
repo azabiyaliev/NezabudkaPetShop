@@ -1,10 +1,15 @@
-import { TextField, Button, Box, Typography } from '@mui/material';
+import { TextField, Button, Box, Typography, IconButton } from '@mui/material';
 import React, { useCallback, useState } from "react";
 import { CategoryMutation } from "../../../types";
 import { selectUser } from '../../../store/users/usersSlice.ts';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
-import { fetchCategoriesThunk, updateCategoryThunk } from '../../../store/categories/categoriesThunk.ts';
+import {
+  deleteCategory,
+  fetchCategoriesThunk,
+  updateCategoryThunk
+} from '../../../store/categories/categoriesThunk.ts';
 import { toast } from 'react-toastify';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 interface Subcategory {
   id: number;
@@ -23,6 +28,8 @@ interface EditCategoryProps {
 
 const WARNING_SELECT_CATEGORY = "Не оставляйте поля пустыми!!";
 const SUCCESSFUL_CATEGORY_UPDATE = "Категория успешно обновлена!";
+const SUCCESSFUL_CATEGORY_DELETE = "Категория успешно удалена!";
+const ERROR_CATEGORY_DELETE = "Ошибка при удалении подкатегории!";
 
 const EditCategory: React.FC<EditCategoryProps> = ({ category }) => {
   const [editedCategory, setEditedCategory] = useState<CategoryMutation>({
@@ -87,6 +94,17 @@ const EditCategory: React.FC<EditCategoryProps> = ({ category }) => {
     );
   };
 
+  const onDelete = async (id: string) => {
+    try {
+      await dispatch(deleteCategory(id));
+      setSubcategories(prev => prev.filter(sub => sub.id !== Number(id))); // Убираем из локального состояния
+      toast.success(SUCCESSFUL_CATEGORY_DELETE, { position: 'top-center' });
+    } catch (error) {
+      console.log(error);
+      toast.error(ERROR_CATEGORY_DELETE, { position: 'top-center' });
+    }
+  };
+
   return (
     <Box
       component="form"
@@ -130,6 +148,12 @@ const EditCategory: React.FC<EditCategoryProps> = ({ category }) => {
                 value={sub.title}
                 onChange={(e) => handleSubcategoryChange(sub.id, e.target.value)}
               />
+              <IconButton
+                onClick={() => onDelete(String(sub.id))}
+                color="error"
+              >
+                <DeleteIcon />
+              </IconButton>
             </Box>
           ))}
         </>
