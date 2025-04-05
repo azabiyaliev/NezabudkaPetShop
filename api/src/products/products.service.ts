@@ -171,6 +171,8 @@ export class ProductsService {
       categoryId,
       existence,
       sales,
+      startDateSales,
+      endDateSales,
     }: CreateProductsDto,
     file?: Express.Multer.File,
   ) {
@@ -200,6 +202,8 @@ export class ProductsService {
         categoryId: Number(categoryId),
         existence: existence === 'true',
         sales: sales === 'true',
+        startDateSales: startDateSales ? new Date(startDateSales) : null,
+        endDateSales: endDateSales ? new Date(endDateSales) : null,
       },
       select: {
         id: true,
@@ -213,6 +217,8 @@ export class ProductsService {
         category: true,
         sales: true,
         existence: true,
+        startDateSales: true,
+        endDateSales: true,
       },
     });
 

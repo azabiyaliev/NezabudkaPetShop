@@ -105,8 +105,8 @@ export interface ProductRequest {
   parentId: string;
   id?: number;
   category?: ICategories;
-  startDateSales?: Date | null;
-  endDateSales?: Date | null;
+  startDateSales?: Date | null | string;
+  endDateSales?: Date | null | string;
 }
 
 export interface ICart {
@@ -155,4 +155,6 @@ export interface ProductResponse {
   brandId: string;
   brand: IBrand;
   category: ICategories;
+  startDateSales?: string;
+  endDateSales?: string;
 }

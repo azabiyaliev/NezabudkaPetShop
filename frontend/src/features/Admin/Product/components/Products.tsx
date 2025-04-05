@@ -17,6 +17,8 @@ import {
   getProducts,
 } from "../../../../store/products/productsThunk.ts";
 import { toast } from "react-toastify";
+import dayjs from "dayjs";
+
 
 interface Props {
   products: ProductResponse[];
@@ -87,7 +89,6 @@ const Products: React.FC<Props> = ({ products }) => {
       headerName: "Бренд",
       width: 100,
       editable: false,
-      // valueGetter: (_value, row: ProductResponse) => !row.brand ? "" : row.brand.title,
       renderCell: ({ row }: { row: ProductResponse }) =>
         row.brand ? (
           row.brand.title
@@ -130,6 +131,18 @@ const Products: React.FC<Props> = ({ products }) => {
         ) : (
           <CancelIcon sx={{ color: "error.main" }} />
         ),
+    },
+    {
+      field: "startDateSales",
+      headerName: "Начало акции",
+      width: 100,
+      valueGetter: (_value, row: ProductResponse) => row.startDateSales ? dayjs(row.startDateSales).format('DD-MM-YYYY') : null,
+    },
+    {
+      field: "endDateSales",
+      headerName: "Окончание акции",
+      width: 100,
+      valueGetter: (_value, row: ProductResponse) => row.endDateSales ? dayjs(row.endDateSales).format('DD-MM-YYYY') : null,
     },
     {
       field: "actions",

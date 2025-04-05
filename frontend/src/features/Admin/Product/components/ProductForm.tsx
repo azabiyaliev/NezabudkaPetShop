@@ -25,6 +25,7 @@ import FormControl from "@mui/material/FormControl";
 import FileInput from "../../../../components/FileInput/FileInput.tsx";
 import { addProductLoading } from "../../../../store/products/productsSlice.ts";
 
+
 interface Props {
   onSubmit: (product: ProductRequest) => void;
   editProduct?: ProductRequest;
@@ -56,12 +57,9 @@ const ProductForm: React.FC<Props> = ({
   const brands = useAppSelector(brandsFromSlice);
   const categories = useAppSelector(selectCategories);
   const loading = useAppSelector(addProductLoading);
-  console.log(form);
   const selectedCategory = categories.find(
     (category) => category.id === Number(form.categoryId),
   );
-  console.log(selectedCategory);
-
   useEffect(() => {
     dispatch(getBrands()).unwrap();
     dispatch(fetchCategoriesThunk()).unwrap();
@@ -83,6 +81,20 @@ const ProductForm: React.FC<Props> = ({
     }
   }, [categories, form.categoryId]);
 
+  useEffect(() => {
+    if (editProduct) {
+      const formatDate = (dateStr: Date | null | undefined | string): string => {
+        return dateStr ? new Date(dateStr).toISOString().split("T")[0] : "";
+      };
+
+      setForm({
+        ...editProduct,
+        startDateSales: formatDate(editProduct.startDateSales),
+        endDateSales: formatDate(editProduct.endDateSales),
+      });
+    }
+  }, [editProduct]);
+
   const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
@@ -94,6 +106,7 @@ const ProductForm: React.FC<Props> = ({
 
   const submitFormHandler = (e: FormEvent) => {
     e.preventDefault();
+
     if (!form.productName.trim()) {
       return toast.warning("Необходимо название товара!");
     }
@@ -112,6 +125,25 @@ const ProductForm: React.FC<Props> = ({
 
     if (!form.productPhoto) {
       return toast.warning("Необходимо изображение товара!");
+    }
+
+    if (form.sales) {
+      const now = new Date();
+      now.setHours(0, 0, 0, 0);
+      const startDate = new Date(form.startDateSales!);
+      startDate.setHours(0, 0, 0, 0);
+
+      if (!form.startDateSales || !form.endDateSales) {
+        return toast.warning("Укажите даты начала и окончания акции!");
+      }
+
+      if (form.startDateSales > form.endDateSales) {
+        return toast.warning("Дата окончания не может быть раньше начала!");
+      }
+
+      if (startDate < now) {
+        return toast.warning("Дата начало акции не может раньше сегодняшнего дня!")
+      }
     }
 
     const categoryIdToSend = form.subcategoryId
@@ -230,7 +262,7 @@ const ProductForm: React.FC<Props> = ({
                 <Select
                   labelId="brandId"
                   id="brandId"
-                  value={form.brandId}
+                  value={form.brandId ?? ""}
                   name="brandId"
                   label="Бренд"
                   onChange={selectChangeHandler}
@@ -371,13 +403,13 @@ const ProductForm: React.FC<Props> = ({
             />
             {form.sales && (
               <Grid container spacing={2}>
-                <Grid size={{ xs: 3 }} >
+                <Grid size={{ xs: 5 }} >
                   <TextField
                     label="Дата начала акции"
                     type="date"
                     name="startDateSales"
                     InputLabelProps={{ shrink: true }}
-                    value={form.startDateSales}
+                    value={form.startDateSales ?? ""}
                     onChange={inputChangeHandler}
                     sx={{
                       width: "100%",
@@ -390,13 +422,13 @@ const ProductForm: React.FC<Props> = ({
                     }}
                   />
                 </Grid>
-                <Grid size={{ xs: 3 }}>
+                <Grid size={{ xs: 5 }}>
                   <TextField
                     label="Дата окончания акции"
                     type="date"
                     name="endDateSales"
                     InputLabelProps={{ shrink: true }}
-                    value={form.endDateSales}
+                    value={form.endDateSales ?? ""}
                     onChange={inputChangeHandler}
                     sx={{
                       width: "100%",
