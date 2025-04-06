@@ -54,16 +54,14 @@ export class UsersController {
 
   @Put('change-password')
   async changePassword(
-    @Body() body: { resetToken: string; newPassword: string },
+      @Body() body: { resetToken: string; newPassword: string },
   ) {
     try {
       const passwordResetRecord =
-        await this.userService.findPasswordResetRecordByToken(body.resetToken);
+          await this.userService.findPasswordResetRecordByToken(body.resetToken);
 
       if (!passwordResetRecord) {
-        throw new NotFoundException(
-          'Неверная ссылка или срок действия ссылки истек',
-        );
+        throw new NotFoundException('Неверная ссылка или срок действия ссылки истек');
       }
 
       const userId = passwordResetRecord.userId;
@@ -73,12 +71,9 @@ export class UsersController {
         throw new NotFoundException('Пользователь не найден');
       }
 
+
       await this.userService.validateResetToken(userId, body.resetToken);
-      return this.userService.updatePassword(
-        userId,
-        body.newPassword,
-        body.resetToken,
-      );
+      return this.userService.resetPasswordByToken(userId, body.newPassword);
     } catch (error) {
       console.error(error);
       throw error;
@@ -88,8 +83,8 @@ export class UsersController {
   @UseGuards(TokenAuthGuard)
   @Patch('new-password')
   async changeAuthorizedPassword(
-    @Req() req: Request & { user: RequestUser },
-    @Body() body: { currentPassword?: string; newPassword: string },
+      @Req() req: Request & { user: RequestUser },
+      @Body() body: { currentPassword?: string; newPassword: string },
   ) {
     if (!body.currentPassword) {
       throw new BadRequestException('Текущий пароль обязателен');
@@ -104,15 +99,15 @@ export class UsersController {
     const isMatch = await bcrypt.compare(body.currentPassword, user.password);
     if (!isMatch) {
       throw new HttpException(
-        'Неверный текущий пароль',
-        HttpStatus.BAD_REQUEST,
+          'Неверный текущий пароль',
+          HttpStatus.BAD_REQUEST,
       );
     }
 
     return this.userService.updatePassword(
-      userId,
-      body.newPassword,
-      body.currentPassword,
+        userId,
+        body.newPassword,
+        body.currentPassword,
     );
   }
 
@@ -159,9 +154,9 @@ export class UsersController {
   @Roles('admin', 'client', 'superAdmin')
   @Put(':id')
   async update(
-    @Param('id') id: string,
-    @Body() data: UpdateDto,
-    @Req() req: AuthRequest,
+      @Param('id') id: string,
+      @Body() data: UpdateDto,
+      @Req() req: AuthRequest,
   ) {
     const userId = parseInt(id);
     if (isNaN(userId)) {

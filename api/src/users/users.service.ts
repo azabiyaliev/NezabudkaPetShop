@@ -51,6 +51,18 @@ export class UsersService {
     return user;
   }
 
+  async resetPasswordByToken(userId: number, newPassword: string) {
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { password: hashedPassword },
+    });
+
+    return { message: 'Пароль успешно сброшен' };
+  }
+
   async sendPasswordResetLink(email: string): Promise<{ message: string }> {
     const user = await this.prisma.user.findUnique({ where: { email } });
 
