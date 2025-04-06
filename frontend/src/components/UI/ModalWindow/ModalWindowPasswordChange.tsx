@@ -42,6 +42,11 @@ const ModalWindowPasswordChange: React.FC<Props> = ({ open, setOpen }) => {
       return;
     }
 
+    if (newPassword.length < 6) {
+      enqueueSnackbar('Пароль должен быть не менее 6 символов.', { variant: 'error' });
+      return;
+    }
+
     const resultAction = await dispatch(changePasswordAsync({ currentPassword, newPassword }));
 
     if (changePasswordAsync.rejected.match(resultAction)) {
