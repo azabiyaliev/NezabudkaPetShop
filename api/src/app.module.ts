@@ -25,6 +25,10 @@ import { PhotoCarouselService } from './photo_carousel/photo_carousel.service';
 import { FavoritesModule } from './favorites/favorites.module';
 import { FavoritesService } from './favorites/favorites.service';
 import { FavoritesController } from './favorites/favorites.controller';
+import { TelegramModule } from './telegram/telegram.module';
+import { TelegramService } from './telegram/telegram.service';
+import {OrdersService} from "./orders/orders.service";
+import {TelegramController} from "./telegram/telegram.controller";
 
 @Module({
   imports: [
@@ -41,6 +45,7 @@ import { FavoritesController } from './favorites/favorites.controller';
     ReviewsModule,
     PhotoCarouselModule,
     FavoritesModule,
+    TelegramModule,
   ],
   controllers: [
     AppController,
@@ -48,6 +53,7 @@ import { FavoritesController } from './favorites/favorites.controller';
     EditionSiteController,
     PhotoCarouselController,
     FavoritesController,
+    TelegramController,
   ],
   providers: [
     AppService,
@@ -58,6 +64,8 @@ import { FavoritesController } from './favorites/favorites.controller';
     CategoryService,
     PhotoCarouselService,
     FavoritesService,
+    TelegramService,
+    OrdersService,
   ],
 })
 export class AppModule {}

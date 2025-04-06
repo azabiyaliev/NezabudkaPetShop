@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import image from "../../assets/image_transparent.png";
 import Typography from "@mui/joy/Typography";
 import TotalPrice from "../../components/Domain/CustomCart/Basket/TotalPrice/TotalPrice.tsx";
+import OrderForm from '../Order/OrderForm.tsx';
 
 const CartPage = () => {
   const cart = useAppSelector(cartsFromSlice);
@@ -36,7 +37,7 @@ const CartPage = () => {
             <Box>
               <Carts products={cart} />
               {
-                // Дальше нужно добавить компоненты для оформления заказа
+                <OrderForm/>
               }
             </Box>
             <TotalPrice products={cart} />

@@ -27,7 +27,6 @@ import DragAndDropPhoto from './components/Forms/PhotoCarouselForm/DragAndDropPh
 import Photo from './components/Forms/PhotoCarouselForm/Photo.tsx';
 import AdminForm from './components/Forms/AdminForm/AdminForm.tsx';
 import AdminTable from './features/SuperAdmin/container/AdminTable.tsx';
-import OrderForm from './features/Order/OrderForm.tsx';
 import NewSubcategory from './features/Category/NewSubcategory/NewSubcategory.tsx';
 import BrandPage from './features/Brand/BrandPage.tsx';
 import RestorationPasswordFrom from './components/Forms/UserFrom/RestorationPasswordFrom.tsx';
@@ -43,7 +42,7 @@ const App = () => {
           <Route path="/register" element={<RegisterUser />} />
           <Route path="/login" element={<LoginUser />} />
           <Route path="/my_cart" element={<CartPage />} />
-          <Route path="/my_order" element={<OrderForm />} />
+          {/*<Route path="/my_order" element={<OrderForm />} />*/}
           <Route path="/edit-carousel" element={<DragAndDropPhoto />} />
           <Route path="/photos/:id" element={<Photo/>}/>
           <Route path="/change-password" element={<RestorationPasswordFrom/>}/>

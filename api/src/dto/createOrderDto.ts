@@ -13,32 +13,34 @@ import { Type } from 'class-transformer';
 import { OrderItemDto } from './OrderItemDto';
 
 export class CreateOrderDto {
+  id?: number;
+
   @IsNotEmpty({ message: 'Адрес не может быть пустым' })
   @IsString({ message: 'Это поле должнно быть строковым ' })
   @Matches(/^[a-zA-Zа-яА-Я0-9\s,.-]+$/, { message: 'Неверный формат адреса' })
   address!: string;
 
   @IsOptional()
-  @Matches(/^(\w+[-.]?\w+)@(\w+)([.-]?\w+)?(\.[a-zA-Z]{2,3})$/, {
+  @Matches(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, {
     message: 'Введите валидеый email адрес',
   })
   @IsEmail()
   @IsString()
-  guestEmail?: string;
+  guestEmail?: string | null;
 
   @IsOptional()
   @IsString()
-  guestName?: string;
+  guestName?: string | null;
 
   @IsOptional()
   @IsString()
-  guestLastName?: string;
+  guestLastName?: string | null;
 
   @IsOptional()
   @Matches(/^(\+996|0)\s?\d{3}\s?\d{3}\s?\d{3}$/)
   @IsPhoneNumber()
   @IsString()
-  guestPhone?: string;
+  guestPhone?: string | null;
 
   @IsOptional()
   @IsString()

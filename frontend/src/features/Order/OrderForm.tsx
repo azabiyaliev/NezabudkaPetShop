@@ -1,5 +1,5 @@
-import React, { FormEvent, useState } from 'react';
-import { useAppDispatch } from '../../app/hooks.ts';
+import React, { FormEvent, useEffect, useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../../app/hooks.ts';
 import { checkoutAuthUserOrder } from '../../store/orders/ordersThunk.ts';
 import { Button, TextField } from '@mui/material';
 import Grid from '@mui/material/Grid2';
@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import { OrderMutation } from '../../types';
+import { clearCart, getFromLocalStorage } from '../../store/cart/cartSlice.ts';
 
 enum PaymentMethod {
   ByCash = 'ByCash',
@@ -22,21 +23,59 @@ const OrderForm = () => {
   const [incorrectFormatEmail, setIncorrectFormatEmail] = useState("");
   const [incorrectFormatPhone, setIncorrectFormatPhone] = useState("");
   const [incorrectFormatAddress, setIncorrectFormatAddress] = useState("");
+  const carts = useAppSelector((state) => state.carts.carts);
+  const user = useAppSelector((state) => state.users.user);
   const navigate = useNavigate();
   const [form, setForm] = useState<OrderMutation>({
-    address: "ул. Тестовая, д. 123",
+    address: "",
     userId: "",
-    guestEmail: "msugurbekov@mail.ru",
-    guestPhone: "+996553001599",
-    guestName: "Marsel",
-    guestLastName: "Rin",
-    orderComment: "Don't eat feed for my cat (optional)",
+    guestEmail: "",
+    guestPhone: "",
+    guestName: "",
+    guestLastName: "",
+    orderComment: "",
     paymentMethod: PaymentMethod.ByCash,
-    items: [
-      { productId: 1, quantity: 2, orderAmount: 500 },
-      { productId: 2, quantity: 1, orderAmount: 500 },
-    ],
+    items: [],
   });
+
+  useEffect(() => {
+    dispatch(getFromLocalStorage());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (carts.length > 0) {
+      setForm(prev => ({
+        ...prev,
+        items: carts.map(item => ({
+          productId: item.product.id,
+          quantity: item.quantity,
+          orderAmount: item.product.productPrice * item.quantity
+        }))
+      }));
+    }
+  }, [carts]);
+
+  useEffect(() => {
+    if (user) {
+      setForm(prev => ({
+        ...prev,
+        guestEmail: user.email || "",
+        guestPhone: user.phone || "",
+        guestName: user.firstName || "",
+        guestLastName: user.secondName || "",
+        userId: String(user.id),
+      }));
+    } else {
+      setForm(prev => ({
+        ...prev,
+        guestEmail: "",
+        guestPhone: "",
+        guestName: "",
+        guestLastName: "",
+        userId: "",
+      }));
+    }
+  }, [user]);
 
   const handlePaymentMethodChange = (method: PaymentMethod) => {
     setForm(prev => ({
@@ -81,10 +120,8 @@ const OrderForm = () => {
       }
     }
   };
-
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-
     if (
       !regEmail.test(form.guestEmail) &&
       !regPhone.test(form.guestPhone) &&
@@ -106,10 +143,20 @@ const OrderForm = () => {
       toast.error("Заполните поле Имя");
       return;
     }
+
     await dispatch(checkoutAuthUserOrder(form)).unwrap();
     toast.success("Заказ успешно оформлен!");
+    dispatch(clearCart())
     navigate("/all-products");
   };
+
+  const totalPrice = carts.reduce(
+    (acc, item) => {
+      return acc + item.product.productPrice * item.quantity;
+    },
+    250,
+  );
+
   return (
     <form onSubmit={handleSubmit} style={{ marginTop: "35px" }}>
       <Grid
@@ -370,84 +417,112 @@ const OrderForm = () => {
         />
       </Grid>
 
-      <Grid container spacing={2}
-            sx={{
-              marginTop: "17px",
-              display: "flex",
-              flexDirection: "column",
-              border: "1px solid #e5e2dc",
-              width: "700px",
-              padding: "2rem",
-              borderRadius: "20px",
-              marginBottom: "20px",
-              "@media (max-width: 820px)": {
-                padding: "1rem",
-                width: "600px",
-              },
-              "@media (max-width: 720px)": {
-                width: "100%",
-              },
-            }}>
+      <Grid
+        container
+        spacing={2}
+        sx={{
+          marginTop: "17px",
+          display: "flex",
+          flexDirection: "column",
+          border: "1px solid #e5e2dc",
+          width: "700px",
+          padding: "2rem",
+          borderRadius: "20px",
+          marginBottom: "20px",
+          "@media (max-width: 820px)": {
+            padding: "1rem",
+            width: "600px",
+          },
+          "@media (max-width: 720px)": {
+            width: "100%",
+          },
+        }}
+      >
         <Typography variant="h6">Способ оплаты</Typography>
 
         <Grid>
-        <Button
-          onClick={() => handlePaymentMethodChange(PaymentMethod.ByCash)}
-          sx={{
-            backgroundColor: form.paymentMethod === PaymentMethod.ByCash ? "#5F8B4C" : "transparent",
-            color: form.paymentMethod === PaymentMethod.ByCash ? "white" : "#5F8B4C",
-            border: "1px solid #5F8B4C",
-            marginRight: "17px",
-            "&:hover": {
-              backgroundColor: form.paymentMethod === PaymentMethod.ByCash ? "#5F8B4C" : "rgba(0, 0, 0, 0.04)"
-            }
-          }}
-        >
-          Наличными
-        </Button>
+          <Button
+            onClick={() => handlePaymentMethodChange(PaymentMethod.ByCash)}
+            sx={{
+              backgroundColor:
+                form.paymentMethod === PaymentMethod.ByCash
+                  ? "#5F8B4C"
+                  : "transparent",
+              color:
+                form.paymentMethod === PaymentMethod.ByCash
+                  ? "white"
+                  : "#5F8B4C",
+              border: "1px solid #5F8B4C",
+              marginRight: "17px",
+              "&:hover": {
+                backgroundColor:
+                  form.paymentMethod === PaymentMethod.ByCash
+                    ? "#5F8B4C"
+                    : "rgba(0, 0, 0, 0.04)",
+              },
+            }}
+          >
+            Наличными
+          </Button>
 
-        <Button
-          onClick={() => handlePaymentMethodChange(PaymentMethod.ByCard)}
-          sx={{
-            backgroundColor: form.paymentMethod === PaymentMethod.ByCard ? "#5F8B4C" : "transparent",
-            color: form.paymentMethod === PaymentMethod.ByCard ? "white" : "#5F8B4C",
-            border: "1px solid #5F8B4C",
-            "&:hover": {
-              backgroundColor: form.paymentMethod === PaymentMethod.ByCard ? "#5F8B4C" : "rgba(0, 0, 0, 0.04)"
-            }
-          }}
-        >
-          Картой
-        </Button>
+          <Button
+            onClick={() => handlePaymentMethodChange(PaymentMethod.ByCard)}
+            sx={{
+              backgroundColor:
+                form.paymentMethod === PaymentMethod.ByCard
+                  ? "#5F8B4C"
+                  : "transparent",
+              color:
+                form.paymentMethod === PaymentMethod.ByCard
+                  ? "white"
+                  : "#5F8B4C",
+              border: "1px solid #5F8B4C",
+              "&:hover": {
+                backgroundColor:
+                  form.paymentMethod === PaymentMethod.ByCard
+                    ? "#5F8B4C"
+                    : "rgba(0, 0, 0, 0.04)",
+              },
+            }}
+          >
+            Картой
+          </Button>
         </Grid>
       </Grid>
 
-      <Grid container spacing={2}
-            sx={{
-              marginTop: "17px",
-              display: "flex",
-              justifyContent: "space-between",
-              border: "1px solid #e5e2dc",
-              width: "700px",
-              padding: "2rem",
-              borderRadius: "20px",
-              marginBottom: "20px",
-              "@media (max-width: 820px)": {
-                padding: "1rem",
-                width: "600px",
-              },
-              "@media (max-width: 720px)": {
-                width: "100%",
-              },
-            }}>
-
+      <Grid
+        container
+        spacing={2}
+        sx={{
+          marginTop: "17px",
+          display: "flex",
+          justifyContent: "space-between",
+          border: "1px solid #e5e2dc",
+          width: "700px",
+          padding: "2rem",
+          borderRadius: "20px",
+          marginBottom: "20px",
+          "@media (max-width: 820px)": {
+            padding: "1rem",
+            width: "600px",
+          },
+          "@media (max-width: 720px)": {
+            width: "100%",
+          },
+        }}
+      >
         <Typography>
           К оплате:
-          <Typography>1000 сом</Typography>
+          {totalPrice}
         </Typography>
-      <Button type="submit" variant="contained" sx={{ mt: 2, backgroundColor: '#FF9900' }}>
-        Оформить заказ
-      </Button>
+
+        <Button
+          type="submit"
+          variant="contained"
+          sx={{ mt: 2, backgroundColor: "#FF9900" }}
+        >
+          Оформить заказ
+        </Button>
       </Grid>
     </form>
   );
