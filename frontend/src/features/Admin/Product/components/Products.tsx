@@ -17,6 +17,8 @@ import {
   getProducts,
 } from "../../../../store/products/productsThunk.ts";
 import { toast } from "react-toastify";
+import dayjs from "dayjs";
+
 
 interface Props {
   products: ProductResponse[];
@@ -74,20 +76,39 @@ const Products: React.FC<Props> = ({ products }) => {
       headerName: "Описание",
       width: 170,
       editable: false,
-    },
-    {
-      field: "categoryId",
-      headerName: "Категория",
-      width: 100,
-      editable: false,
-      valueGetter: (_value, row: ProductResponse) => row.category.title,
+      renderCell: (params) => (
+        <div
+          dangerouslySetInnerHTML={{
+            __html: params.value,
+          }}
+        />
+      ),
     },
     {
       field: "brandId",
       headerName: "Бренд",
       width: 100,
       editable: false,
-      valueGetter: (_value, row: ProductResponse) => row.brand ? row.brand.title : "Бренд был удален",
+      renderCell: ({ row }: { row: ProductResponse }) =>
+        row.brand ? (
+          row.brand.title
+        ) : (
+          <CancelIcon sx={{ color: "error.main" }} />
+        ),
+    },
+    {
+      field: "category",
+      headerName: "Категория",
+      width: 100,
+      editable: false,
+      valueGetter: (_value, row: ProductResponse) => row.category.parentId ? row.category.parent.title : row.category.title,
+    },
+    {
+      field: "subcategory",
+      headerName: "Подкатегория",
+      width: 100,
+      editable: false,
+      valueGetter: (_value, row: ProductResponse) => row.category.parentId ? row.category.title : null,
     },
     {
       field: "existence",
@@ -110,6 +131,18 @@ const Products: React.FC<Props> = ({ products }) => {
         ) : (
           <CancelIcon sx={{ color: "error.main" }} />
         ),
+    },
+    {
+      field: "startDateSales",
+      headerName: "Начало акции",
+      width: 100,
+      valueGetter: (_value, row: ProductResponse) => row.startDateSales ? dayjs(row.startDateSales).format('DD-MM-YYYY') : null,
+    },
+    {
+      field: "endDateSales",
+      headerName: "Окончание акции",
+      width: 100,
+      valueGetter: (_value, row: ProductResponse) => row.endDateSales ? dayjs(row.endDateSales).format('DD-MM-YYYY') : null,
     },
     {
       field: "actions",
@@ -164,6 +197,32 @@ const Products: React.FC<Props> = ({ products }) => {
           checkboxSelection
           disableRowSelectionOnClick
           localeText={ruRU.components.MuiDataGrid.defaultProps.localeText}
+          sx={{
+            '& .MuiDataGrid-footerContainer': {
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            },
+            '& .MuiTablePagination-toolbar': {
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              width: '100%',
+            },
+            '& .MuiTablePagination-spacer': {
+              flex: 1,
+            },
+            '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows': {
+              margin: 0,
+            },
+            '& .MuiTablePagination-select': {
+              minWidth: 'auto',
+            },
+            '& .MuiTablePagination-actions': {
+              display: 'flex',
+              gap: '8px',
+            },
+          }}
         />
       </Grid>
     </Grid>

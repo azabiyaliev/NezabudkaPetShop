@@ -21,10 +21,6 @@ async function bootstrap() {
     process.exit(1);
   }
 
-  console.log(result.parsed);
-
-  console.log(process.env.EMAIL_USER);
-
   app.useStaticAssets(join(__dirname, '..', 'public'));
   app.enableCors({
     origin: '*',
@@ -42,4 +38,5 @@ async function bootstrap() {
   app.useGlobalFilters(new ValidationExceptionFilter());
   await app.listen(process.env.PORT ?? 8000);
 }
+
 bootstrap();

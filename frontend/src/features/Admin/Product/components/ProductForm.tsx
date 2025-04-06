@@ -19,10 +19,12 @@ import { brandsFromSlice } from "../../../../store/brands/brandsSlice.ts";
 import { getBrands } from "../../../../store/brands/brandsThunk.ts";
 import { selectCategories } from "../../../../store/categories/categoriesSlice.ts";
 import { fetchCategoriesThunk } from "../../../../store/categories/categoriesThunk.ts";
-import TiptapEditor from "../../../../components/UI/TiptapEditor/TiptapEditor.tsx";
+import QuillEditor from "../../../../components/UI/QuillEditor/QuillEditor.tsx";
 import { orange } from "@mui/material/colors";
 import FormControl from "@mui/material/FormControl";
 import FileInput from "../../../../components/FileInput/FileInput.tsx";
+import { addProductLoading } from "../../../../store/products/productsSlice.ts";
+
 
 interface Props {
   onSubmit: (product: ProductRequest) => void;
@@ -39,6 +41,10 @@ const initialState = {
   sales: false,
   brandId: "",
   categoryId: "",
+  subcategoryId: "",
+  parentId: "",
+  startDateSales: null,
+  endDateSales: null,
 };
 
 const ProductForm: React.FC<Props> = ({
@@ -50,18 +56,44 @@ const ProductForm: React.FC<Props> = ({
   const dispatch = useAppDispatch();
   const brands = useAppSelector(brandsFromSlice);
   const categories = useAppSelector(selectCategories);
-
-  const handleDescriptionChange = (html: string) => {
-    setForm((prevState) => ({
-      ...prevState,
-      productDescription: html,
-    }));
-  };
-
+  const loading = useAppSelector(addProductLoading);
+  const selectedCategory = categories.find(
+    (category) => category.id === Number(form.categoryId),
+  );
   useEffect(() => {
     dispatch(getBrands()).unwrap();
     dispatch(fetchCategoriesThunk()).unwrap();
   }, [dispatch]);
+
+  useEffect(() => {
+    if (categories.length > 0 && form.categoryId) {
+      const categoryWithSub = categories.find((cat) =>
+        cat.subcategories?.some((sub) => sub.id === Number(form.categoryId)),
+      );
+
+      if (categoryWithSub) {
+        setForm((prev) => ({
+          ...prev,
+          categoryId: String(categoryWithSub.id),
+          subcategoryId: prev.subcategoryId || prev.categoryId,
+        }));
+      }
+    }
+  }, [categories, form.categoryId]);
+
+  useEffect(() => {
+    if (editProduct) {
+      const formatDate = (dateStr: Date | null | undefined | string): string => {
+        return dateStr ? new Date(dateStr).toISOString().split("T")[0] : "";
+      };
+
+      setForm({
+        ...editProduct,
+        startDateSales: formatDate(editProduct.startDateSales),
+        endDateSales: formatDate(editProduct.endDateSales),
+      });
+    }
+  }, [editProduct]);
 
   const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -74,6 +106,7 @@ const ProductForm: React.FC<Props> = ({
 
   const submitFormHandler = (e: FormEvent) => {
     e.preventDefault();
+
     if (!form.productName.trim()) {
       return toast.warning("Необходимо название товара!");
     }
@@ -86,10 +119,6 @@ const ProductForm: React.FC<Props> = ({
       return toast.warning("Необходимо добавить описание товара!");
     }
 
-    if (!form.brandId) {
-      return toast.warning("Необходимо выбрать бренд!");
-    }
-
     if (!form.categoryId) {
       return toast.warning("Необходимо выбрать категорию!");
     }
@@ -98,7 +127,29 @@ const ProductForm: React.FC<Props> = ({
       return toast.warning("Необходимо изображение товара!");
     }
 
-    onSubmit({ ...form });
+    if (form.sales) {
+      const now = new Date();
+      now.setHours(0, 0, 0, 0);
+      const startDate = new Date(form.startDateSales!);
+      startDate.setHours(0, 0, 0, 0);
+
+      if (!form.startDateSales || !form.endDateSales) {
+        return toast.warning("Укажите даты начала и окончания акции!");
+      }
+
+      if (form.startDateSales > form.endDateSales) {
+        return toast.warning("Дата окончания не может быть раньше начала!");
+      }
+
+      if (startDate < now) {
+        return toast.warning("Дата начало акции не может раньше сегодняшнего дня!")
+      }
+    }
+
+    const categoryIdToSend = form.subcategoryId
+      ? form.subcategoryId
+      : form.categoryId;
+    onSubmit({ ...form, categoryId: categoryIdToSend });
 
     if (!isProduct) {
       setForm(initialState);
@@ -108,7 +159,12 @@ const ProductForm: React.FC<Props> = ({
 
   const selectChangeHandler = (e: SelectChangeEvent) => {
     const { name, value } = e.target;
-    setForm((prevState) => ({ ...prevState, [name]: value }));
+
+    setForm((prevState) => ({
+      ...prevState,
+      [name]: value,
+      ...(name === "categoryId" ? { subcategoryId: "" } : {}),
+    }));
   };
 
   const fileEventChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -177,9 +233,14 @@ const ProductForm: React.FC<Props> = ({
             />
           </Grid>
           <Grid size={{ xs: 12 }}>
-            <TiptapEditor
-              content={form.productDescription}
-              onChange={handleDescriptionChange}
+            <QuillEditor
+              value={form.productDescription}
+              onChange={(html) =>
+                setForm((prev) => ({
+                  ...prev,
+                  productDescription: html,
+                }))
+              }
             />
           </Grid>
           {brands.length === 0 ? (
@@ -201,7 +262,7 @@ const ProductForm: React.FC<Props> = ({
                 <Select
                   labelId="brandId"
                   id="brandId"
-                  value={form.brandId}
+                  value={form.brandId ?? ""}
                   name="brandId"
                   label="Бренд"
                   onChange={selectChangeHandler}
@@ -233,13 +294,19 @@ const ProductForm: React.FC<Props> = ({
                   },
                 }}
               >
-                <InputLabel id="category">Категория</InputLabel>
+                <InputLabel id="categoryId">Категория</InputLabel>
                 <Select
                   labelId="categoryId"
                   id="categoryId"
-                  value={form.categoryId}
+                  value={
+                    categories.some((cat) => cat.id === Number(form.categoryId))
+                      ? form.categoryId
+                      : form.category
+                        ? String(form.category?.parentId)
+                        : ""
+                  }
                   name="categoryId"
-                  label="Категория"
+                  label="categoryId"
                   onChange={selectChangeHandler}
                 >
                   <MenuItem value="" disabled>
@@ -254,7 +321,42 @@ const ProductForm: React.FC<Props> = ({
               </FormControl>
             </Grid>
           )}
-
+          {selectedCategory && selectedCategory?.subcategories?.length > 0 && (
+            <Grid size={{ xs: 12 }}>
+              <FormControl
+                fullWidth
+                sx={{
+                  "& label.Mui-focused": { color: orange[500] },
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": { borderColor: "#ccc" },
+                    "&:hover fieldset": { borderColor: orange[500] },
+                    "&.Mui-focused fieldset": { borderColor: orange[500] },
+                  },
+                }}
+              >
+                <InputLabel id="subcategoryId">Подкатегория</InputLabel>
+                <Select
+                  labelId="subcategoryId"
+                  id="subcategoryId"
+                  value={form.subcategoryId}
+                  name="subcategoryId"
+                  label="Подкатегория"
+                  onChange={selectChangeHandler}
+                >
+                  <MenuItem value="" disabled>
+                    Выберите подкатегорию
+                  </MenuItem>
+                  {categories
+                    .find((cat) => cat.id === Number(form.categoryId))
+                    ?.subcategories.map((subcategory) => (
+                      <MenuItem key={subcategory.id} value={subcategory.id}>
+                        {subcategory.title}
+                      </MenuItem>
+                    ))}
+                </Select>
+              </FormControl>
+            </Grid>
+          )}
           <Grid size={{ xs: 12 }}>
             <FileInput
               name="productPhoto"
@@ -299,6 +401,48 @@ const ProductForm: React.FC<Props> = ({
               }
               label="Участвует в акции"
             />
+            {form.sales && (
+              <Grid container spacing={2}>
+                <Grid size={{ xs: 5 }} >
+                  <TextField
+                    label="Дата начала акции"
+                    type="date"
+                    name="startDateSales"
+                    InputLabelProps={{ shrink: true }}
+                    value={form.startDateSales ?? ""}
+                    onChange={inputChangeHandler}
+                    sx={{
+                      width: "100%",
+                      "& label.Mui-focused": { color: orange[500] },
+                      "& .MuiOutlinedInput-root": {
+                        "& fieldset": { borderColor: "#ccc" },
+                        "&:hover fieldset": { borderColor: orange[500] },
+                        "&.Mui-focused fieldset": { borderColor: orange[500] },
+                      }
+                    }}
+                  />
+                </Grid>
+                <Grid size={{ xs: 5 }}>
+                  <TextField
+                    label="Дата окончания акции"
+                    type="date"
+                    name="endDateSales"
+                    InputLabelProps={{ shrink: true }}
+                    value={form.endDateSales ?? ""}
+                    onChange={inputChangeHandler}
+                    sx={{
+                      width: "100%",
+                      "& label.Mui-focused": { color: orange[500] },
+                      "& .MuiOutlinedInput-root": {
+                        "& fieldset": { borderColor: "#ccc" },
+                        "&:hover fieldset": { borderColor: orange[500] },
+                        "&.Mui-focused fieldset": { borderColor: orange[500] },
+                      }
+                    }}
+                  />
+                </Grid>
+              </Grid>
+            )}
           </Grid>
           <Grid>
             <Button
@@ -306,6 +450,7 @@ const ProductForm: React.FC<Props> = ({
               sx={{ color: "#ff9800", width: "100%" }}
               variant="outlined"
               color="inherit"
+              disabled={loading}
             >
               {!isProduct ? "Добавить" : "Сохранить"}
             </Button>

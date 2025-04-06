@@ -110,6 +110,7 @@ export interface ICategories {
   title: string;
   parentId?: number | null;
   subcategories?: Subcategory[];
+  parent: { id:number, title: string };
 }
 
 export interface CategoryMutation {
@@ -133,7 +134,12 @@ export interface ProductRequest {
   sales: boolean;
   brandId: string;
   categoryId: string;
+  subcategoryId: string;
+  parentId: string;
   id?: number;
+  category?: ICategories;
+  startDateSales?: Date | null | string;
+  endDateSales?: Date | null | string;
 }
 
 export interface ICart {
@@ -183,6 +189,8 @@ export interface ProductResponse {
   brandId: string;
   brand: IBrand;
   category: ICategories;
+  startDateSales?: string;
+  endDateSales?: string;
 }
 
 // export interface AdminFormData {
