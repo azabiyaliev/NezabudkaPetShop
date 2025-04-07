@@ -35,7 +35,7 @@ const Products: React.FC<Props> = ({ products }) => {
         deleteProduct({ productId: id, token: user.token }),
       ).unwrap();
       toast.success("Товар успешно удален!");
-      await dispatch(getProducts()).unwrap();
+      await dispatch(getProducts('')).unwrap();
     }
   };
 

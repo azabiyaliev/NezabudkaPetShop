@@ -14,9 +14,9 @@ import { ReviewsService } from './reviews.service';
 import { RolesGuard } from '../token.auth/token.role.guard';
 import { TokenAuthGuard } from '../token.auth/token-auth.guard';
 import { Roles } from '../roles/roles.decorator';
-import { CreateReviewDto } from './review.dto';
+import { CreateReviewDto } from '../dto/review.dto';
 import { AuthRequest } from '../types';
-import { CreateCommentDto } from './comment.dto';
+import { CreateCommentDto } from '../dto/comment.dto';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Controller('reviews')
