@@ -130,7 +130,11 @@ const App = () => {
           />
           <Route
             path="/private/all_categories"
-            element={<AllCategoriesPage />}
+            element={
+              <ProtectedRoute isAllowed={user && can(["admin", "superAdmin"])}>
+                <AllCategoriesPage />
+              </ProtectedRoute>
+            }
           />
           <Route path="/category/:id" element={<OneCategory />} />
           <Route path="*" element={<h1>Not found</h1>} />
