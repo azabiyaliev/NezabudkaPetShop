@@ -3,15 +3,16 @@ import { RootState } from "../../app/store.ts";
 import { ErrorMutation, GlobalError, User, ValidationError } from '../../types';
 import {
   changePasswordAsync,
-  facebookLogin,
+  facebookLogin, getAllUser,
   googleLogin,
   sendPasswordCode,
   verifyResetCode,
-} from "./usersThunk.ts";
+} from './usersThunk.ts';
 import { login, register, updateUser } from "./usersThunk.ts";
 
 interface UserState {
   user: User | null;
+  users: User[];
   registerLoading: boolean;
   registerError: ValidationError | null;
   loginLoading: boolean;
@@ -27,6 +28,7 @@ interface UserState {
 
 const initialState: UserState = {
   user: null,
+  users:[],
   registerLoading: false,
   registerError: null,
   loginLoading: false,
@@ -41,6 +43,7 @@ const initialState: UserState = {
 };
 
 export const selectUser = (state: RootState) => state.users.user;
+export const selectUsers = (state: RootState) => state.users.users;
 export const selectUserLoading = (state: RootState) =>
   state.users.registerLoading;
 export const selectUserError = (state: RootState) => state.users.registerError;
@@ -153,7 +156,17 @@ export const userSlice = createSlice({
       .addCase(changePasswordAsync.rejected, (state) => {
         state.passwordCodeLoading = false;
         state.passwordCodeError = null;
-      });
+      })
+      .addCase(getAllUser.pending, (state) => {
+        state.loginLoading = true;
+      })
+      .addCase(getAllUser.fulfilled, (state, { payload: users }) => {
+        state.loginLoading = false;
+        state.users = users;
+      })
+      .addCase(getAllUser.rejected, (state) => {
+        state.loginLoading = false;
+      })
   },
 });
 

@@ -1,10 +1,10 @@
 import { useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
+import { useAppDispatch, useAppSelector } from "../../../../app/hooks.ts";
 import { useParams } from "react-router-dom";
-import { selectUser } from "../../../store/users/usersSlice.ts";
-import { fetchUserById } from "../../../store/users/usersThunk.ts";
-import UserFormEdition from "../../../components/Forms/UserFormEdition/UserFormEdition.tsx";
-import ClientBar from "../../../components/Domain/Client/ClientBar.tsx";
+import { selectUser } from "../../../../store/users/usersSlice.ts";
+import { fetchUserById } from "../../../../store/users/usersThunk.ts";
+import UserFormEdition from "../../../../components/Forms/UserFormEdition/UserFormEdition.tsx";
+import ClientBar from "../../../../components/Domain/Client/ClientBar.tsx";
 
 const ClientEditProfile = () => {
   const dispatch = useAppDispatch();

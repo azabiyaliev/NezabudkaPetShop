@@ -16,8 +16,8 @@ import OneCategory from "./features/Category/OneCategory/OneCategory.tsx";
 import EditionSitePage from "./features/Admin/EditionSite/EditionSitePage.tsx";
 import NewProduct from "./features/Admin/Product/containers/NewProduct.tsx";
 import AdminEditProfile from "./features/Admin/AdminProfile/AdminEditProfile.tsx";
-import ClientProfile from "./features/Client/ClientProfile/ClientProfile.tsx";
-import ClientEditProfile from "./features/Client/ClientProfile/ClientEditProfile.tsx";
+import ClientProfile from "./features/Client/container/ClientProfile/ClientProfile.tsx";
+import ClientEditProfile from "./features/Client/container/ClientProfile/ClientEditProfile.tsx";
 import ProductPage from "./features/Product/containers/ProductPage.tsx";
 import ProductsPage from "./features/Admin/Product/containers/ProductsPage.tsx";
 import EditProduct from "./features/Admin/Product/containers/EditProduct.tsx";
@@ -30,6 +30,7 @@ import AdminTable from './features/SuperAdmin/container/AdminTable.tsx';
 import NewSubcategory from './features/Category/NewSubcategory/NewSubcategory.tsx';
 import BrandPage from './features/Brand/BrandPage.tsx';
 import RestorationPasswordFrom from './components/Forms/UserFrom/RestorationPasswordFrom.tsx';
+import ClientTable from './features/SuperAdmin/container/ClientTable/ClientTable.tsx';
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -165,6 +166,11 @@ const App = () => {
           <Route path='/admin-table' element={
             <ProtectedRoute isAllowed={user && can(["superAdmin"])}>
               <AdminTable/>
+            </ProtectedRoute>
+          }/>
+          <Route path='/private/clients' element={
+            <ProtectedRoute isAllowed={user && can(["superAdmin", "admin"])}>
+              <ClientTable/>
             </ProtectedRoute>
           }/>
         </Routes>

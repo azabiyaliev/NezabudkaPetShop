@@ -241,3 +241,11 @@ export const changePasswordAsync = createAsyncThunk<
   }
 );
 
+export const getAllUser = createAsyncThunk<User[], void>(
+  "users/getAllUser",
+  async () => {
+    const response = await axiosApi<User[]>("/users");
+    return response.data || [];
+  },
+);
+

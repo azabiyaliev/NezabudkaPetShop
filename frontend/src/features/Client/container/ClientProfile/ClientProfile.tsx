@@ -1,4 +1,4 @@
-import ClientBar from "../../../components/Domain/Client/ClientBar.tsx";
+import ClientBar from "../../../../components/Domain/Client/ClientBar.tsx";
 
 const ClientProfile = () => {
   return (
