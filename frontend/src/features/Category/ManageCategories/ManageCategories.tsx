@@ -20,8 +20,9 @@ import NewCategory from "../NewCategory/NewCategory.tsx";
 import { styled } from "@mui/styles";
 import { toast } from 'react-toastify';
 
-const SUCCESSFUL_CATEGORY_DELETE = "Подкатегория успешно удалена!";
+const SUCCESSFUL_CATEGORY_DELETE = "Удаление прошло успешно!";
 const ERROR_CATEGORY_DELETE = "Ошибка при удалении подкатегории!";
+const WARNING_CATEGORY_DELETE = "Категория не пуста или используется в данный момент, не стоит удалять!";
 
 const ManageCategories = () => {
   const categories = useAppSelector(selectCategories);
@@ -82,6 +83,22 @@ const ManageCategories = () => {
 
   const onDelete = async (id: string) => {
     try {
+      const categoryToDelete = categories.find(
+        (category) => String(category.id) === id,
+      );
+
+      if (
+        categoryToDelete &&
+        categoryToDelete.subcategories &&
+        categoryToDelete.subcategories.length > 0
+      ) {
+        toast.warning(
+          WARNING_CATEGORY_DELETE,
+          { position: "top-center" },
+        );
+        return;
+      }
+
       await dispatch(deleteCategory(id));
       await dispatch(fetchCategoriesThunk());
 
@@ -117,9 +134,23 @@ const ManageCategories = () => {
         <Box sx={{ mt: 4 }}>
           {currentCategory.map((category) => (
             <Box key={category.id} sx={{ mb: 3 }}>
-              <Typography sx={{ fontWeight: "bold", mb: 1 }}>
-                {category.title}
-              </Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'row' }}>
+                <Typography sx={{ fontWeight: "bold"}}>
+                  {category.title}
+                </Typography>
+                <IconButton edge="end" aria-label="edit">
+                  <EditIcon fontSize="small" />
+                </IconButton>
+                <IconButton
+                  onClick={() => onDelete(String(category.id))}
+                  edge="end"
+                  aria-label="delete"
+                  sx={{ ml: 1 }}
+                  color="error"
+                >
+                  <DeleteIcon fontSize="small" />
+                </IconButton>
+              </Box>
 
               {category.subcategories && category.subcategories.length > 0 ? (
                 <List sx={{ pl: 2, borderRadius: 1 }}>
