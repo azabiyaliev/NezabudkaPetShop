@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from "../../app/store.ts";
-import { ErrorMutation, GlobalError, User, ValidationError } from '../../types';
+import { ErrorMutation, GlobalError, User, UserWithOrder, ValidationError } from '../../types';
 import {
   changePasswordAsync,
-  facebookLogin, getAllUser,
+  facebookLogin, getAllUserWithOrder,
   googleLogin,
   sendPasswordCode,
   verifyResetCode,
@@ -13,6 +13,7 @@ import { login, register, updateUser } from "./usersThunk.ts";
 interface UserState {
   user: User | null;
   users: User[];
+  usersWithOrderCount:UserWithOrder[];
   registerLoading: boolean;
   registerError: ValidationError | null;
   loginLoading: boolean;
@@ -29,6 +30,7 @@ interface UserState {
 const initialState: UserState = {
   user: null,
   users:[],
+  usersWithOrderCount: [],
   registerLoading: false,
   registerError: null,
   loginLoading: false,
@@ -44,6 +46,7 @@ const initialState: UserState = {
 
 export const selectUser = (state: RootState) => state.users.user;
 export const selectUsers = (state: RootState) => state.users.users;
+export const selectUserWithCount =(state: RootState) => state.users.usersWithOrderCount;
 export const selectUserLoading = (state: RootState) =>
   state.users.registerLoading;
 export const selectUserError = (state: RootState) => state.users.registerError;
@@ -157,14 +160,14 @@ export const userSlice = createSlice({
         state.passwordCodeLoading = false;
         state.passwordCodeError = null;
       })
-      .addCase(getAllUser.pending, (state) => {
+      .addCase(getAllUserWithOrder.pending, (state) => {
         state.loginLoading = true;
       })
-      .addCase(getAllUser.fulfilled, (state, { payload: users }) => {
+      .addCase(getAllUserWithOrder.fulfilled, (state, { payload: users }) => {
         state.loginLoading = false;
-        state.users = users;
+        state.usersWithOrderCount = users;
       })
-      .addCase(getAllUser.rejected, (state) => {
+      .addCase(getAllUserWithOrder.rejected, (state) => {
         state.loginLoading = false;
       })
   },

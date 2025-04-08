@@ -1,16 +1,17 @@
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { User } from '../../../../types';
+import {  UserWithOrder } from '../../../../types';
 import { ruRU } from '@mui/x-data-grid/locales';
 import { Typography, TextField, InputAdornment } from "@mui/material";
 import React, { useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 
 interface Props {
-  clients: User[];
+  clients: UserWithOrder[];
 }
 
 const ClientList: React.FC<Props> = ({ clients }) => {
   const [searchQuery, setSearchQuery] = useState('');
+
 
   const filteredClients = clients.filter((client) =>
     client.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -19,13 +20,13 @@ const ClientList: React.FC<Props> = ({ clients }) => {
     client.phone.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const columns: GridColDef<User>[] = [
-    { field: "id", headerName: "ID", width: 60 },
-    { field: "firstName", headerName: "Имя", width: 130 },
-    { field: "secondName", headerName: "Фамилия", width: 130 },
-    { field: "email", headerName: "Email", width: 200 },
-    { field: "phone", headerName: "Телефон", width: 140 },
-    { field: "order", headerName: "Заказы", width: 140 },
+  const columns: GridColDef<UserWithOrder>[] = [
+    { field: "id", headerName: "ID", width: 60, headerAlign: 'center', align: 'center' },
+    { field: "firstName", headerName: "Имя", width: 160, headerAlign: 'center', align: 'center' },
+    { field: "secondName", headerName: "Фамилия", width: 160, headerAlign: 'center', align: 'center' },
+    { field: "email", headerName: "Email", width: 220, headerAlign: 'center', align: 'center' },
+    { field: "phone", headerName: "Телефон", width: 160, headerAlign: 'center', align: 'center' },
+    { field: "orderCount", headerName: "Заказы", width: 160,  align: 'center', headerAlign: 'center'}
   ];
 
   return (
@@ -67,7 +68,7 @@ const ClientList: React.FC<Props> = ({ clients }) => {
       />
       <DataGrid
         getRowId={(row) => row.id!}
-        rows={filteredClients.filter((client) => client.role === 'client')}
+        rows={filteredClients}
         columns={columns}
         initialState={{
           sorting: {

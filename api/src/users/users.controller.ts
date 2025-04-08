@@ -31,6 +31,11 @@ export class UsersController {
     return this.userService.findAll();
   }
 
+  @Get('orders/clients')
+  async getClientsWithOrderCount() {
+    return this.userService.getClientsWithOrderCount();
+  }
+
   @UseGuards(TokenAuthGuard, RolesGuard)
   @Roles('superAdmin')
   @Post()

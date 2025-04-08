@@ -9,7 +9,7 @@ import {
   LogInMutation,
   RegisterMutation,
   RegisterResponse,
-  User,
+  User, UserWithOrder,
   ValidationError,
   VerifyResetCodePayload,
   VerifyResetCodeResponse,
@@ -245,6 +245,14 @@ export const getAllUser = createAsyncThunk<User[], void>(
   "users/getAllUser",
   async () => {
     const response = await axiosApi<User[]>("/users");
+    return response.data || [];
+  },
+);
+
+export const getAllUserWithOrder = createAsyncThunk<UserWithOrder[], void>(
+  "users/getAllUser",
+  async () => {
+    const response = await axiosApi<UserWithOrder[]>("/users/orders/clients");
     return response.data || [];
   },
 );

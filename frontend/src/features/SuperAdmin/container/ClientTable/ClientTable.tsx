@@ -4,16 +4,16 @@ import Grid from '@mui/material/Grid2';
 import AdminBar from '../../../Admin/AdminProfile/AdminBar.tsx';
 import products from '../../../Admin/Product/components/Products.tsx';
 import Typography from '@mui/joy/Typography';
-import { selectUsers } from '../../../../store/users/usersSlice.ts';
 import ClientList from '../../components/ClientList/ClientList.tsx';
-import { getAllUser } from '../../../../store/users/usersThunk.ts';
+import {  getAllUserWithOrder } from '../../../../store/users/usersThunk.ts';
+import {  selectUserWithCount } from '../../../../store/users/usersSlice.ts';
 
 const ClientTable = () => {
   const dispatch = useAppDispatch();
-  const users = useAppSelector(selectUsers);
+  const users = useAppSelector(selectUserWithCount);
 
   useEffect(() => {
-    dispatch(getAllUser());
+    dispatch(getAllUserWithOrder());
   }, [dispatch]);
   return (
     <div>

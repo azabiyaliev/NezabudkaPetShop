@@ -21,6 +21,19 @@ export interface User {
   phone: string;
 }
 
+export interface UserWithOrder {
+  id: number;
+  firstName: string;
+  secondName: string;
+  email: string;
+  role: string;
+  token: string;
+  phone: string;
+  orderCount: number;
+  Order: IOrder[];
+  orderItem: OrderItem[];
+}
+
 export interface AdminRefactor {
   firstName: string;
   secondName: string;
