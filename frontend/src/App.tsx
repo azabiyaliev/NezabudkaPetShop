@@ -31,6 +31,7 @@ import NewSubcategory from './features/Category/NewSubcategory/NewSubcategory.ts
 import BrandPage from './features/Brand/BrandPage.tsx';
 import RestorationPasswordFrom from './components/Forms/UserFrom/RestorationPasswordFrom.tsx';
 import ClientTable from './features/SuperAdmin/container/ClientTable/ClientTable.tsx';
+import ManageCategories from './features/Category/ManageCategories/ManageCategories.tsx';
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -133,6 +134,14 @@ const App = () => {
             element={
               <ProtectedRoute isAllowed={user && can(["admin", "superAdmin"])}>
                 <AllCategoriesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/private/manage_categories"
+            element={
+              <ProtectedRoute isAllowed={user && can(["admin", "superAdmin"])}>
+                <ManageCategories />
               </ProtectedRoute>
             }
           />

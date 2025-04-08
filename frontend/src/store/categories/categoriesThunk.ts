@@ -78,6 +78,26 @@ export const updateCategoryThunk = createAsyncThunk<
   },
 );
 
+export const updateCategoriesThunk = createAsyncThunk<
+  void,
+  ICategories[]
+>('category/updateCategories', async (categories, { rejectWithValue }) => {
+  try {
+    for (const category of categories) {
+      if (category.subcategories) {
+        for (const subcategory of category.subcategories) {
+          await axiosApi.put(`/category/${subcategory.id}`, {
+            title: subcategory.title,
+            parentId: category.id,
+          });
+        }
+      }
+    }
+  } catch (error) {
+    return rejectWithValue(error);
+  }
+});
+
 export const fetchOneCategoryThunk = createAsyncThunk<
   ICategories | null,
   string,

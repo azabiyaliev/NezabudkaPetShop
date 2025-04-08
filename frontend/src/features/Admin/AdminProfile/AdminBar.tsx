@@ -87,6 +87,16 @@ const AdminBar = () => {
               <ListItemButton
                 sx={{ pl: 3 }}
                 component={NavLink}
+                to="/private/manage_categories"
+              >
+                <ListItemIcon>
+                  <ReorderOutlinedIcon />
+                </ListItemIcon>
+                <ListItemText primary="Управление категориями" />
+              </ListItemButton>
+              <ListItemButton
+                sx={{ pl: 3 }}
+                component={NavLink}
                 to="/private/add_category"
                 onClick={() =>
                   addError !== null ? dispatch(clearError()) : null
