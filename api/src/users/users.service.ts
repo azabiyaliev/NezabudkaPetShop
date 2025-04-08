@@ -307,6 +307,27 @@ export class UsersService {
     }
   }
 
+  async getClientsWithOrderCount() {
+    const users = await this.prisma.user.findMany({
+      where: { role: 'client' },
+      select: {
+        id: true,
+        email: true,
+        firstName: true,
+        secondName: true,
+        phone: true,
+        Order: {
+          select: { id: true },
+        },
+      },
+    });
+
+    return users.map(user => ({
+      ...user,
+      orderCount: user.Order.length,
+    }));
+  }
+
   async delete(id: string) {
     const parsId = parseInt(id);
     const user = await this.validateUser(parsId);
