@@ -24,6 +24,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AddIcon from '@mui/icons-material/Add';
 import Tooltip from '@mui/material/Tooltip';
 import EditCategory from '../../../components/Forms/CategoryForm/EditCategory.tsx';
+import EditSubcategory from '../../../components/Forms/CategoryForm/EditSubcategory.tsx';
 
 const SUCCESSFUL_CATEGORY_DELETE = "Удаление прошло успешно!";
 const ERROR_CATEGORY_DELETE = "Ошибка при удалении подкатегории!";
@@ -36,9 +37,17 @@ const ManageCategories = () => {
   const [currentCategory, setCurrentCategory] = useState(categories);
 
   const [open, setOpen] = useState(false);
+  const [openSubModal, setOpenSubModal] = useState(false);
+
   const [selectedCategory, setSelectedCategory] = useState<{
     id: number;
     title: string;
+  } | null>(null);
+
+  const [selectedSubCategory, setSelectedSubCategory] = useState<{
+    id: number;
+    title: string;
+    parentId: number;
   } | null>(null);
 
   const dragSub = useRef<{
@@ -68,6 +77,17 @@ const ManageCategories = () => {
     setOpen(false);
     setSelectedCategory(null);
   };
+
+  const handleSubEditOpen = (subcategory: { id: number; title: string, parentId: number }) => {
+    setSelectedSubCategory(subcategory);
+    setOpenSubModal(true);
+  };
+
+  const handleSubEditClose = () => {
+    setOpenSubModal(false);
+    setSelectedSubCategory(null);
+  };
+
 
   const handlerSort = () => {
     if (dragSub.current && draggedOverSub.current !== null) {
@@ -174,7 +194,7 @@ const ManageCategories = () => {
                   {category.title}
                 </Typography>
 
-                <Tooltip title="Редактировать подкатегорию" placement="top">
+                <Tooltip title="Редактировать категорию" placement="top">
                   <IconButton
                     edge="end"
                     aria-label="edit"
@@ -231,18 +251,33 @@ const ManageCategories = () => {
                         sx={{ my: 1, bgcolor: "#f1f1f1", borderRadius: 1 }}
                         secondaryAction={
                           <>
-                            <IconButton edge="end" aria-label="edit">
-                              <EditIcon fontSize="small" />
-                            </IconButton>
-                            <IconButton
-                              onClick={() => onDelete(String(sub.id))}
-                              edge="end"
-                              aria-label="delete"
-                              sx={{ ml: 1 }}
-                              color="error"
-                            >
-                              <DeleteIcon fontSize="small" />
-                            </IconButton>
+                            <Tooltip title="Редактировать подкатегорию" placement="top">
+                              <IconButton
+                                edge="end"
+                                aria-label="edit"
+                                onClick={() =>
+                                  handleSubEditOpen({
+                                    id: sub.id,
+                                    title: sub.title,
+                                    parentId: category.id
+                                  })
+                                }
+                              >
+                                <EditIcon fontSize="small" />
+                              </IconButton>
+                            </Tooltip>
+
+                            <Tooltip title="Удалить подкатегорию" placement="top">
+                              <IconButton
+                                onClick={() => onDelete(String(sub.id))}
+                                edge="end"
+                                aria-label="delete"
+                                sx={{ ml: 1 }}
+                                color="error"
+                              >
+                                <DeleteIcon fontSize="small" />
+                              </IconButton>
+                            </Tooltip>
                           </>
                         }
                       >
@@ -276,6 +311,23 @@ const ManageCategories = () => {
             {selectedCategory && <EditCategory category={selectedCategory} />}
           </Box>
         </Modal>
+
+        <Modal
+          open={openSubModal}
+          onClose={handleSubEditClose}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Box sx={{ bgcolor: "white", p: 4, borderRadius: 2 }}>
+            {selectedSubCategory && (
+              <EditSubcategory subcategory={selectedSubCategory} />
+            )}
+          </Box>
+        </Modal>
+
       </Box>
     </>
   );

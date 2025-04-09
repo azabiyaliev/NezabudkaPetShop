@@ -5,59 +5,59 @@ import { selectUser } from '../../../store/users/usersSlice.ts';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
 import {
   fetchCategoriesThunk,
-  updateCategoryThunk
+  updateSubcategoryThunk
 } from '../../../store/categories/categoriesThunk.ts';
 import { toast } from 'react-toastify';
 
-
-interface EditCategoryProps {
-  category: {
+interface EditSubcategoryProps {
+  subcategory: {
     id: number;
     title: string;
+    parentId: number;
   };
 }
 
-const WARNING_SELECT_CATEGORY = "Не оставляйте поля пустыми!!";
-const SUCCESSFUL_CATEGORY_UPDATE = "Категория успешно обновлена!";
+const WARNING_EMPTY_FIELD = "Не оставляйте поля пустыми!";
+const SUCCESSFUL_SUBCATEGORY_UPDATE = "Подкатегория успешно обновлена!";
 
-const EditCategory: React.FC<EditCategoryProps> = ({ category }) => {
-  const [editedCategory, setEditedCategory] = useState<CategoryMutation>({
-    title: category.title,
+const EditSubcategory: React.FC<EditSubcategoryProps> = ({ subcategory }) => {
+  const [editedSubcategory, setEditedSubcategory] = useState<CategoryMutation>({
+    title: subcategory.title,
   });
+
   const user = useAppSelector(selectUser);
   const dispatch = useAppDispatch();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (editedCategory.title.trim() === "") {
-      toast.warning(WARNING_SELECT_CATEGORY, { position: 'top-center' });
+    if (editedSubcategory.title.trim() === "") {
+      toast.warning(WARNING_EMPTY_FIELD, { position: 'top-center' });
       return;
     }
 
     if (!user) return;
 
-    await dispatch(updateCategoryThunk({
-      id: String(category.id),
-      category: {
-        title: editedCategory.title,
+    await dispatch(updateSubcategoryThunk({
+      id: Number(subcategory.id),
+      parentId: subcategory.parentId,
+      subcategory: {
+        title: editedSubcategory.title,
       },
       token: user.token,
     }));
 
-    toast.success(SUCCESSFUL_CATEGORY_UPDATE, { position: 'top-center' });
+    toast.success(SUCCESSFUL_SUBCATEGORY_UPDATE, { position: 'top-center' });
 
     await dispatch(fetchCategoriesThunk());
   };
 
   const inputChangeHandler = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-
-    setEditedCategory((prevState) => ({
+    setEditedSubcategory((prevState) => ({
       ...prevState,
       [name]: value,
     }));
   }, []);
-
 
   return (
     <Box
@@ -72,16 +72,16 @@ const EditCategory: React.FC<EditCategoryProps> = ({ category }) => {
       }}
     >
       <Typography variant="h6" textAlign="center">
-        Редактировать категорию
+        Редактировать подкатегорию
       </Typography>
 
       <TextField
-        label="Название категории"
+        label="Название подкатегории"
         variant="outlined"
         fullWidth
         required
         name="title"
-        value={editedCategory.title}
+        value={editedSubcategory.title}
         onChange={inputChangeHandler}
       />
 
@@ -92,4 +92,4 @@ const EditCategory: React.FC<EditCategoryProps> = ({ category }) => {
   );
 };
 
-export default EditCategory;
+export default EditSubcategory;

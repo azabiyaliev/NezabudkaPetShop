@@ -98,6 +98,34 @@ export const updateCategoriesThunk = createAsyncThunk<
   }
 });
 
+export const updateSubcategoryThunk = createAsyncThunk<
+  void,
+  {
+    id: number;
+    parentId: number;
+    subcategory: { title: string };
+    token: string;
+  }
+>(
+  'category/updateSubcategory',
+  async ({ id, parentId, subcategory, token }, { rejectWithValue }) => {
+    try {
+      await axiosApi.put(`/category/${id}`, {
+        ...subcategory,
+        parentId,
+      }, {
+        headers: { Authorization: token },
+      });
+    } catch (error) {
+      if (isAxiosError(error) && error.response) {
+        return rejectWithValue(error.response.data);
+      }
+      throw error;
+    }
+  }
+);
+
+
 export const fetchOneCategoryThunk = createAsyncThunk<
   ICategories | null,
   string,
