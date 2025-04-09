@@ -27,8 +27,9 @@ import { FavoritesService } from './favorites/favorites.service';
 import { FavoritesController } from './favorites/favorites.controller';
 import { TelegramModule } from './telegram/telegram.module';
 import { TelegramService } from './telegram/telegram.service';
-import {OrdersService} from "./orders/orders.service";
-import {TelegramController} from "./telegram/telegram.controller";
+import { OrdersService } from './orders/orders.service';
+import { TelegramController } from './telegram/telegram.controller';
+import { CartController } from './cart/cart.controller';
 
 @Module({
   imports: [
@@ -54,6 +55,7 @@ import {TelegramController} from "./telegram/telegram.controller";
     PhotoCarouselController,
     FavoritesController,
     TelegramController,
+    CartController,
   ],
   providers: [
     AppService,
