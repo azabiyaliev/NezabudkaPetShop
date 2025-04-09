@@ -1,12 +1,12 @@
-import { useEffect, useRef, useState } from "react";
+import  { useEffect, useRef, useState } from "react";
 import {
   Box,
   IconButton,
   List,
   ListItem,
-  ListItemText,
+  ListItemText, Modal,
   Typography,
-} from "@mui/material";
+} from '@mui/material';
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
@@ -19,6 +19,11 @@ import {
 import NewCategory from "../NewCategory/NewCategory.tsx";
 import { styled } from "@mui/styles";
 import { toast } from 'react-toastify';
+import { NavLink } from 'react-router-dom';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import AddIcon from '@mui/icons-material/Add';
+import Tooltip from '@mui/material/Tooltip';
+import EditCategory from '../../../components/Forms/CategoryForm/EditCategory.tsx';
 
 const SUCCESSFUL_CATEGORY_DELETE = "Удаление прошло успешно!";
 const ERROR_CATEGORY_DELETE = "Ошибка при удалении подкатегории!";
@@ -29,6 +34,12 @@ const ManageCategories = () => {
   const dispatch = useAppDispatch();
 
   const [currentCategory, setCurrentCategory] = useState(categories);
+
+  const [open, setOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<{
+    id: number;
+    title: string;
+  } | null>(null);
 
   const dragSub = useRef<{
     categoryId: number;
@@ -45,6 +56,18 @@ const ManageCategories = () => {
   }, [categories]);
 
   console.log(categories);
+
+  const handleOpen = (category: { id: number; title: string; }) => {
+    setSelectedCategory({
+      ...category,
+    });
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setSelectedCategory(null);
+  };
 
   const handlerSort = () => {
     if (dragSub.current && draggedOverSub.current !== null) {
@@ -112,7 +135,19 @@ const ManageCategories = () => {
   return (
     <>
       <Box sx={{ display: "flex", flexDirection: "column" }}>
-        <Typography variant="h4" textAlign="left" sx={{ mt: 4 }}>
+        <NavLink
+          to="/private_account"
+          style={{
+            color: 'green',
+            textDecoration: 'none',
+            fontWeight: 'bold',
+            marginTop: '20px',
+            padding: '2px',
+          }}>
+          <ArrowBackIcon/>
+          Вернуться назад...
+        </NavLink>
+        <Typography variant="h4" textAlign="left" sx={{ mt: 2 }}>
           Управление категориями
         </Typography>
 
@@ -138,18 +173,42 @@ const ManageCategories = () => {
                 <Typography sx={{ fontWeight: "bold"}}>
                   {category.title}
                 </Typography>
-                <IconButton edge="end" aria-label="edit">
-                  <EditIcon fontSize="small" />
-                </IconButton>
-                <IconButton
-                  onClick={() => onDelete(String(category.id))}
-                  edge="end"
-                  aria-label="delete"
-                  sx={{ ml: 1 }}
-                  color="error"
-                >
-                  <DeleteIcon fontSize="small" />
-                </IconButton>
+
+                <Tooltip title="Редактировать подкатегорию" placement="top">
+                  <IconButton
+                    edge="end"
+                    aria-label="edit"
+                    onClick={() =>
+                      handleOpen({ ...category, id: Number(category.id) })
+                    }
+                  >
+                    <EditIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+
+                <Tooltip title="Удалить подкатегорию" placement="top">
+                  <IconButton
+                    onClick={() => onDelete(String(category.id))}
+                    edge="end"
+                    aria-label="delete"
+                    sx={{ ml: 1 }}
+                    color="error"
+                  >
+                    <DeleteIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+
+                <Tooltip title="Добавить подкатегорию" placement="top">
+                  <IconButton
+                    onClick={() => onDelete(String(category.id))}
+                    edge="end"
+                    aria-label="delete"
+                    sx={{ ml: 1 }}
+                    color="success"
+                  >
+                    <AddIcon sx={{ mr: 1 }} />
+                  </IconButton>
+                </Tooltip>
               </Box>
 
               {category.subcategories && category.subcategories.length > 0 ? (
@@ -204,6 +263,19 @@ const ManageCategories = () => {
             </Box>
           ))}
         </Box>
+        <Modal
+          open={open}
+          onClose={handleClose}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Box sx={{ bgcolor: "white", p: 4, borderRadius: 2 }}>
+            {selectedCategory && <EditCategory category={selectedCategory} />}
+          </Box>
+        </Modal>
       </Box>
     </>
   );

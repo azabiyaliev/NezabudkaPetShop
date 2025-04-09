@@ -1,15 +1,13 @@
-import { TextField, Button, Box, Typography, IconButton } from '@mui/material';
+import { TextField, Button, Box, Typography } from '@mui/material';
 import React, { useCallback, useState } from "react";
 import { CategoryMutation } from "../../../types";
 import { selectUser } from '../../../store/users/usersSlice.ts';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
 import {
-  deleteCategory,
   fetchCategoriesThunk,
   updateCategoryThunk
 } from '../../../store/categories/categoriesThunk.ts';
 import { toast } from 'react-toastify';
-import DeleteIcon from '@mui/icons-material/Delete';
 
 interface Subcategory {
   id: number;
@@ -28,15 +26,11 @@ interface EditCategoryProps {
 
 const WARNING_SELECT_CATEGORY = "Не оставляйте поля пустыми!!";
 const SUCCESSFUL_CATEGORY_UPDATE = "Категория успешно обновлена!";
-const SUCCESSFUL_CATEGORY_DELETE = "Категория успешно удалена!";
-const ERROR_CATEGORY_DELETE = "Ошибка при удалении подкатегории!";
 
 const EditCategory: React.FC<EditCategoryProps> = ({ category }) => {
   const [editedCategory, setEditedCategory] = useState<CategoryMutation>({
     title: category.title,
-    subcategories: category.subcategories || [],
   });
-  const [subcategories, setSubcategories] = useState<Subcategory[]>(category.subcategories || []);
   const user = useAppSelector(selectUser);
   const dispatch = useAppDispatch();
 
@@ -47,27 +41,12 @@ const EditCategory: React.FC<EditCategoryProps> = ({ category }) => {
       return;
     }
 
-    for (const subcategory of subcategories) {
-      if (subcategory.title.trim() === "") {
-        toast.warning("Не оставляйте поля подкатегорий пустыми!", { position: 'top-center' });
-        return;
-      }
-    }
-
     if (!user) return;
-
-    const updatedSubcategories = subcategories.map(sub => ({
-      id: sub.id,
-      title: sub.title,
-      parentId: sub.parentId,
-    }));
-
 
     await dispatch(updateCategoryThunk({
       id: String(category.id),
       category: {
         title: editedCategory.title,
-        subcategories: updatedSubcategories || [],
       },
       token: user.token,
     }));
@@ -86,24 +65,6 @@ const EditCategory: React.FC<EditCategoryProps> = ({ category }) => {
     }));
   }, []);
 
-  const handleSubcategoryChange = (id: number, value: string) => {
-    setSubcategories(prev =>
-      prev.map(sub =>
-        sub.id === id ? { ...sub, title: value } : sub
-      )
-    );
-  };
-
-  const onDelete = async (id: string) => {
-    try {
-      await dispatch(deleteCategory(id));
-      setSubcategories(prev => prev.filter(sub => sub.id !== Number(id))); // Убираем из локального состояния
-      toast.success(SUCCESSFUL_CATEGORY_DELETE, { position: 'top-center' });
-    } catch (error) {
-      console.log(error);
-      toast.error(ERROR_CATEGORY_DELETE, { position: 'top-center' });
-    }
-  };
 
   return (
     <Box
@@ -131,35 +92,7 @@ const EditCategory: React.FC<EditCategoryProps> = ({ category }) => {
         onChange={inputChangeHandler}
       />
 
-      {subcategories.length > 0 && (
-        <>
-          <Typography variant="h6" textAlign="center">
-            Редактировать подкатегории
-          </Typography>
-          {subcategories.map((sub, index) => (
-            <Box key={sub.id} sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <Typography variant="body1" sx={{ width: '30px' }}>
-                {index + 1}.
-              </Typography>
-              <TextField
-                label="Название Подкатегории"
-                variant="outlined"
-                fullWidth
-                value={sub.title}
-                onChange={(e) => handleSubcategoryChange(sub.id, e.target.value)}
-              />
-              <IconButton
-                onClick={() => onDelete(String(sub.id))}
-                color="error"
-              >
-                <DeleteIcon />
-              </IconButton>
-            </Box>
-          ))}
-        </>
-      )}
-
-      <Button type="submit" variant="contained" sx={{ bgcolor: "#ffc107", color: "black" }}>
+      <Button type="submit" variant="contained" sx={{ bgcolor: "#237803", color: "white" }}>
         Сохранить изменения
       </Button>
     </Box>
