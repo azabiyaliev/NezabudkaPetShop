@@ -31,6 +31,7 @@ import NewSubcategory from './features/Category/NewSubcategory/NewSubcategory.ts
 import BrandPage from './features/Brand/BrandPage.tsx';
 import RestorationPasswordFrom from './components/Forms/UserFrom/RestorationPasswordFrom.tsx';
 import ClientTable from './features/SuperAdmin/container/ClientTable/ClientTable.tsx';
+import FavoriteProduct from './features/FavoriteProduct/containers/FavoriteProduct.tsx';
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -173,6 +174,7 @@ const App = () => {
               <ClientTable/>
             </ProtectedRoute>
           }/>
+          <Route path='/favorite-products' element={<FavoriteProduct/>}/>
         </Routes>
       </Layout>
     </div>
