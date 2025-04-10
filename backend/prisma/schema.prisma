@@ -30,6 +30,7 @@ model User {
   Comment       Comment[]
   PasswordReset PasswordReset[]
   Favorite      Favorite[]
+  bonus         Int             @default(0)
 
   @@map("users")
 }
@@ -136,6 +137,8 @@ model Order {
   guestPhone    String?       @map("guest_phone")
   orderComment  String?       @map("order_comment")
   paymentMethod PaymentMethod @default(ByCash)
+  bonusUsed     Int           @default(0)
+  useBonus      Boolean       @default(false)
 
   userId Int?        @map("user_id")
   user   User?       @relation(fields: [userId], references: [id])
