@@ -181,7 +181,7 @@ const ManageCategories = () => {
             padding: '2px',
           }}>
           <ArrowBackIcon/>
-          Вернуться назад...
+           Назад...
         </NavLink>
         <Typography variant="h4" textAlign="left" sx={{ mt: 2 }}>
           Управление категориями
