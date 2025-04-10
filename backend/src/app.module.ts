@@ -30,6 +30,8 @@ import { TelegramService } from './telegram/telegram.service';
 import { OrdersService } from './orders/orders.service';
 import { TelegramController } from './telegram/telegram.controller';
 import { CartController } from './cart/cart.controller';
+import { CartModule } from './cart/cart.module';
+import { CartService } from './cart/cart.service';
 
 @Module({
   imports: [
@@ -47,6 +49,7 @@ import { CartController } from './cart/cart.controller';
     PhotoCarouselModule,
     FavoritesModule,
     TelegramModule,
+    CartModule,
   ],
   controllers: [
     AppController,
@@ -68,6 +71,7 @@ import { CartController } from './cart/cart.controller';
     FavoritesService,
     TelegramService,
     OrdersService,
+    CartService,
   ],
 })
 export class AppModule {}
