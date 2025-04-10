@@ -5,7 +5,10 @@ import { selectedFavorite } from "../../../store/favoriteProducts/favoriteProduc
 import { Box, Typography } from "@mui/material";
 import OneProductCard from "../../Product/components/OneProductCard.tsx";
 import { selectUser } from "../../../store/users/usersSlice.ts";
-import { getLocalFavoriteProducts } from "../../../store/favoriteProducts/favoriteProductLocal.ts";
+import {
+  clearLocalFavoriteProducts,
+  getLocalFavoriteProducts
+} from '../../../store/favoriteProducts/favoriteProductLocal.ts';
 import axiosApi from "../../../axiosApi.ts";
 import { ProductResponse } from "../../../types";
 import image from "../../../assets/image_transparent.png";
@@ -22,11 +25,18 @@ const FavoriteProduct = () => {
 
   useEffect(() => {
     if (user) {
-      dispatch(getFavoriteProducts());
+      const localFavoriteProducts = getLocalFavoriteProducts()
+      if (localFavoriteProducts) {
+        axiosApi.post('/favorites/merge', { productIds: localFavoriteProducts })
+          .then(() => {
+            clearLocalFavoriteProducts();
+            dispatch(getFavoriteProducts());
+          });
+      }
     } else {
       const favoriteId = getLocalFavoriteProducts();
       const fetchLocalFavorites = async () => {
-        const response = await axiosApi.get(`favorites`, {
+        const response = await axiosApi.get(`favorites/by-id`, {
           params: { favoriteId: favoriteId.join(",") },
         });
         setLocalFavorites(response.data);
@@ -59,10 +69,10 @@ const FavoriteProduct = () => {
       >
         Избранное
       </Typography>
-      <Box  sx={{ display: "flex", justifyContent: "center", }}>
+      <Box  sx={{ display: "flex", justifyContent: "center", flexWrap: "wrap" }}>
         {user ? (
           favorites.length === 0 ? (
-            <Box sx={{ margin: '30px 0'}}>
+            <Box sx={{ textAlign: 'center', margin: '30px 0'}}>
               <img
                 width="200"
                 height="200"
@@ -87,7 +97,7 @@ const FavoriteProduct = () => {
             ))
           )
         ) : localFavorites.length === 0 ? (
-          <Box sx={{textAlign: "center", margin: '30px 0'}}>
+          <Box sx={{ textAlign: 'center', margin: '30px 0'}}>
             <img width="200"
                  height="200"
                  src={image}
