@@ -262,3 +262,11 @@ export interface OrderItem {
   product: ProductResponse;
   orderAmount: number;
 }
+
+export interface FavoritesResponse {
+  id: number;
+  userId: number;
+  productId: number;
+  createdAt: string;
+  product: ProductResponse;
+}
