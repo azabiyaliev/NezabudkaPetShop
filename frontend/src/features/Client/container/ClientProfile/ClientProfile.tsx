@@ -1,10 +1,22 @@
 import ClientBar from "../../../../components/Domain/Client/ClientBar.tsx";
-import { useAppSelector } from "../../../../app/hooks.ts";
-import { selectUser } from "../../../../store/users/usersSlice.ts";
+import {useAppDispatch, useAppSelector} from "../../../../app/hooks.ts";
 import { Paper, Typography, Box } from "@mui/material";
+import {selectUser} from "../../../../store/users/usersSlice.ts";
+import {useParams} from "react-router-dom";
+import {useEffect} from "react";
+import { fetchUserIdBonus} from "../../../../store/users/usersThunk.ts";
 
 const ClientProfile = () => {
+  const dispatch = useAppDispatch();
+  const { id } = useParams<{ id: string }>();
   const user = useAppSelector(selectUser);
+
+  useEffect(() => {
+    if (id) {
+      dispatch(fetchUserIdBonus(id)).unwrap();
+    }
+  }, [dispatch, id]);
+
   return (
     <div>
       <h2 className="text-uppercase text-center mt-5">Личный кабинет</h2>
@@ -37,7 +49,7 @@ const ClientProfile = () => {
                 Ваши бонусы:
               </Typography>
               <Typography variant="h5" sx={{ fontWeight: "bold", color: "#FF5722", marginTop: 1 }}>
-                {user && user.bonus}
+                {user?.bonus}
               </Typography>
             </Paper>
           </Box>

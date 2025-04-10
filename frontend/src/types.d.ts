@@ -238,6 +238,7 @@ export interface IOrder {
   orderComment: string;
   paymentMethod: PaymentMethod;
   userId: number;
+  bonusUsed?: number;
   user: User;
   items: ICart[];
 
@@ -253,8 +254,10 @@ export interface OrderMutation {
   guestLastName: string;
   orderComment: string;
   paymentMethod: string;
+  bonusUsed?: number;
   userId: string;
   items: ICartMutation[];
+
 }
 
 export interface OrderItem {

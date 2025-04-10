@@ -10,7 +10,7 @@ const ClientBar = () => {
     <div className="client-bar">
       {user && user.role === "client" && (
         <List>
-          <ListItem component={NavLink} to={`/my_account`}>
+          <ListItem component={NavLink} to={`/my_account/users/account/${user && user.id}`}>
             <ListItemText primary="Личный кабинет" className="text-black" />
           </ListItem>
           <ListItem component={NavLink} to={`/client/users/${user && user.id}`}>

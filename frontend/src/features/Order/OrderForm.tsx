@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import { OrderMutation } from '../../types';
 import { clearCart, getFromLocalStorage } from '../../store/cart/cartSlice.ts';
+import TotalPrice from '../../components/Domain/CustomCart/Basket/TotalPrice/TotalPrice.tsx';
 
 enum PaymentMethod {
   ByCash = 'ByCash',
@@ -35,6 +36,7 @@ const OrderForm = () => {
     guestLastName: "",
     orderComment: "",
     paymentMethod: PaymentMethod.ByCash,
+    bonusUsed: 0,
     items: [],
   });
 
@@ -144,7 +146,12 @@ const OrderForm = () => {
       return;
     }
 
-    await dispatch(checkoutAuthUserOrder(form)).unwrap();
+
+    const orderData = {
+      ...form,
+    };
+
+    await dispatch(checkoutAuthUserOrder(orderData)).unwrap();
     toast.success("Заказ успешно оформлен!");
     dispatch(clearCart())
     navigate("/all-products");
@@ -156,6 +163,17 @@ const OrderForm = () => {
     },
     250,
   );
+
+  const availableBonuses = user ? user.bonus : 0;
+  const maxBonusesToUse = Math.min(availableBonuses, totalPrice);
+
+  const handleBonusChange = (e:  React.ChangeEvent<HTMLInputElement>) => {
+    const bonusUsed = Math.min(Number(e.target.value), maxBonusesToUse);
+    setForm((prev) => ({
+      ...prev,
+      bonusUsed,
+    }));
+  };
 
   return (
     <form onSubmit={handleSubmit} style={{ marginTop: "35px" }}>
@@ -511,9 +529,42 @@ const OrderForm = () => {
           },
         }}
       >
-        <Typography>
-          К оплате:
-          {totalPrice}
+       <TotalPrice products={carts} bonusUsed={form.bonusUsed as number}/>
+
+        <Grid
+          container
+          spacing={2}
+          sx={{
+            marginTop: "17px",
+            display: "flex",
+            flexDirection: "column",
+            border: "1px solid #e5e2dc",
+            width: "700px",
+            padding: "2rem",
+            borderRadius: "20px",
+            marginBottom: "20px",
+            "@media (max-width: 820px)": {
+              padding: "1rem",
+              width: "600px",
+            },
+            "@media (max-width: 720px)": {
+              width: "100%",
+            },
+          }}
+        >
+          <Typography sx={{ fontSize: "20px" }}>Использовать бонусы:</Typography>
+
+          <TextField
+            label="Сколько бонусов использовать"
+            type="number"
+            value={form.bonusUsed}
+            onChange={handleBonusChange}
+            inputProps={{ min: 0, max: maxBonusesToUse }}
+            sx={{ width: "100%" }}
+          />
+        </Grid>
+        <Typography sx={{ marginTop: 2 }}>
+          Ваши бонусы: {availableBonuses} (Вы можете потратить до {maxBonusesToUse})
         </Typography>
 
         <Button

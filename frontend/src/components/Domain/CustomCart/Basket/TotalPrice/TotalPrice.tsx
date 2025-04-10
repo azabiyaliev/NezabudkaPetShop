@@ -2,12 +2,15 @@ import React from "react";
 import { Box, List, ListItem, ListItemDecorator } from "@mui/joy";
 import { ICart } from "../../../../../types";
 import Typography from "@mui/joy/Typography";
+import StarBorderIcon from '@mui/icons-material/StarBorder';
+
 
 interface Props {
   products: ICart[];
+  bonusUsed: number;
 }
 
-const TotalPrice: React.FC<Props> = ({ products }) => {
+const TotalPrice: React.FC<Props> = ({ products, bonusUsed }) => {
   const productsToBuy: { price: number; amount: number }[] = products.map(
     (product) => {
       if (product.product) {
@@ -28,18 +31,16 @@ const TotalPrice: React.FC<Props> = ({ products }) => {
     0,
   );
 
-  const totalPrice: number = productsToBuy.reduce(
-    (acc: number, item: { price: number; amount: number }) => {
-      return acc + item.price * item.amount;
-    },
-    250,
-  );
+  const bonusToReceive = totalPriceProduct * 0.01
+
+  const deliveryPrice = 250;
+  const totalPriceBeforeBonus: number = totalPriceProduct + deliveryPrice;
+  const finalTotalPrice: number = totalPriceBeforeBonus - bonusUsed;
 
   return (
     <Box
       sx={{
-        border: "1px solid #e5e2dc",
-        width: "400px",
+        width: "600px",
         height: "300px",
         padding: "2rem",
         borderRadius: "20px",
@@ -87,7 +88,7 @@ const TotalPrice: React.FC<Props> = ({ products }) => {
             fontWeight: "bold",
           }}
         >
-          {totalPrice.toLocaleString()} сом
+          {finalTotalPrice.toLocaleString()} сом
         </span>
       </Typography>
       <Box
@@ -212,6 +213,51 @@ const TotalPrice: React.FC<Props> = ({ products }) => {
                 },
               }}
             >
+              <StarBorderIcon sx={{color:"gray", width:"30px", height:"30px"}} />
+            </ListItemDecorator>
+            <Typography
+              sx={{
+                width: "100%",
+                fontFamily: "Nunito, sans-serif",
+                fontSize: "18px",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                "@media (max-width: 570px)": {
+                  fontSize: "md",
+                },
+              }}
+            >
+              Вы получите:
+              <span
+                style={{
+                  color: "rgba(250, 179, 1, 1)",
+                  fontWeight: "bold",
+                }}
+              >
+                 {bonusToReceive.toLocaleString()} бонусов
+              </span>
+            </Typography>
+          </ListItem>
+          <ListItem>
+            <ListItemDecorator
+              sx={{
+                "& img": {
+                  width: 30,
+                  height: 30,
+                  objectFit: "cover",
+                },
+                "@media (max-width: 550px)": {
+                  "& img": {
+                    width: 20,
+                    height: 20,
+                  },
+                },
+                "@media (max-width: 410px)": {
+                  display: "none",
+                },
+              }}
+            >
               <img
                 src="https://img.icons8.com/external-icongeek26-outline-icongeek26/64/737373/external-goods-transportation-icongeek26-outline-icongeek26-1.png"
                 alt="external-goods-transportation-icongeek26-outline-icongeek26-1"
@@ -241,6 +287,42 @@ const TotalPrice: React.FC<Props> = ({ products }) => {
               </span>
             </Typography>
           </ListItem>
+          { bonusUsed > 0&& (
+            <ListItem>
+              <ListItemDecorator
+                sx={{
+                  "@media (max-width: 410px)": {
+                    display: "none",
+                  },
+                }}
+              >
+                <StarBorderIcon sx={{ color: "green", width: "30px", height: "30px" }} />
+              </ListItemDecorator>
+              <Typography
+                sx={{
+                  width: "100%",
+                  fontFamily: "Nunito, sans-serif",
+                  fontSize: "18px",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  "@media (max-width: 570px)": {
+                    fontSize: "md",
+                  },
+                }}
+              >
+                Использовано бонусов:
+                <span
+                  style={{
+                    color: "green",
+                    fontWeight: "bold",
+                  }}
+                >
+                  -{bonusUsed.toLocaleString()} бонусов
+                </span>
+              </Typography>
+            </ListItem>
+          )}
         </List>
       </Box>
     </Box>

@@ -3,7 +3,7 @@ import { RootState } from "../../app/store.ts";
 import { ErrorMutation, GlobalError, User, UserWithOrder, ValidationError } from '../../types';
 import {
   changePasswordAsync,
-  facebookLogin, getAllUserWithOrder,
+  facebookLogin, fetchUserIdBonus, getAllUserWithOrder,
   googleLogin,
   sendPasswordCode,
   verifyResetCode,
@@ -170,6 +170,17 @@ export const userSlice = createSlice({
       .addCase(getAllUserWithOrder.rejected, (state) => {
         state.loginLoading = false;
       })
+      .addCase(fetchUserIdBonus.pending, (state) => {
+        state.loginLoading = true;
+      })
+      .addCase(fetchUserIdBonus.fulfilled, (state, { payload: users }) => {
+        state.loginLoading = false;
+        state.user = users;
+      })
+      .addCase(fetchUserIdBonus.rejected, (state) => {
+        state.loginLoading = false;
+      })
+
   },
 });
 
