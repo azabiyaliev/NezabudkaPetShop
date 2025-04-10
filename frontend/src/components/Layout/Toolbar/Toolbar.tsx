@@ -23,7 +23,7 @@ import CustomCart from "../../Domain/CustomCart/CustomCart.tsx";
 import {
   cartsFromSlice,
   getFromLocalStorage,
-} from "../../../store/cart/cartSlice.ts";
+} from "../../../store/cart/cartLocalSlice.ts";
 import KeyboardArrowDownOutlinedIcon from "@mui/icons-material/KeyboardArrowDownOutlined";
 import { fetchSite } from '../../../store/editionSite/editionSiteThunk.ts';
 import { selectProducts } from '../../../store/products/productsSlice.ts';

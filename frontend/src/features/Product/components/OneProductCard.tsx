@@ -16,7 +16,7 @@ import {
   cartsFromSlice,
   productCardToAdd,
   setToLocalStorage,
-} from "../../../store/cart/cartSlice.ts";
+} from "../../../store/cart/cartLocalSlice.ts";
 import { enqueueSnackbar } from "notistack";
 
 interface Props {

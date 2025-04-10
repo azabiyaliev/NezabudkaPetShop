@@ -1,7 +1,7 @@
 import { Box } from "@mui/joy";
 import { useAppSelector } from "../../app/hooks.ts";
 import Carts from "../../components/Domain/CustomCart/Basket/Carts/Carts.tsx";
-import { cartsFromSlice } from "../../store/cart/cartSlice.ts";
+import { cartsFromSlice } from "../../store/cart/cartLocalSlice.ts";
 import { Button, Container } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import image from "../../assets/image_transparent.png";

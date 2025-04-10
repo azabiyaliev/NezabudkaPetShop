@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import { OrderMutation } from '../../types';
-import { clearCart, getFromLocalStorage } from '../../store/cart/cartSlice.ts';
+import { clearCart, getFromLocalStorage } from '../../store/cart/cartLocalSlice.ts';
 
 enum PaymentMethod {
   ByCash = 'ByCash',

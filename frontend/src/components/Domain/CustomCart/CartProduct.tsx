@@ -6,7 +6,7 @@ import Typography from "@mui/joy/Typography";
 import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
 import { useAppDispatch } from "../../../app/hooks.ts";
 import { enqueueSnackbar } from "notistack";
-import { deleteProduct } from "../../../store/cart/cartSlice.ts";
+import { deleteProduct } from "../../../store/cart/cartLocalSlice.ts";
 
 interface Props {
   productCart: ICart;

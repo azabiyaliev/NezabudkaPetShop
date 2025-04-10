@@ -155,6 +155,30 @@ export interface ProductRequest {
   endDateSales?: Date | null | string;
 }
 
+export interface ICartBack {
+  id: number,
+  userId: number | null,
+  anonymousCartId: string | null,
+  products: ICartInfo[],
+}
+
+export interface CartError {
+  error: string;
+  errors: {
+    title: string;
+  };
+  message: string;
+  statusCode: number;
+}
+
+export interface ICartInfo {
+  id: number,
+  cartId: number,
+  productId: number,
+  quantity: number;
+  product: ProductResponse;
+}
+
 export interface ICart {
   quantity: number;
   product: ProductResponse;

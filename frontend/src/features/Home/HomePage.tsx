@@ -9,19 +9,57 @@ import Carousel from '../../components/UI/Carousel/Carousel.tsx';
 import CustomCart from '../../components/Domain/CustomCart/CustomCart.tsx';
 import CategoryMenuBox from '../Category/CategoryMenuBox/CategoryMenuBox.tsx';
 import CategoryCard from '../Category/CategoryCard/CategoryCard.tsx';
+import { cartCreateErrorFromSlice, cartErrorFromSlice, cartFromSlice, clearCart } from '../../store/cart/cartSlice.ts';
+import { selectUser } from '../../store/users/usersSlice.ts';
+import { createCart, fetchCart } from '../../store/cart/cartThunk.ts';
+import { nanoid } from '@reduxjs/toolkit';
 
 const HomePage = () => {
   const [openCart, setOpenCart] = useState<boolean>(false);
   const brands = useAppSelector(brandsFromSlice);
+  const user = useAppSelector(selectUser);
+  const cart = useAppSelector(cartFromSlice);
+  const errorCart = useAppSelector(cartErrorFromSlice);
+  const errorCreateCart = useAppSelector(cartCreateErrorFromSlice);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(getBrands()).unwrap();
-  }, [dispatch]);
+    let anonymousCartId: string | null = null;
+
+    if (!user) {
+      dispatch(clearCart());
+      anonymousCartId = localStorage.getItem("anonymousCartId");
+      if (anonymousCartId) {
+        dispatch(fetchCart({anonymousCartId})).unwrap();
+      } else {
+        anonymousCartId = nanoid();
+        localStorage.setItem("anonymousCartId", anonymousCartId);
+      }
+    }
+
+    if (user) {
+      dispatch(fetchCart({token: user.token})).unwrap();
+    }
+
+    if (!cart) {
+      if (user) {
+        dispatch(createCart({token: user.token})).unwrap();
+      } else {
+        if (anonymousCartId) {
+          dispatch(createCart({anonymousCartId})).unwrap();
+        }
+      }
+    }
+  }, [dispatch, user, cart]);
 
   const closeCart = () => {
     setOpenCart(false);
   };
+
+  console.log(cart);
+  console.log(errorCreateCart?.message);
+  console.log(errorCart?.message);
 
   return (
     <Container>

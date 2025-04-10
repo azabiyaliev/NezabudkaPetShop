@@ -8,7 +8,7 @@ import Sheet from "@mui/joy/Sheet";
 import Typography from "@mui/joy/Typography";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../../app/hooks.ts";
-import { cartsFromSlice } from "../../../store/cart/cartSlice.ts";
+import { cartsFromSlice } from "../../../store/cart/cartLocalSlice.ts";
 import CartProduct from "./CartProduct.tsx";
 import imageCart from "../../../assets/image_transparent.png";
 

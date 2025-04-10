@@ -1,103 +1,81 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ICart, ProductResponse } from "../../types";
-import { RootState } from "../../app/store.ts";
+import { createSlice } from '@reduxjs/toolkit';
+import { createCart, fetchCart } from './cartThunk.ts';
+import { GlobalError, ICartBack } from '../../types';
+import { RootState } from '../../app/store.ts';
 
-interface CartSliceInterface {
-  carts: ICart[];
+interface CartState {
+  cart: ICartBack | null;
+  loadings: {
+    getLoading: boolean;
+    createLoading: boolean;
+    deleteLoading: boolean;
+    addProductLoading: boolean;
+    editProductLoading: boolean;
+    deleteProductLoading: boolean;
+  },
+  errors: {
+    getCartError: GlobalError | null;
+    createError: GlobalError | null;
+  },
 }
 
-const initialState: CartSliceInterface = {
-  carts: [],
-};
+const initialState: CartState = {
+  cart: null,
+  loadings: {
+    getLoading: false,
+    createLoading: false,
+    deleteLoading: false,
+    addProductLoading: false,
+    editProductLoading: false,
+    deleteProductLoading: false,
+  },
+  errors: {
+    getCartError: null,
+    createError: null,
+  },
+}
 
-export const cartsFromSlice = (state: RootState) => state.carts.carts;
+export const cartFromSlice = (state: RootState)=> state.cart.cart;
+export const cartErrorFromSlice = (state: RootState)=> state.cart.errors.getCartError;
+export const cartCreateErrorFromSlice = (state: RootState)=> state.cart.errors.createError;
 
 const cartSlice = createSlice({
-  name: "cart",
+  name: 'cart',
   initialState,
   reducers: {
-    productCardToAdd: (
-      state,
-      { payload: product }: PayloadAction<ProductResponse>,
-    ) => {
-      const indexProduct = state.carts.findIndex(
-        (order) => order.product.id === product.id,
-      );
-      if (indexProduct === -1) {
-        state.carts = [...state.carts, { product, quantity: 1 }];
-      } else {
-        const initialCards = [...state.carts];
-        const initialCard = { ...initialCards[indexProduct] };
-        initialCard.quantity++;
-        initialCards[indexProduct] = initialCard;
-        state.carts = [...initialCards];
-      }
-    },
-    productCardToRemoveQuantity: (
-      state,
-      { payload: product }: PayloadAction<ProductResponse>,
-    ) => {
-      const indexProduct = state.carts.findIndex(
-        (order) => order.product.id === product.id,
-      );
-      if (indexProduct === -1) {
-        state.carts = [...state.carts, { product, quantity: 1 }];
-      } else {
-        const initialCards = [...state.carts];
-        const initialCard = { ...initialCards[indexProduct] };
-        if (initialCard.quantity > 0) {
-          initialCard.quantity--;
-        } else {
-          initialCard.quantity = 0;
-        }
-        initialCards[indexProduct] = initialCard;
-        state.carts = [...initialCards];
-      }
-      const checkOrder: number[] = state.carts.map((order) => {
-        return order.quantity;
-      });
-
-      const sum: number = checkOrder.reduce((acc: number, i: number) => {
-        acc = acc + i;
-        return acc;
-      }, 0);
-
-      if (sum === 0) {
-        state.carts = [];
-        localStorage.removeItem("cart");
-      }
-    },
-    getFromLocalStorage: (state) => {
-      const productOrders = localStorage.getItem("cart");
-      if (productOrders) {
-        state.carts = JSON.parse(productOrders);
-      }
-    },
-    setToLocalStorage: (_state, { payload: cart }) => {
-      localStorage.setItem("cart", JSON.stringify(cart));
-    },
-    deleteProduct: (state, { payload: productId }) => {
-      const indexProduct = state.carts.findIndex(
-        (order) => order.product.id === productId,
-      );
-      if (indexProduct !== -1) {
-        state.carts.splice(indexProduct, 1);
-      }
-      localStorage.setItem("cart", JSON.stringify(state.carts));
-    },
     clearCart: (state) => {
-      state.carts = [];
-      localStorage.removeItem("cart");
+      state.cart = null;
     },
   },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchCart.pending, (state) => {
+        state.loadings.getLoading = true;
+        state.errors.getCartError = null;
+      })
+      .addCase(fetchCart.fulfilled, (state, {payload: cart}) => {
+        state.loadings.getLoading = false;
+        state.errors.getCartError = null;
+        state.cart = cart;
+      })
+      .addCase(fetchCart.rejected, (state, {payload: error}) => {
+        state.loadings.getLoading = false;
+        state.errors.getCartError = error || null;
+      })
+      .addCase(createCart.pending, (state) => {
+        state.loadings.createLoading = true;
+        state.errors.createError = null;
+      })
+      .addCase(createCart.fulfilled, (state) => {
+        state.loadings.createLoading = false;
+        state.errors.createError = null;
+      })
+      .addCase(createCart.rejected, (state, {payload: error}) => {
+        state.loadings.createLoading = false;
+        state.errors.createError = error || null;
+      });
+  }
 });
 
 export const cartReducer = cartSlice.reducer;
-export const {
-  productCardToAdd,
-  productCardToRemoveQuantity,
-  getFromLocalStorage,
-  deleteProduct,
-  setToLocalStorage,
-  clearCart,
-} = cartSlice.actions;
+export const { clearCart } = cartSlice.actions;

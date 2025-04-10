@@ -14,10 +14,11 @@ import { editSiteReducer } from "../store/editionSite/editionSiteSlice.ts";
 import { categoriesReducer } from "../store/categories/categoriesSlice.ts";
 import { brandReducer } from "../store/brands/brandsSlice.ts";
 import { productsReducer } from "../store/products/productsSlice.ts";
-import { cartReducer } from "../store/cart/cartSlice.ts";
+import { cartsReducer } from '../store/cart/cartLocalSlice.ts';
 import { photoCarouselReducer } from '../store/photoCarousel/photoCarouselSlice.ts';
 import { adminReducer } from '../store/admins/adminSlice.ts';
 import { orderReducer } from '../store/orders/ordersSlice.ts';
+import { cartReducer } from '../store/cart/cartSlice.ts';
 
 const userPersistConfig = {
   key: "store:users",
@@ -31,10 +32,11 @@ const rootReducer = combineReducers({
   edit_site: editSiteReducer,
   categories: categoriesReducer,
   products: productsReducer,
-  carts: cartReducer,
+  carts: cartsReducer,
   photo_carousel: photoCarouselReducer,
   admins: adminReducer,
   orders: orderReducer,
+  cart: cartReducer,
 });
 
 export const store = configureStore({
