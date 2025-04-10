@@ -7,7 +7,6 @@ import {
   fetchCategoriesThunk,
 } from '../../../store/categories/categoriesThunk.ts';
 import { toast, ToastContainer } from 'react-toastify';
-import AdminBar from '../../Admin/AdminProfile/AdminBar.tsx';
 import { Box } from '@mui/material';
 
 
@@ -27,7 +26,6 @@ const NewCategory = () => {
   return (
     <>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '30px 0'}}>
-        <AdminBar/>
         <CategoryForm onSubmit={onSubmit}/>
       </Box>
       <ToastContainer/>

@@ -42,7 +42,18 @@ export const addNewSubcategory = createAsyncThunk<
         },
       );
     } catch (error) {
-      return rejectWithValue(error);
+      if (isAxiosError(error) && error.response) {
+        const { status, data } = error.response;
+
+        if (status === 404 && data.error) {
+          return rejectWithValue(data as GlobalError);
+        }
+
+        if (status === 401 && data.error) {
+          return rejectWithValue(data as GlobalError);
+        }
+      }
+      throw error;
     }
   },
 );
@@ -77,6 +88,54 @@ export const updateCategoryThunk = createAsyncThunk<
     }
   },
 );
+
+export const updateCategoriesThunk = createAsyncThunk<
+  void,
+  ICategories[]
+>('category/updateCategories', async (categories, { rejectWithValue }) => {
+  try {
+    for (const category of categories) {
+      if (category.subcategories) {
+        for (const subcategory of category.subcategories) {
+          await axiosApi.put(`/category/${subcategory.id}`, {
+            title: subcategory.title,
+            parentId: category.id,
+          });
+        }
+      }
+    }
+  } catch (error) {
+    return rejectWithValue(error);
+  }
+});
+
+export const updateSubcategoryThunk = createAsyncThunk<
+  void,
+  {
+    id: number;
+    parentId: number;
+    subcategory: { title: string };
+    token: string;
+  }
+>(
+  'category/updateSubcategory',
+  async ({ id, parentId, subcategory, token }, { rejectWithValue }) => {
+    try {
+      await axiosApi.put(`/category/${id}`, {
+        ...subcategory,
+        parentId,
+      }, {
+        headers: { Authorization: token },
+      });
+    } catch (error) {
+      if (isAxiosError(error) && error.response) {
+        return rejectWithValue(error.response.data);
+      }
+      throw error;
+    }
+  }
+);
+
 
 export const fetchOneCategoryThunk = createAsyncThunk<
   ICategories | null,

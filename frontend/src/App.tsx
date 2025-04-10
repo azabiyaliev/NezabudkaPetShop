@@ -27,10 +27,10 @@ import DragAndDropPhoto from './components/Forms/PhotoCarouselForm/DragAndDropPh
 import Photo from './components/Forms/PhotoCarouselForm/Photo.tsx';
 import AdminForm from './components/Forms/AdminForm/AdminForm.tsx';
 import AdminTable from './features/SuperAdmin/container/AdminTable.tsx';
-import NewSubcategory from './features/Category/NewSubcategory/NewSubcategory.tsx';
 import BrandPage from './features/Brand/BrandPage.tsx';
 import RestorationPasswordFrom from './components/Forms/UserFrom/RestorationPasswordFrom.tsx';
 import ClientTable from './features/SuperAdmin/container/ClientTable/ClientTable.tsx';
+import ManageCategories from './features/Category/ManageCategories/ManageCategories.tsx';
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -130,7 +130,19 @@ const App = () => {
           />
           <Route
             path="/private/all_categories"
-            element={<AllCategoriesPage />}
+            element={
+              <ProtectedRoute isAllowed={user && can(["admin", "superAdmin"])}>
+                <AllCategoriesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/private/manage_categories"
+            element={
+              <ProtectedRoute isAllowed={user && can(["admin", "superAdmin"])}>
+                <ManageCategories />
+              </ProtectedRoute>
+            }
           />
           <Route path="/category/:id" element={<OneCategory />} />
           <Route path="*" element={<h1>Not found</h1>} />
@@ -139,14 +151,6 @@ const App = () => {
             element={
               <ProtectedRoute isAllowed={user && can(["admin", "superAdmin"])}>
                 <NewCategory />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/private/add_subcategory"
-            element={
-              <ProtectedRoute isAllowed={user && can(["admin", "superAdmin"])}>
-                <NewSubcategory />
               </ProtectedRoute>
             }
           />
