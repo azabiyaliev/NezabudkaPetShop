@@ -10,27 +10,13 @@ import { CartDto } from '../dto/cart.dto';
 export class CartService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getOneCart(id: string, cartDto: CartDto, token?: string) {
-    const cartId = parseInt(id);
+  async getOneCart(cartDto: CartDto, token?: string) {
     const { anonymousCartId } = cartDto;
     let loginUserId = null;
 
     if (!token && !anonymousCartId) {
       throw new NotFoundException(
         'Не предоставлены данные, необходимые для идентификации корзины.',
-      );
-    }
-
-    const cart = await this.prisma.cart.findFirst({
-      where: { id: cartId },
-      include: {
-        products: true,
-      },
-    });
-
-    if (!cart) {
-      throw new NotFoundException(
-        `Корзина с идентификатором равное ${id} не найдена!`,
       );
     }
 
@@ -46,13 +32,30 @@ export class CartService {
       }
     }
 
+    const availableData = token ? { userId: loginUserId } : { anonymousCartId };
+
+    const cart = await this.prisma.cart.findFirst({
+      where: availableData,
+      include: {
+        products: {
+          include: {
+            product: true,
+          },
+        },
+      },
+    });
+
+    if (!cart) {
+      throw new NotFoundException('Корзина не  найдена!');
+    }
+
     if (loginUserId) {
       if (cart.userId === loginUserId) {
-        return { cart };
+        return cart;
       }
     } else {
       if (cart.anonymousCartId && cart.anonymousCartId === anonymousCartId) {
-        return { cart };
+        return cart;
       }
     }
 

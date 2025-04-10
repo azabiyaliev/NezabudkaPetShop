@@ -1,4 +1,4 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsOptional } from 'class-validator';
 
 export class CartItemDto {
   @IsNotEmpty({
@@ -7,4 +7,7 @@ export class CartItemDto {
   productId!: number;
   @IsNotEmpty({ message: 'quantity Количество товара не может быть пустым!' })
   quantity!: number;
+
+  @IsOptional()
+  anonymousCartId?: string;
 }
