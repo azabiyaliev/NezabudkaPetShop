@@ -27,7 +27,6 @@ import DragAndDropPhoto from './components/Forms/PhotoCarouselForm/DragAndDropPh
 import Photo from './components/Forms/PhotoCarouselForm/Photo.tsx';
 import AdminForm from './components/Forms/AdminForm/AdminForm.tsx';
 import AdminTable from './features/SuperAdmin/container/AdminTable.tsx';
-import NewSubcategory from './features/Category/NewSubcategory/NewSubcategory.tsx';
 import BrandPage from './features/Brand/BrandPage.tsx';
 import RestorationPasswordFrom from './components/Forms/UserFrom/RestorationPasswordFrom.tsx';
 import ClientTable from './features/SuperAdmin/container/ClientTable/ClientTable.tsx';
@@ -152,14 +151,6 @@ const App = () => {
             element={
               <ProtectedRoute isAllowed={user && can(["admin", "superAdmin"])}>
                 <NewCategory />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/private/add_subcategory"
-            element={
-              <ProtectedRoute isAllowed={user && can(["admin", "superAdmin"])}>
-                <NewSubcategory />
               </ProtectedRoute>
             }
           />

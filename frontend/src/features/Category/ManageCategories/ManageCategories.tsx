@@ -25,6 +25,7 @@ import AddIcon from '@mui/icons-material/Add';
 import Tooltip from '@mui/material/Tooltip';
 import EditCategory from '../../../components/Forms/CategoryForm/EditCategory.tsx';
 import EditSubcategory from '../../../components/Forms/CategoryForm/EditSubcategory.tsx';
+import SubcategoryForm from '../../../components/Forms/SubcategoryForm/SubcategoryForm.tsx';
 
 const SUCCESSFUL_CATEGORY_DELETE = "Удаление прошло успешно!";
 const ERROR_CATEGORY_DELETE = "Ошибка при удалении подкатегории!";
@@ -38,6 +39,10 @@ const ManageCategories = () => {
 
   const [open, setOpen] = useState(false);
   const [openSubModal, setOpenSubModal] = useState(false);
+
+  const [openAddSubModal, setOpenAddSubModal] = useState(false);
+  const [parentCategoryId, setParentCategoryId] = useState<number | null>(null);
+
 
   const [selectedCategory, setSelectedCategory] = useState<{
     id: number;
@@ -152,6 +157,17 @@ const ManageCategories = () => {
     }
   };
 
+  const handleAddSubcategory = (categoryId: number) => {
+    setParentCategoryId(categoryId);
+    setOpenAddSubModal(true);
+  };
+
+  const handleCloseAddSubcategory = () => {
+    setOpenAddSubModal(false);
+    setParentCategoryId(null);
+  };
+
+
   return (
     <>
       <Box sx={{ display: "flex", flexDirection: "column" }}>
@@ -206,7 +222,7 @@ const ManageCategories = () => {
                   </IconButton>
                 </Tooltip>
 
-                <Tooltip title="Удалить подкатегорию" placement="top">
+                <Tooltip title="Удалить категорию" placement="top">
                   <IconButton
                     onClick={() => onDelete(String(category.id))}
                     edge="end"
@@ -217,14 +233,13 @@ const ManageCategories = () => {
                     <DeleteIcon fontSize="small" />
                   </IconButton>
                 </Tooltip>
-
                 <Tooltip title="Добавить подкатегорию" placement="top">
                   <IconButton
-                    onClick={() => onDelete(String(category.id))}
                     edge="end"
-                    aria-label="delete"
+                    aria-label="add subcategory"
                     sx={{ ml: 1 }}
                     color="success"
+                    onClick={() => handleAddSubcategory(category.id)}
                   >
                     <AddIcon sx={{ mr: 1 }} />
                   </IconButton>
@@ -324,6 +339,22 @@ const ManageCategories = () => {
           <Box sx={{ bgcolor: "white", p: 4, borderRadius: 2 }}>
             {selectedSubCategory && (
               <EditSubcategory subcategory={selectedSubCategory} />
+            )}
+          </Box>
+        </Modal>
+
+        <Modal
+          open={openAddSubModal}
+          onClose={handleCloseAddSubcategory}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Box sx={{ bgcolor: "white", p: 4, borderRadius: 2 , width: 400 }}>
+            {parentCategoryId && (
+              <SubcategoryForm categoryId={parentCategoryId} />
             )}
           </Box>
         </Modal>

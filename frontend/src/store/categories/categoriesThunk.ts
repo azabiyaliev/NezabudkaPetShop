@@ -42,7 +42,18 @@ export const addNewSubcategory = createAsyncThunk<
         },
       );
     } catch (error) {
-      return rejectWithValue(error);
+      if (isAxiosError(error) && error.response) {
+        const { status, data } = error.response;
+
+        if (status === 404 && data.error) {
+          return rejectWithValue(data as GlobalError);
+        }
+
+        if (status === 401 && data.error) {
+          return rejectWithValue(data as GlobalError);
+        }
+      }
+      throw error;
     }
   },
 );

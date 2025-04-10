@@ -7,40 +7,38 @@ import {
 import { toast, ToastContainer } from 'react-toastify';
 import SubcategoryForm from '../../../components/Forms/SubcategoryForm/SubcategoryForm.tsx';
 import { Box } from '@mui/material';
-import AdminBar from '../../Admin/AdminProfile/AdminBar.tsx';
 
+const ERROR_SUBCATEGORY = "Ошибка при добавлении подкатегории!";
+const SUCCESS_SUBCATEGORY = "Подкатегория была добавлена ;)";
 
-const ERROR_CATEGORY = "Ошибка при добавлении подкатегории!";
 
 const NewSubcategory = () => {
   const user = useAppSelector(selectUser);
   const dispatch = useAppDispatch();
 
-  const onSubmit = async (id: number, subcategories: string[]) => {
+  const onSubmit = async (categoryId: number, subcategory: string[]) => {
     try {
       if (user) {
         await dispatch(addNewSubcategory({
-          id,
-          subcategories,
+          parentId: categoryId,
+          subcategory,
           token: user.token,
         }));
 
         await dispatch(fetchCategoriesThunk());
 
-        toast.success('Подкатегория была добавлена ;)', { position: 'top-center' });
+        toast.success(SUCCESS_SUBCATEGORY, { position: 'top-center' });
       }
     } catch (error) {
       console.log(error)
-      toast.error(ERROR_CATEGORY, { position: 'top-center' });
+      toast.error(ERROR_SUBCATEGORY, { position: 'top-center' });
     }
   };
-
 
   return (
     <>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '30px 0'}}>
-        <AdminBar />
-        <SubcategoryForm onSubmit={onSubmit} />
+        <SubcategoryForm onSubmit={onSubmit}/>
         <ToastContainer/>
       </Box>
     </>
