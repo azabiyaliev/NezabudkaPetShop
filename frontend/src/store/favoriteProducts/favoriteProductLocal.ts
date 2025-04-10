@@ -23,3 +23,7 @@ export const isInLocalFavorites = (productId: number): boolean => {
   return getLocalFavoriteProducts().includes(productId);
 };
 
+export const clearLocalFavoriteProducts = () => {
+  localStorage.removeItem(FAVORITE_KEY);
+}
+
