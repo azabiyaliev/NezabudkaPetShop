@@ -16,14 +16,14 @@ import { Request } from 'express';
 export class CartController {
   constructor(private cartService: CartService) {}
 
-  @Get()
-  async getCarts() {
-    return await this.cartService.getCarts();
-  }
-
   @Get(':id')
-  async getOneCart(@Param('id') id: string) {
-    return await this.cartService.getOneCart(id);
+  async getOneCart(
+    @Param('id') id: string,
+    @Req() req: Request & { user?: RequestUser },
+    @Body() cartDto: CartDto,
+  ) {
+    const token = req.headers.authorization;
+    return await this.cartService.getOneCart(id, cartDto, token);
   }
 
   @Post()
