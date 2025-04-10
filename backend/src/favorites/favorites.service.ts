@@ -53,4 +53,11 @@ export class FavoritesService {
       where: { userId_productId: { userId, productId } },
     });
   }
+
+  async getFavoritesById(favoriteId: string) {
+    const idArray = favoriteId.toString().split(',').map(Number);
+    return this.prisma.products.findMany({
+      where: { id: { in: idArray } },
+    });
+  }
 }
