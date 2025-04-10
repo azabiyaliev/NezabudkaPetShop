@@ -21,7 +21,7 @@ export class FavoritesService {
       throw new BadRequestException('Пользователь с таким  ID не найден');
     }
     const findProduct = await this.prisma.products.findFirst({
-      where: { id: productId },
+      where: { id: Number(productId) },
     });
 
     if (!findProduct) {
@@ -49,7 +49,7 @@ export class FavoritesService {
     if (!findProduct) {
       throw new BadRequestException('Продукт с таким  ID не найден');
     }
-    return this.prisma.favorite.delete({
+    await this.prisma.favorite.delete({
       where: { userId_productId: { userId, productId } },
     });
   }
@@ -58,6 +58,18 @@ export class FavoritesService {
     const idArray = favoriteId.toString().split(',').map(Number);
     return this.prisma.products.findMany({
       where: { id: { in: idArray } },
+    });
+  }
+
+  async mergeFavorites(userId: number, productIds: number[]) {
+    const data = productIds.map((productId) => ({
+      userId,
+      productId,
+    }));
+
+    return this.prisma.favorite.createMany({
+      data,
+      skipDuplicates: true,
     });
   }
 }

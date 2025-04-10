@@ -7,6 +7,7 @@ import {
   Req,
   UseGuards,
   Query,
+  Body,
 } from '@nestjs/common';
 import { FavoritesService } from './favorites.service';
 import { TokenAuthGuard } from '../token.auth/token-auth.guard';
@@ -16,16 +17,25 @@ import { AuthRequest } from '../types';
 export class FavoritesController {
   constructor(private readonly favoritesService: FavoritesService) {}
 
-  @Get()
-  async getFavorite(@Query('favoriteId') favoriteId: string) {
-    return this.favoritesService.getFavoritesById(favoriteId);
-  }
-
   @UseGuards(TokenAuthGuard)
   @Get()
   async getFavorites(@Req() req: AuthRequest) {
     const userId = req.user?.id;
     return this.favoritesService.getFavorites(userId);
+  }
+
+  @Get('by-id')
+  async getFavorite(@Query('favoriteId') favoriteId: string) {
+    return this.favoritesService.getFavoritesById(favoriteId);
+  }
+
+  @Post('merge')
+  @UseGuards(TokenAuthGuard)
+  async mergeLocalFavorites(
+    @Body() dto: { productIds: number[] },
+    @Req() req: AuthRequest,
+  ) {
+    return this.favoritesService.mergeFavorites(req.user.id, dto.productIds);
   }
 
   @UseGuards(TokenAuthGuard)
