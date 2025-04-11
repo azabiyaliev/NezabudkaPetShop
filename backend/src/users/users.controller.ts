@@ -144,6 +144,15 @@ export class UsersController {
     return this.userService.findOne(userId);
   }
 
+  @Get('account/:id')
+  async findOneAccount(@Param('id') id: string) {
+    const userId = parseInt(id);
+    if (isNaN(userId)) {
+      throw new BadRequestException('Некорректный ID');
+    }
+    return this.userService.findOne(userId);
+  }
+
   @UseGuards(TokenAuthGuard, RolesGuard)
   @Roles('admin', 'superAdmin')
   @Delete(':id')
@@ -168,5 +177,14 @@ export class UsersController {
       throw new BadRequestException('Некорректный ID');
     }
     return await this.userService.update(id, data, req.user);
+  }
+
+  @Patch(':id/bonus')
+  async updateUserBonus(
+      @Param('id') id: string,
+      @Body('bonusAmount') bonusAmount: number,
+  ): Promise<{ message: string }> {
+    const userId = parseInt(id); // Преобразуем id из строки в число
+    return this.userService.updateUserBonus(userId, bonusAmount);
   }
 }

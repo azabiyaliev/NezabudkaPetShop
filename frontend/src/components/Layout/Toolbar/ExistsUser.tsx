@@ -225,7 +225,7 @@ const ExistsUser = () => {
             <List>
               <ListItem
                 component={NavLink}
-                to={`/my_account`}
+                to={`/my_account/users/account/${user?.id}`}
                 onClick={toggleDrawer(false)}
               >
                 <HomeOutlinedIcon style={{ color: "#45624E" }} />

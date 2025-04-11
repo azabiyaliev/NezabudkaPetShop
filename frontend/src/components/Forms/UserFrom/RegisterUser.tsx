@@ -12,12 +12,11 @@ import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
 import { NavLink, useNavigate } from "react-router-dom";
 import Grid from "@mui/material/Grid2";
 import { RegisterMutation } from "../../../types";
-import { selectUserError } from "../../../store/users/usersSlice.ts";
+import { selectUserError } from '../../../store/users/usersSlice.ts';
 import { register } from "../../../store/users/usersThunk.ts";
-import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { regEmail, regPhone } from '../../../globalConstants.ts';
-
+import { enqueueSnackbar } from 'notistack';
 
 
 const initialState = {
@@ -31,10 +30,8 @@ const RegisterUser = () => {
   const dispatch = useAppDispatch();
   const registerError = useAppSelector(selectUserError);
   const navigate = useNavigate();
-
   const [phoneError, setPhoneError] = useState("");
   const [emailError, setEmailError] = useState("");
-
   const [form, setForm] = useState<RegisterMutation>(initialState);
 
   const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,9 +55,20 @@ const RegisterUser = () => {
   const submitHandler = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await dispatch(register(form)).unwrap();
-      setForm(initialState);
-      toast.success("Регистрация успешна!", { position: "top-right" });
+    const response = await dispatch(register(form)).unwrap();
+      setForm({
+        firstName: "",
+        secondName: "",
+        email: "",
+        password: "",
+        phone: "",
+      });
+
+      if (response && response.user.bonus > 0) {
+        enqueueSnackbar(`Поздравляем! У вас есть ${response.user.bonus} бонусов!`, {
+          variant: 'success',
+        });
+      }
       navigate("/");
     } catch (error) {
       console.log(error);
@@ -200,7 +208,6 @@ const RegisterUser = () => {
           </Box>
         </Box>
       </Container>
-      <ToastContainer />
     </div>
   );
 };

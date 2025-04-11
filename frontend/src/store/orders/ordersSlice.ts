@@ -6,6 +6,7 @@ import {
   getAllOrders,
   updateOrderStatus
 } from './ordersThunk.ts';
+import { RootState } from '../../app/store.ts';
 
 interface OrderSliceState {
   orders: IOrder[];
@@ -20,6 +21,8 @@ const initialState: OrderSliceState = {
   isLoading: false,
   isError: false,
 }
+
+export const selectOrder = (state: RootState) => state.orders.oneOrder
 
 const ordersSlice = createSlice({
   name: 'orders',

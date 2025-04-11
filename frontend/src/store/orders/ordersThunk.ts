@@ -18,12 +18,12 @@ export const getAllOrders = createAsyncThunk<IOrder[], void, {state: RootState}>
 
 export const checkoutAuthUserOrder = createAsyncThunk<void, OrderMutation, {state: RootState}>(
   'orders/checkoutAuthUserOrder',
-  async(order, {getState}) => {
+  async(order, {getState, }) => {
     try {
       const token = getState().users.user?.token;
       console.log('Отправка заказа:', order);
       if (token) {
-        await axiosApi.post('orders/checkout', order, {
+       await axiosApi.post('orders/checkout', order, {
           headers: {
             Authorization: token
           }

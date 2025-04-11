@@ -371,4 +371,21 @@ export class UsersService {
       data,
     });
   }
+
+  async updateUserBonus(userId: number, bonusAmount: number): Promise<{ message: string }> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+    if (!user) {
+      throw new NotFoundException(`Пользователь с ID ${userId} не найден`);
+    }
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        bonus: user.bonus + bonusAmount,
+      },
+    });
+
+    return { message: `Бонусы пользователя с ID ${userId} обновлены` };
+  }
 }

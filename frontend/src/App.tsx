@@ -56,7 +56,7 @@ const App = () => {
             }
           />
           <Route
-            path="/my_account"
+            path="/my_account/users/account/:id"
             element={
               <ProtectedRoute isAllowed={user && can(["client"])}>
                 <ClientProfile />

@@ -106,8 +106,22 @@ export const updateUser = createAsyncThunk<
 
 export const fetchUserById = createAsyncThunk<AdminRefactor, string>(
   "users/fetchUserById",
-  async (userId) => {
+  async (userId,{ getState }) => {
+    const state = getState() as RootState;
+    const existingUser = state.users.user;
+
+    if (existingUser && existingUser.id === Number(userId)) {
+      return existingUser;
+    }
     const response = await axiosApi.get<AdminRefactor>(`/users/${userId}`);
+    return response.data;
+  },
+);
+
+export const fetchUserIdBonus = createAsyncThunk<User, string>(
+  "users/fetchUserById",
+  async (userId) => {
+    const response = await axiosApi.get<User>(`/users/account/${userId}`);
     return response.data;
   },
 );
@@ -255,5 +269,17 @@ export const getAllUserWithOrder = createAsyncThunk<UserWithOrder[], void>(
     const response = await axiosApi<UserWithOrder[]>("/users/orders/clients");
     return response.data || [];
   },
+);
+
+export const updateBonus = createAsyncThunk<User[], { userId: number, bonusAmount: number }>(
+  'users/updateBonus',
+  async ({ userId, bonusAmount }) => {
+    try {
+      const response = await axiosApi.patch(`/users/${userId}/bonus`, { bonusAmount });
+      return response.data || [];
+    } catch (error) {
+      console.error(error);
+    }
+  }
 );
 

@@ -21,6 +21,8 @@ export class RegisterDto {
   @IsOptional()
   @IsEnum(Role, { message: 'Роль должна быть: client | admin' })
   role?: Role;
+  @IsOptional()
+  bonus?: number;
 }
 
 export class LoginDto {

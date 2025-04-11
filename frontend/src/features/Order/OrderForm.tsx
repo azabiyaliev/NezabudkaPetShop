@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import { OrderMutation } from '../../types';
 import { clearCart, getFromLocalStorage } from '../../store/cart/cartSlice.ts';
+import TotalPrice from '../../components/Domain/CustomCart/Basket/TotalPrice/TotalPrice.tsx';
 
 enum PaymentMethod {
   ByCash = 'ByCash',
@@ -25,6 +26,7 @@ const OrderForm = () => {
   const [incorrectFormatAddress, setIncorrectFormatAddress] = useState("");
   const carts = useAppSelector((state) => state.carts.carts);
   const user = useAppSelector((state) => state.users.user);
+  const [isBonusInputDisabled, setIsBonusInputDisabled] = useState(false);
   const navigate = useNavigate();
   const [form, setForm] = useState<OrderMutation>({
     address: "",
@@ -35,6 +37,7 @@ const OrderForm = () => {
     guestLastName: "",
     orderComment: "",
     paymentMethod: PaymentMethod.ByCash,
+    bonusUsed: 0,
     items: [],
   });
 
@@ -144,7 +147,12 @@ const OrderForm = () => {
       return;
     }
 
-    await dispatch(checkoutAuthUserOrder(form)).unwrap();
+
+    const orderData = {
+      ...form,
+    };
+
+    await dispatch(checkoutAuthUserOrder(orderData)).unwrap();
     toast.success("Заказ успешно оформлен!");
     dispatch(clearCart())
     navigate("/all-products");
@@ -152,10 +160,34 @@ const OrderForm = () => {
 
   const totalPrice = carts.reduce(
     (acc, item) => {
-      return acc + item.product.productPrice * item.quantity;
+      const itemPrice = Number(item.product.productPrice);
+      const itemQuantity = Number(item.quantity);
+      if (!isNaN(itemPrice) && !isNaN(itemQuantity)) {
+        return acc + itemPrice * itemQuantity;
+      } else {
+        return acc;
+      }
     },
     250,
   );
+
+  const availableBonuses = user && !isNaN(user.bonus) ? user.bonus : 0;
+  const maxBonusesToUse = !isNaN(totalPrice) ? Math.min(availableBonuses, totalPrice) : 0;
+
+  useEffect(() => {
+    setIsBonusInputDisabled(availableBonuses === 0);
+  }, [availableBonuses])
+
+  const handleBonusChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const parsedValue = Number(e.target.value);
+    if (!isNaN(parsedValue)) {
+      const bonusUsed = Math.min(parsedValue, maxBonusesToUse);
+      setForm((prev) => ({
+        ...prev,
+        bonusUsed,
+      }));
+    }
+  };
 
   return (
     <form onSubmit={handleSubmit} style={{ marginTop: "35px" }}>
@@ -511,9 +543,43 @@ const OrderForm = () => {
           },
         }}
       >
-        <Typography>
-          К оплате:
-          {totalPrice}
+       <TotalPrice products={carts} bonusUsed={form.bonusUsed as number}/>
+
+        <Grid
+          container
+          spacing={2}
+          sx={{
+            marginTop: "17px",
+            display: "flex",
+            flexDirection: "column",
+            border: "1px solid #e5e2dc",
+            width: "700px",
+            padding: "2rem",
+            borderRadius: "20px",
+            marginBottom: "20px",
+            "@media (max-width: 820px)": {
+              padding: "1rem",
+              width: "600px",
+            },
+            "@media (max-width: 720px)": {
+              width: "100%",
+            },
+          }}
+        >
+          <Typography sx={{ fontSize: "20px" }}>Использовать бонусы:</Typography>
+
+          <TextField
+            label="Сколько бонусов использовать"
+            type="number"
+            value={form.bonusUsed}
+            onChange={handleBonusChange}
+            inputProps={{ min: 0, max: maxBonusesToUse }}
+            sx={{ width: "100%" }}
+            disabled={isBonusInputDisabled}
+          />
+        </Grid>
+        <Typography sx={{ marginTop: 2 }}>
+          Ваши бонусы: {availableBonuses} (Вы можете потратить до {maxBonusesToUse})
         </Typography>
 
         <Button

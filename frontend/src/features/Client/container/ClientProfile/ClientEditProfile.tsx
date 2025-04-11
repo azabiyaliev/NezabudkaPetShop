@@ -12,10 +12,10 @@ const ClientEditProfile = () => {
   const user = useAppSelector(selectUser);
 
   useEffect(() => {
-    if (id) {
-      dispatch(fetchUserById(id)).unwrap();
-    }
-  }, [dispatch, user, id]);
+      if (id && !user) {
+          dispatch(fetchUserById(id)).unwrap();
+      }
+  }, [dispatch, id, user]);
 
   return (
     <div>

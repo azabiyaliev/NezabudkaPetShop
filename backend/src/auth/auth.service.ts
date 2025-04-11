@@ -98,6 +98,7 @@ export class AuthService {
         phone: defaultPhone,
         role: role ? (role as Role) : undefined,
         token: crypto.randomUUID(),
+        bonus: 50,
       },
     });
 

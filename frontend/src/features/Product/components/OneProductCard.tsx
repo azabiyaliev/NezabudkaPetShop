@@ -70,7 +70,7 @@ const OneProductCard: React.FC<Props> = ({ product }) => {
           {product.productPrice.toLocaleString()} сом
         </Typography>
         <Typography variant="body2" color="textSecondary">
-          до 500 Бонусов
+           💎  {product.productPrice.toLocaleString()} бонусов
         </Typography>
         <Button
           onClick={() => addProductToCart(product)}

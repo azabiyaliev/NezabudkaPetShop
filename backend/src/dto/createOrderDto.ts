@@ -1,11 +1,12 @@
 import {
+  IsBoolean,
   IsEmail,
-  IsEnum,
+  IsEnum, IsInt,
   IsNotEmpty,
   IsOptional,
   IsPhoneNumber,
   IsString,
-  Matches,
+  Matches, Min,
   ValidateNested,
 } from 'class-validator';
 import { OrderStatus, PaymentMethod } from '@prisma/client';
@@ -59,4 +60,13 @@ export class CreateOrderDto {
 
   @IsEnum(PaymentMethod)
   paymentMethod!: PaymentMethod;
+
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  bonusUsed?: number;
+
+  @IsOptional()
+  @IsBoolean()
+  useBonus?: boolean;
 }

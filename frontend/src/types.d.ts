@@ -4,6 +4,7 @@ export interface RegisterMutation {
   email: string;
   password: string;
   phone: string;
+  bonus?: number
 }
 
 export interface LogInMutation {
@@ -19,6 +20,7 @@ export interface User {
   role: string;
   token: string;
   phone: string;
+  bonus : number
 }
 
 export interface UserWithOrder {
@@ -236,6 +238,7 @@ export interface IOrder {
   orderComment: string;
   paymentMethod: PaymentMethod;
   userId: number;
+  bonusUsed?: number;
   user: User;
   items: ICart[];
 
@@ -251,8 +254,10 @@ export interface OrderMutation {
   guestLastName: string;
   orderComment: string;
   paymentMethod: string;
+  bonusUsed?: number;
   userId: string;
   items: ICartMutation[];
+
 }
 
 export interface OrderItem {
