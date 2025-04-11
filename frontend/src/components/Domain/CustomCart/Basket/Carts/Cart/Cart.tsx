@@ -5,11 +5,13 @@ import { apiUrl } from '../../../../../../globalConstants.ts';
 import IconButton from '@mui/joy/IconButton';
 import { Add, Remove } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '../../../../../../app/hooks.ts';
-import { productCardToRemoveQuantity, } from '../../../../../../store/cart/cartLocalSlice.ts';
-import { enqueueSnackbar } from 'notistack';
+import {
+  cartFromSlice,
+  productCardToRemoveQuantity,
+  setToLocalStorage
+} from '../../../../../../store/cart/cartSlice.ts';
 import { deleteItemCart, fetchCart } from '../../../../../../store/cart/cartThunk.ts';
 import { selectUser } from '../../../../../../store/users/usersSlice.ts';
-import { cartFromSlice } from '../../../../../../store/cart/cartSlice.ts';
 
 interface Props {
   product: ICart;
@@ -30,20 +32,12 @@ const Cart: React.FC<Props> = ({ product }) => {
   };
 
   const deleteProductFromCart = async (id: number) => {
-    const anonymous = localStorage.getItem("anonymousCartId");
-    if (cart) {
-      if (user) {
+    if (user) {
+      if (cart) {
         await dispatch(deleteItemCart({cartId: cart.id, productId: id, token: user.token})).unwrap();
         await dispatch(fetchCart({ token: user.token })).unwrap();
-      } else {
-        if (anonymous) {
-          await dispatch(deleteItemCart({cartId: cart.id, productId: id, anonymousCartId: anonymous})).unwrap();
-          await dispatch(fetchCart({ anonymousCartId: anonymous})).unwrap();
-        }
+        dispatch(setToLocalStorage(cart));
       }
-      enqueueSnackbar("Данный товар успешно удален из корзины!", {
-        variant: "success",
-      });
     }
   };
 

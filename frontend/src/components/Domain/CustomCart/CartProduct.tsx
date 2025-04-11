@@ -19,16 +19,10 @@ const CartProduct: React.FC<Props> = ({ productCart }) => {
   const dispatch = useAppDispatch();
 
   const deleteProductFromCart = async (id: number) => {
-    const anonymousUser = localStorage.getItem("anonymousCartId");
     if (cart) {
       if (user) {
         await dispatch(deleteItemCart({cartId: cart.id, productId: id, token: user.token})).unwrap();
         await dispatch(fetchCart({ token: user.token })).unwrap();
-      } else {
-        if (anonymousUser) {
-          await dispatch(deleteItemCart({cartId: cart.id, productId: id, anonymousCartId: anonymousUser})).unwrap();
-          await dispatch(fetchCart({ anonymousCartId: anonymousUser})).unwrap();
-        }
       }
       enqueueSnackbar("Данный товар успешно удален из корзины!", {
         variant: "success",

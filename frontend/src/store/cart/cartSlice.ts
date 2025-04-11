@@ -1,6 +1,6 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { addItem, createCart, deleteItemCart, fetchCart } from './cartThunk.ts';
-import { GlobalError, ICartBack } from '../../types';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { addItem, createCart, deleteCart, deleteItemCart, fetchCart } from './cartThunk.ts';
+import { GlobalError, ICartBack, ProductResponse } from '../../types';
 import { RootState } from '../../app/store.ts';
 
 interface CartState {
@@ -16,6 +16,7 @@ interface CartState {
   errors: {
     getCartError: GlobalError | null;
     createError: GlobalError | null;
+    deleteError: GlobalError | null;
     addProductError: GlobalError | null;
     deleteProductError: GlobalError | null;
   },
@@ -34,6 +35,7 @@ const initialState: CartState = {
   errors: {
     getCartError: null,
     createError: null,
+    deleteError: null,
     addProductError: null,
     deleteProductError: null,
   },
@@ -48,8 +50,88 @@ const cartSlice = createSlice({
   name: 'cart',
   initialState,
   reducers: {
+    productCardToAdd: (
+      state,
+      { payload: product }: PayloadAction<ProductResponse>,
+    ) => {
+      if (state.cart) {
+        const indexProduct = state.cart.products.findIndex(
+          (order) => order.product.id === product.id,
+        );
+        if (indexProduct === -1) {
+          state.cart.products = [...state.cart.products, { product, quantity: 1}];
+        } else {
+          const initialCards = [...state.cart.products];
+          const initialCard = { ...initialCards[indexProduct] };
+          initialCard.quantity++;
+          initialCards[indexProduct] = initialCard;
+          state.cart.products = [...initialCards];
+        }
+      }
+    },
+    productCardToRemoveQuantity: (
+      state,
+      { payload: product }: PayloadAction<ProductResponse>,
+    ) => {
+      if (state.cart) {
+        const indexProduct = state.cart.products.findIndex(
+          (order) => order.product.id === product.id,
+        );
+        if (indexProduct === -1) {
+          state.cart.products = [...state.cart.products, { product, quantity: 1 }];
+        } else {
+          const initialCards = [...state.cart.products];
+          const initialCard = { ...initialCards[indexProduct] };
+          if (initialCard.quantity > 0) {
+            initialCard.quantity--;
+          } else {
+            initialCard.quantity = 0;
+          }
+          initialCards[indexProduct] = initialCard;
+          state.cart.products = [...initialCards];
+        }
+        const checkOrder: number[] = state.cart.products.map((order) => {
+          return order.quantity;
+        });
+
+        const sum: number = checkOrder.reduce((acc: number, i: number) => {
+          acc = acc + i;
+          return acc;
+        }, 0);
+
+        if (sum === 0) {
+          state.cart.products = [];
+          localStorage.removeItem("cart");
+        }
+      }
+    },
+    getFromLocalStorage: (state) => {
+      if (state.cart) {
+        const productOrders = localStorage.getItem("cart");
+        if (productOrders) {
+          state.cart.products = JSON.parse(productOrders);
+        }
+      }
+    },
+    setToLocalStorage: (_state, { payload: cart }) => {
+      localStorage.setItem("cart", JSON.stringify(cart));
+    },
+    deleteProductInCart: (state, { payload: productId }) => {
+      if (state.cart) {
+        const indexProduct = state.cart.products.findIndex(
+          (order) => order.product.id === productId,
+        );
+        if (indexProduct !== -1) {
+          state.cart.products.splice(indexProduct, 1);
+        }
+        localStorage.setItem("cart", JSON.stringify(state.cart.products));
+      }
+    },
     clearCart: (state) => {
-      state.cart = null;
+      if (state.cart) {
+        state.cart.products = [];
+        localStorage.removeItem("cart");
+      }
     },
   },
   extraReducers: (builder) => {
@@ -79,6 +161,18 @@ const cartSlice = createSlice({
         state.loadings.createLoading = false;
         state.errors.createError = error || null;
       })
+      .addCase(deleteCart.pending, (state) => {
+        state.loadings.deleteLoading = true;
+        state.errors.deleteError = null;
+      })
+      .addCase(deleteCart.fulfilled, (state) => {
+        state.loadings.deleteLoading = false;
+        state.errors.deleteError = null;
+      })
+      .addCase(deleteCart.rejected, (state, {payload: error}) => {
+        state.loadings.deleteLoading = false;
+        state.errors.deleteError = error || null;
+      })
       .addCase(addItem.pending, (state) => {
         state.loadings.addProductLoading = true;
         state.errors.addProductError = null;
@@ -107,4 +201,4 @@ const cartSlice = createSlice({
 });
 
 export const cartReducer = cartSlice.reducer;
-export const { clearCart } = cartSlice.actions;
+export const { productCardToAdd, productCardToRemoveQuantity, getFromLocalStorage, setToLocalStorage, deleteProductInCart, clearCart } = cartSlice.actions;

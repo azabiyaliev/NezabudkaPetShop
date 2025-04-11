@@ -106,7 +106,10 @@ export class CartService {
     }
 
     if (user.id === cart.userId) {
-      await this.prisma.cart.delete({ where: { id } });
+      await this.prisma.cartItem.deleteMany({
+        where: { cartId: cart.id },
+      });
+      await this.prisma.cart.delete({ where: { id: cart.id } });
       return {
         message: 'Корзина успешно удалена!',
       };

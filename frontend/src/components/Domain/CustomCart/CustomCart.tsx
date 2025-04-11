@@ -31,8 +31,8 @@ const CustomCart: React.FC<Props> = ({ openCart, closeCart }) => {
     navigate("/my_cart");
   };
 
-  const checkProductInCart: { price: number; amount: number }[] | null = cart && cart.products.map(
-    (product) => {
+  const checkProductInCart: { price: number; amount: number }[] = Array.isArray(cart?.products)
+    ? cart.products.map((product) => {
       if (product.product) {
         return {
           price: product.product.productPrice,
@@ -41,8 +41,8 @@ const CustomCart: React.FC<Props> = ({ openCart, closeCart }) => {
       } else {
         return { price: 0, amount: 0 };
       }
-    },
-  );
+    })
+    : [];
 
   const sum: number | null = checkProductInCart && checkProductInCart.reduce(
     (acc: number, item: { price: number; amount: number }) => {
@@ -152,7 +152,7 @@ const CustomCart: React.FC<Props> = ({ openCart, closeCart }) => {
             </>
           ) : (
             <>
-              {cart && cart.products.map((product, index) => (
+              {Array.isArray(cart?.products) && cart.products.map((product, index) => (
                 <React.Fragment key={product.product.id}>
                   <CartProduct productCart={product} />
                   {index < cart.products.length - 1 && <Divider sx={{ mt: "auto" }} />}

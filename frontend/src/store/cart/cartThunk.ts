@@ -3,15 +3,11 @@ import axiosApi from "../../axiosApi.ts";
 import {CartError, ICartBack} from "../../types";
 import {isAxiosError} from "axios";
 
-export const fetchCart = createAsyncThunk<ICartBack, { token?: string, anonymousCartId?: string }, {rejectValue: CartError}>(
+export const fetchCart = createAsyncThunk<ICartBack, {token: string }, {rejectValue: CartError}>(
   "cart/fetchCart",
-  async ({token, anonymousCartId}, { rejectWithValue }) => {
+  async ({token}, { rejectWithValue }) => {
    try {
-     const config = {
-       headers: token ? { Authorization: token } : {},
-       params: { anonymousCartId },
-     };
-     const response = await axiosApi<ICartBack>('/cart', config);
+     const response = await axiosApi<ICartBack>('/cart', {headers: { Authorization: token }});
      return response.data;
    } catch (error) {
      if (isAxiosError(error) && error.response && (error.response.status === 409 || error.response.status === 404 || error.response.status === 400)) {
@@ -21,14 +17,26 @@ export const fetchCart = createAsyncThunk<ICartBack, { token?: string, anonymous
    }
 });
 
-export const createCart = createAsyncThunk<void, { token?: string, anonymousCartId?: string }, { rejectValue: CartError }>(
+export const createCart = createAsyncThunk<void, {token: string }, { rejectValue: CartError }>(
   "cart/createCart",
-  async ({ token, anonymousCartId }, { rejectWithValue }) => {
+  async (token, { rejectWithValue }) => {
     try {
-      const headers = token ? { Authorization: token } : {};
-      const body = token ? {} : { anonymousCartId };
-      await axiosApi.post("/cart", body, { headers });
+      await axiosApi.post("/cart", {headers: { Authorization: token }});
     } catch (error) {
+      if (isAxiosError(error) && error.response && (error.response.status === 409 || error.response.status === 404 || error.response.status === 400)) {
+        return rejectWithValue(error.response.data as CartError);
+      }
+      throw error;
+    }
+  }
+);
+
+export const deleteCart = createAsyncThunk<void, {cartId: number, token: string}, { rejectValue: CartError }>(
+  "cart/deleteCart",
+  async ({cartId, token}, { rejectWithValue }) => {
+    try {
+      await axiosApi.delete(`/cart/${cartId}`, {headers: { Authorization: token }});
+    }  catch (error) {
       if (isAxiosError(error) && error.response && (error.response.status === 409 || error.response.status === 404 || error.response.status === 400)) {
         return rejectWithValue(error.response.data as CartError);
       }
@@ -39,16 +47,13 @@ export const createCart = createAsyncThunk<void, { token?: string, anonymousCart
 
 export const addItem = createAsyncThunk<
   void,
-  { cartId: number; productId: number; quantity: number; anonymousCartId?: string; token?: string },
+  { cartId: number; productId: number; quantity: number; token: string },
   { rejectValue: CartError }
 >(
   'cart/addItem',
-  async ({ cartId, productId, quantity, anonymousCartId, token }, { rejectWithValue }) => {
+  async ({ cartId, productId, quantity, token }, { rejectWithValue }) => {
     try {
-      const headers = token ? { Authorization: token } : {};
-      await axiosApi.post(
-        `cart/${cartId}/item`, {productId, quantity, anonymousCartId}, { headers }
-      );
+      await axiosApi.post(`cart/${cartId}/item`, {productId, quantity}, {headers: { Authorization: token }});
     } catch (error) {
       if (isAxiosError(error) && error.response && (error.response.status === 409 || error.response.status === 404 || error.response.status === 400)) {
         return rejectWithValue(error.response.data as CartError);
@@ -59,15 +64,13 @@ export const addItem = createAsyncThunk<
 );
 
 export const deleteItemCart = createAsyncThunk<void,
-  { cartId: number; productId: number; anonymousCartId?: string; token?: string },
+  { cartId: number; productId: number; token: string },
   { rejectValue: CartError }
 >(
   "cart/deleteItemCart",
-  async ({ cartId, productId, anonymousCartId, token }, { rejectWithValue }) => {
+  async ({ cartId, productId, token }, { rejectWithValue }) => {
     try {
-      const headers = token ? { Authorization: token } : {};
-      const body = token ? {} : { anonymousCartId };
-      await axiosApi.delete(`cart/${cartId}/item/${productId}`, { data: body, headers });
+      await axiosApi.delete(`cart/${cartId}/item/${productId}`, {headers: { Authorization: token }});
     } catch (error) {
       if (isAxiosError(error) && error.response &&
         (error.response.status === 409 || error.response.status === 404 || error.response.status === 400)) {

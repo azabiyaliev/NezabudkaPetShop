@@ -9,40 +9,27 @@ import Carousel from '../../components/UI/Carousel/Carousel.tsx';
 import CustomCart from '../../components/Domain/CustomCart/CustomCart.tsx';
 import CategoryMenuBox from '../Category/CategoryMenuBox/CategoryMenuBox.tsx';
 import CategoryCard from '../Category/CategoryCard/CategoryCard.tsx';
-import { cartCreateErrorFromSlice, cartErrorFromSlice, cartFromSlice, clearCart } from '../../store/cart/cartSlice.ts';
+import { cartFromSlice, setToLocalStorage } from '../../store/cart/cartSlice.ts';
 import { selectUser } from '../../store/users/usersSlice.ts';
 import { createCart, fetchCart } from '../../store/cart/cartThunk.ts';
-import { nanoid } from '@reduxjs/toolkit';
 
 const HomePage = () => {
   const [openCart, setOpenCart] = useState<boolean>(false);
   const brands = useAppSelector(brandsFromSlice);
   const user = useAppSelector(selectUser);
   const cart = useAppSelector(cartFromSlice);
-  const errorCart = useAppSelector(cartErrorFromSlice);
-  const errorCreateCart = useAppSelector(cartCreateErrorFromSlice);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
+    dispatch(getBrands()).unwrap();
     const fetchData = async () => {
       await dispatch(getBrands()).unwrap();
 
       if (user) {
-        dispatch(clearCart());
-        await dispatch(createCart({ token: user.token })).unwrap();
+        await dispatch(createCart({token: user.token})).unwrap();
         await dispatch(fetchCart({ token: user.token })).unwrap();
-      } else {
-        dispatch(clearCart());
-        let anonymousCartId = localStorage.getItem('anonymousCartId');
-        if (!anonymousCartId) {
-          anonymousCartId = nanoid();
-          localStorage.setItem('anonymousCartId', anonymousCartId);
-          await dispatch(createCart({ anonymousCartId })).unwrap();
-        }
-        await dispatch(fetchCart({ anonymousCartId })).unwrap();
       }
     };
-
     fetchData();
   }, [dispatch, user]);
 
@@ -50,9 +37,9 @@ const HomePage = () => {
     setOpenCart(false);
   };
 
-  console.log(cart);
-  console.log(errorCreateCart?.message);
-  console.log(errorCart?.message);
+  useEffect(() => {
+    dispatch(setToLocalStorage(cart));
+  }, [dispatch, cart]);
 
   return (
     <Container>

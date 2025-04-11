@@ -8,9 +8,10 @@ import Typography from '@mui/joy/Typography';
 import TotalPrice from '../../components/Domain/CustomCart/Basket/TotalPrice/TotalPrice.tsx';
 import OrderForm from '../Order/OrderForm.tsx';
 import { cartFromSlice, clearCart } from '../../store/cart/cartSlice.ts';
-import { useEffect } from 'react';
-import { fetchCart } from '../../store/cart/cartThunk.ts';
 import { selectUser } from '../../store/users/usersSlice.ts';
+import { enqueueSnackbar } from 'notistack';
+import { createCart, deleteCart, fetchCart } from '../../store/cart/cartThunk.ts';
+import { useEffect } from 'react';
 
 const CartPage = () => {
   const user = useAppSelector(selectUser);
@@ -19,21 +20,21 @@ const CartPage = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (user) {
-        dispatch(clearCart());
-        await dispatch(fetchCart({ token: user.token })).unwrap();
-      } else {
-        dispatch(clearCart());
-        const anonymousCartId = localStorage.getItem('anonymousCartId');
-        if (anonymousCartId) {
-          await dispatch(fetchCart({ anonymousCartId })).unwrap();
-        }
-      }
-    };
-
-    fetchData();
+    if (user) {
+      dispatch(clearCart());
+      dispatch(fetchCart({ token: user.token })).unwrap();
+    }
   }, [dispatch, user]);
+
+  const deleteAllProduct = async () => {
+    if (user) {
+      if (cart) {
+        await dispatch(deleteCart({cartId: cart.id, token: user.token})).unwrap();
+        await dispatch(createCart({token: user.token})).unwrap();
+        enqueueSnackbar("Корзина успешно очищена!", { variant: "success" });
+      }
+    }
+  };
 
   return (
     <Container>
@@ -57,10 +58,8 @@ const CartPage = () => {
             }}
           >
             <Box>
-              <Carts products={cart.products} />
-              {
-                <OrderForm/>
-              }
+              <Carts products={cart.products} deleteAllProduct={() => deleteAllProduct()}/>
+              <OrderForm/>
             </Box>
             <TotalPrice products={cart.products} />
           </Box>

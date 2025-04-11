@@ -14,7 +14,6 @@ import { editSiteReducer } from "../store/editionSite/editionSiteSlice.ts";
 import { categoriesReducer } from "../store/categories/categoriesSlice.ts";
 import { brandReducer } from "../store/brands/brandsSlice.ts";
 import { productsReducer } from "../store/products/productsSlice.ts";
-import { cartsReducer } from '../store/cart/cartLocalSlice.ts';
 import { photoCarouselReducer } from '../store/photoCarousel/photoCarouselSlice.ts';
 import { adminReducer } from '../store/admins/adminSlice.ts';
 import { orderReducer } from '../store/orders/ordersSlice.ts';
@@ -32,7 +31,6 @@ const rootReducer = combineReducers({
   edit_site: editSiteReducer,
   categories: categoriesReducer,
   products: productsReducer,
-  carts: cartsReducer,
   photo_carousel: photoCarouselReducer,
   admins: adminReducer,
   orders: orderReducer,

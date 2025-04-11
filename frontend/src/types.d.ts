@@ -157,9 +157,15 @@ export interface ProductRequest {
 
 export interface ICartBack {
   id: number,
-  userId: number | null,
-  anonymousCartId: string | null,
-  products: ICartInfo[],
+  userId: number,
+  products: ICart[],
+}
+export interface ICart {
+  id?: number,
+  cartId?: number,
+  productId?: number,
+  quantity: number;
+  product: ProductResponse;
 }
 
 export interface CartError {
@@ -169,19 +175,6 @@ export interface CartError {
   };
   message: string;
   statusCode: number;
-}
-
-export interface ICartInfo {
-  id: number,
-  cartId: number,
-  productId: number,
-  quantity: number;
-  product: ProductResponse;
-}
-
-export interface ICart {
-  quantity: number;
-  product: ProductResponse;
 }
 
 export interface ICartMutation {
@@ -229,15 +222,6 @@ export interface ProductResponse {
   startDateSales?: string;
   endDateSales?: string;
 }
-
-// export interface AdminFormData {
-//   firstName: string;
-//   secondName: string;
-//   email: string;
-//   phone: string;
-//   password: string;
-//   role: string;
-// }
 
 export interface AdminDataMutation {
   id?: number;

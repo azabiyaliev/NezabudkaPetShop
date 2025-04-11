@@ -7,7 +7,8 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import { OrderMutation } from '../../types';
-import { clearCart, getFromLocalStorage } from '../../store/cart/cartLocalSlice.ts';
+import { cartFromSlice, clearCart, getFromLocalStorage } from '../../store/cart/cartSlice.ts';
+import { selectUser } from '../../store/users/usersSlice.ts';
 
 enum PaymentMethod {
   ByCash = 'ByCash',
@@ -23,8 +24,8 @@ const OrderForm = () => {
   const [incorrectFormatEmail, setIncorrectFormatEmail] = useState("");
   const [incorrectFormatPhone, setIncorrectFormatPhone] = useState("");
   const [incorrectFormatAddress, setIncorrectFormatAddress] = useState("");
-  const carts = useAppSelector((state) => state.carts.carts);
-  const user = useAppSelector((state) => state.users.user);
+  const carts = useAppSelector(cartFromSlice);
+  const user = useAppSelector(selectUser);
   const navigate = useNavigate();
   const [form, setForm] = useState<OrderMutation>({
     address: "",
@@ -43,10 +44,10 @@ const OrderForm = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (carts.length > 0) {
+    if (carts && carts.products.length > 0) {
       setForm(prev => ({
         ...prev,
-        items: carts.map(item => ({
+        items: carts.products.map(item => ({
           productId: item.product.id,
           quantity: item.quantity,
           orderAmount: item.product.productPrice * item.quantity
@@ -150,7 +151,7 @@ const OrderForm = () => {
     navigate("/all-products");
   };
 
-  const totalPrice = carts.reduce(
+  const totalPrice = carts && carts.products.reduce(
     (acc, item) => {
       return acc + item.product.productPrice * item.quantity;
     },

@@ -1,25 +1,16 @@
-import { Box, Link } from "@mui/joy";
-import Typography from "@mui/joy/Typography";
-import { ICart } from "../../../../../types";
-import React from "react";
-import Cart from "../../Basket/Carts/Cart/Cart.tsx";
-import { clearCart } from "../../../../../store/cart/cartLocalSlice.ts";
-import { enqueueSnackbar } from "notistack";
-import { useAppDispatch } from "../../../../../app/hooks.ts";
-import Tooltip from "@mui/joy/Tooltip";
+import { Box, Link } from '@mui/joy';
+import Typography from '@mui/joy/Typography';
+import { ICart } from '../../../../../types';
+import React from 'react';
+import Cart from '../../Basket/Carts/Cart/Cart.tsx';
+import Tooltip from '@mui/joy/Tooltip';
 
 interface Props {
   products: ICart[];
+  deleteAllProduct: () => void;
 }
 
-const Carts: React.FC<Props> = ({ products }) => {
-  const dispatch = useAppDispatch();
-
-  const deleteAllProduct = () => {
-    dispatch(clearCart());
-    enqueueSnackbar("Корзина успешно очищена!", { variant: "success" });
-  };
-
+const Carts: React.FC<Props> = ({ products, deleteAllProduct}) => {
   return (
     <>
       <Box

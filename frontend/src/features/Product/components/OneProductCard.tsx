@@ -7,7 +7,7 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
 import { addItem, fetchCart } from '../../../store/cart/cartThunk.ts';
-import { cartFromSlice, clearCart } from '../../../store/cart/cartSlice.ts';
+import { cartFromSlice, setToLocalStorage } from '../../../store/cart/cartSlice.ts';
 import { selectUser } from '../../../store/users/usersSlice.ts';
 
 interface Props {
@@ -21,27 +21,14 @@ const OneProductCard: React.FC<Props> = ({ product }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (user) {
-        dispatch(clearCart());
-        await dispatch(fetchCart({ token: user.token })).unwrap();
-      } else {
-        dispatch(clearCart());
-        const anonymousCartId = localStorage.getItem('anonymousCartId');
-        if (anonymousCartId) {
-          await dispatch(fetchCart({ anonymousCartId })).unwrap();
-        }
-      }
-    };
-
-    fetchData();
+    if (user) {
+      dispatch(fetchCart({ token: user.token })).unwrap();
+    }
   }, [dispatch, user]);
 
   const addProductToCart = async (product: ProductResponse) => {
-    const anonymousUser = localStorage.getItem("anonymousCartId");
-
-    if (cart) {
-      if (user) {
+    if (user) {
+      if (cart) {
         await dispatch(addItem({
           cartId: cart.id,
           productId: product.id,
@@ -49,19 +36,13 @@ const OneProductCard: React.FC<Props> = ({ product }) => {
           token: user.token,
         })).unwrap();
         await dispatch(fetchCart({ token: user.token })).unwrap();
-      } else {
-        if (anonymousUser) {
-          await dispatch(addItem({
-            cartId: cart.id,
-            productId: product.id,
-            quantity: 1,
-            anonymousCartId: anonymousUser,
-          })).unwrap();
-          await dispatch(fetchCart({ anonymousCartId: anonymousUser})).unwrap();
-        }
       }
     }
   };
+
+  useEffect(() => {
+    dispatch(setToLocalStorage(cart));
+  }, [dispatch, cart]);
 
   return (
     <Card
