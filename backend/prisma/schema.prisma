@@ -214,10 +214,9 @@ model Favorite {
 }
 
 model Cart {
-  id              Int     @id @default(autoincrement())
-  userId          Int?    @map("user_id")
-  user            User?   @relation(fields: [userId], references: [id])
-  anonymousCartId String? @unique @map("anonymous_cart_id")
+  id     Int  @id @default(autoincrement())
+  userId Int  @map("user_id")
+  user   User @relation(fields: [userId], references: [id])
 
   products CartItem[]
 

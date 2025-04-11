@@ -4,35 +4,28 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CartDto } from '../dto/cart.dto';
 
 @Injectable()
 export class CartService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getOneCart(anonymousCartId?: string, token?: string) {
-    if (!token && !anonymousCartId) {
+  async getOneCart(token: string) {
+    if (!token) {
       throw new NotFoundException(
         'Не предоставлены данные, необходимые для идентификации корзины.',
       );
     }
 
-    let userId: number | null = null;
+    const user = await this.prisma.user.findFirst({
+      where: { token },
+    });
 
-    if (token) {
-      const user = await this.prisma.user.findFirst({
-        where: { token },
-      });
-
-      if (!user) {
-        throw new NotFoundException('Данный пользователь не найден!');
-      }
-
-      userId = user.id;
+    if (!user) {
+      throw new NotFoundException('Данный пользователь не найден!');
     }
 
     const cart = await this.prisma.cart.findFirst({
-      where: userId ? { userId } : { anonymousCartId },
+      where: { userId: user.id },
       include: {
         products: {
           include: {
@@ -46,43 +39,26 @@ export class CartService {
       throw new NotFoundException('Корзина не найдена!');
     }
 
-    if (userId && cart.userId === userId) {
-      return cart;
-    }
-
-    if (!userId && cart.anonymousCartId === anonymousCartId) {
-      return cart;
-    }
-
-    return { message: 'У вас нет активной корзины!' };
+    return cart;
   }
 
-  async createCart(cartDTO: CartDto, token?: string) {
-    const { anonymousCartId } = cartDTO;
-    let loginUserId = null;
-
-    if (!token && !anonymousCartId) {
+  async createCart(token: string) {
+    if (!token) {
       throw new NotFoundException(
         'Данные не были предоставлены и корзина не может быть создана!',
       );
     }
 
-    if (token) {
-      const user = await this.prisma.user.findFirst({
-        where: { token },
-      });
+    const user = await this.prisma.user.findFirst({
+      where: { token },
+    });
 
-      if (user) {
-        loginUserId = user.id;
-      } else {
-        throw new NotFoundException('Данный пользователь не найден!');
-      }
+    if (!user) {
+      throw new NotFoundException('Данный пользователь не найден!');
     }
 
-    const availableData = token ? { userId: loginUserId } : { anonymousCartId };
-
     const cart = await this.prisma.cart.findFirst({
-      where: availableData,
+      where: { userId: user.id },
       include: {
         products: true,
       },
@@ -91,8 +67,7 @@ export class CartService {
     if (!cart) {
       const newCart = await this.prisma.cart.create({
         data: {
-          userId: loginUserId,
-          anonymousCartId,
+          userId: user.id,
         },
         include: {
           products: true,
@@ -102,56 +77,43 @@ export class CartService {
       return { message: 'Корзина была успешно создана!', newCart };
     }
 
-    return { message: 'Корзина была уже ранее создана!', cart };
+    return { message: 'У вас корзина была уже ранее создана!', cart };
   }
 
-  async deleteCart(id: string, cartDTO: CartDto, token?: string) {
-    const cartId = parseInt(id);
-    const { anonymousCartId } = cartDTO;
+  async deleteCart(id: number, token: string) {
+    const cartId = id;
 
-    if (!token && !anonymousCartId) {
+    if (!token) {
       throw new NotFoundException(
         'Не предоставлены данные, необходимые для идентификации корзины.',
       );
     }
 
+    const user = await this.prisma.user.findFirst({
+      where: { token },
+    });
+
+    if (!user) {
+      throw new NotFoundException('Данный пользователь не найден!');
+    }
+
     const cart = await this.prisma.cart.findFirst({ where: { id: cartId } });
+
     if (!cart) {
       throw new NotFoundException(
         `Корзина с идентификатором равное ${id} не найдена!`,
       );
     }
 
-    let loginUserId = null;
-
-    if (token) {
-      const user = await this.prisma.user.findFirst({
-        where: { token },
-      });
-
-      if (user) {
-        loginUserId = user.id;
-      } else {
-        throw new NotFoundException('Данный пользователь не найден!');
-      }
-    }
-
-    if (loginUserId) {
-      if (cart.userId === loginUserId) {
-        await this.prisma.cart.delete({ where: { id: cartId } });
-        return {
-          message: 'Корзина успешно удалена!',
-        };
-      }
+    if (user.id === cart.userId) {
+      await this.prisma.cart.delete({ where: { id } });
+      return {
+        message: 'Корзина успешно удалена!',
+      };
     } else {
-      if (cart.anonymousCartId && cart.anonymousCartId === anonymousCartId) {
-        await this.prisma.cart.delete({ where: { id: cartId } });
-        return { message: 'Корзина успешно удалена!' };
-      }
+      throw new ForbiddenException(
+        'Данная корзина не может быть удалена, так как она не принадлежит вам!',
+      );
     }
-
-    throw new ForbiddenException(
-      'Данная корзина не может быть удалена, так как она не принадлежит вам!',
-    );
   }
 }

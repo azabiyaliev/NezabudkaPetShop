@@ -1,15 +1,5 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Query,
-  Req,
-} from '@nestjs/common';
+import { Controller, Delete, Get, Param, Post, Req } from '@nestjs/common';
 import { CartService } from './cart.service';
-import { CartDto } from '../dto/cart.dto';
 import { RequestUser } from '../types';
 import { Request } from 'express';
 
@@ -18,30 +8,29 @@ export class CartController {
   constructor(private cartService: CartService) {}
 
   @Get()
-  async getOneCart(
-    @Req() req: Request & { user?: RequestUser },
-    @Query('anonymousCartId') anonymousCartId: string,
-  ) {
+  async getOneCart(@Req() req: Request & { user: RequestUser }) {
     const token = req.headers.authorization;
-    return await this.cartService.getOneCart(anonymousCartId, token);
+    if (token) {
+      return await this.cartService.getOneCart(token);
+    }
   }
 
   @Post()
-  async create(
-    @Req() req: Request & { user?: RequestUser },
-    @Body() createCartDto: CartDto,
-  ) {
+  async create(@Req() req: Request & { user: RequestUser }) {
     const token = req.headers.authorization;
-    return await this.cartService.createCart(createCartDto, token);
+    if (token) {
+      return await this.cartService.createCart(token);
+    }
   }
 
   @Delete(':id')
-  async deleteBrand(
-    @Param('id') id: string,
-    @Req() req: Request & { user?: RequestUser },
-    @Body() createCartDto: CartDto,
+  async deleteCart(
+    @Param('id') id: number,
+    @Req() req: Request & { user: RequestUser },
   ) {
     const token = req.headers.authorization;
-    return await this.cartService.deleteCart(id, createCartDto, token);
+    if (token) {
+      return await this.cartService.deleteCart(id, token);
+    }
   }
 }
