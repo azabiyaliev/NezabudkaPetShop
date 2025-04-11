@@ -1,22 +1,35 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IOrder } from '../../types';
+import { IOrder, OrderStats } from '../../types';
 import {
   checkoutAuthUserOrder,
-  deleteOrder,
-  getAllOrders,
+  getAllOrders, GetMyOrders, getStatistics,
   updateOrderStatus
 } from './ordersThunk.ts';
 
+export interface Pagination {
+  total: number;
+  perPage: number;
+  currentPage: number;
+  lastPage: number;
+}
+
 interface OrderSliceState {
+  paginationOrders: {
+    data: IOrder[];
+    meta: Pagination;
+  } | null;
   orders: IOrder[];
   oneOrder: IOrder | null;
+  orderStats: OrderStats | null;
   isLoading: boolean;
   isError: boolean;
 }
 
 const initialState: OrderSliceState = {
   orders: [],
+  paginationOrders: null,
   oneOrder: null,
+  orderStats: null,
   isLoading: false,
   isError: false,
 }
@@ -34,9 +47,9 @@ const ordersSlice = createSlice({
         }
       )
       .addCase(
-        getAllOrders.fulfilled, (state, { payload: order }) => {
+        getAllOrders.fulfilled, (state, action: PayloadAction<{ data: IOrder[]; meta: Pagination }>) => {
           state.isLoading = false;
-          state.orders = order;
+          state.paginationOrders = action.payload;
         }
       )
       .addCase(
@@ -62,23 +75,42 @@ const ordersSlice = createSlice({
           state.isError = true;
         }
       )
-      // .addCase(
-      //   checkoutGuestOrder.pending, (state) => {
-      //     state.isLoading = true;
-      //     state.isError = false;
-      //   }
-      // )
-      // .addCase(
-      //   checkoutGuestOrder.fulfilled, (state) => {
-      //     state.isLoading = false
-      //   }
-      // )
-      // .addCase(
-      //   checkoutGuestOrder.rejected, (state) => {
-      //     state.isLoading = false;
-      //     state.isError = true;
-      //   }
-      // )
+      .addCase(
+        GetMyOrders.pending, (state) => {
+          state.isLoading = true;
+          state.isError = false
+        }
+      )
+      .addCase(
+        GetMyOrders.fulfilled, (state, {payload: order}) => {
+          state.isLoading = false;
+          state.orders = order
+        }
+      )
+      .addCase(
+        GetMyOrders.rejected, (state) => {
+          state.isLoading = false;
+          state.isError = true;
+        }
+      )
+      .addCase(
+        getStatistics.pending, (state) => {
+          state.isLoading = true;
+          state.isError = false;
+        }
+      )
+      .addCase(
+        getStatistics.fulfilled, (state, {payload: stats}) => {
+          state.isLoading = false;
+          state.orderStats = stats;
+        }
+      )
+      .addCase(
+        getStatistics.rejected, (state) => {
+          state.isLoading = false;
+          state.isError = true;
+        }
+      )
       .addCase(
         updateOrderStatus.pending, (state) => {
           state.isLoading = true;
@@ -93,24 +125,6 @@ const ordersSlice = createSlice({
       )
       .addCase(
         updateOrderStatus.rejected, (state) => {
-          state.isLoading = false;
-          state.isError = true;
-        }
-      )
-      .addCase(
-        deleteOrder.pending, (state) => {
-          state.isLoading = true;
-          state.isError = false;
-        }
-      )
-      .addCase(
-        deleteOrder.fulfilled, (state, action) => {
-          state.isLoading = false;
-          state.orders = state.orders.filter((order) => order.id !== Number(action.meta.arg))
-        }
-      )
-      .addCase(
-        deleteOrder.rejected, (state) => {
           state.isLoading = false;
           state.isError = true;
         }

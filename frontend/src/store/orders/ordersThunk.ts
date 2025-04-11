@@ -1,18 +1,48 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { IOrder, OrderMutation } from '../../types';
+import { IOrder, OrderMutation, OrderStats } from '../../types';
 import axiosApi from '../../axiosApi.ts';
 import { RootState } from '../../app/store.ts';
+import { Pagination } from './ordersSlice.ts';
 
-export const getAllOrders = createAsyncThunk<IOrder[], void, {state: RootState}>(
+export const getAllOrders = createAsyncThunk<{ data: IOrder[], meta: Pagination }, number, { state: RootState }>(
   'orders/getAllOrders',
-  async(_, {getState}) => {
+  async (page, { getState }) => {
     const token = getState().users.user?.token;
-    const response = await axiosApi.get('orders/all-orders', {
+
+    const response = await axiosApi.get(`/orders/all-orders?page=${page}&limit=10`, {
       headers: {
-        Authorization: token
+        Authorization: token,
       },
     });
-    return response.data || []
+
+    return response.data;
+  }
+);
+
+export const GetMyOrders = createAsyncThunk<IOrder[], string, {state: RootState}>(
+  'orders/getMyOrders',
+  async (email, {getState}) => {
+    try {
+      const token = getState().users.user?.token;
+      if(token) {
+        const response = await axiosApi.get('orders/my-orders', {headers: {Authorization: token}});
+        return response.data;
+      } else {
+        const response = await axiosApi.get(`orders/guest-orders?email=${email}`);
+        return response.data;
+      }
+    } catch(e) {
+      console.log(e)
+    }
+  }
+)
+
+export const getStatistics = createAsyncThunk<OrderStats, void, {state:RootState}>(
+  'orders/getStatistics',
+  async(_, {getState}) => {
+    const token = getState().users.user?.token;
+    const response = await axiosApi.get('orders/statistics', {headers: {Authorization: token}});
+    return response.data;
   }
 )
 
@@ -37,19 +67,6 @@ export const checkoutAuthUserOrder = createAsyncThunk<void, OrderMutation, {stat
   }
 )
 
-// export const checkoutGuestOrder = createAsyncThunk<void, OrderMutation>(
-//   'orders/checkoutGuestOrder',
-//   async(order, { rejectWithValue }) => {
-//     console.log('Отправка заказа:', order);
-//     try {
-//       await axiosApi.post('orders/guest-checkout', order);
-//     } catch (e) {
-//       console.error('Ошибка оформления заказа:', e);
-//       return rejectWithValue(e);
-//     }
-//   }
-// )
-
 export const updateOrderStatus = createAsyncThunk<
   IOrder,
   { orderId: number; updatedStatus: OrderMutation },
@@ -64,17 +81,5 @@ export const updateOrderStatus = createAsyncThunk<
       },
     });
     return response.data;
-  }
-)
-
-export const deleteOrder = createAsyncThunk<IOrder, number, {state: RootState}>(
-  'orders/deleteOrder',
-  async(orderId, {getState}) => {
-    const token = getState().users.user?.token;
-    return await axiosApi.delete(`orders/${orderId}`, {
-      headers: {
-        Authorization: token
-      }
-    })
   }
 )

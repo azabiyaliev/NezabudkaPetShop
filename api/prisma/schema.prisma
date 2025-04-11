@@ -130,7 +130,7 @@ model Order {
 
   status OrderStatus @default(inProcess)
 
-  address        String
+  address        String?
   guestEmail     String?        @map("guest_email")
   guestName      String?        @map("guest_name")
   guestLastName  String?        @map("guest_lastname")

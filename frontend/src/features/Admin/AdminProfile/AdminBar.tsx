@@ -59,6 +59,9 @@ const AdminBar = () => {
           <ListItem component={NavLink} to="/private/client_orders">
             <ListItemText primary="Заказы" className="text-black" />
           </ListItem>
+          <ListItem component={NavLink} to="/private/order_stats">
+            <ListItemText primary="Статистика" className="text-black" />
+          </ListItem>
           <ListItem component={NavLink} to="/private/clients">
             <ListItemText primary="Клиенты" className="text-black" />
           </ListItem>

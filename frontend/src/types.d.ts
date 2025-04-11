@@ -157,6 +157,7 @@ export interface ProductRequest {
 
 export interface ICart {
   quantity: number;
+  productId: number;
   product: ProductResponse;
 }
 
@@ -228,13 +229,14 @@ export interface AdminDataMutation {
 export interface IOrder {
   id: number;
   status: string;
-  address: string;
+  address?: string;
   guestEmail: string;
   guestPhone: string;
   guestName: string;
   guestLastName: string;
   orderComment: string;
   paymentMethod: PaymentMethod;
+  deliveryMethod: DeliveryMethod;
   userId: number;
   user: User;
   items: ICart[];
@@ -251,6 +253,7 @@ export interface OrderMutation {
   guestLastName: string;
   orderComment: string;
   paymentMethod: string;
+  deliveryMethod: string;
   userId: string;
   items: ICartMutation[];
 }
@@ -261,4 +264,10 @@ export interface OrderItem {
   productId: number;
   product: ProductResponse;
   orderAmount: number;
+}
+
+export interface OrderStats {
+  id: number;
+  deliveryStatistic: number;
+  pickUpStatistic: number;
 }

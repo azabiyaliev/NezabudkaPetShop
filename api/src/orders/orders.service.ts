@@ -16,8 +16,12 @@ export class OrdersService {
     private telegramBot: TelegramService,
   ) {}
 
-  async getAllOrders() {
-    const order = await this.prisma.order.findMany({
+  async getAllOrders(query: { page: number; limit: number }) {
+    const page = Number(query.page) || 1;
+    const skip = (page - 1) * 10;
+    const orders = await this.prisma.order.findMany({
+      skip,
+      take: 10,
       include: {
         user: true,
         items: {
@@ -26,8 +30,20 @@ export class OrdersService {
           },
         },
       },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
-    return order;
+    const total = await this.prisma.order.count();
+    return {
+      data: orders,
+      meta: {
+        total,
+        currentPage: page,
+        lastPage: Math.ceil(total / 10),
+        perPage: 10,
+      },
+    };
   }
 
   async getUserOrders(userId?: number, guestEmail?: string) {
@@ -93,6 +109,17 @@ export class OrdersService {
     return orders;
   }
 
+  async getOrderStats() {
+    const stats = await this.prisma.orderStatistic.upsert({
+      where: {
+        id: 1,
+      },
+      create: { pickUpStatistic: 0, deliveryStatistic: 0 },
+      update: {},
+    });
+    return stats;
+  }
+
   async createOrder(createOrderDto: CreateOrderDto, userId?: number) {
     const {
       address,
@@ -148,7 +175,7 @@ export class OrdersService {
 
     const order = await this.prisma.order.create({
       data: {
-        address,
+        address: deliveryMethod === 'PickUp' ? 'Самовывоз' : address,
         userId: userId || null,
         guestEmail: personEmail,
         guestPhone: personPhone,
@@ -222,7 +249,7 @@ export class OrdersService {
         this.prisma.products.update({
           where: { id: item.productId },
           data: {
-            orderedProductsStatistic: {
+            orderedProductsStats: {
               increment: item.quantity,
             },
           },

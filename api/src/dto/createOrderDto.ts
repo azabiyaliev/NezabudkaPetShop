@@ -1,11 +1,11 @@
 import {
   IsEmail,
   IsEnum,
-  IsNotEmpty,
   IsOptional,
   IsPhoneNumber,
   IsString,
   Matches,
+  ValidateIf,
   ValidateNested,
 } from 'class-validator';
 import { DeliveryMethod, OrderStatus, PaymentMethod } from '@prisma/client';
@@ -15,10 +15,11 @@ import { OrderItemDto } from './OrderItemDto';
 export class CreateOrderDto {
   id?: number;
 
-  @IsNotEmpty({ message: 'Адрес не может быть пустым' })
+  @IsOptional()
+  @ValidateIf((o: CreateOrderDto) => o.deliveryMethod === 'Delivery')
   @IsString({ message: 'Это поле должнно быть строковым ' })
   @Matches(/^[a-zA-Zа-яА-Я0-9\s,.-]+$/, { message: 'Неверный формат адреса' })
-  address!: string;
+  address?: string;
 
   @IsOptional()
   @Matches(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, {

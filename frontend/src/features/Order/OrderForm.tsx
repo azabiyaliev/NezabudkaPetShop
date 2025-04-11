@@ -14,6 +14,11 @@ enum PaymentMethod {
   ByCard = 'ByCard',
 }
 
+enum DeliveryMethod {
+  Delivery = 'Delivery',
+  PickUp = 'PickUp',
+}
+
 const regEmail = /^(\w+[-.]?\w+)@(\w+)([.-]?\w+)?(\.[a-zA-Z]{2,3})$/;
 const regPhone = /^(\+996|0)\s?\d{3}\s?\d{3}\s?\d{3}$/;
 const regAddress = /^[a-zA-Zа-яА-Я0-9\s,.-]+$/;
@@ -35,6 +40,7 @@ const OrderForm = () => {
     guestLastName: "",
     orderComment: "",
     paymentMethod: PaymentMethod.ByCash,
+    deliveryMethod: DeliveryMethod.Delivery,
     items: [],
   });
 
@@ -83,6 +89,13 @@ const OrderForm = () => {
       paymentMethod: method,
     }));
   };
+
+  const handleDeliveryMethodChange = (method: DeliveryMethod) => {
+    setForm(prev => ({
+      ...prev,
+      deliveryMethod: method,
+    }))
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -136,9 +149,10 @@ const OrderForm = () => {
     } else if (!regPhone.test(form.guestPhone)) {
       toast.error("Неверный формат телефона");
       return;
-    } else if (!regAddress.test(form.address)) {
+    } else if (form.deliveryMethod === 'Delivery' && !regAddress.test(form.address)) {
       toast.error("Неверный формат адреса");
       return;
+
     } else if (!form.guestName) {
       toast.error("Заполните поле Имя");
       return;
@@ -362,6 +376,7 @@ const OrderForm = () => {
           3. Адрес Доставки
         </Typography>
 
+        {form.deliveryMethod === 'Delivery' && (
         <TextField
           InputLabelProps={{
             shrink: true,
@@ -387,7 +402,9 @@ const OrderForm = () => {
           value={form.address}
           error={Boolean(incorrectFormatAddress)}
           onChange={handleChange}
+          required={form.deliveryMethod === 'Delivery'}
         />
+        )}
 
         <TextField
           InputLabelProps={{
@@ -486,6 +503,79 @@ const OrderForm = () => {
             }}
           >
             Картой
+          </Button>
+        </Grid>
+      </Grid>
+
+      <Grid
+        container
+        spacing={2}
+        sx={{
+          marginTop: "17px",
+          display: "flex",
+          flexDirection: "column",
+          border: "1px solid #e5e2dc",
+          width: "700px",
+          padding: "2rem",
+          borderRadius: "20px",
+          marginBottom: "20px",
+          "@media (max-width: 820px)": {
+            padding: "1rem",
+            width: "600px",
+          },
+          "@media (max-width: 720px)": {
+            width: "100%",
+          },
+        }}
+      >
+        <Typography variant="h6">Способ оплаты</Typography>
+
+        <Grid>
+          <Button
+            onClick={() => handleDeliveryMethodChange(DeliveryMethod.PickUp)}
+            sx={{
+              backgroundColor:
+                form.deliveryMethod === DeliveryMethod.PickUp
+                  ? "#5F8B4C"
+                  : "transparent",
+              color:
+                form.deliveryMethod === DeliveryMethod.PickUp
+                  ? "white"
+                  : "#5F8B4C",
+              border: "1px solid #5F8B4C",
+              marginRight: "17px",
+              "&:hover": {
+                backgroundColor:
+                  form.deliveryMethod === DeliveryMethod.PickUp
+                    ? "#5F8B4C"
+                    : "rgba(0, 0, 0, 0.04)",
+              },
+            }}
+          >
+            Самовывоз
+          </Button>
+
+          <Button
+            onClick={() => handleDeliveryMethodChange(DeliveryMethod.Delivery)}
+            sx={{
+              backgroundColor:
+                form.deliveryMethod === DeliveryMethod.Delivery
+                  ? "#5F8B4C"
+                  : "transparent",
+              color:
+                form.deliveryMethod === DeliveryMethod.Delivery
+                  ? "white"
+                  : "#5F8B4C",
+              border: "1px solid #5F8B4C",
+              "&:hover": {
+                backgroundColor:
+                  form.deliveryMethod === DeliveryMethod.Delivery
+                    ? "#5F8B4C"
+                    : "rgba(0, 0, 0, 0.04)",
+              },
+            }}
+          >
+            Доставка
           </Button>
         </Grid>
       </Grid>
