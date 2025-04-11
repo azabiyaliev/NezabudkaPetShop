@@ -26,6 +26,7 @@ const OrderForm = () => {
   const [incorrectFormatAddress, setIncorrectFormatAddress] = useState("");
   const carts = useAppSelector((state) => state.carts.carts);
   const user = useAppSelector((state) => state.users.user);
+  const [isBonusInputDisabled, setIsBonusInputDisabled] = useState(false);
   const navigate = useNavigate();
   const [form, setForm] = useState<OrderMutation>({
     address: "",
@@ -172,6 +173,10 @@ const OrderForm = () => {
 
   const availableBonuses = user && !isNaN(user.bonus) ? user.bonus : 0;
   const maxBonusesToUse = !isNaN(totalPrice) ? Math.min(availableBonuses, totalPrice) : 0;
+
+  useEffect(() => {
+    setIsBonusInputDisabled(availableBonuses === 0);
+  }, [availableBonuses])
 
   const handleBonusChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const parsedValue = Number(e.target.value);
@@ -570,6 +575,7 @@ const OrderForm = () => {
             onChange={handleBonusChange}
             inputProps={{ min: 0, max: maxBonusesToUse }}
             sx={{ width: "100%" }}
+            disabled={isBonusInputDisabled}
           />
         </Grid>
         <Typography sx={{ marginTop: 2 }}>
