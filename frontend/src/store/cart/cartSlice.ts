@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { addItem, createCart, fetchCart } from './cartThunk.ts';
+import { addItem, createCart, deleteItemCart, fetchCart } from './cartThunk.ts';
 import { GlobalError, ICartBack } from '../../types';
 import { RootState } from '../../app/store.ts';
 
@@ -17,6 +17,7 @@ interface CartState {
     getCartError: GlobalError | null;
     createError: GlobalError | null;
     addProductError: GlobalError | null;
+    deleteProductError: GlobalError | null;
   },
 }
 
@@ -34,6 +35,7 @@ const initialState: CartState = {
     getCartError: null,
     createError: null,
     addProductError: null,
+    deleteProductError: null,
   },
 }
 
@@ -88,6 +90,18 @@ const cartSlice = createSlice({
       .addCase(addItem.rejected, (state, {payload: error}) => {
         state.loadings.addProductLoading = false;
         state.errors.addProductError = error || null;
+      })
+      .addCase(deleteItemCart.pending, (state) => {
+        state.loadings.deleteProductLoading = true;
+        state.errors.deleteProductError = null;
+      })
+      .addCase(deleteItemCart.fulfilled, (state) => {
+        state.loadings.deleteProductLoading = false;
+        state.errors.deleteProductError = null;
+      })
+      .addCase(deleteItemCart.rejected, (state, {payload: error}) => {
+        state.loadings.deleteProductLoading = false;
+        state.errors.deleteProductError = error || null;
       });
   }
 });

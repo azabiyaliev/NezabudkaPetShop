@@ -206,7 +206,7 @@ export class CartItemsService {
       });
     }
 
-    if (!user) {
+    if (!user && token) {
       throw new NotFoundException('Данный пользователь не найден!');
     }
 
@@ -242,15 +242,17 @@ export class CartItemsService {
         where: { id: cartItem.id },
       });
       return { message: 'Данный товар был успешно удален из корзины!' };
-    } else if (cart && cart.anonymousCartId === cartDto.anonymousCartId) {
+    }
+
+    if (cart.anonymousCartId === cartDto.anonymousCartId) {
       await this.prisma.cartItem.delete({
         where: { id: cartItem.id },
       });
       return { message: 'Данный товар был успешно удален из корзины!' };
-    } else {
-      throw new ForbiddenException(
-        'К сожалению, вы не можете удалить этот товар, так как она закреплена за другим пользователем.',
-      );
     }
+
+    throw new ForbiddenException(
+      'К сожалению, вы не можете удалить этот товар, так как она закреплена за другим пользователем.',
+    );
   }
 }

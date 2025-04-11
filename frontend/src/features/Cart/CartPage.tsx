@@ -1,5 +1,5 @@
 import { Box } from '@mui/joy';
-import { useAppSelector } from '../../app/hooks.ts';
+import { useAppDispatch, useAppSelector } from '../../app/hooks.ts';
 import Carts from '../../components/Domain/CustomCart/Basket/Carts/Carts.tsx';
 import { Button, Container } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
@@ -7,11 +7,33 @@ import image from '../../assets/image_transparent.png';
 import Typography from '@mui/joy/Typography';
 import TotalPrice from '../../components/Domain/CustomCart/Basket/TotalPrice/TotalPrice.tsx';
 import OrderForm from '../Order/OrderForm.tsx';
-import { cartFromSlice } from '../../store/cart/cartSlice.ts';
+import { cartFromSlice, clearCart } from '../../store/cart/cartSlice.ts';
+import { useEffect } from 'react';
+import { fetchCart } from '../../store/cart/cartThunk.ts';
+import { selectUser } from '../../store/users/usersSlice.ts';
 
 const CartPage = () => {
+  const user = useAppSelector(selectUser);
   const cart = useAppSelector(cartFromSlice);
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (user) {
+        dispatch(clearCart());
+        await dispatch(fetchCart({ token: user.token })).unwrap();
+      } else {
+        dispatch(clearCart());
+        const anonymousCartId = localStorage.getItem('anonymousCartId');
+        if (anonymousCartId) {
+          await dispatch(fetchCart({ anonymousCartId })).unwrap();
+        }
+      }
+    };
+
+    fetchData();
+  }, [dispatch, user]);
 
   return (
     <Container>

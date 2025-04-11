@@ -141,7 +141,6 @@ const Carts: React.FC<Props> = ({ products }) => {
         {products.map((product) => (
           <Cart
             product={product}
-            products={products}
             key={product.product.id}
           />
         ))}

@@ -42,19 +42,23 @@ const OneProductCard: React.FC<Props> = ({ product }) => {
 
     if (cart) {
       if (user) {
-        dispatch(addItem({
+        await dispatch(addItem({
           cartId: cart.id,
           productId: product.id,
           quantity: 1,
           token: user.token,
-        }));
+        })).unwrap();
+        await dispatch(fetchCart({ token: user.token })).unwrap();
       } else {
-        dispatch(addItem({
-          cartId: cart.id,
-          productId: product.id,
-          quantity: 1,
-          anonymousCartId: anonymousUser ? anonymousUser : undefined,
-        }));
+        if (anonymousUser) {
+          await dispatch(addItem({
+            cartId: cart.id,
+            productId: product.id,
+            quantity: 1,
+            anonymousCartId: anonymousUser,
+          })).unwrap();
+          await dispatch(fetchCart({ anonymousCartId: anonymousUser})).unwrap();
+        }
       }
     }
   };

@@ -1,56 +1,51 @@
-import { Box, Button, Typography } from "@mui/joy";
-import { ICart, ProductResponse } from "../../../../../../types";
-import React, { useEffect } from "react";
-import { apiUrl } from "../../../../../../globalConstants.ts";
-import IconButton from "@mui/joy/IconButton";
-import { Add, Remove } from "@mui/icons-material";
-import { useAppDispatch } from "../../../../../../app/hooks.ts";
-import {
-  deleteProduct,
-  productCardToAdd,
-  productCardToRemoveQuantity,
-  setToLocalStorage,
-} from "../../../../../../store/cart/cartLocalSlice.ts";
-import { enqueueSnackbar } from "notistack";
+import { Box, Button, Typography } from '@mui/joy';
+import { ICart, ProductResponse } from '../../../../../../types';
+import React from 'react';
+import { apiUrl } from '../../../../../../globalConstants.ts';
+import IconButton from '@mui/joy/IconButton';
+import { Add, Remove } from '@mui/icons-material';
+import { useAppDispatch, useAppSelector } from '../../../../../../app/hooks.ts';
+import { productCardToRemoveQuantity, } from '../../../../../../store/cart/cartLocalSlice.ts';
+import { enqueueSnackbar } from 'notistack';
+import { deleteItemCart, fetchCart } from '../../../../../../store/cart/cartThunk.ts';
+import { selectUser } from '../../../../../../store/users/usersSlice.ts';
+import { cartFromSlice } from '../../../../../../store/cart/cartSlice.ts';
 
 interface Props {
   product: ICart;
-  products: ICart[];
 }
 
-const Cart: React.FC<Props> = ({ product, products }) => {
+const Cart: React.FC<Props> = ({ product }) => {
+  const user = useAppSelector(selectUser);
+  const cart = useAppSelector(cartFromSlice);
   const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    dispatch(setToLocalStorage(products));
-  }, [dispatch, products]);
-
   const addQuantity = (product: ProductResponse) => {
-    dispatch(productCardToAdd(product));
-    dispatch(setToLocalStorage(products));
+    console.log(product);// dispatch(productCardToAdd(product));
+    // dispatch(setToLocalStorage(products));
   };
 
   const removeQuantity = async (product: ProductResponse) => {
     dispatch(productCardToRemoveQuantity(product));
   };
 
-  const deleteProductFromCart = (id: number) => {
-    dispatch(deleteProduct(id));
-    const updatedProducts = products.filter(
-      (product) => product.product.id !== id,
-    );
-    dispatch(setToLocalStorage(updatedProducts));
-    enqueueSnackbar("Данный товар успешно удален из списка в корзине!", {
-      variant: "success",
-    });
-  };
-
-  useEffect(() => {
-    if (product.quantity === 0) {
-      dispatch(deleteProduct(product.product.id));
-      dispatch(setToLocalStorage(products));
+  const deleteProductFromCart = async (id: number) => {
+    const anonymous = localStorage.getItem("anonymousCartId");
+    if (cart) {
+      if (user) {
+        await dispatch(deleteItemCart({cartId: cart.id, productId: id, token: user.token})).unwrap();
+        await dispatch(fetchCart({ token: user.token })).unwrap();
+      } else {
+        if (anonymous) {
+          await dispatch(deleteItemCart({cartId: cart.id, productId: id, anonymousCartId: anonymous})).unwrap();
+          await dispatch(fetchCart({ anonymousCartId: anonymous})).unwrap();
+        }
+      }
+      enqueueSnackbar("Данный товар успешно удален из корзины!", {
+        variant: "success",
+      });
     }
-  }, [dispatch, product.product.id, product.quantity, products]);
+  };
 
   return (
     <Box

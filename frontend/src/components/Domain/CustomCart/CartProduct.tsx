@@ -1,24 +1,39 @@
-import { ICart } from "../../../types";
-import React from "react";
-import { Box, Button } from "@mui/material";
-import { apiUrl } from "../../../globalConstants.ts";
-import Typography from "@mui/joy/Typography";
-import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
-import { useAppDispatch } from "../../../app/hooks.ts";
-import { enqueueSnackbar } from "notistack";
-import { deleteProduct } from "../../../store/cart/cartLocalSlice.ts";
+import { ICart } from '../../../types';
+import React from 'react';
+import { Box, Button } from '@mui/material';
+import { apiUrl } from '../../../globalConstants.ts';
+import Typography from '@mui/joy/Typography';
+import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
+import { enqueueSnackbar } from 'notistack';
+import { deleteItemCart, fetchCart } from '../../../store/cart/cartThunk.ts';
+import { selectUser } from '../../../store/users/usersSlice.ts';
+import { cartFromSlice } from '../../../store/cart/cartSlice.ts';
 
 interface Props {
   productCart: ICart;
 }
 const CartProduct: React.FC<Props> = ({ productCart }) => {
+  const user = useAppSelector(selectUser);
+  const cart = useAppSelector(cartFromSlice);
   const dispatch = useAppDispatch();
 
-  const deleteProductFromCart = (id: number) => {
-    dispatch(deleteProduct(id));
-    enqueueSnackbar("Данный товар успешно удален из корзины!", {
-      variant: "success",
-    });
+  const deleteProductFromCart = async (id: number) => {
+    const anonymousUser = localStorage.getItem("anonymousCartId");
+    if (cart) {
+      if (user) {
+        await dispatch(deleteItemCart({cartId: cart.id, productId: id, token: user.token})).unwrap();
+        await dispatch(fetchCart({ token: user.token })).unwrap();
+      } else {
+        if (anonymousUser) {
+          await dispatch(deleteItemCart({cartId: cart.id, productId: id, anonymousCartId: anonymousUser})).unwrap();
+          await dispatch(fetchCart({ anonymousCartId: anonymousUser})).unwrap();
+        }
+      }
+      enqueueSnackbar("Данный товар успешно удален из корзины!", {
+        variant: "success",
+      });
+    }
   };
 
   return (
