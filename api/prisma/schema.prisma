@@ -109,11 +109,12 @@ model Products {
   startDateSales DateTime?
   endDateSales   DateTime?
 
-  items      OrderItem[]
-  brandId    Int?        @map("brand_id")
-  brand      Brand?      @relation(fields: [brandId], references: [id])
-  categoryId Int?        @map("category_id")
-  category   Category?   @relation(fields: [categoryId], references: [id])
+  items                OrderItem[]
+  brandId              Int?        @map("brand_id")
+  brand                Brand?      @relation(fields: [brandId], references: [id])
+  categoryId           Int?        @map("category_id")
+  category             Category?   @relation(fields: [categoryId], references: [id])
+  orderedProductsStats Int         @default(0) @map("ordered_products_stats")
 
   reviews  Review[]
   Favorite Favorite[]
@@ -129,13 +130,14 @@ model Order {
 
   status OrderStatus @default(inProcess)
 
-  address       String
-  guestEmail    String?       @map("guest_email")
-  guestName     String?       @map("guest_name")
-  guestLastName String?       @map("guest_lastname")
-  guestPhone    String?       @map("guest_phone")
-  orderComment  String?       @map("order_comment")
-  paymentMethod PaymentMethod @default(ByCash)
+  address        String
+  guestEmail     String?        @map("guest_email")
+  guestName      String?        @map("guest_name")
+  guestLastName  String?        @map("guest_lastname")
+  guestPhone     String?        @map("guest_phone")
+  orderComment   String?        @map("order_comment")
+  paymentMethod  PaymentMethod  @default(ByCash) @map("payment_method")
+  deliveryMethod DeliveryMethod @default(Delivery) @map("delivery_method")
 
   userId Int?        @map("user_id")
   user   User?       @relation(fields: [userId], references: [id])
@@ -161,6 +163,15 @@ model OrderItem {
   @@map("order_items")
 }
 
+model OrderStatistic {
+  id Int @id @default(autoincrement())
+
+  pickUpStatistic   Int @map("pickup_stats")
+  deliveryStatistic Int @map("delivery_stats")
+
+  @@map("order_statistic")
+}
+
 enum OrderStatus {
   inProcess
   onTheWay
@@ -171,6 +182,11 @@ enum OrderStatus {
 enum PaymentMethod {
   ByCard
   ByCash
+}
+
+enum DeliveryMethod {
+  Delivery
+  PickUp
 }
 
 model Review {

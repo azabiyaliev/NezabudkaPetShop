@@ -79,11 +79,4 @@ export class OrdersController {
   ) {
     return await this.ordersService.updateStatus(orderDto, Number(orderId));
   }
-
-  @UseGuards(TokenAuthGuard, RolesGuard)
-  @Roles('admin')
-  @Delete(':id')
-  async deleteOrder(@Param('id') orderId: string) {
-    return await this.ordersService.deleteOrder(Number(orderId));
-  }
 }

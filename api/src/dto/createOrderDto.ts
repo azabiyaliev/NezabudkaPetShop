@@ -8,7 +8,7 @@ import {
   Matches,
   ValidateNested,
 } from 'class-validator';
-import { OrderStatus, PaymentMethod } from '@prisma/client';
+import { DeliveryMethod, OrderStatus, PaymentMethod } from '@prisma/client';
 import { Type } from 'class-transformer';
 import { OrderItemDto } from './OrderItemDto';
 
@@ -59,4 +59,7 @@ export class CreateOrderDto {
 
   @IsEnum(PaymentMethod)
   paymentMethod!: PaymentMethod;
+
+  @IsEnum(DeliveryMethod)
+  deliveryMethod!: DeliveryMethod;
 }

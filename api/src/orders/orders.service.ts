@@ -6,7 +6,6 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateOrderDto } from '../dto/createOrderDto';
-import { OrderStatus } from '@prisma/client';
 import { TelegramService } from '../telegram/telegram.service';
 
 @Injectable()
@@ -21,7 +20,11 @@ export class OrdersService {
     const order = await this.prisma.order.findMany({
       include: {
         user: true,
-        items: true,
+        items: {
+          include: {
+            product: true,
+          },
+        },
       },
     });
     return order;
@@ -100,6 +103,7 @@ export class OrdersService {
       guestLastName,
       orderComment,
       paymentMethod,
+      deliveryMethod,
     } = createOrderDto;
 
     let personEmail = guestEmail;
@@ -130,6 +134,18 @@ export class OrdersService {
       0,
     );
 
+    if (deliveryMethod === 'Delivery') {
+      await this.prisma.orderStatistic.updateMany({
+        where: { id: 1 },
+        data: { deliveryStatistic: { increment: 1 } },
+      });
+    } else if (deliveryMethod === 'PickUp') {
+      await this.prisma.orderStatistic.updateMany({
+        where: { id: 1 },
+        data: { pickUpStatistic: { increment: 1 } },
+      });
+    }
+
     const order = await this.prisma.order.create({
       data: {
         address,
@@ -140,6 +156,7 @@ export class OrdersService {
         guestLastName: userId ? null : guestLastName,
         orderComment,
         paymentMethod,
+        deliveryMethod,
         items: {
           create: items.map((item) => ({
             productId: item.productId,
@@ -165,6 +182,7 @@ export class OrdersService {
       Номер заказчика: ${order.guestPhone}
       Состав заказа:${items.map((item) => ` Номер: ${item.productId} - ${item.quantity}шт.  (${item.orderAmount} сом)`).join('\n')}
       Статус заказа: ${order.status}
+      Условие доставки: ${order.deliveryMethod}
       Итого: ${orderAmount} сом;`;
       setTimeout(() => {
         this.telegramBot.sendMessage(message);
@@ -198,20 +216,27 @@ export class OrdersService {
         'Произошла ошибка при обновлении статуса товара',
       );
     }
-    return order;
-  }
 
-  async deleteOrder(orderId: number) {
-    const status = OrderStatus;
-
-    if (status.Canceled) {
-      await this.prisma.order.delete({
-        where: {
-          id: orderId,
-          status: 'Canceled',
-        },
-      });
-      return { message: 'Заказ был успешно удален' };
+    if (createOrderDto.status === 'isDelivered') {
+      const updateStats = order.items.map((item) =>
+        this.prisma.products.update({
+          where: { id: item.productId },
+          data: {
+            orderedProductsStatistic: {
+              increment: item.quantity,
+            },
+          },
+        }),
+      );
+      await Promise.all(updateStats);
     }
+
+    if (createOrderDto.status === 'Canceled') {
+      await this.prisma.order.delete({
+        where: { id: orderId, status: 'Canceled' },
+      });
+      return { message: 'Заказ был отменен' };
+    }
+    return order;
   }
 }
