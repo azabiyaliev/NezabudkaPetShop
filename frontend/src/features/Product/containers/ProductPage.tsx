@@ -78,10 +78,9 @@ const ProductPage = () => {
         </Box>
       </Box>
     </Box>
-      <Typography variant="body2" mt={2}>
-        истоория просмотренных товаров
-      </Typography>
-      <HistoryProduct/>
+      <Box sx={{mt: 5}}>
+        <HistoryProduct/>
+      </Box>
     </div>
   );
 };
