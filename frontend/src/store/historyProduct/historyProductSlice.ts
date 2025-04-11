@@ -2,7 +2,7 @@ import { historyProduct } from '../../types';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface historyState {
-  history: historyProduct[]
+  history: historyProduct []
 }
 
 const initialState: historyState ={

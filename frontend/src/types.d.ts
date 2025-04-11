@@ -265,5 +265,5 @@ export interface OrderItem {
 
 export interface historyProduct {
   productId: number;
-  product: ProductResponse;
+  product: ProductRequest;
 }
