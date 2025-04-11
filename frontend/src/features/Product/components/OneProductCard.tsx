@@ -22,7 +22,7 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import { selectUser } from '../../../store/users/usersSlice.ts';
 import {
-  addFavoriteProduct,
+  addFavoriteProduct, getLocalFavoriteProducts,
   isInLocalFavorites,
   removeFavoriteProduct
 } from '../../../store/favoriteProducts/favoriteProductLocal.ts';
@@ -49,35 +49,35 @@ const OneProductCard: React.FC<Props> = ({ product }) => {
     dispatch(setToLocalStorage(cart));
   }, [cart, dispatch]);
 
-
   useEffect(() => {
     if (user) {
       const isOnServer = favorites.some(fav => fav.product.id === product.id);
       setIsFavorite(isOnServer);
     } else {
+      getLocalFavoriteProducts()
       setIsFavorite(isInLocalFavorites(product.id));
     }
-  }, [user, product.id, favorites]);
+  }, [user, product.id, favorites, dispatch]);
 
   const toggleFavorite = () => {
+    const newValue = !isFavorite;
+    setIsFavorite(newValue);
+
     if (!user) {
-      if (isFavorite) {
+      if (newValue) {
+        addFavoriteProduct(product.id);
+        enqueueSnackbar("Добавлено в избранное", { variant: "success" });
+      } else {
         removeFavoriteProduct(product.id);
         enqueueSnackbar("Удалено из избранного", { variant: "info" });
-      } else {
-        addFavoriteProduct(product.id);
-        setIsFavorite(true);
-        enqueueSnackbar("Добавлено в избранное", { variant: "success" });
       }
-      setIsFavorite(!isFavorite);
     } else {
-      if (isFavorite) {
-        dispatch(removeFavoriteProductThunk(product.id));
-        setIsFavorite(false);
-        enqueueSnackbar("Удалено из избранного", { variant: "info" });
-      } else {
+      if (newValue) {
         dispatch(addFavoriteProducts(product.id));
         enqueueSnackbar("Добавлено в избранное", { variant: "success" });
+      } else {
+        dispatch(removeFavoriteProductThunk(product.id));
+        enqueueSnackbar("Удалено из избранного", { variant: "info" });
       }
     }
   };

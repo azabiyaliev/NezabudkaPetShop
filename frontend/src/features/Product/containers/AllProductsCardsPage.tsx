@@ -4,15 +4,20 @@ import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
 import { getProducts } from "../../../store/products/productsThunk.ts";
 import { selectProducts } from "../../../store/products/productsSlice.ts";
 import OneProductCard from "../components/OneProductCard.tsx";
+import { getFavoriteProducts } from '../../../store/favoriteProducts/favoriteProductsThunks.ts';
+import { selectUser } from '../../../store/users/usersSlice.ts';
 
 const AllProductsCardsPage = () => {
   const dispatch = useAppDispatch();
   const products = useAppSelector(selectProducts);
   const [columns, setColumns] = useState(4);
+  const user = useAppSelector(selectUser);
 
   useEffect(() => {
     dispatch(getProducts(''));
-  }, [dispatch]);
+    if (user) dispatch(getFavoriteProducts());
+  }, [dispatch, user]);
+
 
   return (
     <Box sx={{ maxWidth: "1350px", margin: "0 auto", padding: 4 }}>
