@@ -1,49 +1,62 @@
-import {
-  Button,
-  Card,
-  CardContent,
-  CardMedia,
-  Typography,
-} from "@mui/material";
-import React, { useEffect } from "react";
-import { ProductResponse } from "../../../types";
-import { apiUrl } from "../../../globalConstants.ts";
-import "../css/product.css";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import { useNavigate } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
-import {
-  cartsFromSlice,
-  productCardToAdd,
-  setToLocalStorage,
-} from "../../../store/cart/cartLocalSlice.ts";
-import { enqueueSnackbar } from "notistack";
+import { Button, Card, CardContent, CardMedia, Typography, } from '@mui/material';
+import React, { useEffect } from 'react';
+import { ProductResponse } from '../../../types';
+import { apiUrl } from '../../../globalConstants.ts';
+import '../css/product.css';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import { useNavigate } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
+import { addItem, fetchCart } from '../../../store/cart/cartThunk.ts';
+import { cartFromSlice, clearCart } from '../../../store/cart/cartSlice.ts';
+import { selectUser } from '../../../store/users/usersSlice.ts';
 
 interface Props {
   product: ProductResponse;
 }
 
 const OneProductCard: React.FC<Props> = ({ product }) => {
-  const cart = useAppSelector(cartsFromSlice);
+  const user = useAppSelector(selectUser);
+  const cart = useAppSelector(cartFromSlice);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
-    dispatch(setToLocalStorage(cart));
-  }, [cart, dispatch]);
+    const fetchData = async () => {
+      if (user) {
+        dispatch(clearCart());
+        await dispatch(fetchCart({ token: user.token })).unwrap();
+      } else {
+        dispatch(clearCart());
+        const anonymousCartId = localStorage.getItem('anonymousCartId');
+        if (anonymousCartId) {
+          await dispatch(fetchCart({ anonymousCartId })).unwrap();
+        }
+      }
+    };
+
+    fetchData();
+  }, [dispatch, user]);
 
   const addProductToCart = async (product: ProductResponse) => {
-    const existingProduct = cart.find(
-      (productCart) => productCart.product.id === product.id,
-    );
+    const anonymousUser = localStorage.getItem("anonymousCartId");
 
-    if (!existingProduct) {
-      enqueueSnackbar("Данный товар успешно добавлен в корзину!", {
-        variant: "success",
-      });
+    if (cart) {
+      if (user) {
+        dispatch(addItem({
+          cartId: cart.id,
+          productId: product.id,
+          quantity: 1,
+          token: user.token,
+        }));
+      } else {
+        dispatch(addItem({
+          cartId: cart.id,
+          productId: product.id,
+          quantity: 1,
+          anonymousCartId: anonymousUser ? anonymousUser : undefined,
+        }));
+      }
     }
-    dispatch(productCardToAdd(product));
-    dispatch(setToLocalStorage(cart));
   };
 
   return (

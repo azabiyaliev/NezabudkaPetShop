@@ -1,21 +1,21 @@
-import { Box } from "@mui/joy";
-import { useAppSelector } from "../../app/hooks.ts";
-import Carts from "../../components/Domain/CustomCart/Basket/Carts/Carts.tsx";
-import { cartsFromSlice } from "../../store/cart/cartLocalSlice.ts";
-import { Button, Container } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import image from "../../assets/image_transparent.png";
-import Typography from "@mui/joy/Typography";
-import TotalPrice from "../../components/Domain/CustomCart/Basket/TotalPrice/TotalPrice.tsx";
+import { Box } from '@mui/joy';
+import { useAppSelector } from '../../app/hooks.ts';
+import Carts from '../../components/Domain/CustomCart/Basket/Carts/Carts.tsx';
+import { Button, Container } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import image from '../../assets/image_transparent.png';
+import Typography from '@mui/joy/Typography';
+import TotalPrice from '../../components/Domain/CustomCart/Basket/TotalPrice/TotalPrice.tsx';
 import OrderForm from '../Order/OrderForm.tsx';
+import { cartFromSlice } from '../../store/cart/cartSlice.ts';
 
 const CartPage = () => {
-  const cart = useAppSelector(cartsFromSlice);
+  const cart = useAppSelector(cartFromSlice);
   const navigate = useNavigate();
 
   return (
     <Container>
-      {cart.length > 0 ? (
+      {cart && cart.products.length > 0 ? (
         <>
           <Typography
             level="h1"
@@ -35,12 +35,12 @@ const CartPage = () => {
             }}
           >
             <Box>
-              <Carts products={cart} />
+              <Carts products={cart.products} />
               {
                 <OrderForm/>
               }
             </Box>
-            <TotalPrice products={cart} />
+            <TotalPrice products={cart.products} />
           </Box>
         </>
       ) : (

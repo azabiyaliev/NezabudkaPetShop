@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { createCart, fetchCart } from './cartThunk.ts';
+import { addItem, createCart, fetchCart } from './cartThunk.ts';
 import { GlobalError, ICartBack } from '../../types';
 import { RootState } from '../../app/store.ts';
 
@@ -16,6 +16,7 @@ interface CartState {
   errors: {
     getCartError: GlobalError | null;
     createError: GlobalError | null;
+    addProductError: GlobalError | null;
   },
 }
 
@@ -32,12 +33,14 @@ const initialState: CartState = {
   errors: {
     getCartError: null,
     createError: null,
+    addProductError: null,
   },
 }
 
 export const cartFromSlice = (state: RootState)=> state.cart.cart;
 export const cartErrorFromSlice = (state: RootState)=> state.cart.errors.getCartError;
 export const cartCreateErrorFromSlice = (state: RootState)=> state.cart.errors.createError;
+export const addProductErrorFromSlice = (state: RootState)=> state.cart.errors.addProductError;
 
 const cartSlice = createSlice({
   name: 'cart',
@@ -73,6 +76,18 @@ const cartSlice = createSlice({
       .addCase(createCart.rejected, (state, {payload: error}) => {
         state.loadings.createLoading = false;
         state.errors.createError = error || null;
+      })
+      .addCase(addItem.pending, (state) => {
+        state.loadings.addProductLoading = true;
+        state.errors.addProductError = null;
+      })
+      .addCase(addItem.fulfilled, (state) => {
+        state.loadings.addProductLoading = false;
+        state.errors.addProductError = null;
+      })
+      .addCase(addItem.rejected, (state, {payload: error}) => {
+        state.loadings.addProductLoading = false;
+        state.errors.addProductError = error || null;
       });
   }
 });
