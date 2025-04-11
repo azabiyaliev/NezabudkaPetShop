@@ -262,3 +262,8 @@ export interface OrderItem {
   product: ProductResponse;
   orderAmount: number;
 }
+
+export interface historyProduct {
+  productId: number;
+  product: ProductResponse;
+}
