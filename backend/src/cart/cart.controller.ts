@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  Query,
   Req,
 } from '@nestjs/common';
 import { CartService } from './cart.service';
@@ -19,10 +20,10 @@ export class CartController {
   @Get()
   async getOneCart(
     @Req() req: Request & { user?: RequestUser },
-    @Body() cartDto: CartDto,
+    @Query('anonymousCartId') anonymousCartId: string,
   ) {
     const token = req.headers.authorization;
-    return await this.cartService.getOneCart(cartDto, token);
+    return await this.cartService.getOneCart(anonymousCartId, token);
   }
 
   @Post()

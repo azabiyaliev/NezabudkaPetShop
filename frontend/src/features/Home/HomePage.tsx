@@ -24,34 +24,27 @@ const HomePage = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(getBrands()).unwrap();
-    let anonymousCartId: string | null = null;
+    const fetchData = async () => {
+      await dispatch(getBrands()).unwrap();
 
-    if (!user) {
-      dispatch(clearCart());
-      anonymousCartId = localStorage.getItem("anonymousCartId");
-      if (anonymousCartId) {
-        dispatch(fetchCart({anonymousCartId})).unwrap();
-      } else {
-        anonymousCartId = nanoid();
-        localStorage.setItem("anonymousCartId", anonymousCartId);
-      }
-    }
-
-    if (user) {
-      dispatch(fetchCart({token: user.token})).unwrap();
-    }
-
-    if (!cart) {
       if (user) {
-        dispatch(createCart({token: user.token})).unwrap();
+        dispatch(clearCart());
+        await dispatch(createCart({ token: user.token })).unwrap();
+        await dispatch(fetchCart({ token: user.token })).unwrap();
       } else {
-        if (anonymousCartId) {
-          dispatch(createCart({anonymousCartId})).unwrap();
+        dispatch(clearCart());
+        let anonymousCartId = localStorage.getItem('anonymousCartId');
+        if (!anonymousCartId) {
+          anonymousCartId = nanoid();
+          localStorage.setItem('anonymousCartId', anonymousCartId);
+          await dispatch(createCart({ anonymousCartId })).unwrap();
         }
+        await dispatch(fetchCart({ anonymousCartId })).unwrap();
       }
-    }
-  }, [dispatch, user, cart]);
+    };
+
+    fetchData();
+  }, [dispatch, user]);
 
   const closeCart = () => {
     setOpenCart(false);
