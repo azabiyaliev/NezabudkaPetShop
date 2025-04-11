@@ -59,4 +59,12 @@ export class CategoryController {
       subCategoryDto.subcategories,
     );
   }
+
+  @Post(':id/treeSubcategories')
+  async createTreeSubcategory(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() subCategoryDto: SubcategoryDto,
+  ) {
+    return this.categoryService.createTreeSubcategory(id, subCategoryDto);
+  }
 }
