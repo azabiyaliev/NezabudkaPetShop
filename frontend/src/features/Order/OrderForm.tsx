@@ -159,20 +159,29 @@ const OrderForm = () => {
 
   const totalPrice = carts.reduce(
     (acc, item) => {
-      return acc + item.product.productPrice * item.quantity;
+      const itemPrice = Number(item.product.productPrice);
+      const itemQuantity = Number(item.quantity);
+      if (!isNaN(itemPrice) && !isNaN(itemQuantity)) {
+        return acc + itemPrice * itemQuantity;
+      } else {
+        return acc;
+      }
     },
     250,
   );
 
-  const availableBonuses = user ? user.bonus : 0;
-  const maxBonusesToUse = Math.min(availableBonuses, totalPrice);
+  const availableBonuses = user && !isNaN(user.bonus) ? user.bonus : 0;
+  const maxBonusesToUse = !isNaN(totalPrice) ? Math.min(availableBonuses, totalPrice) : 0;
 
-  const handleBonusChange = (e:  React.ChangeEvent<HTMLInputElement>) => {
-    const bonusUsed = Math.min(Number(e.target.value), maxBonusesToUse);
-    setForm((prev) => ({
-      ...prev,
-      bonusUsed,
-    }));
+  const handleBonusChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const parsedValue = Number(e.target.value);
+    if (!isNaN(parsedValue)) {
+      const bonusUsed = Math.min(parsedValue, maxBonusesToUse);
+      setForm((prev) => ({
+        ...prev,
+        bonusUsed,
+      }));
+    }
   };
 
   return (
