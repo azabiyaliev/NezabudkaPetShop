@@ -284,3 +284,8 @@ export interface FavoritesResponse {
   createdAt: string;
   product: ProductResponse;
 }
+
+export interface historyProduct {
+  productId: number;
+  product: ProductRequest;
+}

@@ -6,6 +6,7 @@ import { getOneProduct } from "../../../store/products/productsThunk.ts";
 import { useParams } from "react-router-dom";
 import { selectProduct } from "../../../store/products/productsSlice.ts";
 import { apiUrl } from "../../../globalConstants.ts";
+import HistoryProduct from '../../../components/Domain/HistoryProduct/HistoryProduct.tsx';
 
 const ProductPage = () => {
   const dispatch = useAppDispatch();
@@ -21,6 +22,7 @@ const ProductPage = () => {
   }
 
   return (
+    <div>
     <Box className="product-box">
       <Box className="product-grid">
         <Box sx={{ width: "35%" }}>
@@ -76,6 +78,10 @@ const ProductPage = () => {
         </Box>
       </Box>
     </Box>
+      <Box sx={{mt: 5}}>
+        <HistoryProduct/>
+      </Box>
+    </div>
   );
 };
 
