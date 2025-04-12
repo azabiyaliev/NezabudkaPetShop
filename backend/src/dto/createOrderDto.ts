@@ -1,14 +1,13 @@
 import {
   IsBoolean,
   IsEmail,
-  IsEnum, IsInt,
-  IsNotEmpty,
   IsEnum,
+  IsInt,
   IsOptional,
   IsPhoneNumber,
   IsString,
-  Matches, Min,
   Matches,
+  Min,
   ValidateIf,
   ValidateNested,
 } from 'class-validator';
