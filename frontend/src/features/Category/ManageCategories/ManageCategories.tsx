@@ -26,6 +26,9 @@ import Tooltip from '@mui/material/Tooltip';
 import EditCategory from '../../../components/Forms/CategoryForm/EditCategory.tsx';
 import EditSubcategory from '../../../components/Forms/CategoryForm/EditSubcategory.tsx';
 import SubcategoryForm from '../../../components/Forms/SubcategoryForm/SubcategoryForm.tsx';
+import ArrowDropDownOutlinedIcon from '@mui/icons-material/ArrowDropDownOutlined';
+import ListItemButton from '@mui/material/ListItemButton';
+import { Subcategory } from '../../../types';
 
 const SUCCESSFUL_CATEGORY_DELETE = "Удаление прошло успешно!";
 const ERROR_CATEGORY_DELETE = "Ошибка при удалении подкатегории!";
@@ -34,32 +37,30 @@ const WARNING_CATEGORY_DELETE = "Категория не пуста или ис�
 const ManageCategories = () => {
   const categories = useAppSelector(selectCategories);
   const dispatch = useAppDispatch();
+  const draggedOverSub = useRef<number | null>(null);
 
   const [currentCategory, setCurrentCategory] = useState(categories);
-
   const [open, setOpen] = useState(false);
   const [openSubModal, setOpenSubModal] = useState(false);
-
   const [openAddSubModal, setOpenAddSubModal] = useState(false);
   const [parentCategoryId, setParentCategoryId] = useState<number | null>(null);
+  const [openCategory, setOpenCategory] = useState<number | null>(null);
 
 
   const [selectedCategory, setSelectedCategory] = useState<{
     id: number;
     title: string;
   } | null>(null);
-
   const [selectedSubCategory, setSelectedSubCategory] = useState<{
     id: number;
     title: string;
     parentId: number;
   } | null>(null);
-
   const dragSub = useRef<{
     categoryId: number;
     subcategoryIndex: number;
   } | null>(null);
-  const draggedOverSub = useRef<number | null>(null);
+
 
   useEffect(() => {
     dispatch(fetchCategoriesThunk());
@@ -101,27 +102,25 @@ const ManageCategories = () => {
       const updatedCategories = currentCategory.map((category) => {
         if (category.id === categoryId && category.subcategories) {
           const subCategoriesClone = [...category.subcategories];
-
           const draggedSubCategory = subCategoriesClone[subcategoryIndex];
           subCategoriesClone.splice(subcategoryIndex, 1);
-          subCategoriesClone.splice(
-            draggedOverSub.current!,
-            0,
-            draggedSubCategory,
-          );
-
+          subCategoriesClone.splice(draggedOverSub.current!, 0, draggedSubCategory);
           return { ...category, subcategories: subCategoriesClone };
         }
         return category;
       });
 
       setCurrentCategory(updatedCategories);
-
-      dispatch(updateCategoriesThunk(updatedCategories));
+      dispatch(updateCategoriesThunk(updatedCategories)).catch((error) => {
+        console.error("Sort error:", error);
+        toast.error("Ошибка при сортировке!");
+      });
     }
   };
 
   const HoverCard = styled(ListItem)({
+    display: "flex",
+    flexWrap: "wrap",
     cursor: "pointer",
     transition: "transform 0.3s ease-in-out",
     "&:hover": {
@@ -166,6 +165,136 @@ const ManageCategories = () => {
     setOpenAddSubModal(false);
     setParentCategoryId(null);
   };
+
+  const handleDrop = (targetSubId: number) => {
+    if (!dragSub.current) return;
+
+    const { categoryId, subcategoryIndex } = dragSub.current;
+
+    const sourceCategory = currentCategory.find(cat => cat.id === categoryId);
+    if (!sourceCategory || !sourceCategory.subcategories) return;
+
+    const draggedSub = sourceCategory.subcategories[subcategoryIndex];
+
+    const updatedSourceSubcategories = [...sourceCategory.subcategories];
+    updatedSourceSubcategories.splice(subcategoryIndex, 1);
+
+    const updatedCategories = currentCategory.map(cat => {
+      if (cat.id === categoryId) {
+        return {
+          ...cat,
+          subcategories: updatedSourceSubcategories,
+        };
+      }
+      return cat;
+    });
+
+    const insertSubIntoSub = (subs: Subcategory[]): Subcategory[] => {
+      return subs.map(sub => {
+        if (sub.id === targetSubId) {
+          return {
+            ...sub,
+            subcategories: [...(sub.subcategories || []), { ...draggedSub, parentId: sub.id }],
+          };
+        }
+        if (sub.subcategories) {
+          return {
+            ...sub,
+            subcategories: insertSubIntoSub(sub.subcategories),
+          };
+        }
+        return sub;
+      });
+    };
+
+    const finalCategories = updatedCategories.map(cat => ({
+      ...cat,
+      subcategories: insertSubIntoSub(cat.subcategories || []),
+    }));
+
+    setCurrentCategory(finalCategories);
+
+    dispatch(updateCategoriesThunk(finalCategories)).catch((error) => {
+      console.error("Drop error:", error);
+      toast.error("Ошибка при перемещении подкатегории!");
+    });
+  };
+
+
+  const SubcategoryList = ({ subcategories }: { subcategories: Subcategory[] }) => {
+    return (
+      <List sx={{ width: '100%' }}>
+        {subcategories.map((sub) => (
+          <Box key={sub.id} sx={{ mb: 1 }}>
+            <ListItem
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={() => handleDrop(sub.id)}
+              draggable={true}
+              sx={{
+                pl: 4,
+                py: 1,
+                bgcolor: '#f0f0f0',
+                borderRadius: 1,
+                borderLeft: '3px solid #bdbdbd',
+              }}
+              secondaryAction={
+                <>
+                  <Tooltip title="Редактировать подкатегорию" placement="top">
+                    <IconButton
+                      edge="end"
+                      aria-label="edit"
+                      onClick={() =>
+                        handleSubEditOpen({
+                          id: sub.id,
+                          title: sub.title,
+                          parentId: Number(sub.parentId),
+                        })
+                      }
+                    >
+                      <EditIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+
+                  <Tooltip title="Удалить подкатегорию" placement="top">
+                    <IconButton
+                      onClick={() => onDelete(String(sub.id))}
+                      edge="end"
+                      aria-label="delete"
+                      sx={{ ml: 1 }}
+                      color="error"
+                    >
+                      <DeleteIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+
+                  <Tooltip title="Добавить подкатегорию" placement="top">
+                    <IconButton
+                      edge="end"
+                      aria-label="add subcategory"
+                      sx={{ ml: 1 }}
+                      color="success"
+                      onClick={() => handleAddSubcategory(sub.id)}
+                    >
+                      <AddIcon sx={{ mr: 1 }} />
+                    </IconButton>
+                  </Tooltip>
+                </>
+              }
+            >
+              <ListItemText primary={sub.title} />
+            </ListItem>
+
+            {sub.subcategories && sub.subcategories.length > 0 && (
+              <Box sx={{ ml: 4 }}>
+                <SubcategoryList subcategories={sub.subcategories} />
+              </Box>
+            )}
+          </Box>
+        ))}
+      </List>
+    );
+  };
+
 
 
   return (
@@ -251,6 +380,11 @@ const ManageCategories = () => {
                   {category.subcategories.map((sub, index) => (
                     <HoverCard key={sub.id}>
                       <ListItem
+                        onDragOver={(e) => e.preventDefault()}
+                        onDrop={() => handleDrop(sub.id)}
+                        onClick={() =>
+                          setOpenCategory(openCategory === sub.id ? null : sub.id)
+                        }
                         onDragStart={() => {
                           dragSub.current = {
                             categoryId: category.id,
@@ -261,9 +395,8 @@ const ManageCategories = () => {
                           draggedOverSub.current = index;
                         }}
                         onDragEnd={handlerSort}
-                        onDragOver={(e) => e.preventDefault()}
                         draggable={true}
-                        sx={{ my: 1, bgcolor: "#f1f1f1", borderRadius: 1 }}
+                        sx={{ my: 1, bgcolor: "#dfdfdf", borderRadius: 1 }}
                         secondaryAction={
                           <>
                             <Tooltip title="Редактировать подкатегорию" placement="top">
@@ -293,11 +426,30 @@ const ManageCategories = () => {
                                 <DeleteIcon fontSize="small" />
                               </IconButton>
                             </Tooltip>
+                            <Tooltip title="Добавить подкатегорию" placement="top">
+                              <IconButton
+                                edge="end"
+                                aria-label="add subcategory"
+                                sx={{ ml: 1 }}
+                                color="success"
+                                onClick={() => handleAddSubcategory(sub.id)}
+                              >
+                                <AddIcon sx={{ mr: 1 }} />
+                              </IconButton>
+                            </Tooltip>
                           </>
                         }
                       >
-                        <ListItemText primary={sub.title} />
+                        <ListItemButton>
+                          {sub.subcategories && sub.subcategories.length > 0 && (
+                            <ArrowDropDownOutlinedIcon sx={{ marginRight: '20px' }} />
+                          )}
+                          <ListItemText primary={sub.title} />
+                        </ListItemButton>
                       </ListItem>
+                      {openCategory === sub.id && (
+                        <SubcategoryList subcategories={sub.subcategories || []} />
+                      )}
                     </HoverCard>
                   ))}
                 </List>

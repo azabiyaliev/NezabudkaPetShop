@@ -67,9 +67,6 @@ export class CategoryService {
         data: {
           title,
           parentId: categoryId,
-          subcategories: {
-            create: [],
-          },
         },
       });
     }
@@ -153,34 +150,5 @@ export class CategoryService {
     await this.prisma.category.delete({ where: { id } });
 
     return { message: 'Категория успешно удалена' };
-  }
-
-  async createTreeSubcategory(
-    parentId: number,
-    subCategoryDto: SubcategoryDto,
-  ) {
-    const parentCategory = await this.prisma.category.findUnique({
-      where: { id: parentId },
-    });
-
-    if (!parentCategory) {
-      throw new NotFoundException('Родительская категория не найдена');
-    }
-    const newSubcategory = await this.prisma.category.create({
-      data: {
-        title: subCategoryDto.title,
-        parentId: parentId,
-      },
-    });
-    await this.prisma.category.update({
-      where: { id: parentId },
-      data: {
-        subcategories: {
-          connect: { id: newSubcategory.id },
-        },
-      },
-    });
-
-    return newSubcategory;
   }
 }
