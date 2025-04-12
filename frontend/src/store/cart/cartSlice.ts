@@ -106,6 +106,17 @@ const cartSlice = createSlice({
         state.cart.products = [];
       }
     },
+    newUserLogin: (state) => {
+      const cartFromLS = localStorage.getItem("cart");
+      if (cartFromLS === null && state.cart === null) {
+        state.cart = {
+          id: Date.now(),
+          userId: Date.now(),
+          products: [],
+        }
+        localStorage.setItem("cart", JSON.stringify(state.cart));
+      }
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -186,4 +197,4 @@ const cartSlice = createSlice({
 });
 
 export const cartReducer = cartSlice.reducer;
-export const { productCardToAdd, productCardToRemoveQuantity, getFromLocalStorage, setToLocalStorage, deleteProductInCart, clearCart } = cartSlice.actions;
+export const { productCardToAdd, productCardToRemoveQuantity, getFromLocalStorage, setToLocalStorage, deleteProductInCart, clearCart, newUserLogin } = cartSlice.actions;

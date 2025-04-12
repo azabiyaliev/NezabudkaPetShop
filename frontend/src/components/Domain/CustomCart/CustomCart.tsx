@@ -107,7 +107,7 @@ const CustomCart: React.FC<Props> = ({ openCart, closeCart }) => {
           )}
           <ModalClose />
           <Divider />
-          {cart && cart.products.length === 0 ? (
+          {cart && cart.products.length === 0 || cart === null ? (
             <>
               <img
                 style={{

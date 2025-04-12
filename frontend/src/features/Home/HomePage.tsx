@@ -79,7 +79,11 @@ const HomePage = () => {
     const syncProductsToBackend = async () => {
       if (user && products.length > 0 && cart && !synced) {
         setSynced(true);
-        await dispatch(deleteItemsCart({cartId: cart.id, token: user.token})).unwrap();
+
+        if (cart.products.length > 0) {
+          await dispatch(deleteItemsCart({cartId: cart.id, token: user.token})).unwrap();
+        }
+
         for (const product of products) {
           await dispatch(
             addItem({
@@ -95,6 +99,9 @@ const HomePage = () => {
     };
     void syncProductsToBackend();
   }, [dispatch, user, products, cart, synced]);
+
+  console.log(products);
+  console.log(cart);
 
   return (
     <Container>

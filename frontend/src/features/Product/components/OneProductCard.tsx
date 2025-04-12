@@ -7,7 +7,13 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
 import { addItem, fetchCart } from '../../../store/cart/cartThunk.ts';
-import { cartFromSlice, clearCart, productCardToAdd, setToLocalStorage } from '../../../store/cart/cartSlice.ts';
+import {
+  cartFromSlice,
+  clearCart,
+  newUserLogin,
+  productCardToAdd,
+  setToLocalStorage
+} from '../../../store/cart/cartSlice.ts';
 import { selectUser } from '../../../store/users/usersSlice.ts';
 
 interface Props {
@@ -44,6 +50,10 @@ const OneProductCard: React.FC<Props> = ({ product }) => {
   useEffect(() => {
     dispatch(setToLocalStorage(cart));
   }, [dispatch, cart]);
+
+  useEffect(() => {
+    dispatch(newUserLogin());
+  }, [dispatch]);
 
   return (
     <Card
