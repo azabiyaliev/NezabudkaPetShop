@@ -32,6 +32,7 @@ import RestorationPasswordFrom from './components/Forms/UserFrom/RestorationPass
 import ClientTable from './features/SuperAdmin/container/ClientTable/ClientTable.tsx';
 import ManageCategories from './features/Category/ManageCategories/ManageCategories.tsx';
 import OrderStats from './features/Admin/AdminOrderPage/OrderStats.tsx';
+import FavoriteProduct from './features/FavoriteProduct/containers/FavoriteProduct.tsx';
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -186,6 +187,7 @@ const App = () => {
               <ClientTable/>
             </ProtectedRoute>
           }/>
+          <Route path='/favorite-products' element={<FavoriteProduct/>}/>
         </Routes>
       </Layout>
     </div>

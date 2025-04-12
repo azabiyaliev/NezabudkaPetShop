@@ -18,6 +18,7 @@ import { cartReducer } from "../store/cart/cartSlice.ts";
 import { photoCarouselReducer } from '../store/photoCarousel/photoCarouselSlice.ts';
 import { adminReducer } from '../store/admins/adminSlice.ts';
 import { orderReducer } from '../store/orders/ordersSlice.ts';
+import { favoriteProductsReducer } from '../store/favoriteProducts/favoriteProductsSlice.ts';
 
 const userPersistConfig = {
   key: "store:users",
@@ -35,6 +36,7 @@ const rootReducer = combineReducers({
   photo_carousel: photoCarouselReducer,
   admins: adminReducer,
   orders: orderReducer,
+  favorites: favoriteProductsReducer,
 });
 
 export const store = configureStore({

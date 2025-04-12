@@ -276,3 +276,11 @@ export interface OrderStats {
   deliveryStatistic: number;
   pickUpStatistic: number;
 }
+
+export interface FavoritesResponse {
+  id: number;
+  userId: number;
+  productId: number;
+  createdAt: string;
+  product: ProductResponse;
+}

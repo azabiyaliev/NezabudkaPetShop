@@ -5,7 +5,7 @@ import {
   CardMedia,
   Typography,
 } from "@mui/material";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from 'react';
 import { ProductResponse } from "../../../types";
 import { apiUrl } from "../../../globalConstants.ts";
 import "../css/product.css";
@@ -18,6 +18,19 @@ import {
   setToLocalStorage,
 } from "../../../store/cart/cartSlice.ts";
 import { enqueueSnackbar } from "notistack";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import { selectUser } from '../../../store/users/usersSlice.ts';
+import {
+  addFavoriteProduct, getLocalFavoriteProducts,
+  isInLocalFavorites,
+  removeFavoriteProduct
+} from '../../../store/favoriteProducts/favoriteProductLocal.ts';
+import {
+  addFavoriteProducts,
+  removeFavoriteProductThunk
+} from '../../../store/favoriteProducts/favoriteProductsThunks.ts';
+import { selectedFavorite } from '../../../store/favoriteProducts/favoriteProductsSlice.ts';
 
 interface Props {
   product: ProductResponse;
@@ -27,10 +40,47 @@ const OneProductCard: React.FC<Props> = ({ product }) => {
   const cart = useAppSelector(cartsFromSlice);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const user = useAppSelector(selectUser);
+  const favorites = useAppSelector(selectedFavorite);
+  const [isFavorite, setIsFavorite] = useState<boolean>(false);
+
 
   useEffect(() => {
     dispatch(setToLocalStorage(cart));
   }, [cart, dispatch]);
+
+  useEffect(() => {
+    if (user) {
+      const isOnServer = favorites.some(fav => fav.product.id === product.id);
+      setIsFavorite(isOnServer);
+    } else {
+      getLocalFavoriteProducts()
+      setIsFavorite(isInLocalFavorites(product.id));
+    }
+  }, [user, product.id, favorites, dispatch]);
+
+  const toggleFavorite = () => {
+    const newValue = !isFavorite;
+    setIsFavorite(newValue);
+
+    if (!user) {
+      if (newValue) {
+        addFavoriteProduct(product.id);
+        enqueueSnackbar("Добавлено в избранное", { variant: "success" });
+      } else {
+        removeFavoriteProduct(product.id);
+        enqueueSnackbar("Удалено из избранного", { variant: "info" });
+      }
+    } else {
+      if (newValue) {
+        dispatch(addFavoriteProducts(product.id));
+        enqueueSnackbar("Добавлено в избранное", { variant: "success" });
+      } else {
+        dispatch(removeFavoriteProductThunk(product.id));
+        enqueueSnackbar("Удалено из избранного", { variant: "info" });
+      }
+    }
+  };
 
   const addProductToCart = async (product: ProductResponse) => {
     const existingProduct = cart.find(
@@ -66,8 +116,15 @@ const OneProductCard: React.FC<Props> = ({ product }) => {
       />
       <CardContent>
         <Typography variant="body2">{product.productName}</Typography>
-        <Typography variant="h6" color="orange">
+        <Typography variant="h6" color="orange" display="flex" alignItems="center" justifyContent="center" gap={1}>
           {product.productPrice.toLocaleString()} сом
+          <Button onClick={ toggleFavorite }  sx={{ minWidth: 0, p: 0 }}>
+            {isFavorite ? (
+              <FavoriteIcon color="error" />
+            ) : (
+              <FavoriteBorderIcon color="action" />
+            )}
+          </Button>
         </Typography>
         <Typography variant="body2" color="textSecondary">
            💎  {product.productPrice.toLocaleString()} бонусов

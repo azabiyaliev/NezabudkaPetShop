@@ -454,7 +454,7 @@ const MainToolbar = () => {
                   </NavLink>
                 </Box>
               )}
-              {user ? (can(["user"]) && (
+              {user ? (can(["client"]) && (
                   <Box
                     sx={{
                       display: "flex",
@@ -508,7 +508,7 @@ const MainToolbar = () => {
                       </Box>
 
                       <NavLink
-                        to="/my_favorites"
+                        to="/favorite-products"
                         style={{ textDecoration: "none" }}
                       >
                         <Box
@@ -586,7 +586,7 @@ const MainToolbar = () => {
                         </Typography>
                       </NavLink>
 
-                      <NavLink to="/my_favorites" style={{ textDecoration: "none" }}>
+                      <NavLink to="/favorite-products" style={{ textDecoration: "none" }}>
                         <Badge
                           badgeContent={sum}
                           overlap="circular"
@@ -669,7 +669,7 @@ const MainToolbar = () => {
                     </Box>
 
                     <NavLink
-                      to="/my_favorites"
+                      to="/favorite-products"
                       style={{ textDecoration: "none" }}
                     >
                       <Box
@@ -746,7 +746,7 @@ const MainToolbar = () => {
                       </Typography>
                     </NavLink>
 
-                    <NavLink to="/my_favorites" style={{ textDecoration: "none" }}>
+                    <NavLink to="/favorite-products" style={{ textDecoration: "none" }}>
                       <Badge
                         badgeContent={sum}
                         overlap="circular"
