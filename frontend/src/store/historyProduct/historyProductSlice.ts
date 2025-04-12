@@ -27,13 +27,6 @@ const historyProductSlice = createSlice({
 
       localStorage.setItem('viewedProducts', JSON.stringify(state.history));
     },
-    clearHistory: (state) => {
-      state.history = [];
-      localStorage.removeItem('viewedProducts');
-    },
-    loadHistoryFromLocalStorage: (state) => {
-      state.history = JSON.parse(localStorage.getItem('viewedProducts') || '[]');
-    },
   }
 })
 
@@ -41,6 +34,4 @@ export const historyReducer = historyProductSlice.reducer;
 
 export const {
   addProductToHistory,
-  clearHistory,
-  loadHistoryFromLocalStorage,
 } = historyProductSlice.actions;
