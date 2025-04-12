@@ -1,10 +1,10 @@
-import React from "react";
-import { Box, List, ListItem, ListItemDecorator } from "@mui/joy";
-import { ICart } from "../../../../../types";
-import Typography from "@mui/joy/Typography";
+import React from 'react';
+import { Box, List, ListItem, ListItemDecorator } from '@mui/joy';
+import { ICartItem } from '../../../../../types';
+import Typography from '@mui/joy/Typography';
 
 interface Props {
-  products: ICart[];
+  products: ICartItem[];
 }
 
 const TotalPrice: React.FC<Props> = ({ products }) => {

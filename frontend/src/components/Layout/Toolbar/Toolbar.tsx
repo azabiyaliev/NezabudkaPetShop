@@ -22,8 +22,7 @@ import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 import SettingsIcon from '@mui/icons-material/Settings';
 import MenuIcon from '@mui/icons-material/Menu';
 import CategoryNavMenu from '../../Domain/CategoryNavMenu.tsx';
-import { cartFromSlice } from '../../../store/cart/cartSlice.ts';
-import { fetchCart } from '../../../store/cart/cartThunk.ts';
+import { cartFromSlice, getFromLocalStorage } from '../../../store/cart/cartSlice.ts';
 
 const MainToolbar = () => {
   const [openCart, setOpenCart] = useState<boolean>(false);
@@ -56,12 +55,9 @@ const MainToolbar = () => {
   }, [search]);
 
   useEffect(() => {
-    if (user) {
-      dispatch(fetchCart({ token: user.token })).unwrap();
-    }
+    dispatch(getFromLocalStorage());
     dispatch(fetchSite()).unwrap()
-  }, [dispatch, user]);
-
+  }, [dispatch]);
 
   useEffect(() => {
     if (search) {
@@ -89,6 +85,7 @@ const MainToolbar = () => {
     acc = acc + i;
     return acc;
   }, 0);
+
   return (
     <div>
       <CategoryNavMenu openMenu={openCategoryMenu} closeMenu={closeMenu}/>

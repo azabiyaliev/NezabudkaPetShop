@@ -1,5 +1,5 @@
 import { ICartItem } from '../../../types';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Box, Button } from '@mui/material';
 import { apiUrl } from '../../../globalConstants.ts';
 import Typography from '@mui/joy/Typography';
@@ -8,7 +8,7 @@ import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
 import { enqueueSnackbar } from 'notistack';
 import { deleteItemCart, fetchCart } from '../../../store/cart/cartThunk.ts';
 import { selectUser } from '../../../store/users/usersSlice.ts';
-import { cartFromSlice, setToLocalStorage } from '../../../store/cart/cartSlice.ts';
+import { cartFromSlice, deleteProductInCart } from '../../../store/cart/cartSlice.ts';
 
 interface Props {
   productCart: ICartItem;
@@ -25,12 +25,10 @@ const CartProduct: React.FC<Props> = ({ productCart }) => {
       enqueueSnackbar("Данный товар успешно удален из корзины!", {
         variant: "success",
       });
+    } else {
+      dispatch(deleteProductInCart(id));
     }
   };
-
-  useEffect(() => {
-    dispatch(setToLocalStorage(cart));
-  }, [dispatch, cart]);
 
   return (
     <Box

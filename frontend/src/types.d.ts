@@ -163,7 +163,7 @@ export interface ICartBack {
 export interface ICartItem {
   id?: number,
   cartId?: number,
-  productId?: number,
+  productId: number,
   quantity: number;
   product: ProductResponse;
 }

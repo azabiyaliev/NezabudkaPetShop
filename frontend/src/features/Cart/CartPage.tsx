@@ -21,7 +21,6 @@ const CartPage = () => {
 
   useEffect(() => {
     if (user) {
-      dispatch(clearCart());
       dispatch(fetchCart({ token: user.token })).unwrap();
     }
   }, [dispatch, user]);
@@ -31,12 +30,16 @@ const CartPage = () => {
       await dispatch(deleteItemsCart({cartId: cart.id, token: user.token})).unwrap();
       await dispatch(fetchCart({ token: user.token })).unwrap();
       enqueueSnackbar("Корзина успешно очищена!", { variant: "success" });
+    } else {
+      dispatch(clearCart());
     }
   };
 
   useEffect(() => {
-    dispatch(setToLocalStorage(cart));
-  }, [dispatch, cart]);
+    if (user) {
+      dispatch(setToLocalStorage(cart));
+    }
+  }, [dispatch, cart, user]);
 
   return (
     <Container>

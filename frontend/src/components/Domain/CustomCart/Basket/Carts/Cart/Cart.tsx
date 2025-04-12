@@ -1,11 +1,16 @@
 import { Box, Button, Typography } from '@mui/joy';
 import { ICartItem, ProductResponse } from '../../../../../../types';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { apiUrl } from '../../../../../../globalConstants.ts';
 import IconButton from '@mui/joy/IconButton';
 import { Add, Remove } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '../../../../../../app/hooks.ts';
-import { cartFromSlice, setToLocalStorage } from '../../../../../../store/cart/cartSlice.ts';
+import {
+  cartFromSlice,
+  deleteProductInCart,
+  productCardToAdd,
+  productCardToRemoveQuantity
+} from '../../../../../../store/cart/cartSlice.ts';
 import { deleteItemCart, fetchCart, updateCartItem } from '../../../../../../store/cart/cartThunk.ts';
 import { selectUser } from '../../../../../../store/users/usersSlice.ts';
 
@@ -26,6 +31,8 @@ const Cart: React.FC<Props> = ({ product }) => {
         await dispatch(updateCartItem({cartId: cart.id,  productId: product.id, quantity: amount, token: user.token})).unwrap();
         await dispatch(fetchCart({ token: user.token })).unwrap();
       }
+    } else {
+      dispatch(productCardToAdd(product));
     }
   };
 
@@ -37,21 +44,19 @@ const Cart: React.FC<Props> = ({ product }) => {
         await dispatch(updateCartItem({cartId: cart.id,  productId: product.id, quantity: amount, token: user.token})).unwrap();
         await dispatch(fetchCart({ token: user.token })).unwrap();
       }
+    } else {
+      dispatch(productCardToRemoveQuantity(product));
     }
   };
 
   const deleteProductFromCart = async (id: number) => {
-    if (user) {
-      if (cart) {
-        await dispatch(deleteItemCart({cartId: cart.id, productId: id, token: user.token})).unwrap();
-        await dispatch(fetchCart({ token: user.token })).unwrap();
-      }
+    if (user && cart) {
+      await dispatch(deleteItemCart({cartId: cart.id, productId: id, token: user.token})).unwrap();
+      await dispatch(fetchCart({ token: user.token })).unwrap();
+    } else {
+      dispatch(deleteProductInCart(id));
     }
   };
-
-  useEffect(() => {
-    dispatch(setToLocalStorage(cart));
-  }, [dispatch, cart]);
 
   return (
     <Box

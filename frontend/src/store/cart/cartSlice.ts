@@ -52,67 +52,41 @@ const cartSlice = createSlice({
   name: 'cart',
   initialState,
   reducers: {
-    productCardToAdd: (
-      state,
-      { payload: product }: PayloadAction<ProductResponse>,
-    ) => {
+    productCardToAdd: (state, { payload: product }: PayloadAction<ProductResponse>) => {
       if (state.cart) {
         const indexProduct = state.cart.products.findIndex(
-          (order) => order.product.id === product.id,
+          (item) => item.product.id === product.id
         );
-        if (indexProduct === -1) {
-          state.cart.products = [...state.cart.products, { product, quantity: 1}];
+        if (indexProduct !== -1) {
+          state.cart.products[indexProduct].quantity += 1;
         } else {
-          const initialCards = [...state.cart.products];
-          const initialCard = { ...initialCards[indexProduct] };
-          initialCard.quantity++;
-          initialCards[indexProduct] = initialCard;
-          state.cart.products = [...initialCards];
+          const newItem = {
+            id: Date.now(),
+            cartId: state.cart.id,
+            productId: product.id,
+            quantity: 1,
+            product,
+          };
+          state.cart.products.push(newItem);
         }
       }
     },
-    productCardToRemoveQuantity: (
-      state,
-      { payload: product }: PayloadAction<ProductResponse>,
-    ) => {
+    productCardToRemoveQuantity: (state, { payload: product }: PayloadAction<ProductResponse>) => {
       if (state.cart) {
-        const indexProduct = state.cart.products.findIndex(
-          (order) => order.product.id === product.id,
-        );
-        if (indexProduct === -1) {
-          state.cart.products = [...state.cart.products, { product, quantity: 1 }];
-        } else {
-          const initialCards = [...state.cart.products];
-          const initialCard = { ...initialCards[indexProduct] };
-          if (initialCard.quantity > 0) {
-            initialCard.quantity--;
-          } else {
-            initialCard.quantity = 0;
-          }
-          initialCards[indexProduct] = initialCard;
-          state.cart.products = [...initialCards];
+        const indexProduct = state.cart.products.findIndex((order) => order.product.id === product.id);if (indexProduct === -1) {
+          return;
         }
-        const checkOrder: number[] = state.cart.products.map((order) => {
-          return order.quantity;
-        });
-
-        const sum: number = checkOrder.reduce((acc: number, i: number) => {
-          acc = acc + i;
-          return acc;
-        }, 0);
-
-        if (sum === 0) {
-          state.cart.products = [];
-          localStorage.removeItem("cart");
+        const currentItem = state.cart.products[indexProduct];if (currentItem.quantity > 1) {
+          currentItem.quantity--;
+        } else {
+          state.cart.products.splice(indexProduct, 1);
         }
       }
     },
     getFromLocalStorage: (state) => {
-      if (state.cart) {
-        const productOrders = localStorage.getItem("cart");
-        if (productOrders) {
-          state.cart.products = JSON.parse(productOrders);
-        }
+      const productOrders = localStorage.getItem("cart");
+      if (productOrders) {
+        state.cart = JSON.parse(productOrders);
       }
     },
     setToLocalStorage: (_state, { payload: cart }) => {
@@ -121,18 +95,15 @@ const cartSlice = createSlice({
     deleteProductInCart: (state, { payload: productId }) => {
       if (state.cart) {
         const indexProduct = state.cart.products.findIndex(
-          (order) => order.product.id === productId,
-        );
+          (item) => item.product.id === productId);
         if (indexProduct !== -1) {
           state.cart.products.splice(indexProduct, 1);
         }
-        localStorage.setItem("cart", JSON.stringify(state.cart.products));
       }
     },
     clearCart: (state) => {
       if (state.cart) {
         state.cart.products = [];
-        localStorage.removeItem("cart");
       }
     },
   },
@@ -143,7 +114,6 @@ const cartSlice = createSlice({
         state.errors.getCartError = null;
       })
       .addCase(fetchCart.fulfilled, (state, {payload: cart}) => {
-        state.cart = null;
         state.loadings.getLoading = false;
         state.errors.getCartError = null;
         state.cart = cart;

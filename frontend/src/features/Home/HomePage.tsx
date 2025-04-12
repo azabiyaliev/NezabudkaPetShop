@@ -11,10 +11,13 @@ import CategoryMenuBox from '../Category/CategoryMenuBox/CategoryMenuBox.tsx';
 import CategoryCard from '../Category/CategoryCard/CategoryCard.tsx';
 import { cartFromSlice, setToLocalStorage } from '../../store/cart/cartSlice.ts';
 import { selectUser } from '../../store/users/usersSlice.ts';
-import { createCart, fetchCart } from '../../store/cart/cartThunk.ts';
+import { addItem, createCart, deleteItemsCart, fetchCart } from '../../store/cart/cartThunk.ts';
+import { ICartBack, ICartItem } from '../../types';
 
 const HomePage = () => {
   const [openCart, setOpenCart] = useState<boolean>(false);
+  const [synced, setSynced] = useState(false);
+  const [products, setProducts] = useState<ICartItem[]>([]);
   const brands = useAppSelector(brandsFromSlice);
   const user = useAppSelector(selectUser);
   const cart = useAppSelector(cartFromSlice);
@@ -30,7 +33,7 @@ const HomePage = () => {
         await dispatch(fetchCart({ token: user.token })).unwrap();
       }
     };
-    fetchData();
+    void fetchData();
   }, [dispatch, user]);
 
   const closeCart = () => {
@@ -38,8 +41,60 @@ const HomePage = () => {
   };
 
   useEffect(() => {
-    dispatch(setToLocalStorage(cart));
-  }, [dispatch, cart]);
+    if (!user) {
+      dispatch(setToLocalStorage(cart));
+    }
+  }, [dispatch, cart, user]);
+
+  const mergeCarts = (cart: ICartBack, localCart: ICartBack): ICartItem[] => {
+    const mergedCart: ICartItem[] = [...cart.products];
+
+    localCart.products.forEach((localProduct) => {
+      const existingItemIndex = mergedCart.findIndex(
+        (item) => item.productId === localProduct.productId
+      );
+
+      if (existingItemIndex === -1) {
+        mergedCart.push(localProduct);
+      }
+    });
+    return mergedCart;
+  };
+
+  useEffect(() => {
+    if (user && cart) {
+      const cartFromLS = localStorage.getItem("cart");
+
+      if (cartFromLS) {
+        const localCart = JSON.parse(cartFromLS);
+        setProducts([]);
+        const allUserProducts = mergeCarts(cart, localCart);
+        setProducts(allUserProducts);
+        localStorage.removeItem("cart");
+      }
+    }
+  }, [user, cart, dispatch]);
+
+  useEffect(() => {
+    const syncProductsToBackend = async () => {
+      if (user && products.length > 0 && cart && !synced) {
+        setSynced(true);
+        await dispatch(deleteItemsCart({cartId: cart.id, token: user.token})).unwrap();
+        for (const product of products) {
+          await dispatch(
+            addItem({
+              cartId: cart.id,
+              productId: product.productId,
+              quantity: product.quantity,
+              token: user.token,
+            })
+          ).unwrap();
+        }
+        await dispatch(fetchCart({ token: user.token })).unwrap();
+      }
+    };
+    void syncProductsToBackend();
+  }, [dispatch, user, products, cart, synced]);
 
   return (
     <Container>
