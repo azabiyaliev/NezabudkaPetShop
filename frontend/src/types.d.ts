@@ -205,6 +205,7 @@ export interface ProductResponse {
   category: ICategories;
   startDateSales?: string;
   endDateSales?: string;
+  orderedProductsStats: number;
 }
 
 // export interface AdminFormData {

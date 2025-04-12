@@ -11,7 +11,7 @@ export class ProductsService {
   constructor(private prismaService: PrismaService) {}
 
   //FOR ADMIN/USER
-  async getAllProducts(searchKeyword?: string, brand?: number) {
+  async getAllProducts(searchKeyword?: string) {
     const products = await this.prismaService.products.findMany({
       where: {
         OR: [
@@ -56,13 +56,6 @@ export class ProductsService {
         },
       },
     });
-
-    if (brand) {
-      const products = await this.prismaService.products.findMany({
-        where: { brandId: brand },
-      });
-      return products || [];
-    }
     return products;
   }
 
