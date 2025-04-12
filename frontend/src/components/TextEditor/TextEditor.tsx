@@ -37,6 +37,12 @@ const TextEditor: React.FC<Props> = ({ value, onChange }) => {
     }
   }, [value, onChange]);
 
+  useEffect(() => {
+    if (editorInstance.current) {
+      editorInstance.current.root.innerHTML = value;
+    }
+  }, [value]);
+
   return (
     <Box sx={{ padding: 2 }}>
       <Paper elevation={3} sx={{ padding: 2 }}>
