@@ -154,14 +154,14 @@ export class OrdersService {
     } else {
       if (!guestEmail || !guestPhone || !guestName) {
         throw new BadRequestException(
-            'Для оформления заказа укажите имя, телефон и email',
+          'Для оформления заказа укажите имя, телефон и email',
         );
       }
     }
 
     const orderAmount = items.reduce(
-        (acc, item) => acc + item.orderAmount * item.quantity,
-        0,
+      (acc, item) => acc + item.orderAmount * item.quantity,
+      0,
     );
 
     if (userId && bonusUsed > 0) {

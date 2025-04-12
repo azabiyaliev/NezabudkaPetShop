@@ -322,7 +322,7 @@ export class UsersService {
       },
     });
 
-    return users.map(user => ({
+    return users.map((user) => ({
       ...user,
       orderCount: user.Order.length,
     }));
@@ -372,7 +372,10 @@ export class UsersService {
     });
   }
 
-  async updateUserBonus(userId: number, bonusAmount: number): Promise<{ message: string }> {
+  async updateUserBonus(
+    userId: number,
+    bonusAmount: number,
+  ): Promise<{ message: string }> {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
     });
