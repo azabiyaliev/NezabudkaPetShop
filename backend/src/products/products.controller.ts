@@ -27,11 +27,8 @@ export class ProductsController {
 
   //GET ALL PRODUCTS
   @Get('catalog')
-  async getProducts(
-    @Query('search') searchKeyword: string,
-    @Query('brand') brand: number,
-  ) {
-    return await this.productsService.getAllProducts(searchKeyword, brand);
+  async getProducts(@Query('search') searchKeyword: string) {
+    return await this.productsService.getAllProducts(searchKeyword);
   }
 
   //GET ONE BY ID

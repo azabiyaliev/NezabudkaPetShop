@@ -12,7 +12,7 @@ const ProductsPage = () => {
   const products = useAppSelector(selectProducts);
 
   useEffect(() => {
-    dispatch(getProducts());
+    dispatch(getProducts(''));
   }, [dispatch]);
 
   return (

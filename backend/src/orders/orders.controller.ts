@@ -2,7 +2,6 @@ import {
   BadRequestException,
   Body,
   Controller,
-  Delete,
   Get,
   HttpCode,
   Param,
@@ -27,8 +26,21 @@ export class OrdersController {
   @UseGuards(TokenAuthGuard, RolesGuard)
   @Roles('admin')
   @Get('all-orders')
-  async findAll() {
-    return await this.ordersService.getAllOrders();
+  async getAllOrders(
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+  ) {
+    return this.ordersService.getAllOrders({
+      page: Number(page),
+      limit: Number(limit),
+    });
+  }
+
+  @UseGuards(TokenAuthGuard, RolesGuard)
+  @Roles('admin')
+  @Get('statistics')
+  async getStatistics() {
+    return await this.ordersService.getOrderStats();
   }
 
   @UseGuards(TokenAuthGuard, RolesGuard)
@@ -68,12 +80,5 @@ export class OrdersController {
     @Body() orderDto: CreateOrderDto,
   ) {
     return await this.ordersService.updateStatus(orderDto, Number(orderId));
-  }
-
-  @UseGuards(TokenAuthGuard, RolesGuard)
-  @Roles('admin')
-  @Delete(':id')
-  async deleteOrder(@Param('id') orderId: string) {
-    return await this.ordersService.deleteOrder(Number(orderId));
   }
 }

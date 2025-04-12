@@ -35,7 +35,7 @@ const Products: React.FC<Props> = ({ products }) => {
         deleteProduct({ productId: id, token: user.token }),
       ).unwrap();
       toast.success("Товар успешно удален!");
-      await dispatch(getProducts()).unwrap();
+      await dispatch(getProducts('')).unwrap();
     }
   };
 
@@ -143,6 +143,13 @@ const Products: React.FC<Props> = ({ products }) => {
       headerName: "Окончание акции",
       width: 100,
       valueGetter: (_value, row: ProductResponse) => row.endDateSales ? dayjs(row.endDateSales).format('DD-MM-YYYY') : null,
+    },
+    {
+      field: "orderedProductStats",
+      headerName: "Статистики купленных товаров",
+      width: 100,
+      editable: false,
+      valueGetter: (_value, row) => row.orderedProductsStats ?? 0
     },
     {
       field: "actions",

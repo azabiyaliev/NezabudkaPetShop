@@ -31,6 +31,7 @@ import BrandPage from './features/Brand/BrandPage.tsx';
 import RestorationPasswordFrom from './components/Forms/UserFrom/RestorationPasswordFrom.tsx';
 import ClientTable from './features/SuperAdmin/container/ClientTable/ClientTable.tsx';
 import ManageCategories from './features/Category/ManageCategories/ManageCategories.tsx';
+import OrderStats from './features/Admin/AdminOrderPage/OrderStats.tsx';
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -77,6 +78,14 @@ const App = () => {
             element={
               <ProtectedRoute isAllowed={user && can(["admin", "superAdmin"])}>
                 <BrandsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/private/order_stats"
+            element={
+              <ProtectedRoute isAllowed={user && can(["admin", "superAdmin"])}>
+                <OrderStats />
               </ProtectedRoute>
             }
           />
