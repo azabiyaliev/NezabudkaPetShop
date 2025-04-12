@@ -1,20 +1,16 @@
 import { Box, Button, Typography } from '@mui/joy';
-import { ICart, ProductResponse } from '../../../../../../types';
-import React from 'react';
+import { ICartItem, ProductResponse } from '../../../../../../types';
+import React, { useEffect } from 'react';
 import { apiUrl } from '../../../../../../globalConstants.ts';
 import IconButton from '@mui/joy/IconButton';
 import { Add, Remove } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '../../../../../../app/hooks.ts';
-import {
-  cartFromSlice,
-  productCardToRemoveQuantity,
-  setToLocalStorage
-} from '../../../../../../store/cart/cartSlice.ts';
-import { deleteItemCart, fetchCart } from '../../../../../../store/cart/cartThunk.ts';
+import { cartFromSlice, setToLocalStorage } from '../../../../../../store/cart/cartSlice.ts';
+import { deleteItemCart, fetchCart, updateCartItem } from '../../../../../../store/cart/cartThunk.ts';
 import { selectUser } from '../../../../../../store/users/usersSlice.ts';
 
 interface Props {
-  product: ICart;
+  product: ICartItem;
 }
 
 const Cart: React.FC<Props> = ({ product }) => {
@@ -22,13 +18,26 @@ const Cart: React.FC<Props> = ({ product }) => {
   const cart = useAppSelector(cartFromSlice);
   const dispatch = useAppDispatch();
 
-  const addQuantity = (product: ProductResponse) => {
-    console.log(product);// dispatch(productCardToAdd(product));
-    // dispatch(setToLocalStorage(products));
+  const addQuantity = async (product: ProductResponse) => {
+    if (user && cart) {
+      const existingProduct = cart.products.find((item) => item.product.id === product.id);
+      if (existingProduct) {
+        const amount = existingProduct.quantity + 1;
+        await dispatch(updateCartItem({cartId: cart.id,  productId: product.id, quantity: amount, token: user.token})).unwrap();
+        await dispatch(fetchCart({ token: user.token })).unwrap();
+      }
+    }
   };
 
   const removeQuantity = async (product: ProductResponse) => {
-    dispatch(productCardToRemoveQuantity(product));
+    if (user && cart) {
+      const existingProduct = cart.products.find((item) => item.product.id === product.id);
+      if (existingProduct) {
+        const amount = existingProduct.quantity - 1;
+        await dispatch(updateCartItem({cartId: cart.id,  productId: product.id, quantity: amount, token: user.token})).unwrap();
+        await dispatch(fetchCart({ token: user.token })).unwrap();
+      }
+    }
   };
 
   const deleteProductFromCart = async (id: number) => {
@@ -36,10 +45,13 @@ const Cart: React.FC<Props> = ({ product }) => {
       if (cart) {
         await dispatch(deleteItemCart({cartId: cart.id, productId: id, token: user.token})).unwrap();
         await dispatch(fetchCart({ token: user.token })).unwrap();
-        dispatch(setToLocalStorage(cart));
       }
     }
   };
+
+  useEffect(() => {
+    dispatch(setToLocalStorage(cart));
+  }, [dispatch, cart]);
 
   return (
     <Box

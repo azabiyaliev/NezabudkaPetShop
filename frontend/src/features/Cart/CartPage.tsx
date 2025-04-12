@@ -7,10 +7,10 @@ import image from '../../assets/image_transparent.png';
 import Typography from '@mui/joy/Typography';
 import TotalPrice from '../../components/Domain/CustomCart/Basket/TotalPrice/TotalPrice.tsx';
 import OrderForm from '../Order/OrderForm.tsx';
-import { cartFromSlice, clearCart } from '../../store/cart/cartSlice.ts';
+import { cartFromSlice, clearCart, setToLocalStorage } from '../../store/cart/cartSlice.ts';
 import { selectUser } from '../../store/users/usersSlice.ts';
 import { enqueueSnackbar } from 'notistack';
-import { createCart, deleteCart, fetchCart } from '../../store/cart/cartThunk.ts';
+import { deleteItemsCart, fetchCart } from '../../store/cart/cartThunk.ts';
 import { useEffect } from 'react';
 
 const CartPage = () => {
@@ -26,15 +26,17 @@ const CartPage = () => {
     }
   }, [dispatch, user]);
 
-  const deleteAllProduct = async () => {
-    if (user) {
-      if (cart) {
-        await dispatch(deleteCart({cartId: cart.id, token: user.token})).unwrap();
-        await dispatch(createCart({token: user.token})).unwrap();
-        enqueueSnackbar("Корзина успешно очищена!", { variant: "success" });
-      }
+  const deleteAllProducts = async () => {
+    if (user && cart) {
+      await dispatch(deleteItemsCart({cartId: cart.id, token: user.token})).unwrap();
+      await dispatch(fetchCart({ token: user.token })).unwrap();
+      enqueueSnackbar("Корзина успешно очищена!", { variant: "success" });
     }
   };
+
+  useEffect(() => {
+    dispatch(setToLocalStorage(cart));
+  }, [dispatch, cart]);
 
   return (
     <Container>
@@ -58,7 +60,7 @@ const CartPage = () => {
             }}
           >
             <Box>
-              <Carts products={cart.products} deleteAllProduct={() => deleteAllProduct()}/>
+              <Carts products={cart.products} deleteAllProduct={() => deleteAllProducts()}/>
               <OrderForm/>
             </Box>
             <TotalPrice products={cart.products} />

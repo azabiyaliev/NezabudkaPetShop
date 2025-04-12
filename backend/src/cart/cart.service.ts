@@ -31,6 +31,9 @@ export class CartService {
           include: {
             product: true,
           },
+          orderBy: {
+            productId: 'asc',
+          },
         },
       },
     });

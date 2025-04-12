@@ -158,9 +158,9 @@ export interface ProductRequest {
 export interface ICartBack {
   id: number,
   userId: number,
-  products: ICart[],
+  products: ICartItem[],
 }
-export interface ICart {
+export interface ICartItem {
   id?: number,
   cartId?: number,
   productId?: number,

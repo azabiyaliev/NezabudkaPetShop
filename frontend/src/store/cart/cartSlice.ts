@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { addItem, createCart, deleteCart, deleteItemCart, fetchCart } from './cartThunk.ts';
+import { addItem, createCart, deleteItemCart, deleteItemsCart, fetchCart, updateCartItem } from './cartThunk.ts';
 import { GlobalError, ICartBack, ProductResponse } from '../../types';
 import { RootState } from '../../app/store.ts';
 
@@ -19,6 +19,7 @@ interface CartState {
     deleteError: GlobalError | null;
     addProductError: GlobalError | null;
     deleteProductError: GlobalError | null;
+    editProductError: GlobalError | null;
   },
 }
 
@@ -38,6 +39,7 @@ const initialState: CartState = {
     deleteError: null,
     addProductError: null,
     deleteProductError: null,
+    editProductError: null,
   },
 }
 
@@ -141,6 +143,7 @@ const cartSlice = createSlice({
         state.errors.getCartError = null;
       })
       .addCase(fetchCart.fulfilled, (state, {payload: cart}) => {
+        state.cart = null;
         state.loadings.getLoading = false;
         state.errors.getCartError = null;
         state.cart = cart;
@@ -160,18 +163,6 @@ const cartSlice = createSlice({
       .addCase(createCart.rejected, (state, {payload: error}) => {
         state.loadings.createLoading = false;
         state.errors.createError = error || null;
-      })
-      .addCase(deleteCart.pending, (state) => {
-        state.loadings.deleteLoading = true;
-        state.errors.deleteError = null;
-      })
-      .addCase(deleteCart.fulfilled, (state) => {
-        state.loadings.deleteLoading = false;
-        state.errors.deleteError = null;
-      })
-      .addCase(deleteCart.rejected, (state, {payload: error}) => {
-        state.loadings.deleteLoading = false;
-        state.errors.deleteError = error || null;
       })
       .addCase(addItem.pending, (state) => {
         state.loadings.addProductLoading = true;
@@ -196,6 +187,30 @@ const cartSlice = createSlice({
       .addCase(deleteItemCart.rejected, (state, {payload: error}) => {
         state.loadings.deleteProductLoading = false;
         state.errors.deleteProductError = error || null;
+      })
+      .addCase(deleteItemsCart.pending, (state) => {
+        state.loadings.deleteLoading = true;
+        state.errors.deleteError = null;
+      })
+      .addCase(deleteItemsCart.fulfilled, (state) => {
+        state.loadings.deleteLoading = false;
+        state.errors.deleteError = null;
+      })
+      .addCase(deleteItemsCart.rejected, (state, {payload: error}) => {
+        state.loadings.deleteLoading = false;
+        state.errors.deleteError = error || null;
+      })
+      .addCase(updateCartItem.pending, (state) => {
+        state.loadings.editProductLoading = true;
+        state.errors.editProductError = null;
+      })
+      .addCase(updateCartItem.fulfilled, (state) => {
+        state.loadings.editProductLoading = false;
+        state.errors.editProductError = null;
+      })
+      .addCase(updateCartItem.rejected, (state, {payload: error}) => {
+        state.loadings.editProductLoading = false;
+        state.errors.editProductError = error || null;
       });
   }
 });

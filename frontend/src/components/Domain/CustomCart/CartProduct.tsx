@@ -1,5 +1,5 @@
-import { ICart } from '../../../types';
-import React from 'react';
+import { ICartItem } from '../../../types';
+import React, { useEffect } from 'react';
 import { Box, Button } from '@mui/material';
 import { apiUrl } from '../../../globalConstants.ts';
 import Typography from '@mui/joy/Typography';
@@ -8,10 +8,10 @@ import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
 import { enqueueSnackbar } from 'notistack';
 import { deleteItemCart, fetchCart } from '../../../store/cart/cartThunk.ts';
 import { selectUser } from '../../../store/users/usersSlice.ts';
-import { cartFromSlice } from '../../../store/cart/cartSlice.ts';
+import { cartFromSlice, setToLocalStorage } from '../../../store/cart/cartSlice.ts';
 
 interface Props {
-  productCart: ICart;
+  productCart: ICartItem;
 }
 const CartProduct: React.FC<Props> = ({ productCart }) => {
   const user = useAppSelector(selectUser);
@@ -19,16 +19,18 @@ const CartProduct: React.FC<Props> = ({ productCart }) => {
   const dispatch = useAppDispatch();
 
   const deleteProductFromCart = async (id: number) => {
-    if (cart) {
-      if (user) {
-        await dispatch(deleteItemCart({cartId: cart.id, productId: id, token: user.token})).unwrap();
-        await dispatch(fetchCart({ token: user.token })).unwrap();
-      }
+    if (user && cart) {
+      await dispatch(deleteItemCart({cartId: cart.id, productId: id, token: user.token})).unwrap();
+      await dispatch(fetchCart({ token: user.token })).unwrap();
       enqueueSnackbar("Данный товар успешно удален из корзины!", {
         variant: "success",
       });
     }
   };
+
+  useEffect(() => {
+    dispatch(setToLocalStorage(cart));
+  }, [dispatch, cart]);
 
   return (
     <Box

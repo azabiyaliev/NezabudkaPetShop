@@ -65,4 +65,15 @@ export class CartItemsController {
       );
     }
   }
+
+  @Delete(':cartId/items')
+  async deleteItems(
+    @Req() req: Request & { user: RequestUser },
+    @Param('cartId') cartId: number,
+  ) {
+    const token = req.headers.authorization;
+    if (token) {
+      return await this.cartItemService.deleteCartItems(cartId, token);
+    }
+  }
 }

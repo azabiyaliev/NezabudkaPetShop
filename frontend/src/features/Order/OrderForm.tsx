@@ -7,8 +7,9 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import { OrderMutation } from '../../types';
-import { cartFromSlice, clearCart, getFromLocalStorage } from '../../store/cart/cartSlice.ts';
+import { cartFromSlice, clearCart } from '../../store/cart/cartSlice.ts';
 import { selectUser } from '../../store/users/usersSlice.ts';
+import { fetchCart } from '../../store/cart/cartThunk.ts';
 
 enum PaymentMethod {
   ByCash = 'ByCash',
@@ -40,8 +41,10 @@ const OrderForm = () => {
   });
 
   useEffect(() => {
-    dispatch(getFromLocalStorage());
-  }, [dispatch]);
+    if (user) {
+      dispatch(fetchCart({ token: user.token })).unwrap();
+    }
+  }, [dispatch, user]);
 
   useEffect(() => {
     if (carts && carts.products.length > 0) {

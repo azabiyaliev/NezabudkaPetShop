@@ -7,7 +7,7 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
 import { addItem, fetchCart } from '../../../store/cart/cartThunk.ts';
-import { cartFromSlice, setToLocalStorage } from '../../../store/cart/cartSlice.ts';
+import { cartFromSlice, clearCart, setToLocalStorage } from '../../../store/cart/cartSlice.ts';
 import { selectUser } from '../../../store/users/usersSlice.ts';
 
 interface Props {
@@ -22,21 +22,20 @@ const OneProductCard: React.FC<Props> = ({ product }) => {
 
   useEffect(() => {
     if (user) {
+      dispatch(clearCart());
       dispatch(fetchCart({ token: user.token })).unwrap();
     }
   }, [dispatch, user]);
 
   const addProductToCart = async (product: ProductResponse) => {
-    if (user) {
-      if (cart) {
-        await dispatch(addItem({
-          cartId: cart.id,
-          productId: product.id,
-          quantity: 1,
-          token: user.token,
-        })).unwrap();
-        await dispatch(fetchCart({ token: user.token })).unwrap();
-      }
+    if (user && cart) {
+      await dispatch(addItem({
+        cartId: cart.id,
+        productId: product.id,
+        quantity: 1,
+        token: user.token,
+      })).unwrap();
+      await dispatch(fetchCart({ token: user.token })).unwrap();
     }
   };
 

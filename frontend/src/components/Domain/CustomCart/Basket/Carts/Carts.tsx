@@ -1,12 +1,12 @@
 import { Box, Link } from '@mui/joy';
 import Typography from '@mui/joy/Typography';
-import { ICart } from '../../../../../types';
+import { ICartItem } from '../../../../../types';
 import React from 'react';
 import Cart from '../../Basket/Carts/Cart/Cart.tsx';
 import Tooltip from '@mui/joy/Tooltip';
 
 interface Props {
-  products: ICart[];
+  products: ICartItem[];
   deleteAllProduct: () => void;
 }
 

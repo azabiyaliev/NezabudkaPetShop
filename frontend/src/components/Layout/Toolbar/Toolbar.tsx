@@ -73,7 +73,6 @@ const MainToolbar = () => {
 
   const closeCart = () => {
     setOpenCart(false);
-    navigate("/");
   };
 
   const closeMenu = () => {

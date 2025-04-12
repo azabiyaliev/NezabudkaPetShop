@@ -137,6 +137,7 @@ export class CartItemsService {
         where: { id: existingItemInCart.id },
         data: {
           quantity: cartItemDto.quantity,
+          productId: cartItemDto.productId,
         },
         include: {
           product: true,
@@ -199,6 +200,39 @@ export class CartItemsService {
     } else {
       throw new ForbiddenException(
         'К сожалению, вы не можете удалить этот товар, так как она закреплена за другим пользователем.',
+      );
+    }
+  }
+
+  async deleteCartItems(cartId: number, token: string) {
+    if (!token) {
+      throw new NotFoundException(
+        'Не предоставлены данные, необходимые для идентификации корзины.',
+      );
+    }
+
+    const user = await this.prisma.user.findFirst({
+      where: { token },
+    });
+
+    if (!user) {
+      throw new NotFoundException('Данный пользователь не найден!');
+    }
+
+    const cart = await this.prisma.cart.findFirst({
+      where: { id: cartId },
+    });
+
+    if (!cart) {
+      throw new NotFoundException('Корзина не найдена!');
+    }
+
+    if (user.id === cart.userId) {
+      await this.prisma.cartItem.deleteMany({});
+      return { message: 'Корзина была очищена!' };
+    } else {
+      throw new ForbiddenException(
+        'К сожалению, вы не можете очистить корзину, так как она закреплена за другим пользователем.',
       );
     }
   }
