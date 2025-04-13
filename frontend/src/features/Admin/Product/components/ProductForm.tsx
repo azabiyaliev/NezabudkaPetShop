@@ -42,9 +42,13 @@ const initialState = {
   brandId: "",
   categoryId: "",
   subcategoryId: "",
-  parentId: "",
   startDateSales: null,
   endDateSales: null,
+  productSize: "",
+  productAge: "",
+  productWeight: 0,
+  productFeedClass: "",
+  productManufacturer: "",
 };
 
 const ProductForm: React.FC<Props> = ({
@@ -53,6 +57,7 @@ const ProductForm: React.FC<Props> = ({
   isProduct = false,
 }) => {
   const [form, setForm] = useState<ProductRequest>(editProduct || initialState);
+  const [showAdvancedFields, setShowAdvancedFields] = useState(false);
   const dispatch = useAppDispatch();
   const brands = useAppSelector(brandsFromSlice);
   const categories = useAppSelector(selectCategories);
@@ -83,14 +88,25 @@ const ProductForm: React.FC<Props> = ({
 
   useEffect(() => {
     if (editProduct) {
-      const formatDate = (dateStr: Date | null | undefined | string): string => {
-        return dateStr ? new Date(dateStr).toISOString().split("T")[0] : "";
+      const formatDate = (dateStr: Date | null | undefined | string): string =>
+        dateStr ? new Date(dateStr).toISOString().split("T")[0] : "";
+
+      const sanitizeString = (val: unknown): string => {
+        if (val === null || val === undefined || val === 'null') {
+          return '';
+        }
+        return String(val);
       };
 
       setForm({
         ...editProduct,
         startDateSales: formatDate(editProduct.startDateSales),
         endDateSales: formatDate(editProduct.endDateSales),
+        productSize: sanitizeString(editProduct.productSize),
+        productAge: sanitizeString(editProduct.productAge),
+        productFeedClass: sanitizeString(editProduct.productFeedClass),
+        productManufacturer: sanitizeString(editProduct.productManufacturer),
+        productWeight: editProduct.productWeight ?? 0,
       });
     }
   }, [editProduct]);
@@ -149,7 +165,19 @@ const ProductForm: React.FC<Props> = ({
     const categoryIdToSend = form.subcategoryId
       ? form.subcategoryId
       : form.categoryId;
-    onSubmit({ ...form, categoryId: categoryIdToSend });
+    onSubmit({
+      ...form,
+      categoryId: categoryIdToSend,
+      sales: Boolean(form.sales),
+      existence: Boolean(form.existence),
+      startDateSales: form.startDateSales || null,
+      endDateSales: form.endDateSales || null,
+      productAge: form.productAge?.trim() || null,
+      productSize: form.productSize?.trim() || null,
+      productManufacturer: form.productManufacturer?.trim() || null,
+      productFeedClass: form.productFeedClass?.trim() || null,
+      productWeight: form.productWeight || null,
+    });
 
     if (!isProduct) {
       setForm(initialState);
@@ -176,6 +204,10 @@ const ProductForm: React.FC<Props> = ({
         [name]: files[0] || null,
       }));
     }
+  };
+
+  const toggleAdvancedFields = () => {
+    setShowAdvancedFields((prev) => !prev);
   };
 
   return (
@@ -321,7 +353,7 @@ const ProductForm: React.FC<Props> = ({
               </FormControl>
             </Grid>
           )}
-          {selectedCategory && selectedCategory?.subcategories?.length > 0 && (
+          {Array.isArray(selectedCategory?.subcategories) && selectedCategory?.subcategories?.length > 0 && (
             <Grid size={{ xs: 12 }}>
               <FormControl
                 fullWidth
@@ -346,13 +378,11 @@ const ProductForm: React.FC<Props> = ({
                   <MenuItem value="" disabled>
                     Выберите подкатегорию
                   </MenuItem>
-                  {categories
-                    .find((cat) => cat.id === Number(form.categoryId))
-                    ?.subcategories.map((subcategory) => (
-                      <MenuItem key={subcategory.id} value={subcategory.id}>
-                        {subcategory.title}
-                      </MenuItem>
-                    ))}
+                  {categories.find((cat) => cat.id === Number(form.categoryId))?.subcategories?.map((subcategory) => (
+                    <MenuItem key={subcategory.id} value={subcategory.id}>
+                      {subcategory.title}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </Grid>
@@ -364,6 +394,104 @@ const ProductForm: React.FC<Props> = ({
               onGetFile={fileEventChangeHandler}
             />
           </Grid>
+          <Grid size={{ xs: 12 }}>
+            <Button
+              onClick={toggleAdvancedFields}
+              sx={{ mt: 2, mb: 2, color: orange[500] }}
+            >
+              {showAdvancedFields ? "Скрыть дополнительные поля" : "Показать дополнительные поля"}
+            </Button>
+          </Grid>
+          {showAdvancedFields && (
+            <>
+              <Grid size={{ xs: 12 }}>
+                <TextField
+                  label="Размер"
+                  name="productSize"
+                  value={form.productSize}
+                  onChange={inputChangeHandler}
+                  fullWidth
+                  sx={{
+                    "& label.Mui-focused": { color: orange[500] },
+                    "& .MuiOutlinedInput-root": {
+                      "& fieldset": { borderColor: "#ccc" },
+                      "&:hover fieldset": { borderColor: orange[500] },
+                      "&.Mui-focused fieldset": { borderColor: orange[500] },
+                    }
+                  }}
+                />
+              </Grid>
+              <Grid size={{ xs: 12 }}>
+                <TextField
+                  label="Возраст"
+                  name="productAge"
+                  value={form.productAge}
+                  onChange={inputChangeHandler}
+                  fullWidth
+                  sx={{
+                    "& label.Mui-focused": { color: orange[500] },
+                    "& .MuiOutlinedInput-root": {
+                      "& fieldset": { borderColor: "#ccc" },
+                      "&:hover fieldset": { borderColor: orange[500] },
+                      "&.Mui-focused fieldset": { borderColor: orange[500] },
+                    }
+                  }}
+                />
+              </Grid>
+              <Grid size={{ xs: 12 }}>
+                <TextField
+                  label="Вес (грамм)"
+                  name="productWeight"
+                  type="number"
+                  value={form.productWeight}
+                  onChange={inputChangeHandler}
+                  fullWidth
+                  sx={{
+                    "& label.Mui-focused": { color: orange[500] },
+                    "& .MuiOutlinedInput-root": {
+                      "& fieldset": { borderColor: "#ccc" },
+                      "&:hover fieldset": { borderColor: orange[500] },
+                      "&.Mui-focused fieldset": { borderColor: orange[500] },
+                    }
+                  }}
+                />
+              </Grid>
+              <Grid size={{ xs: 12 }}>
+                <TextField
+                  label="Класс корма"
+                  name="productFeedClass"
+                  value={form.productFeedClass}
+                  onChange={inputChangeHandler}
+                  fullWidth
+                  sx={{
+                    "& label.Mui-focused": { color: orange[500] },
+                    "& .MuiOutlinedInput-root": {
+                      "& fieldset": { borderColor: "#ccc" },
+                      "&:hover fieldset": { borderColor: orange[500] },
+                      "&.Mui-focused fieldset": { borderColor: orange[500] },
+                    }
+                  }}
+                />
+              </Grid>
+              <Grid size={{ xs: 12 }}>
+                <TextField
+                  label="Производитель"
+                  name="productManufacturer"
+                  value={form.productManufacturer}
+                  onChange={inputChangeHandler}
+                  fullWidth
+                  sx={{
+                    "& label.Mui-focused": { color: orange[500] },
+                    "& .MuiOutlinedInput-root": {
+                      "& fieldset": { borderColor: "#ccc" },
+                      "&:hover fieldset": { borderColor: orange[500] },
+                      "&.Mui-focused fieldset": { borderColor: orange[500] },
+                    }
+                  }}
+                />
+              </Grid>
+            </>
+          )}
           <Grid>
             <FormControlLabel
               control={
