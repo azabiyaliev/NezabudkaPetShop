@@ -44,4 +44,19 @@ export class CreateProductsDto {
   @IsOptional()
   @IsDateString()
   endDateSales?: string;
+
+  @IsOptional()
+  productManufacturer?: string;
+
+  @IsOptional()
+  productSize?: string;
+
+  @IsOptional()
+  productWeight?: number;
+
+  @IsOptional()
+  productAge?: string;
+
+  @IsOptional()
+  productFeedClass?: string;
 }
