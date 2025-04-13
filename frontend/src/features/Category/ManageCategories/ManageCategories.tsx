@@ -1,9 +1,7 @@
-import  { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from 'react';
 import {
   Box,
   IconButton,
-  List,
-  ListItem,
   ListItemText, Modal,
   Typography,
 } from '@mui/material';
@@ -14,10 +12,9 @@ import { selectCategories } from "../../../store/categories/categoriesSlice.ts";
 import {
   deleteCategory,
   fetchCategoriesThunk,
-  updateCategoriesThunk,
 } from '../../../store/categories/categoriesThunk.ts';
+
 import NewCategory from "../NewCategory/NewCategory.tsx";
-import { styled } from "@mui/styles";
 import { toast } from 'react-toastify';
 import { NavLink } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -28,24 +25,23 @@ import EditSubcategory from '../../../components/Forms/CategoryForm/EditSubcateg
 import SubcategoryForm from '../../../components/Forms/SubcategoryForm/SubcategoryForm.tsx';
 import ArrowDropDownOutlinedIcon from '@mui/icons-material/ArrowDropDownOutlined';
 import ListItemButton from '@mui/material/ListItemButton';
-import { Subcategory } from '../../../types';
+import { ICategories, Subcategory } from '../../../types';
+import { DndProvider, getBackendOptions, MultiBackend, NodeModel, Tree } from '@minoru/react-dnd-treeview';
+import './ManageCategories.css'
 
 const SUCCESSFUL_CATEGORY_DELETE = "Удаление прошло успешно!";
 const ERROR_CATEGORY_DELETE = "Ошибка при удалении подкатегории!";
 const WARNING_CATEGORY_DELETE = "Категория не пуста или используется в данный момент, не стоит удалять!";
 
+
 const ManageCategories = () => {
   const categories = useAppSelector(selectCategories);
   const dispatch = useAppDispatch();
-  const draggedOverSub = useRef<number | null>(null);
 
-  const [currentCategory, setCurrentCategory] = useState(categories);
   const [open, setOpen] = useState(false);
   const [openSubModal, setOpenSubModal] = useState(false);
   const [openAddSubModal, setOpenAddSubModal] = useState(false);
   const [parentCategoryId, setParentCategoryId] = useState<number | null>(null);
-  const [openCategory, setOpenCategory] = useState<number | null>(null);
-
 
   const [selectedCategory, setSelectedCategory] = useState<{
     id: number;
@@ -56,19 +52,11 @@ const ManageCategories = () => {
     title: string;
     parentId: number;
   } | null>(null);
-  const dragSub = useRef<{
-    categoryId: number;
-    subcategoryIndex: number;
-  } | null>(null);
 
 
   useEffect(() => {
     dispatch(fetchCategoriesThunk());
   }, [dispatch]);
-
-  useEffect(() => {
-    setCurrentCategory(categories);
-  }, [categories]);
 
   console.log(categories);
 
@@ -84,49 +72,11 @@ const ManageCategories = () => {
     setSelectedCategory(null);
   };
 
-  const handleSubEditOpen = (subcategory: { id: number; title: string, parentId: number }) => {
-    setSelectedSubCategory(subcategory);
-    setOpenSubModal(true);
-  };
-
   const handleSubEditClose = () => {
     setOpenSubModal(false);
     setSelectedSubCategory(null);
   };
 
-
-  const handlerSort = () => {
-    if (dragSub.current && draggedOverSub.current !== null) {
-      const { categoryId, subcategoryIndex } = dragSub.current;
-
-      const updatedCategories = currentCategory.map((category) => {
-        if (category.id === categoryId && category.subcategories) {
-          const subCategoriesClone = [...category.subcategories];
-          const draggedSubCategory = subCategoriesClone[subcategoryIndex];
-          subCategoriesClone.splice(subcategoryIndex, 1);
-          subCategoriesClone.splice(draggedOverSub.current!, 0, draggedSubCategory);
-          return { ...category, subcategories: subCategoriesClone };
-        }
-        return category;
-      });
-
-      setCurrentCategory(updatedCategories);
-      dispatch(updateCategoriesThunk(updatedCategories)).catch((error) => {
-        console.error("Sort error:", error);
-        toast.error("Ошибка при сортировке!");
-      });
-    }
-  };
-
-  const HoverCard = styled(ListItem)({
-    display: "flex",
-    flexWrap: "wrap",
-    cursor: "pointer",
-    transition: "transform 0.3s ease-in-out",
-    "&:hover": {
-      transform: "translate(8px) scale(1)",
-    },
-  });
 
   const onDelete = async (id: string) => {
     try {
@@ -166,136 +116,40 @@ const ManageCategories = () => {
     setParentCategoryId(null);
   };
 
-  const handleDrop = (targetSubId: number) => {
-    if (!dragSub.current) return;
-
-    const { categoryId, subcategoryIndex } = dragSub.current;
-
-    const sourceCategory = currentCategory.find(cat => cat.id === categoryId);
-    if (!sourceCategory || !sourceCategory.subcategories) return;
-
-    const draggedSub = sourceCategory.subcategories[subcategoryIndex];
-
-    const updatedSourceSubcategories = [...sourceCategory.subcategories];
-    updatedSourceSubcategories.splice(subcategoryIndex, 1);
-
-    const updatedCategories = currentCategory.map(cat => {
-      if (cat.id === categoryId) {
-        return {
-          ...cat,
-          subcategories: updatedSourceSubcategories,
+  const transformCategoriesToTree = useCallback(
+    (categories: ICategories[] | Subcategory[], parent: number = 0): NodeModel[] => {
+      return categories.flatMap((category) => {
+        const node: NodeModel = {
+          id: category.id,
+          parent: parent,
+          text: category.title,
+          droppable: true,
+          data: {
+            id: category.id,
+            title: category.title,
+            subcategories: category.subcategories || [],
+          },
         };
-      }
-      return cat;
-    });
 
-    const insertSubIntoSub = (subs: Subcategory[]): Subcategory[] => {
-      return subs.map(sub => {
-        if (sub.id === targetSubId) {
-          return {
-            ...sub,
-            subcategories: [...(sub.subcategories || []), { ...draggedSub, parentId: sub.id }],
-          };
-        }
-        if (sub.subcategories) {
-          return {
-            ...sub,
-            subcategories: insertSubIntoSub(sub.subcategories),
-          };
-        }
-        return sub;
+        const children = category.subcategories?.length
+          ? transformCategoriesToTree(category.subcategories, category.id)
+          : [];
+
+        return [node, ...children];
       });
-    };
+    },
+    []
+  );
 
-    const finalCategories = updatedCategories.map(cat => ({
-      ...cat,
-      subcategories: insertSubIntoSub(cat.subcategories || []),
-    }));
+  useEffect(() => {
+    if (categories.length) {
+      const tree = transformCategoriesToTree(categories);
+      setTreeData(tree);
+    }
+  }, [categories, transformCategoriesToTree]);
 
-    setCurrentCategory(finalCategories);
-
-    dispatch(updateCategoriesThunk(finalCategories)).catch((error) => {
-      console.error("Drop error:", error);
-      toast.error("Ошибка при перемещении подкатегории!");
-    });
-  };
-
-
-  const SubcategoryList = ({ subcategories }: { subcategories: Subcategory[] }) => {
-    return (
-      <List sx={{ width: '100%' }}>
-        {subcategories.map((sub) => (
-          <Box key={sub.id} sx={{ mb: 1 }}>
-            <ListItem
-              onDragOver={(e) => e.preventDefault()}
-              onDrop={() => handleDrop(sub.id)}
-              draggable={true}
-              sx={{
-                pl: 4,
-                py: 1,
-                bgcolor: '#f0f0f0',
-                borderRadius: 1,
-                borderLeft: '3px solid #bdbdbd',
-              }}
-              secondaryAction={
-                <>
-                  <Tooltip title="Редактировать подкатегорию" placement="top">
-                    <IconButton
-                      edge="end"
-                      aria-label="edit"
-                      onClick={() =>
-                        handleSubEditOpen({
-                          id: sub.id,
-                          title: sub.title,
-                          parentId: Number(sub.parentId),
-                        })
-                      }
-                    >
-                      <EditIcon fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
-
-                  <Tooltip title="Удалить подкатегорию" placement="top">
-                    <IconButton
-                      onClick={() => onDelete(String(sub.id))}
-                      edge="end"
-                      aria-label="delete"
-                      sx={{ ml: 1 }}
-                      color="error"
-                    >
-                      <DeleteIcon fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
-
-                  <Tooltip title="Добавить подкатегорию" placement="top">
-                    <IconButton
-                      edge="end"
-                      aria-label="add subcategory"
-                      sx={{ ml: 1 }}
-                      color="success"
-                      onClick={() => handleAddSubcategory(sub.id)}
-                    >
-                      <AddIcon sx={{ mr: 1 }} />
-                    </IconButton>
-                  </Tooltip>
-                </>
-              }
-            >
-              <ListItemText primary={sub.title} />
-            </ListItem>
-
-            {sub.subcategories && sub.subcategories.length > 0 && (
-              <Box sx={{ ml: 4 }}>
-                <SubcategoryList subcategories={sub.subcategories} />
-              </Box>
-            )}
-          </Box>
-        ))}
-      </List>
-    );
-  };
-
-
+  const [treeData, setTreeData] = useState<NodeModel[]>([]);
+  const handleDrop = (newTree: NodeModel[]) => setTreeData(newTree);
 
   return (
     <>
@@ -303,14 +157,15 @@ const ManageCategories = () => {
         <NavLink
           to="/private_account"
           style={{
-            color: 'green',
-            textDecoration: 'none',
-            fontWeight: 'bold',
-            marginTop: '20px',
-            padding: '2px',
-          }}>
-          <ArrowBackIcon/>
-           Назад...
+            color: "green",
+            textDecoration: "none",
+            fontWeight: "bold",
+            marginTop: "20px",
+            padding: "2px",
+          }}
+        >
+          <ArrowBackIcon />
+          Назад...
         </NavLink>
         <Typography variant="h4" textAlign="left" sx={{ mt: 2 }}>
           Управление категориями
@@ -331,140 +186,76 @@ const ManageCategories = () => {
           в подсвеченную область другой категории.
         </Typography>
 
-        <Box sx={{ mt: 4 }}>
-          {currentCategory.map((category) => (
-            <Box key={category.id} sx={{ mb: 3 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'row' }}>
-                <Typography sx={{ fontWeight: "bold"}}>
-                  {category.title}
-                </Typography>
+        <Box>
+          <DndProvider backend={MultiBackend} options={getBackendOptions()}>
+            <div className="categories-ul">
+              <Tree
+                tree={treeData}
+                rootId={0}
+                onDrop={handleDrop}
+                render={(node, { depth, isOpen, onToggle }) => {
+                  const category = node.data as ICategories;
+                  return (
+                    <div
+                      style={{
+                        marginInlineStart: depth * 20,
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
+                      <ListItemButton onClick={onToggle} sx={{ flex: 1 }}>
+                        {node.droppable && (
+                          <ArrowDropDownOutlinedIcon
+                            sx={{
+                              transform: isOpen
+                                ? "rotate(0deg)"
+                                : "rotate(-90deg)",
+                              transition: "transform 0.2s",
+                              marginRight: "20px",
+                            }}
+                          />
+                        )}
+                        <ListItemText primary={node.text} />
+                      </ListItemButton>
 
-                <Tooltip title="Редактировать категорию" placement="top">
-                  <IconButton
-                    edge="end"
-                    aria-label="edit"
-                    onClick={() =>
-                      handleOpen({ ...category, id: Number(category.id) })
-                    }
-                  >
-                    <EditIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
+                      <Tooltip title="Редактировать категорию">
+                        <IconButton
+                          onClick={() =>
+                            handleOpen({
+                              id: category.id,
+                              title: category.title,
+                            })
+                          }
+                        >
+                          <EditIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
 
-                <Tooltip title="Удалить категорию" placement="top">
-                  <IconButton
-                    onClick={() => onDelete(String(category.id))}
-                    edge="end"
-                    aria-label="delete"
-                    sx={{ ml: 1 }}
-                    color="error"
-                  >
-                    <DeleteIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Добавить подкатегорию" placement="top">
-                  <IconButton
-                    edge="end"
-                    aria-label="add subcategory"
-                    sx={{ ml: 1 }}
-                    color="success"
-                    onClick={() => handleAddSubcategory(category.id)}
-                  >
-                    <AddIcon sx={{ mr: 1 }} />
-                  </IconButton>
-                </Tooltip>
-              </Box>
+                      <Tooltip title="Удалить категорию">
+                        <IconButton
+                          onClick={() => onDelete(String(category.id))}
+                          color="error"
+                        >
+                          <DeleteIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
 
-              {category.subcategories && category.subcategories.length > 0 ? (
-                <List sx={{ pl: 2, borderRadius: 1 }}>
-                  {category.subcategories.map((sub, index) => (
-                    <HoverCard key={sub.id}>
-                      <ListItem
-                        onDragOver={(e) => e.preventDefault()}
-                        onDrop={() => handleDrop(sub.id)}
-                        onClick={() =>
-                          setOpenCategory(openCategory === sub.id ? null : sub.id)
-                        }
-                        onDragStart={() => {
-                          dragSub.current = {
-                            categoryId: category.id,
-                            subcategoryIndex: index,
-                          };
-                        }}
-                        onDragEnter={() => {
-                          draggedOverSub.current = index;
-                        }}
-                        onDragEnd={handlerSort}
-                        draggable={true}
-                        sx={{ my: 1, bgcolor: "#dfdfdf", borderRadius: 1 }}
-                        secondaryAction={
-                          <>
-                            <Tooltip title="Редактировать подкатегорию" placement="top">
-                              <IconButton
-                                edge="end"
-                                aria-label="edit"
-                                onClick={() =>
-                                  handleSubEditOpen({
-                                    id: sub.id,
-                                    title: sub.title,
-                                    parentId: category.id
-                                  })
-                                }
-                              >
-                                <EditIcon fontSize="small" />
-                              </IconButton>
-                            </Tooltip>
-
-                            <Tooltip title="Удалить подкатегорию" placement="top">
-                              <IconButton
-                                onClick={() => onDelete(String(sub.id))}
-                                edge="end"
-                                aria-label="delete"
-                                sx={{ ml: 1 }}
-                                color="error"
-                              >
-                                <DeleteIcon fontSize="small" />
-                              </IconButton>
-                            </Tooltip>
-                            <Tooltip title="Добавить подкатегорию" placement="top">
-                              <IconButton
-                                edge="end"
-                                aria-label="add subcategory"
-                                sx={{ ml: 1 }}
-                                color="success"
-                                onClick={() => handleAddSubcategory(sub.id)}
-                              >
-                                <AddIcon sx={{ mr: 1 }} />
-                              </IconButton>
-                            </Tooltip>
-                          </>
-                        }
-                      >
-                        <ListItemButton>
-                          {sub.subcategories && sub.subcategories.length > 0 && (
-                            <ArrowDropDownOutlinedIcon sx={{ marginRight: '20px' }} />
-                          )}
-                          <ListItemText primary={sub.title} />
-                        </ListItemButton>
-                      </ListItem>
-                      {openCategory === sub.id && (
-                        <SubcategoryList subcategories={sub.subcategories || []} />
-                      )}
-                    </HoverCard>
-                  ))}
-                </List>
-              ) : (
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  sx={{ pl: 2 }}
-                >
-                  Нет подкатегорий
-                </Typography>
-              )}
-            </Box>
-          ))}
+                      <Tooltip title="Добавить подкатегорию">
+                        <IconButton
+                          onClick={() => handleAddSubcategory(category.id)}
+                          color="success"
+                        >
+                          <AddIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    </div>
+                  );
+                }}
+              />
+            </div>
+          </DndProvider>
         </Box>
+
         <Modal
           open={open}
           onClose={handleClose}
@@ -504,13 +295,12 @@ const ManageCategories = () => {
             justifyContent: "center",
           }}
         >
-          <Box sx={{ bgcolor: "white", p: 4, borderRadius: 2 , width: 400 }}>
+          <Box sx={{ bgcolor: "white", p: 4, borderRadius: 2, width: 400 }}>
             {parentCategoryId && (
               <SubcategoryForm categoryId={parentCategoryId} />
             )}
           </Box>
         </Modal>
-
       </Box>
     </>
   );
