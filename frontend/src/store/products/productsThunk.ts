@@ -14,7 +14,7 @@ export const addProduct = createAsyncThunk<
   {
     rejectValue: GlobalError;
   }
->("product/addProduct", async ({ product, token }, { rejectWithValue }) => {
+>("product/addProduct", async ({ product }, { rejectWithValue }) => {
   try {
     const formData = new FormData();
     const keys = Object.keys(product) as (keyof ProductRequest)[];
@@ -28,9 +28,7 @@ export const addProduct = createAsyncThunk<
         }
       }
     });
-    await axiosApi.post("products/create", formData, {
-      headers: { Authorization: token },
-    });
+    await axiosApi.post("products/create", formData);
   } catch (error) {
     if (
       isAxiosError(error) &&
@@ -46,10 +44,12 @@ export const addProduct = createAsyncThunk<
 export const editProduct = createAsyncThunk<
   void,
   { product: ProductRequest; token: string }
->("product/editProduct", async ({ product, token }) => {
+>("product/editProduct", async ({ product },) => {
   const formData = new FormData();
 
-  const keys = Object.keys(product) as (keyof ProductRequest)[];
+  const keys = Object.keys(product).filter(
+    (key) => !["id"].includes(key),
+  ) as (keyof ProductRequest)[];
 
   keys.forEach((key) => {
     const value = product[key];
@@ -61,9 +61,7 @@ export const editProduct = createAsyncThunk<
       }
     }
   });
-  await axiosApi.put(`products/update_product_item/${product.id}`, formData, {
-    headers: { Authorization: token },
-  });
+  await axiosApi.put(`products/update_product_item/${product.id}`, formData);
 });
 
 export const getProducts = createAsyncThunk<ProductResponse[], string>(
@@ -78,7 +76,7 @@ export const getOneProduct = createAsyncThunk<ProductRequest, number>(
   "products/getOneProduct",
   async (productId) => {
     const response = await axiosApi.get<ProductRequest>(
-      `/products/${productId}`,
+      `/products/edit/${productId}`,
     );
     return response.data || null;
   },

@@ -145,17 +145,23 @@ export interface ProductRequest {
   productPhoto: File | null;
   productPrice: number;
   productDescription: string;
-  existence: boolean;
-  sales: boolean;
+  productSize?: string | null;
+  productAge?: string | null;
+  productWeight?: number | null;
+  productFeedClass?: string | null;
+  productManufacturer?: string | null;
+  existence?: boolean;
+  sales?: boolean;
   brandId: string;
   categoryId: string;
-  subcategoryId: string;
-  parentId: string;
+  subcategoryId?: string;
   id?: number;
   category?: ICategories;
   startDateSales?: Date | null | string;
   endDateSales?: Date | null | string;
 }
+
+
 
 export interface ICart {
   quantity: number;
@@ -204,20 +210,17 @@ export interface ProductResponse {
   categoryId: string;
   brandId: string;
   brand: IBrand;
+  reviews: [];
   category: ICategories;
   startDateSales?: string;
   endDateSales?: string;
   orderedProductsStats: number;
+  productSize?: string;
+  productAge?: string;
+  productWeight?: number;
+  productFeedClass?: string;
+  productManufacturer?: string;
 }
-
-// export interface AdminFormData {
-//   firstName: string;
-//   secondName: string;
-//   email: string;
-//   phone: string;
-//   password: string;
-//   role: string;
-// }
 
 export interface AdminDataMutation {
   id?: number;
