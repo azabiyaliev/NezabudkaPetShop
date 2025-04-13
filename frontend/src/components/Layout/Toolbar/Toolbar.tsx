@@ -155,7 +155,7 @@ const MainToolbar = () => {
               >
                 <MenuItem>
                   <NavLink
-                    to="/company"
+                    to="/my_company"
                     className="text-decoration-none text-black"
                   >
                     О компании

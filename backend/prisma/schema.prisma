@@ -141,8 +141,8 @@ model Order {
   orderComment   String?        @map("order_comment")
   paymentMethod  PaymentMethod  @default(ByCash) @map("payment_method")
   deliveryMethod DeliveryMethod @default(Delivery) @map("delivery_method")
-  bonusUsed     Int           @default(0)
-  useBonus      Boolean       @default(false)
+  bonusUsed      Int            @default(0)
+  useBonus       Boolean        @default(false)
 
   userId Int?        @map("user_id")
   user   User?       @relation(fields: [userId], references: [id])
@@ -251,4 +251,11 @@ model CartItem {
   quantity  Int
 
   @@map("cart_items")
+}
+
+model CompanyPages {
+  id   Int    @id @default(autoincrement())
+  text String
+
+  @@map("companyPages")
 }

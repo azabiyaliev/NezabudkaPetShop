@@ -35,6 +35,9 @@ import { CartService } from './cart/cart.service';
 import { CartItemsModule } from './cart-items/cart-items.module';
 import { CartItemsController } from './cart-items/cart-items.controller';
 import { CartItemsService } from './cart-items/cart-items.service';
+import { CompanyPageModule } from './company_page/company_page.module';
+import { CompanyPageController } from './company_page/company_page.controller';
+import { CompanyPageService } from './company_page/company_page.service';
 
 @Module({
   imports: [
@@ -52,6 +55,7 @@ import { CartItemsService } from './cart-items/cart-items.service';
     PhotoCarouselModule,
     FavoritesModule,
     TelegramModule,
+    CompanyPageModule,
     CartModule,
     CartItemsModule,
   ],
@@ -62,6 +66,7 @@ import { CartItemsService } from './cart-items/cart-items.service';
     PhotoCarouselController,
     FavoritesController,
     TelegramController,
+    CompanyPageController,
     CartController,
     CartItemsController,
   ],
@@ -76,6 +81,7 @@ import { CartItemsService } from './cart-items/cart-items.service';
     FavoritesService,
     TelegramService,
     OrdersService,
+    CompanyPageService,
     CartService,
     CartItemsService,
   ],

@@ -296,3 +296,12 @@ export interface historyProduct {
   productId: number;
   product: ProductRequest;
 }
+
+export interface CompanyPage{
+  id: number;
+  text: string;
+}
+
+export interface CompanyPageMutation{
+  text: string;
+}

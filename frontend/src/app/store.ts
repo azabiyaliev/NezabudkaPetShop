@@ -14,12 +14,13 @@ import { editSiteReducer } from "../store/editionSite/editionSiteSlice.ts";
 import { categoriesReducer } from "../store/categories/categoriesSlice.ts";
 import { brandReducer } from "../store/brands/brandsSlice.ts";
 import { productsReducer } from "../store/products/productsSlice.ts";
+import { cartReducer } from "../store/cart/cartSlice.ts";
 import { photoCarouselReducer } from '../store/photoCarousel/photoCarouselSlice.ts';
 import { adminReducer } from '../store/admins/adminSlice.ts';
 import { orderReducer } from '../store/orders/ordersSlice.ts';
 import { favoriteProductsReducer } from '../store/favoriteProducts/favoriteProductsSlice.ts';
 import { historyReducer } from '../store/historyProduct/historyProductSlice.ts';
-import { cartReducer } from '../store/cart/cartSlice.ts';
+import { companyPageReducer } from '../store/companyPage/compantPageSlice.ts';
 
 const userPersistConfig = {
   key: "store:users",
@@ -39,6 +40,7 @@ const rootReducer = combineReducers({
   cart: cartReducer,
   favorites: favoriteProductsReducer,
   history: historyReducer,
+  company_page: companyPageReducer,
 });
 
 export const store = configureStore({

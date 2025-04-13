@@ -16,6 +16,7 @@ export class SeedService {
     await this.prisma.brand.deleteMany({});
     await this.prisma.category.deleteMany({});
     await this.prisma.orderItem.deleteMany({});
+    await this.prisma.companyPages.deleteMany({});
 
     const password = await bcrypt.hash('123', 10);
 
@@ -280,6 +281,13 @@ export class SeedService {
           sales: false,
         },
       ],
+    });
+    await this.prisma.companyPages.createMany({
+      data: {
+        text:
+          'С 2008 года магазин зоотоваров "Незабудка" радует своих клиентов и их питомцев. Теперь Мы вышли в онлайн и готовы предложить один самых широких ассортиментов зоотоваров в Бишкеке на доставку.\n' +
+          'В ассортименте Вы найдете корма всех классов, одежду,игрушки, лакомства, ветеринарные препараты для кошек и собак. Так же в ассортименте есть корма и атрибутика для птиц и мелких грызунов.',
+      },
     });
   }
 }

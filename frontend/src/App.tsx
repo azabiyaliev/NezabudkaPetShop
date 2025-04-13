@@ -30,6 +30,8 @@ import ClientTable from './features/SuperAdmin/container/ClientTable/ClientTable
 import ManageCategories from './features/Category/ManageCategories/ManageCategories.tsx';
 import OrderStats from './features/Admin/AdminOrderPage/OrderStats.tsx';
 import FavoriteProduct from './features/FavoriteProduct/containers/FavoriteProduct.tsx';
+import CompanyPage from './features/CompanyPage/CompanyPage.tsx';
+import CompanyPageFrom from './components/Forms/CompanyPageFrom/CompanyPageFrom.tsx';
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -168,6 +170,8 @@ const App = () => {
             </ProtectedRoute>
           }/>
           <Route path='/favorite-products' element={<FavoriteProduct/>}/>
+          <Route path='/my_company' element={<CompanyPage/>}/>
+          <Route path='/my_company/:id' element={<CompanyPageFrom/>}/>
         </Routes>
       </Layout>
     </div>
