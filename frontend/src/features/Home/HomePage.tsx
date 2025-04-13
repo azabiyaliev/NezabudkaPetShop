@@ -27,23 +27,27 @@ const HomePage = () => {
   const mergeCarts = (cart: ICartBack, localCart: ICartBack): ICartItem[] => {
     const mergedCart: ICartItem[] = [...cart.products];
 
-    localCart.products.forEach((localProduct) => {
-      const existingItemIndex = mergedCart.findIndex(
-        (item) => item.productId === localProduct.productId
-      );
+    if (localCart !== null) {
+      localCart.products.forEach((localProduct) => {
+        const existingItemIndex = mergedCart.findIndex(
+          (item) => item.productId === localProduct.productId
+        );
 
-      if (existingItemIndex === -1) {
-        mergedCart.push(localProduct);
-      }
-    });
-    return mergedCart;
+        if (existingItemIndex === -1) {
+          mergedCart.push(localProduct);
+        }
+      });
+      return mergedCart;
+    } else {
+      return cart.products;
+    }
   };
 
   useEffect(() => {
     if (user && cart) {
       const cartFromLS = localStorage.getItem("cart");
 
-      if (cartFromLS) {
+      if (cartFromLS !== null) {
         const localCart = JSON.parse(cartFromLS);
         setProducts([]);
         const allUserProducts = mergeCarts(cart, localCart);
