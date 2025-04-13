@@ -9,42 +9,20 @@ import Carousel from '../../components/UI/Carousel/Carousel.tsx';
 import CustomCart from '../../components/Domain/CustomCart/CustomCart.tsx';
 import CategoryMenuBox from '../Category/CategoryMenuBox/CategoryMenuBox.tsx';
 import CategoryCard from '../Category/CategoryCard/CategoryCard.tsx';
-import { cartFromSlice, setToLocalStorage } from '../../store/cart/cartSlice.ts';
+import { cartErrorFromSlice, cartFromSlice, setToLocalStorage } from '../../store/cart/cartSlice.ts';
 import { selectUser } from '../../store/users/usersSlice.ts';
 import { addItem, createCart, deleteItemsCart, fetchCart } from '../../store/cart/cartThunk.ts';
 import { ICartBack, ICartItem } from '../../types';
 
 const HomePage = () => {
   const [openCart, setOpenCart] = useState<boolean>(false);
-  const [synced, setSynced] = useState(false);
+  const [synced, setSynced] = useState<boolean>(false);
   const [products, setProducts] = useState<ICartItem[]>([]);
   const brands = useAppSelector(brandsFromSlice);
   const user = useAppSelector(selectUser);
   const cart = useAppSelector(cartFromSlice);
+  const createCartError = useAppSelector(cartErrorFromSlice);
   const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    dispatch(getBrands()).unwrap();
-    const fetchData = async () => {
-      await dispatch(getBrands()).unwrap();
-
-      if (user) {
-        await dispatch(createCart({token: user.token})).unwrap();
-        await dispatch(fetchCart({ token: user.token })).unwrap();
-      }
-    };
-    void fetchData();
-  }, [dispatch, user]);
-
-  const closeCart = () => {
-    setOpenCart(false);
-  };
-
-  useEffect(() => {
-    if (!user) {
-      dispatch(setToLocalStorage(cart));
-    }
-  }, [dispatch, cart, user]);
 
   const mergeCarts = (cart: ICartBack, localCart: ICartBack): ICartItem[] => {
     const mergedCart: ICartItem[] = [...cart.products];
@@ -76,32 +54,51 @@ const HomePage = () => {
   }, [user, cart, dispatch]);
 
   useEffect(() => {
-    const syncProductsToBackend = async () => {
-      if (user && products.length > 0 && cart && !synced) {
-        setSynced(true);
+    const fetchData = async () => {
+      await dispatch(getBrands()).unwrap();
 
-        if (cart.products.length > 0) {
-          await dispatch(deleteItemsCart({cartId: cart.id, token: user.token})).unwrap();
+      if (user) {
+        await dispatch(createCart({token: user.token})).unwrap();
+
+        if (!createCartError) {
+          await dispatch(fetchCart({ token: user.token })).unwrap();
         }
 
-        for (const product of products) {
-          await dispatch(
-            addItem({
-              cartId: cart.id,
-              productId: product.productId,
-              quantity: product.quantity,
-              token: user.token,
-            })
-          ).unwrap();
+        const userCart = await dispatch(fetchCart({ token: user.token })).unwrap();
+
+        if (products.length > 0 && userCart && !synced) {
+          setSynced(true);
+
+          if (userCart.products.length > 0) {
+            await dispatch(deleteItemsCart({cartId: userCart.id, token: user.token})).unwrap();
+          }
+
+          for (const product of products) {
+            await dispatch(
+              addItem({
+                cartId: userCart.id,
+                productId: product.productId,
+                quantity: product.quantity,
+                token: user.token,
+              })
+            ).unwrap();
+          }
+          await dispatch(fetchCart({ token: user.token })).unwrap();
         }
-        await dispatch(fetchCart({ token: user.token })).unwrap();
       }
     };
-    void syncProductsToBackend();
-  }, [dispatch, user, products, cart, synced]);
+    void fetchData();
+  }, [dispatch, user, createCartError, products, synced]);
 
-  console.log(products);
-  console.log(cart);
+  const closeCart = () => {
+    setOpenCart(false);
+  };
+
+  useEffect(() => {
+    if (!user) {
+      dispatch(setToLocalStorage(cart));
+    }
+  }, [dispatch, cart, user]);
 
   return (
     <Container>

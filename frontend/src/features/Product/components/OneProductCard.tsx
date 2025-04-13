@@ -30,6 +30,8 @@ const OneProductCard: React.FC<Props> = ({ product }) => {
     if (user) {
       dispatch(clearCart());
       dispatch(fetchCart({ token: user.token })).unwrap();
+    } else {
+      dispatch(newUserLogin());
     }
   }, [dispatch, user]);
 
@@ -50,10 +52,6 @@ const OneProductCard: React.FC<Props> = ({ product }) => {
   useEffect(() => {
     dispatch(setToLocalStorage(cart));
   }, [dispatch, cart]);
-
-  useEffect(() => {
-    dispatch(newUserLogin());
-  }, [dispatch]);
 
   return (
     <Card

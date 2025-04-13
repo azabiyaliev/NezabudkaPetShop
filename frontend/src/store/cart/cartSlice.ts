@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { addItem, createCart, deleteItemCart, deleteItemsCart, fetchCart, updateCartItem } from './cartThunk.ts';
-import { GlobalError, ICartBack, ProductResponse } from '../../types';
+import { CartError, ICartBack, ProductResponse } from '../../types';
 import { RootState } from '../../app/store.ts';
 
 interface CartState {
@@ -14,12 +14,12 @@ interface CartState {
     deleteProductLoading: boolean;
   },
   errors: {
-    getCartError: GlobalError | null;
-    createError: GlobalError | null;
-    deleteError: GlobalError | null;
-    addProductError: GlobalError | null;
-    deleteProductError: GlobalError | null;
-    editProductError: GlobalError | null;
+    getCartError: CartError | null;
+    createError: CartError | null;
+    deleteError: CartError | null;
+    addProductError: CartError | null;
+    deleteProductError: CartError | null;
+    editProductError: CartError | null;
   },
 }
 
@@ -108,13 +108,15 @@ const cartSlice = createSlice({
     },
     newUserLogin: (state) => {
       const cartFromLS = localStorage.getItem("cart");
-      if (cartFromLS === null && state.cart === null) {
-        state.cart = {
+      const parsedCart = cartFromLS ? JSON.parse(cartFromLS) : null;
+      if (!parsedCart && !state.cart) {
+        const newCart = {
           id: Date.now(),
           userId: Date.now(),
           products: [],
-        }
-        localStorage.setItem("cart", JSON.stringify(state.cart));
+        };
+        state.cart = newCart;
+        localStorage.setItem("cart", JSON.stringify(newCart));
       }
     }
   },
