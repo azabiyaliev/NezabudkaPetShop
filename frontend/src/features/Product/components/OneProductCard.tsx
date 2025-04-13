@@ -44,7 +44,6 @@ const OneProductCard: React.FC<Props> = ({ product }) => {
   const cart = useAppSelector(cartFromSlice);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const user = useAppSelector(selectUser);
   const favorites = useAppSelector(selectedFavorite);
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
 

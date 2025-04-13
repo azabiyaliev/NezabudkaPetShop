@@ -189,7 +189,7 @@ const OrderForm = () => {
   );
 
   const availableBonuses = user && !isNaN(user.bonus) ? user.bonus : 0;
-  const maxBonusesToUse = !isNaN(totalPrice) ? Math.min(availableBonuses, totalPrice) : 0;
+  const maxBonusesToUse = !isNaN(totalPrice as number) ? Math.min(availableBonuses, totalPrice as number) : 0;
 
   useEffect(() => {
     setIsBonusInputDisabled(availableBonuses === 0);
@@ -205,6 +205,10 @@ const OrderForm = () => {
       }));
     }
   };
+
+  if (!carts) {
+    return null;
+  }
 
   return (
     <form onSubmit={handleSubmit} style={{ marginTop: "35px" }}>
@@ -636,7 +640,9 @@ const OrderForm = () => {
           },
         }}
       >
-       <TotalPrice products={carts} bonusUsed={form.bonusUsed as number}/>
+        {carts.products && (
+          <TotalPrice products={carts.products} bonusUsed={form.bonusUsed || 0} />
+        )}
 
         <Grid
           container

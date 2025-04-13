@@ -72,6 +72,16 @@ export class OrdersController {
     return this.ordersService.createOrder(orderDto, userId);
   }
 
+  @HttpCode(200)
+  @Post('guest-checkout')
+  async createGuestOrder(@Body() orderDto: CreateOrderDto) {
+    try {
+      return this.ordersService.createOrder(orderDto);
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
   @UseGuards(TokenAuthGuard, RolesGuard)
   @Roles('admin')
   @Patch(':id')

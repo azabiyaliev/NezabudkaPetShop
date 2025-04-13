@@ -5,7 +5,6 @@ import { Button, Container } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import image from "../../assets/image_transparent.png";
 import Typography from "@mui/joy/Typography";
-import TotalPrice from '../../components/Domain/CustomCart/Basket/TotalPrice/TotalPrice.tsx';
 import OrderForm from '../Order/OrderForm.tsx';
 import { cartFromSlice, clearCart, setToLocalStorage } from '../../store/cart/cartSlice.ts';
 import { selectUser } from '../../store/users/usersSlice.ts';
@@ -66,7 +65,7 @@ const CartPage = () => {
               <Carts products={cart.products} deleteAllProduct={() => deleteAllProducts()}/>
               <OrderForm/>
             </Box>
-            <TotalPrice products={cart.products} />
+
           </Box>
         </>
       ) : (
