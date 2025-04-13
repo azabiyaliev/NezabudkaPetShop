@@ -1,6 +1,4 @@
 import {
-  IsBoolean,
-  IsDateString,
   IsNotEmpty,
   IsNumberString,
   IsOptional,
@@ -25,24 +23,24 @@ export class CreateProductsDto {
   @IsNumberString()
   categoryId!: number;
 
+  @IsOptional()
+  @IsNumberString()
+  subcategoryId?: number;
+
   @IsNotEmpty()
   @IsNumberString()
   brandId?: number;
 
   @IsOptional()
-  @IsBoolean()
-  existence?: boolean | string;
+  existence?: string;
 
   @IsOptional()
-  @IsBoolean()
-  sales?: boolean | string;
+  sales?: string;
 
   @IsOptional()
-  @IsDateString()
   startDateSales?: string;
 
   @IsOptional()
-  @IsDateString()
   endDateSales?: string;
 
   @IsOptional()
