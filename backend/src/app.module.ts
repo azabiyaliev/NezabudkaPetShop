@@ -38,6 +38,9 @@ import { CartItemsService } from './cart-items/cart-items.service';
 import { CompanyPageModule } from './company_page/company_page.module';
 import { CompanyPageController } from './company_page/company_page.controller';
 import { CompanyPageService } from './company_page/company_page.service';
+import { BonusPageModule } from './bonus_program_page/bonus_program_pg.module';
+import { BonusProgramService } from './bonus_program_page/bonus_program_pg.service';
+import { BonusPageController } from './bonus_program_page/bonus_program_pg.controller';
 
 @Module({
   imports: [
@@ -58,6 +61,7 @@ import { CompanyPageService } from './company_page/company_page.service';
     CompanyPageModule,
     CartModule,
     CartItemsModule,
+    BonusPageModule,
   ],
   controllers: [
     AppController,
@@ -69,6 +73,7 @@ import { CompanyPageService } from './company_page/company_page.service';
     CompanyPageController,
     CartController,
     CartItemsController,
+    BonusPageController,
   ],
   providers: [
     AppService,
@@ -84,6 +89,7 @@ import { CompanyPageService } from './company_page/company_page.service';
     CompanyPageService,
     CartService,
     CartItemsService,
+    BonusProgramService,
   ],
 })
 export class AppModule {}

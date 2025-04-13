@@ -42,7 +42,7 @@ const CompanyPage = () => {
                   position: "relative",
                 }}
               >
-                {user && user.role === "admin" || user && user.role === "superAdmin" && (
+                {(user && (user.role === "admin" || user.role === "superAdmin")) && (
                   <Box
                     component="button"
                     onClick={clickButtonEdit}
