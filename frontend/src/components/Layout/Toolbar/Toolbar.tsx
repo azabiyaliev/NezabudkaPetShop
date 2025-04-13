@@ -1,46 +1,35 @@
-import {
-  Badge,
-  Box,
-  Button,
-  Container,
-  Menu,
-  MenuItem,
-  Toolbar,
-} from "@mui/material";
-import { NavLink, useNavigate } from "react-router-dom";
+import { Badge, Box, Button, Container, Menu, MenuItem, Toolbar, } from '@mui/material';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector, usePermission } from '../../../app/hooks.ts';
-import ExistsUser from "./ExistsUser.tsx";
-import UnknownUser from "./UnknownUser.tsx";
-import logo_transparent from "../../../assets/logo_transparent.png";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import Typography from "@mui/material/Typography";
-import "./Fonts.css";
-import { selectEditSite } from "../../../store/editionSite/editionSiteSlice.ts";
-import { selectUser } from "../../../store/users/usersSlice.ts";
-import React, { useEffect, useState } from "react";
-import CustomCart from "../../Domain/CustomCart/CustomCart.tsx";
-import {
-  cartsFromSlice,
-  getFromLocalStorage,
-} from "../../../store/cart/cartSlice.ts";
-import KeyboardArrowDownOutlinedIcon from "@mui/icons-material/KeyboardArrowDownOutlined";
+import ExistsUser from './ExistsUser.tsx';
+import UnknownUser from './UnknownUser.tsx';
+import logo_transparent from '../../../assets/logo_transparent.png';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import Typography from '@mui/material/Typography';
+import './Fonts.css';
+import { selectEditSite } from '../../../store/editionSite/editionSiteSlice.ts';
+import { selectUser } from '../../../store/users/usersSlice.ts';
+import React, { useEffect, useState } from 'react';
+import CustomCart from '../../Domain/CustomCart/CustomCart.tsx';
+import KeyboardArrowDownOutlinedIcon from '@mui/icons-material/KeyboardArrowDownOutlined';
 import { fetchSite } from '../../../store/editionSite/editionSiteThunk.ts';
 import { selectProducts } from '../../../store/products/productsSlice.ts';
 import { getProducts } from '../../../store/products/productsThunk.ts';
 import SearchIcon from '@mui/icons-material/Search';
-import LocalMallOutlinedIcon from "@mui/icons-material/LocalMallOutlined";
-import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined";
+import LocalMallOutlinedIcon from '@mui/icons-material/LocalMallOutlined';
+import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 import SettingsIcon from '@mui/icons-material/Settings';
 import MenuIcon from '@mui/icons-material/Menu';
 import CategoryNavMenu from '../../Domain/CategoryNavMenu.tsx';
+import { cartFromSlice, getFromLocalStorage } from '../../../store/cart/cartSlice.ts';
 
 const MainToolbar = () => {
   const [openCart, setOpenCart] = useState<boolean>(false);
   const [openCategoryMenu, setOpenCategoryMenu] = useState<boolean>(false);
   const user = useAppSelector(selectUser);
   const site = useAppSelector(selectEditSite);
-  const cart = useAppSelector(cartsFromSlice);
+  const cart = useAppSelector(cartFromSlice);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -66,9 +55,9 @@ const MainToolbar = () => {
   }, [search]);
 
   useEffect(() => {
+    dispatch(getFromLocalStorage());
     dispatch(fetchSite()).unwrap()
   }, [dispatch]);
-
 
   useEffect(() => {
     if (search) {
@@ -76,13 +65,10 @@ const MainToolbar = () => {
     } else {
       dispatch(getProducts(''));
     }
-
-    dispatch(getFromLocalStorage());
-  }, [dispatch, debouncedSearch, search, user]);
+  }, [dispatch, debouncedSearch, search]);
 
   const closeCart = () => {
     setOpenCart(false);
-    navigate("/");
   };
 
   const closeMenu = () => {
@@ -90,14 +76,16 @@ const MainToolbar = () => {
     navigate("/");
   }
 
-  const checkProductInCart: number[] = cart.map((product) => {
-    return product.quantity;
-  });
+  const checkProductInCart: number[] = Array.isArray(cart?.products)
+    ? cart.products.map((product) => product.quantity)
+    : [];
 
-  const sum: number = checkProductInCart.reduce((acc: number, i: number) => {
+
+  const sum: number | null = checkProductInCart && checkProductInCart.reduce((acc: number, i: number) => {
     acc = acc + i;
     return acc;
   }, 0);
+
   return (
     <div>
       <CategoryNavMenu openMenu={openCategoryMenu} closeMenu={closeMenu}/>

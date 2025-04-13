@@ -157,10 +157,27 @@ export interface ProductRequest {
   endDateSales?: Date | null | string;
 }
 
-export interface ICart {
+export interface ICartBack {
+  id: number,
+  userId: number,
+  products: ICartItem[],
+}
+export interface ICartItem {
+  id?: number,
+  cartId?: number,
+  productId: number,
   quantity: number;
   productId: number;
   product: ProductResponse;
+}
+
+export interface CartError {
+  error: string;
+  errors: {
+    title: string;
+  };
+  message: string;
+  statusCode: number;
 }
 
 export interface ICartMutation {
@@ -209,15 +226,6 @@ export interface ProductResponse {
   endDateSales?: string;
   orderedProductsStats: number;
 }
-
-// export interface AdminFormData {
-//   firstName: string;
-//   secondName: string;
-//   email: string;
-//   phone: string;
-//   password: string;
-//   role: string;
-// }
 
 export interface AdminDataMutation {
   id?: number;

@@ -8,7 +8,7 @@ import {
   ListItemText,
   Divider, Typography,
 } from '@mui/material';
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
 import { selectUser, unsetUser } from "../../../store/users/usersSlice.ts";
 import { usePermission} from '../../../app/hooks.ts';
@@ -34,7 +34,7 @@ const ExistsUser = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const user = useAppSelector(selectUser);
   const can = usePermission(user);
-
+  const navigate = useNavigate();
 
   const toggleDrawer = (open: boolean) => () => {
     setIsDrawerOpen(open);
@@ -42,6 +42,7 @@ const ExistsUser = () => {
 
   const userLogout = () => {
     dispatch(unsetUser());
+    navigate("/");
   };
 
   const toggleBrand = (open: boolean) => {

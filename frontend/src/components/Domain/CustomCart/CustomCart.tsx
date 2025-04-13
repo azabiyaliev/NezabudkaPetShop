@@ -1,16 +1,16 @@
-import React from "react";
-import Drawer from "@mui/joy/Drawer";
-import Button from "@mui/joy/Button";
-import DialogTitle from "@mui/joy/DialogTitle";
-import ModalClose from "@mui/joy/ModalClose";
-import Divider from "@mui/joy/Divider";
-import Sheet from "@mui/joy/Sheet";
-import Typography from "@mui/joy/Typography";
-import { useNavigate } from "react-router-dom";
-import { useAppSelector } from "../../../app/hooks.ts";
-import { cartsFromSlice } from "../../../store/cart/cartSlice.ts";
-import CartProduct from "./CartProduct.tsx";
-import imageCart from "../../../assets/image_transparent.png";
+import React from 'react';
+import Drawer from '@mui/joy/Drawer';
+import Button from '@mui/joy/Button';
+import DialogTitle from '@mui/joy/DialogTitle';
+import ModalClose from '@mui/joy/ModalClose';
+import Divider from '@mui/joy/Divider';
+import Sheet from '@mui/joy/Sheet';
+import Typography from '@mui/joy/Typography';
+import { useNavigate } from 'react-router-dom';
+import { useAppSelector } from '../../../app/hooks.ts';
+import CartProduct from './CartProduct.tsx';
+import imageCart from '../../../assets/image_transparent.png';
+import { cartFromSlice } from '../../../store/cart/cartSlice.ts';
 
 interface Props {
   openCart: boolean;
@@ -18,7 +18,7 @@ interface Props {
 }
 
 const CustomCart: React.FC<Props> = ({ openCart, closeCart }) => {
-  const cart = useAppSelector(cartsFromSlice);
+  const cart = useAppSelector(cartFromSlice);
   const navigate = useNavigate();
 
   const backToShop = () => {
@@ -31,8 +31,8 @@ const CustomCart: React.FC<Props> = ({ openCart, closeCart }) => {
     navigate("/my_cart");
   };
 
-  const checkProductInCart: { price: number; amount: number }[] = cart.map(
-    (product) => {
+  const checkProductInCart: { price: number; amount: number }[] = Array.isArray(cart?.products)
+    ? cart.products.map((product) => {
       if (product.product) {
         return {
           price: product.product.productPrice,
@@ -41,17 +41,17 @@ const CustomCart: React.FC<Props> = ({ openCart, closeCart }) => {
       } else {
         return { price: 0, amount: 0 };
       }
-    },
-  );
+    })
+    : [];
 
-  const sum: number = checkProductInCart.reduce(
+  const sum: number | null = checkProductInCart && checkProductInCart.reduce(
     (acc: number, item: { price: number; amount: number }) => {
       return acc + item.price * item.amount;
     },
     0,
   );
 
-  const amount: number = checkProductInCart.reduce(
+  const amount: number | null = checkProductInCart && checkProductInCart.reduce(
     (acc: number, item: { amount: number }) => {
       return acc + item.amount;
     },
@@ -87,14 +87,14 @@ const CustomCart: React.FC<Props> = ({ openCart, closeCart }) => {
             overflow: "auto",
           }}
         >
-          {cart.length > 0 ? (
+          {cart && cart.products.length > 0 ? (
             <DialogTitle
               sx={{ fontFamily: "Nunito, sans-serif", fontWeight: 600 }}
             >
               В корзине <b>{amount}</b>
               {amount === 1
                 ? "товар"
-                : amount > 1 && amount < 5
+                : (amount && amount > 1) && amount < 5
                   ? "товара"
                   : "товаров"}
             </DialogTitle>
@@ -107,7 +107,7 @@ const CustomCart: React.FC<Props> = ({ openCart, closeCart }) => {
           )}
           <ModalClose />
           <Divider />
-          {cart.length === 0 ? (
+          {cart && cart.products.length === 0 || cart === null ? (
             <>
               <img
                 style={{
@@ -152,10 +152,10 @@ const CustomCart: React.FC<Props> = ({ openCart, closeCart }) => {
             </>
           ) : (
             <>
-              {cart.map((product, index) => (
+              {Array.isArray(cart?.products) && cart.products.map((product, index) => (
                 <React.Fragment key={product.product.id}>
                   <CartProduct productCart={product} />
-                  {index < cart.length - 1 && <Divider sx={{ mt: "auto" }} />}
+                  {index < cart.products.length - 1 && <Divider sx={{ mt: "auto" }} />}
                 </React.Fragment>
               ))}
               <Divider sx={{ mt: "auto" }} />
@@ -177,7 +177,7 @@ const CustomCart: React.FC<Props> = ({ openCart, closeCart }) => {
                     fontWeight: "bold",
                   }}
                 >
-                  {sum.toLocaleString()} сом
+                  {sum && sum.toLocaleString()} сом
                 </span>
               </Typography>
               <Button

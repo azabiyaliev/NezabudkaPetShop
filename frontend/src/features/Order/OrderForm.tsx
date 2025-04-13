@@ -7,7 +7,9 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import { OrderMutation } from '../../types';
-import { clearCart, getFromLocalStorage } from '../../store/cart/cartSlice.ts';
+import { cartFromSlice, clearCart } from '../../store/cart/cartSlice.ts';
+import { selectUser } from '../../store/users/usersSlice.ts';
+import { fetchCart } from '../../store/cart/cartThunk.ts';
 import TotalPrice from '../../components/Domain/CustomCart/Basket/TotalPrice/TotalPrice.tsx';
 
 enum PaymentMethod {
@@ -29,8 +31,8 @@ const OrderForm = () => {
   const [incorrectFormatEmail, setIncorrectFormatEmail] = useState("");
   const [incorrectFormatPhone, setIncorrectFormatPhone] = useState("");
   const [incorrectFormatAddress, setIncorrectFormatAddress] = useState("");
-  const carts = useAppSelector((state) => state.carts.carts);
-  const user = useAppSelector((state) => state.users.user);
+  const carts = useAppSelector(cartFromSlice);
+  const user = useAppSelector(selectUser);
   const [isBonusInputDisabled, setIsBonusInputDisabled] = useState(false);
   const navigate = useNavigate();
   const [form, setForm] = useState<OrderMutation>({
@@ -48,14 +50,16 @@ const OrderForm = () => {
   });
 
   useEffect(() => {
-    dispatch(getFromLocalStorage());
-  }, [dispatch]);
+    if (user) {
+      dispatch(fetchCart({ token: user.token })).unwrap();
+    }
+  }, [dispatch, user]);
 
   useEffect(() => {
-    if (carts.length > 0) {
+    if (carts && carts.products.length > 0) {
       setForm(prev => ({
         ...prev,
-        items: carts.map(item => ({
+        items: carts.products.map(item => ({
           productId: item.product.id,
           quantity: item.quantity,
           orderAmount: item.product.productPrice * item.quantity
@@ -171,7 +175,7 @@ const OrderForm = () => {
     navigate("/all-products");
   };
 
-  const totalPrice = carts.reduce(
+  const totalPrice = carts && carts.products.reduce(
     (acc, item) => {
       const itemPrice = Number(item.product.productPrice);
       const itemQuantity = Number(item.quantity);

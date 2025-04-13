@@ -5,15 +5,18 @@ import {
   CardMedia,
   Typography,
 } from "@mui/material";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import { ProductResponse } from "../../../types";
 import { apiUrl } from "../../../globalConstants.ts";
 import "../css/product.css";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
+import { addItem, fetchCart } from '../../../store/cart/cartThunk.ts';
 import {
-  cartsFromSlice,
+  cartFromSlice,
+  clearCart,
+  newUserLogin,
   productCardToAdd,
   setToLocalStorage,
 } from "../../../store/cart/cartSlice.ts";
@@ -37,7 +40,8 @@ interface Props {
 }
 
 const OneProductCard: React.FC<Props> = ({ product }) => {
-  const cart = useAppSelector(cartsFromSlice);
+  const user = useAppSelector(selectUser);
+  const cart = useAppSelector(cartFromSlice);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const user = useAppSelector(selectUser);
@@ -46,8 +50,13 @@ const OneProductCard: React.FC<Props> = ({ product }) => {
 
 
   useEffect(() => {
-    dispatch(setToLocalStorage(cart));
-  }, [cart, dispatch]);
+    if (user) {
+      dispatch(clearCart());
+      dispatch(fetchCart({ token: user.token })).unwrap();
+    } else {
+      dispatch(newUserLogin());
+    }
+  }, [dispatch, user]);
 
   useEffect(() => {
     if (user) {
@@ -83,18 +92,22 @@ const OneProductCard: React.FC<Props> = ({ product }) => {
   };
 
   const addProductToCart = async (product: ProductResponse) => {
-    const existingProduct = cart.find(
-      (productCart) => productCart.product.id === product.id,
-    );
-
-    if (!existingProduct) {
-      enqueueSnackbar("Данный товар успешно добавлен в корзину!", {
-        variant: "success",
-      });
+    if (user && cart) {
+      await dispatch(addItem({
+        cartId: cart.id,
+        productId: product.id,
+        quantity: 1,
+        token: user.token,
+      })).unwrap();
+      await dispatch(fetchCart({ token: user.token })).unwrap();
+    } else {
+      dispatch(productCardToAdd(product));
     }
-    dispatch(productCardToAdd(product));
-    dispatch(setToLocalStorage(cart));
   };
+
+  useEffect(() => {
+    dispatch(setToLocalStorage(cart));
+  }, [dispatch, cart]);
 
   return (
     <Card

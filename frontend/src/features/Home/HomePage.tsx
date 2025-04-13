@@ -9,19 +9,100 @@ import Carousel from '../../components/UI/Carousel/Carousel.tsx';
 import CustomCart from '../../components/Domain/CustomCart/CustomCart.tsx';
 import CategoryMenuBox from '../Category/CategoryMenuBox/CategoryMenuBox.tsx';
 import CategoryCard from '../Category/CategoryCard/CategoryCard.tsx';
+import { cartErrorFromSlice, cartFromSlice, setToLocalStorage } from '../../store/cart/cartSlice.ts';
+import { selectUser } from '../../store/users/usersSlice.ts';
+import { addItem, createCart, deleteItemsCart, fetchCart } from '../../store/cart/cartThunk.ts';
+import { ICartBack, ICartItem } from '../../types';
 
 const HomePage = () => {
   const [openCart, setOpenCart] = useState<boolean>(false);
+  const [synced, setSynced] = useState<boolean>(false);
+  const [products, setProducts] = useState<ICartItem[]>([]);
   const brands = useAppSelector(brandsFromSlice);
+  const user = useAppSelector(selectUser);
+  const cart = useAppSelector(cartFromSlice);
+  const createCartError = useAppSelector(cartErrorFromSlice);
   const dispatch = useAppDispatch();
 
+  const mergeCarts = (cart: ICartBack, localCart: ICartBack): ICartItem[] => {
+    const mergedCart: ICartItem[] = [...cart.products];
+
+    if (localCart !== null) {
+      localCart.products.forEach((localProduct) => {
+        const existingItemIndex = mergedCart.findIndex(
+          (item) => item.productId === localProduct.productId
+        );
+
+        if (existingItemIndex === -1) {
+          mergedCart.push(localProduct);
+        }
+      });
+      return mergedCart;
+    } else {
+      return cart.products;
+    }
+  };
+
   useEffect(() => {
-    dispatch(getBrands()).unwrap();
-  }, [dispatch]);
+    if (user && cart) {
+      const cartFromLS = localStorage.getItem("cart");
+
+      if (cartFromLS !== null) {
+        const localCart = JSON.parse(cartFromLS);
+        setProducts([]);
+        const allUserProducts = mergeCarts(cart, localCart);
+        setProducts(allUserProducts);
+        localStorage.removeItem("cart");
+      }
+    }
+  }, [user, cart, dispatch]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await dispatch(getBrands()).unwrap();
+
+      if (user) {
+        await dispatch(createCart({token: user.token})).unwrap();
+
+        if (!createCartError) {
+          await dispatch(fetchCart({ token: user.token })).unwrap();
+        }
+
+        const userCart = await dispatch(fetchCart({ token: user.token })).unwrap();
+
+        if (products.length > 0 && userCart && !synced) {
+          setSynced(true);
+
+          if (userCart.products.length > 0) {
+            await dispatch(deleteItemsCart({cartId: userCart.id, token: user.token})).unwrap();
+          }
+
+          for (const product of products) {
+            await dispatch(
+              addItem({
+                cartId: userCart.id,
+                productId: product.productId,
+                quantity: product.quantity,
+                token: user.token,
+              })
+            ).unwrap();
+          }
+          await dispatch(fetchCart({ token: user.token })).unwrap();
+        }
+      }
+    };
+    void fetchData();
+  }, [dispatch, user, createCartError, products, synced]);
 
   const closeCart = () => {
     setOpenCart(false);
   };
+
+  useEffect(() => {
+    if (!user) {
+      dispatch(setToLocalStorage(cart));
+    }
+  }, [dispatch, cart, user]);
 
   return (
     <Container>
