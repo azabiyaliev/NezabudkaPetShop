@@ -72,6 +72,11 @@ export class ProductsService {
       categoryId,
       startDateSales,
       endDateSales,
+      productAge,
+      productSize,
+      productFeedClass,
+      productWeight,
+      productManufacturer,
     } = createProductsDto;
 
     if (!categoryId) {
@@ -91,13 +96,24 @@ export class ProductsService {
         productName,
         productPhoto,
         productDescription,
+        productSize,
+        productManufacturer,
+        productFeedClass,
+        productWeight: Number(productWeight) || null,
+        productAge,
         brandId: Number(brandId) || null,
         categoryId: Number(categoryId),
         productPrice: Number(productPrice),
         sales: sales === 'true',
         existence: existence === 'true',
-        startDateSales: startDateSales ? new Date(startDateSales) : null,
-        endDateSales: endDateSales ? new Date(endDateSales) : null,
+        startDateSales:
+          startDateSales && startDateSales !== 'null' && startDateSales !== ''
+            ? new Date(startDateSales)
+            : null,
+        endDateSales:
+          endDateSales && endDateSales !== 'null' && endDateSales !== ''
+            ? new Date(endDateSales)
+            : null,
       },
       select: {
         id: true,
@@ -110,6 +126,11 @@ export class ProductsService {
         existence: true,
         startDateSales: true,
         endDateSales: true,
+        productSize: true,
+        productManufacturer: true,
+        productFeedClass: true,
+        productWeight: true,
+        productAge: true,
       },
     });
     if (!newProduct) {
@@ -164,6 +185,37 @@ export class ProductsService {
     return oneProduct;
   }
 
+  async getOneProductForEdit(id: number) {
+    const oneProduct = await this.prismaService.products.findUnique({
+      where: {
+        id,
+      },
+      select: {
+        id: true,
+        productName: true,
+        productDescription: true,
+        productSize: true,
+        productManufacturer: true,
+        productFeedClass: true,
+        productWeight: true,
+        productAge: true,
+        brandId: true,
+        categoryId: true,
+        productPrice: true,
+        sales: true,
+        existence: true,
+        startDateSales: true,
+        endDateSales: true,
+      },
+    });
+
+    if (!oneProduct) {
+      throw new BadRequestException('Товар не найден');
+    }
+
+    return oneProduct;
+  }
+
   //FOR ADMIN
   async changeProductInfo(
     id: number,
@@ -178,6 +230,11 @@ export class ProductsService {
       sales,
       startDateSales,
       endDateSales,
+      productAge,
+      productSize,
+      productManufacturer,
+      productFeedClass,
+      productWeight,
     }: CreateProductsDto,
     file?: Express.Multer.File,
   ) {
@@ -207,8 +264,23 @@ export class ProductsService {
         categoryId: Number(categoryId),
         existence: existence === 'true',
         sales: sales === 'true',
-        startDateSales: startDateSales ? new Date(startDateSales) : null,
-        endDateSales: endDateSales ? new Date(endDateSales) : null,
+        startDateSales:
+          startDateSales && startDateSales !== 'null' && startDateSales !== ''
+            ? new Date(startDateSales)
+            : null,
+        endDateSales:
+          endDateSales && endDateSales !== 'null' && endDateSales !== ''
+            ? new Date(endDateSales)
+            : null,
+        productWeight:
+          productWeight === undefined || productWeight === null
+            ? null
+            : Number(productWeight),
+        productAge: productAge === 'null' ? null : productAge,
+        productSize: productSize === 'null' ? null : productSize,
+        productManufacturer:
+          productManufacturer === 'null' ? null : productManufacturer,
+        productFeedClass: productFeedClass === 'null' ? null : productFeedClass,
       },
       select: {
         id: true,
@@ -224,6 +296,11 @@ export class ProductsService {
         existence: true,
         startDateSales: true,
         endDateSales: true,
+        productSize: true,
+        productManufacturer: true,
+        productFeedClass: true,
+        productWeight: true,
+        productAge: true,
       },
     });
 

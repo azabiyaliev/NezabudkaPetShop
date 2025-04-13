@@ -37,9 +37,14 @@ export class ProductsController {
     return await this.productsService.getProductById(Number(id));
   }
 
+  @Get('/edit/:id')
+  async getOneProductForEdit(@Param('id') id: string) {
+    return await this.productsService.getOneProductForEdit(Number(id));
+  }
+
   //CREATE PRODUCT ONLY ADMIN
   @UseGuards(TokenAuthGuard, RolesGuard)
-  @Roles('admin')
+  @Roles('admin', 'superAdmin')
   @Post('create')
   @UseInterceptors(
     FileInterceptor('productPhoto', {
@@ -84,8 +89,6 @@ export class ProductsController {
     @Param('productId') productId: string,
     @Body() createProductDto: CreateProductsDto,
   ) {
-    console.log(productId);
-    console.log(createProductDto);
     if (!createProductDto) {
       throw new BadRequestException('Необходимо передать данные продукта');
     }

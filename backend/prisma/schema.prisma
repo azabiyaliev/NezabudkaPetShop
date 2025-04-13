@@ -100,11 +100,16 @@ model Category {
 model Products {
   id Int @id @default(autoincrement())
 
-  productName        String  @map("product_name")
-  productPhoto       String  @map("product_photo")
-  productPrice       Int     @map("product_price")
-  productDescription String  @map("product_description")
-  productComment     String? @map("product_comment")
+  productName         String  @map("product_name")
+  productPhoto        String  @map("product_photo")
+  productPrice        Int     @map("product_price")
+  productDescription  String  @map("product_description")
+  productComment      String? @map("product_comment")
+  productWeight       Float?  @map("product_weight")
+  productSize         String? @map("product_size")
+  productAge          String? @map("product_age")
+  productFeedClass    String? @map("product_feed_class")
+  productManufacturer String? @map("product_manufacturer")
 
   existence      Boolean   @default(true)
   sales          Boolean   @default(false)
