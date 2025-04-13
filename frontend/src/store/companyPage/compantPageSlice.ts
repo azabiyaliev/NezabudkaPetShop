@@ -16,6 +16,7 @@ const initialState: CompanyPageState = {
 };
 
 export const selectCompany = (state: RootState) => state.company_page.editCompany;
+export const selectCompanyError = (state: RootState) => state.company_page.error;
 
 export const companyPageSlice = createSlice({
   name: "company_page",

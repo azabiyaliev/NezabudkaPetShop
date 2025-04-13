@@ -78,7 +78,12 @@ const CompanyPageFrom = () => {
               alignItems: 'center',
             }}
           >
-            <TextEditor value={form.text} onChange={onChangeEditor} />
+            <TextEditor
+              value={form.text}
+              onChange={onChangeEditor}
+              error={!form.text}
+              helperText={!form.text ? 'Поле обязательно для заполнения' : undefined}
+            />
             <Button
               variant="contained"
               type="submit"
