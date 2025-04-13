@@ -259,3 +259,10 @@ model CompanyPages {
 
   @@map("companyPages")
 }
+
+model BonusProgramPage {
+  id   Int    @id @default(autoincrement())
+  text String
+
+  @@map("bonusProgramPage")
+}

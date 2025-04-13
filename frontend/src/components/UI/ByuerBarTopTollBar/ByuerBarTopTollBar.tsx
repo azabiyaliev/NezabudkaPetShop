@@ -19,7 +19,7 @@ const ByuerBarTopTollBar = () => {
               className="text-black"
             />
           </ListItem>
-          <ListItem component={NavLink} to="/bonus">
+          <ListItem component={NavLink} to="/bonus_program">
             <ListItemText primary="Бонусная прогорамма" className="text-black" />
           </ListItem>
           <ListItem component={NavLink} to="/contacts">

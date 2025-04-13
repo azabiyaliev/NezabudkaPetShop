@@ -32,6 +32,8 @@ import OrderStats from './features/Admin/AdminOrderPage/OrderStats.tsx';
 import FavoriteProduct from './features/FavoriteProduct/containers/FavoriteProduct.tsx';
 import CompanyPage from './features/CompanyPage/CompanyPage.tsx';
 import CompanyPageFrom from './components/Forms/CompanyPageFrom/CompanyPageFrom.tsx';
+import BonusProgramPage from './features/BonusProgramPage/BonusProgramPage.tsx';
+import BonusProgramForm from './components/Forms/BonusProgramForm/BonusProgramForm.tsx';
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -171,7 +173,17 @@ const App = () => {
           }/>
           <Route path='/favorite-products' element={<FavoriteProduct/>}/>
           <Route path='/my_company' element={<CompanyPage/>}/>
-          <Route path='/my_company/:id' element={<CompanyPageFrom/>}/>
+          <Route path='/my_company/:id' element={
+            <ProtectedRoute isAllowed={user && can(["superAdmin", "admin"])}>
+            <CompanyPageFrom/>
+            </ProtectedRoute>
+          }/>
+          <Route path='/bonus_program' element={<BonusProgramPage/>}/>
+          <Route path='bonus_program/:id' element={
+            <ProtectedRoute isAllowed={user && can(["superAdmin", "admin"])}>
+            <BonusProgramForm/>
+            </ProtectedRoute>
+          }/>
         </Routes>
       </Layout>
     </div>

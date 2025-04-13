@@ -1,27 +1,27 @@
 import ByuerBarTopTollBar from '../../components/UI/ByuerBarTopTollBar/ByuerBarTopTollBar.tsx';
-import { useAppDispatch, useAppSelector } from '../../app/hooks.ts';
-import { selectCompany } from '../../store/companyPage/compantPageSlice.ts';
 import { Box } from '@mui/material';
-import { useEffect } from 'react';
-import { fetchCompanyPage } from '../../store/companyPage/companyPageThunk.ts';
-import { selectUser } from '../../store/users/usersSlice.ts';
 import EditIcon from '@mui/icons-material/Edit';
+import { useAppDispatch, useAppSelector } from '../../app/hooks.ts';
+import { selectUser } from '../../store/users/usersSlice.ts';
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { selectBonusProgram } from '../../store/bonusProgramPage/bonusProgramPageSlice.ts';
+import { fetchBonusPage } from '../../store/bonusProgramPage/bonusProgramPageThunk.ts';
 
-const CompanyPage = () => {
-  const company = useAppSelector(selectCompany);
+const BonusProgramPage = () => {
+  const bonusProgram = useAppSelector(selectBonusProgram);
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
   const navigate = useNavigate();
 
   const clickButtonEdit = () =>{
-    if (company && company.id) {
-      navigate(`/my_company/${company.id}`);
+    if (bonusProgram && bonusProgram.id) {
+      navigate(`/bonus_program/${bonusProgram.id}`);
     }
   }
 
   useEffect(() => {
-    dispatch(fetchCompanyPage()).unwrap()
+    dispatch(fetchBonusPage()).unwrap()
   }, [dispatch]);
   return (
     <div>
@@ -66,7 +66,7 @@ const CompanyPage = () => {
                   </Box>
                 )}
 
-                <div dangerouslySetInnerHTML={{ __html: company?.text || '' }} />
+                <div dangerouslySetInnerHTML={{ __html: bonusProgram?.text || '' }} />
               </Box>
             </div>
           </div>
@@ -76,4 +76,4 @@ const CompanyPage = () => {
   );
 };
 
-export default CompanyPage;
+export default BonusProgramPage;
