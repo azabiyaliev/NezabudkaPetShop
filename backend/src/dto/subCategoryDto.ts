@@ -9,4 +9,6 @@ export class SubcategoryDto {
   @IsOptional()
   @IsNumber({}, { message: 'id должен быть числом' })
   id?: number;
+  @IsOptional()
+  subcategories?: SubcategoryDto[];
 }

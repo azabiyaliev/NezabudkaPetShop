@@ -10,9 +10,6 @@ import { selectUser } from "./store/users/usersSlice.ts";
 import Layout from "./components/Layout/Layout/Layout.tsx";
 import EditBrandPage from "./features/Admin/Brand/EditBrandPage.tsx";
 import BrandsPage from "./features/Admin/Brand/BrandsPage.tsx";
-import NewCategory from "./features/Category/NewCategory/NewCategory.tsx";
-import AllCategoriesPage from "./features/Category/AllCategoriesPage/AllCategoriesPage.tsx";
-import OneCategory from "./features/Category/OneCategory/OneCategory.tsx";
 import EditionSitePage from "./features/Admin/EditionSite/EditionSitePage.tsx";
 import NewProduct from "./features/Admin/Product/containers/NewProduct.tsx";
 import AdminEditProfile from "./features/Admin/AdminProfile/AdminEditProfile.tsx";
@@ -139,14 +136,6 @@ const App = () => {
             }
           />
           <Route
-            path="/private/all_categories"
-            element={
-              <ProtectedRoute isAllowed={user && can(["admin", "superAdmin"])}>
-                <AllCategoriesPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
             path="/private/manage_categories"
             element={
               <ProtectedRoute isAllowed={user && can(["admin", "superAdmin"])}>
@@ -154,16 +143,7 @@ const App = () => {
               </ProtectedRoute>
             }
           />
-          <Route path="/category/:id" element={<OneCategory />} />
           <Route path="*" element={<h1>Not found</h1>} />
-          <Route
-            path="/private/add_category"
-            element={
-              <ProtectedRoute isAllowed={user && can(["admin", "superAdmin"])}>
-                <NewCategory />
-              </ProtectedRoute>
-            }
-          />
           <Route path="/product/:id" element={<ProductPage />} />
           <Route path="/brand/:id" element={<BrandPage />} />
           <Route path="/all-products" element={<AllProductsCardsPage />} />

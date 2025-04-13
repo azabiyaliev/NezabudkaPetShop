@@ -59,31 +59,38 @@ export class CategoryService {
         where: { title, parentId: categoryId },
       });
 
-      console.log('Category ID:', categoryId);
-      console.log('Subcategories:', subCategoryDtos);
-
       if (existingSubcategory) {
         throw new ConflictException(`Подкатегория "${title}" уже существует`);
       }
 
       await this.prisma.category.create({
-        data: { title, parentId: categoryId },
+        data: {
+          title,
+          parentId: categoryId,
+        },
       });
     }
 
     return { message: 'Подкатегории успешно добавлены' };
   }
 
-  async getAllCategories() {
-    const result = await this.prisma.category.findMany({
-      where: { parentId: null },
+  async getAllCategories(
+    parentId: number | null = null,
+  ): Promise<CategoryDto[]> {
+    const categories = await this.prisma.category.findMany({
+      where: { parentId },
       include: { subcategories: true },
     });
 
-    if (result.length === 0) {
-      throw new NotFoundException('Категории не найдены');
-    }
-    return result;
+    return Promise.all(
+      categories.map(async (category) => {
+        const children = await this.getAllCategories(category.id);
+        return {
+          ...category,
+          subcategories: children,
+        };
+      }),
+    );
   }
 
   async getSubcategories(categoryId: number) {
