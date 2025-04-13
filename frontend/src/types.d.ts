@@ -305,3 +305,12 @@ export interface CompanyPage{
 export interface CompanyPageMutation{
   text: string;
 }
+
+export interface BonusProgramPage{
+  id: number;
+  text: string;
+}
+
+export interface BonusProgramPageMutation{
+  text: string;
+}

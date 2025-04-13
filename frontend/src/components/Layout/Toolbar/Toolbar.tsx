@@ -173,7 +173,7 @@ const MainToolbar = () => {
 
                 <MenuItem>
                   <NavLink
-                    to="/bonus"
+                    to="/bonus_program"
                     className="text-decoration-none text-black"
                   >
                     Бонусная программа
