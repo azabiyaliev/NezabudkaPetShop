@@ -72,6 +72,11 @@ export class ProductsService {
       categoryId,
       startDateSales,
       endDateSales,
+      productAge,
+      productSize,
+      productFeedClass,
+      productWeight,
+      productManufacturer,
     } = createProductsDto;
 
     if (!categoryId) {
@@ -91,6 +96,11 @@ export class ProductsService {
         productName,
         productPhoto,
         productDescription,
+        productSize,
+        productManufacturer,
+        productFeedClass,
+        productWeight: Number(productWeight) || null,
+        productAge,
         brandId: Number(brandId) || null,
         categoryId: Number(categoryId),
         productPrice: Number(productPrice),
@@ -110,6 +120,11 @@ export class ProductsService {
         existence: true,
         startDateSales: true,
         endDateSales: true,
+        productSize: true,
+        productManufacturer: true,
+        productFeedClass: true,
+        productWeight: true,
+        productAge: true,
       },
     });
     if (!newProduct) {
