@@ -45,8 +45,14 @@ const App = () => {
           <Route path="/" element={<HomePage />} />
           <Route path="/register" element={<RegisterUser />} />
           <Route path="/login" element={<LoginUser />} />
-          <Route path="/my_cart" element={<CartPage />} />
-          {/*<Route path="/my_order" element={<OrderForm />} />*/}
+          <Route
+            path="/my_cart"
+            element={
+              <ProtectedRoute isAllowed={!(user && can(["admin", "superAdmin"]))} redirectTo="/">
+                <CartPage />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/edit-carousel" element={<DragAndDropPhoto />} />
           <Route path="/photos/:id" element={<Photo/>}/>
           <Route path="/change-password" element={<RestorationPasswordFrom/>}/>
@@ -78,7 +84,7 @@ const App = () => {
           <Route
             path="/private/brands"
             element={
-              <ProtectedRoute isAllowed={user && can(["admin", "superAdmin"])}>
+              <ProtectedRoute isAllowed={user !== null && can(["admin", "superAdmin"])} redirectTo={"/"}>
                 <BrandsPage />
               </ProtectedRoute>
             }
@@ -94,7 +100,7 @@ const App = () => {
           <Route
             path="/private/add_brand"
             element={
-              <ProtectedRoute isAllowed={user && can(["admin", "superAdmin"])}>
+              <ProtectedRoute isAllowed={user !== null && can(["admin", "superAdmin"])} redirectTo={"/"}>
                 <NewBrandPage />
               </ProtectedRoute>
             }
