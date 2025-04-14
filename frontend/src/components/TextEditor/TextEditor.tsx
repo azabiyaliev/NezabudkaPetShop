@@ -13,6 +13,7 @@ interface Props {
 const TextEditor: React.FC<Props> = ({ value, onChange, error = false, helperText }) => {
   const quillRef = useRef<HTMLDivElement | null>(null);
   const editorInstance = useRef<Quill | null>(null);
+  const lastSetValue = useRef<string>("");
 
   const isContentEmpty = (html: string) => {
     const stripped = html.replace(/<[^>]*>/g, "").trim();
@@ -43,18 +44,24 @@ const TextEditor: React.FC<Props> = ({ value, onChange, error = false, helperTex
         const html = quill.root.innerHTML;
         if (!isContentEmpty(html)) {
           onChange(html);
+          lastSetValue.current = html;
         } else {
           onChange("");
+          lastSetValue.current = "";
         }
       });
-
-      quill.root.innerHTML = value;
     }
-  }, [value, onChange]);
+  }, [onChange]);
 
   useEffect(() => {
-    if (editorInstance.current) {
-      editorInstance.current.root.innerHTML = value;
+    const quill = editorInstance.current;
+    if (quill && value !== lastSetValue.current) {
+      const selection = quill.getSelection();
+      quill.clipboard.dangerouslyPasteHTML(value);
+      if (selection) {
+        quill.setSelection(selection);
+      }
+      lastSetValue.current = value;
     }
   }, [value]);
 

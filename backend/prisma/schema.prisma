@@ -271,3 +271,12 @@ model BonusProgramPage {
 
   @@map("bonusProgramPage")
 }
+
+model DeliveryPage {
+  id    Int    @id @default(autoincrement())
+  text  String
+  price String
+  map   String
+
+  @@map("deliveryPage")
+}

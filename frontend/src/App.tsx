@@ -35,6 +35,8 @@ import CompanyPageFrom from './components/Forms/CompanyPageFrom/CompanyPageFrom.
 import BonusProgramPage from './features/BonusProgramPage/BonusProgramPage.tsx';
 import BonusProgramForm from './components/Forms/BonusProgramForm/BonusProgramForm.tsx';
 import { userRoleAdmin, userRoleSuperAdmin } from './globalConstants.ts';
+import DeliveryPage from './features/DeliveryPage/DeliveryPage.tsx';
+import DeliveryPageForm from './components/Forms/DeliveryPageFrom/DeliveryPageFrom.tsx';
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -186,9 +188,15 @@ const App = () => {
             </ProtectedRoute>
           }/>
           <Route path='/bonus_program' element={<BonusProgramPage/>}/>
-          <Route path='bonus_program/:id' element={
+          <Route path='/bonus_program/:id' element={
             <ProtectedRoute isAllowed={user && can(["superAdmin", "admin"])}>
             <BonusProgramForm/>
+            </ProtectedRoute>
+          }/>
+          <Route path='/delivery' element={<DeliveryPage/>}/>
+          <Route path='/delivery/:id' element={
+            <ProtectedRoute isAllowed={user && can(["superAdmin", "admin"])}>
+              <DeliveryPageForm/>
             </ProtectedRoute>
           }/>
         </Routes>

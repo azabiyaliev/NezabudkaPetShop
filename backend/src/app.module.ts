@@ -41,6 +41,9 @@ import { CompanyPageService } from './company_page/company_page.service';
 import { BonusPageModule } from './bonus_program_page/bonus_program_pg.module';
 import { BonusProgramService } from './bonus_program_page/bonus_program_pg.service';
 import { BonusPageController } from './bonus_program_page/bonus_program_pg.controller';
+import { DeliveryPageModule } from './delivery_page/delivery_page.module';
+import { DeliveryPageController } from './delivery_page/delivery_page.conrtoller';
+import { DeliveryPageService } from './delivery_page/delivery_page.service';
 
 @Module({
   imports: [
@@ -62,6 +65,7 @@ import { BonusPageController } from './bonus_program_page/bonus_program_pg.contr
     CartModule,
     CartItemsModule,
     BonusPageModule,
+    DeliveryPageModule,
   ],
   controllers: [
     AppController,
@@ -74,6 +78,7 @@ import { BonusPageController } from './bonus_program_page/bonus_program_pg.contr
     CartController,
     CartItemsController,
     BonusPageController,
+    DeliveryPageController,
   ],
   providers: [
     AppService,
@@ -90,6 +95,7 @@ import { BonusPageController } from './bonus_program_page/bonus_program_pg.contr
     CartService,
     CartItemsService,
     BonusProgramService,
+    DeliveryPageService,
   ],
 })
 export class AppModule {}

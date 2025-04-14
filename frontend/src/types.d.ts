@@ -325,3 +325,16 @@ export interface BonusProgramPage{
 export interface BonusProgramPageMutation{
   text: string;
 }
+
+export interface DeliveryPage{
+  id: number;
+  text: string;
+  price: string;
+  map: string;
+}
+
+export interface DeliveryPageMutation{
+  text: string;
+  price: string;
+  map: string;
+}
