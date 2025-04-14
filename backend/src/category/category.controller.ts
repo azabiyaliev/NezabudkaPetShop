@@ -59,4 +59,15 @@ export class CategoryController {
       subCategoryDto.subcategories,
     );
   }
+  @Put(':id/parent')
+  async updateSubcategoryParent(
+    @Param('id') id: string,
+    @Body() body: { parentId: number | null },
+  ) {
+    const subcategoryId = parseInt(id);
+    return this.categoryService.updateSubcategoryParent(
+      subcategoryId,
+      body.parentId,
+    );
+  }
 }

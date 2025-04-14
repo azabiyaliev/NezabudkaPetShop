@@ -11,7 +11,7 @@ import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
 import { selectCategories } from "../../../store/categories/categoriesSlice.ts";
 import {
   deleteCategory,
-  fetchCategoriesThunk,
+  fetchCategoriesThunk, updateSubcategoryParentThunk,
 } from '../../../store/categories/categoriesThunk.ts';
 
 import NewCategory from "../NewCategory/NewCategory.tsx";
@@ -28,6 +28,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import { ICategories, Subcategory } from '../../../types';
 import { DndProvider, getBackendOptions, MultiBackend, NodeModel, Tree } from '@minoru/react-dnd-treeview';
 import './ManageCategories.css'
+import { selectUser } from '../../../store/users/usersSlice.ts';
 
 const SUCCESSFUL_CATEGORY_DELETE = "Удаление прошло успешно!";
 const ERROR_CATEGORY_DELETE = "Ошибка при удалении подкатегории!";
@@ -37,6 +38,7 @@ const WARNING_CATEGORY_DELETE = "Категория не пуста или ис�
 const ManageCategories = () => {
   const categories = useAppSelector(selectCategories);
   const dispatch = useAppDispatch();
+  const user = useAppSelector(selectUser);
 
   const [open, setOpen] = useState(false);
   const [openSubModal, setOpenSubModal] = useState(false);
@@ -149,7 +151,41 @@ const ManageCategories = () => {
   }, [categories, transformCategoriesToTree]);
 
   const [treeData, setTreeData] = useState<NodeModel[]>([]);
-  const handleDrop = (newTree: NodeModel[]) => setTreeData(newTree);
+  const handleDrop = async (newTree: NodeModel[]) => {
+    setTreeData(newTree);
+
+    for (const node of newTree) {
+      const originalNode = treeData.find((n) => n.id === node.id);
+      if (originalNode && originalNode.parent !== node.parent) {
+        const subcategoryId = node.id as number;
+        const newParentId = node.parent === 0 ? null : (node.parent as number);
+
+        if (!user) return null;
+
+        try {
+          await dispatch(
+            updateSubcategoryParentThunk({
+              subcategoryId,
+              newParentId,
+              token: user.token,
+            }),
+          );
+          toast.success('Положение подкатегории успешно сохранено', {
+            position: 'top-center',
+          });
+        } catch (error) {
+          console.error('Ошибка при сохранении положения подкатегории:', error);
+          toast.error('Ошибка при сохранении положения подкатегории', {
+            position: 'top-center',
+          });
+          setTreeData(treeData);
+          return;
+        }
+      }
+    }
+
+    await dispatch(fetchCategoriesThunk());
+  };
 
   return (
     <>
