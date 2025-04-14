@@ -44,6 +44,7 @@ const ManageCategories = () => {
   const [openSubModal, setOpenSubModal] = useState(false);
   const [openAddSubModal, setOpenAddSubModal] = useState(false);
   const [parentCategoryId, setParentCategoryId] = useState<number | null>(null);
+  const [treeData, setTreeData] = useState<NodeModel[]>([]);
 
   const [selectedCategory, setSelectedCategory] = useState<{
     id: number;
@@ -60,7 +61,6 @@ const ManageCategories = () => {
     dispatch(fetchCategoriesThunk());
   }, [dispatch]);
 
-  console.log(categories);
 
   const handleOpen = (category: { id: number; title: string; }) => {
     setSelectedCategory({
@@ -150,7 +150,6 @@ const ManageCategories = () => {
     }
   }, [categories, transformCategoriesToTree]);
 
-  const [treeData, setTreeData] = useState<NodeModel[]>([]);
   const handleDrop = async (newTree: NodeModel[]) => {
     setTreeData(newTree);
 
@@ -231,27 +230,34 @@ const ManageCategories = () => {
                 onDrop={handleDrop}
                 render={(node, { depth, isOpen, onToggle }) => {
                   const category = node.data as ICategories;
+                  const isSubcategory = depth > 0;
+
                   return (
                     <div
+                      className={isSubcategory ? 'subcategory-item' : 'category-item'}
                       style={{
                         marginInlineStart: depth * 20,
-                        display: "flex",
-                        alignItems: "center",
+                        display: 'flex',
+                        alignItems: 'center',
                       }}
                     >
                       <ListItemButton onClick={onToggle} sx={{ flex: 1 }}>
                         {node.droppable && (
                           <ArrowDropDownOutlinedIcon
                             sx={{
-                              transform: isOpen
-                                ? "rotate(0deg)"
-                                : "rotate(-90deg)",
-                              transition: "transform 0.2s",
-                              marginRight: "20px",
+                              transform: isOpen ? 'rotate(0deg)' : 'rotate(-90deg)',
+                              transition: 'transform 0.2s',
+                              marginRight: '20px',
                             }}
                           />
                         )}
-                        <ListItemText primary={node.text} />
+                        <ListItemText
+                          primary={node.text}
+                          sx={{
+                            fontSize: isSubcategory ? '0.9rem' : '1rem',
+                            fontWeight: isSubcategory ? 'normal' : 'bold',
+                          }}
+                        />
                       </ListItemButton>
 
                       <Tooltip title="Редактировать категорию">
