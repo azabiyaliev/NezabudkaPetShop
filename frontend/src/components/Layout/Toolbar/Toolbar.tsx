@@ -112,7 +112,10 @@ const MainToolbar = () => {
                 gap: "10px",
               }}
             >
-              <NavLink
+              <a
+                href={site?.linkAddress || "/"}
+                target="_blank"
+                rel="noopener noreferrer"
                 style={{
                   color: "black",
                   textDecoration: "none",
@@ -121,7 +124,6 @@ const MainToolbar = () => {
                   borderRight: "1px solid black",
                   paddingRight: "10px",
                 }}
-                to={site?.linkAddress || "/"}
               >
                 <Typography
                   sx={{
@@ -132,7 +134,7 @@ const MainToolbar = () => {
                 >
                   {site?.address}
                 </Typography>
-              </NavLink>
+              </a>
               <Button
                 onClick={onClick}
                 sx={{
@@ -206,7 +208,12 @@ const MainToolbar = () => {
                   "@media (max-width: 560px)": {borderRight:"none", paddingRight: "0px", },
                 }}
               >
-                {site && site.phone}
+                <a
+                  href={`tel:${site?.phone}`}
+                  style={{ textDecoration: "none", color: "black" }}
+                >
+                  {site?.phone}
+                </a>
               </Typography>
 
               <Typography
