@@ -13,6 +13,7 @@ import { cartErrorFromSlice, cartFromSlice, setToLocalStorage } from '../../stor
 import { selectUser } from '../../store/users/usersSlice.ts';
 import { addItem, createCart, deleteItemsCart, fetchCart } from '../../store/cart/cartThunk.ts';
 import { ICartBack, ICartItem } from '../../types';
+import { userRoleClient } from '../../globalConstants.ts';
 
 const HomePage = () => {
   const [openCart, setOpenCart] = useState<boolean>(false);
@@ -44,7 +45,7 @@ const HomePage = () => {
   };
 
   useEffect(() => {
-    if (user && cart) {
+    if (user && (user.role === userRoleClient) && cart) {
       const cartFromLS = localStorage.getItem("cart");
 
       if (cartFromLS !== null) {
@@ -61,7 +62,7 @@ const HomePage = () => {
     const fetchData = async () => {
       await dispatch(getBrands()).unwrap();
 
-      if (user) {
+      if (user && (user.role === userRoleClient)) {
         await dispatch(createCart({token: user.token})).unwrap();
 
         if (!createCartError) {

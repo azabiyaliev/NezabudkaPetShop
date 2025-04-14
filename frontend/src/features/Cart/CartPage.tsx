@@ -11,6 +11,7 @@ import { selectUser } from '../../store/users/usersSlice.ts';
 import { enqueueSnackbar } from 'notistack';
 import { deleteItemsCart, fetchCart } from '../../store/cart/cartThunk.ts';
 import { useEffect } from 'react';
+import { userRoleClient } from '../../globalConstants.ts';
 
 const CartPage = () => {
   const user = useAppSelector(selectUser);
@@ -19,13 +20,13 @@ const CartPage = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (user) {
+    if (user && (user.role === userRoleClient)) {
       dispatch(fetchCart({ token: user.token })).unwrap();
     }
   }, [dispatch, user]);
 
   const deleteAllProducts = async () => {
-    if (user && cart) {
+    if (user && (user.role === userRoleClient) && cart) {
       await dispatch(deleteItemsCart({cartId: cart.id, token: user.token})).unwrap();
       await dispatch(fetchCart({ token: user.token })).unwrap();
       enqueueSnackbar("Корзина успешно очищена!", { variant: "success" });
@@ -35,7 +36,7 @@ const CartPage = () => {
   };
 
   useEffect(() => {
-    if (user) {
+    if (user && (user.role === userRoleClient)) {
       dispatch(setToLocalStorage(cart));
     }
   }, [dispatch, cart, user]);

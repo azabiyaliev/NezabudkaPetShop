@@ -1,7 +1,7 @@
 import { Box, Button, Typography } from '@mui/joy';
 import { ICartItem, ProductResponse } from '../../../../../../types';
 import React from 'react';
-import { apiUrl } from '../../../../../../globalConstants.ts';
+import { apiUrl, userRoleClient } from '../../../../../../globalConstants.ts';
 import IconButton from '@mui/joy/IconButton';
 import { Add, Remove } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '../../../../../../app/hooks.ts';
@@ -24,7 +24,7 @@ const Cart: React.FC<Props> = ({ product }) => {
   const dispatch = useAppDispatch();
 
   const addQuantity = async (product: ProductResponse) => {
-    if (user && cart) {
+    if (user && (user.role === userRoleClient) && cart) {
       const existingProduct = cart.products.find((item) => item.product.id === product.id);
       if (existingProduct) {
         const amount = existingProduct.quantity + 1;
@@ -37,7 +37,7 @@ const Cart: React.FC<Props> = ({ product }) => {
   };
 
   const removeQuantity = async (product: ProductResponse) => {
-    if (user && cart) {
+    if (user && (user.role === userRoleClient) && cart) {
       const existingProduct = cart.products.find((item) => item.product.id === product.id);
       if (existingProduct) {
         const amount = existingProduct.quantity - 1;
@@ -50,7 +50,7 @@ const Cart: React.FC<Props> = ({ product }) => {
   };
 
   const deleteProductFromCart = async (id: number) => {
-    if (user && cart) {
+    if (user && (user.role === userRoleClient) && cart) {
       await dispatch(deleteItemCart({cartId: cart.id, productId: id, token: user.token})).unwrap();
       await dispatch(fetchCart({ token: user.token })).unwrap();
     } else {

@@ -34,6 +34,7 @@ import CompanyPage from './features/CompanyPage/CompanyPage.tsx';
 import CompanyPageFrom from './components/Forms/CompanyPageFrom/CompanyPageFrom.tsx';
 import BonusProgramPage from './features/BonusProgramPage/BonusProgramPage.tsx';
 import BonusProgramForm from './components/Forms/BonusProgramForm/BonusProgramForm.tsx';
+import { userRoleAdmin, userRoleSuperAdmin } from './globalConstants.ts';
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -48,7 +49,7 @@ const App = () => {
           <Route
             path="/my_cart"
             element={
-              <ProtectedRoute isAllowed={!(user && can(["admin", "superAdmin"]))} redirectTo="/">
+              <ProtectedRoute isAllowed={!(user && can([userRoleAdmin, userRoleSuperAdmin]))} redirectTo="/">
                 <CartPage />
               </ProtectedRoute>
             }
@@ -84,7 +85,7 @@ const App = () => {
           <Route
             path="/private/brands"
             element={
-              <ProtectedRoute isAllowed={user !== null && can(["admin", "superAdmin"])} redirectTo={"/"}>
+              <ProtectedRoute isAllowed={user !== null && can([userRoleAdmin, userRoleSuperAdmin])} redirectTo={"/"}>
                 <BrandsPage />
               </ProtectedRoute>
             }
@@ -100,7 +101,7 @@ const App = () => {
           <Route
             path="/private/add_brand"
             element={
-              <ProtectedRoute isAllowed={user !== null && can(["admin", "superAdmin"])} redirectTo={"/"}>
+              <ProtectedRoute isAllowed={user !== null && can([userRoleAdmin, userRoleSuperAdmin])} redirectTo={"/"}>
                 <NewBrandPage />
               </ProtectedRoute>
             }
