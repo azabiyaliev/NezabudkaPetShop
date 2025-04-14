@@ -1,7 +1,7 @@
 import { ICartItem } from '../../../types';
 import React from 'react';
 import { Box, Button } from '@mui/material';
-import { apiUrl } from '../../../globalConstants.ts';
+import { apiUrl, userRoleClient } from '../../../globalConstants.ts';
 import Typography from '@mui/joy/Typography';
 import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
@@ -19,7 +19,7 @@ const CartProduct: React.FC<Props> = ({ productCart }) => {
   const dispatch = useAppDispatch();
 
   const deleteProductFromCart = async (id: number) => {
-    if (user && cart) {
+    if (user && (user.role === userRoleClient) && cart) {
       await dispatch(deleteItemCart({cartId: cart.id, productId: id, token: user.token})).unwrap();
       await dispatch(fetchCart({ token: user.token })).unwrap();
       enqueueSnackbar("Данный товар успешно удален из корзины!", {
