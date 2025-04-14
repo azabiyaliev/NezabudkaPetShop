@@ -22,6 +22,7 @@ import { favoriteProductsReducer } from '../store/favoriteProducts/favoriteProdu
 import { historyReducer } from '../store/historyProduct/historyProductSlice.ts';
 import { companyPageReducer } from '../store/companyPage/compantPageSlice.ts';
 import { bonusPageReducer } from '../store/bonusProgramPage/bonusProgramPageSlice.ts';
+import { deliveryPageReducer } from '../store/deliveryPage/deliveryPageSlice.ts';
 
 const userPersistConfig = {
   key: "store:users",
@@ -43,6 +44,7 @@ const rootReducer = combineReducers({
   history: historyReducer,
   company_page: companyPageReducer,
   bonus_program: bonusPageReducer,
+  delivery: deliveryPageReducer,
 });
 
 export const store = configureStore({

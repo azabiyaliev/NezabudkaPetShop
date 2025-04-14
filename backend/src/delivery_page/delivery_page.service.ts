@@ -25,7 +25,7 @@ export class DeliveryPageService {
       throw new NotFoundException(`Сайт с id = ${id} не найден!`);
     }
 
-    return this.prisma.companyPages.update({
+    return this.prisma.deliveryPage.update({
       where: { id },
       data: { ...deliveryDto },
     });
