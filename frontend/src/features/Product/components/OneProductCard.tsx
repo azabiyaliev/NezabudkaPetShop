@@ -12,7 +12,7 @@ import "../css/product.css";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
-import { addItem, fetchCart } from '../../../store/cart/cartThunk.ts';
+import { addItem, fetchCart } from "../../../store/cart/cartThunk.ts";
 import {
   cartFromSlice,
   clearCart,
@@ -23,17 +23,18 @@ import {
 import { enqueueSnackbar } from "notistack";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import { selectUser } from '../../../store/users/usersSlice.ts';
+import { selectUser } from "../../../store/users/usersSlice.ts";
 import {
-  addFavoriteProduct, getLocalFavoriteProducts,
+  addFavoriteProduct,
+  getLocalFavoriteProducts,
   isInLocalFavorites,
-  removeFavoriteProduct
-} from '../../../store/favoriteProducts/favoriteProductLocal.ts';
+  removeFavoriteProduct,
+} from "../../../store/favoriteProducts/favoriteProductLocal.ts";
 import {
   addFavoriteProducts,
-  removeFavoriteProductThunk
-} from '../../../store/favoriteProducts/favoriteProductsThunks.ts';
-import { selectedFavorite } from '../../../store/favoriteProducts/favoriteProductsSlice.ts';
+  removeFavoriteProductThunk,
+} from "../../../store/favoriteProducts/favoriteProductsThunks.ts";
+import { selectedFavorite } from "../../../store/favoriteProducts/favoriteProductsSlice.ts";
 
 interface Props {
   product: ProductResponse;
@@ -46,7 +47,7 @@ const OneProductCard: React.FC<Props> = ({ product }) => {
   const navigate = useNavigate();
   const favorites = useAppSelector(selectedFavorite);
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
-
+  const isAddToCartDisabled = !product.existence;
 
   useEffect(() => {
     if (user) {
@@ -59,10 +60,10 @@ const OneProductCard: React.FC<Props> = ({ product }) => {
 
   useEffect(() => {
     if (user) {
-      const isOnServer = favorites.some(fav => fav.product.id === product.id);
+      const isOnServer = favorites.some((fav) => fav.product.id === product.id);
       setIsFavorite(isOnServer);
     } else {
-      getLocalFavoriteProducts()
+      getLocalFavoriteProducts();
       setIsFavorite(isInLocalFavorites(product.id));
     }
   }, [user, product.id, favorites, dispatch]);
@@ -92,12 +93,14 @@ const OneProductCard: React.FC<Props> = ({ product }) => {
 
   const addProductToCart = async (product: ProductResponse) => {
     if (user && cart) {
-      await dispatch(addItem({
-        cartId: cart.id,
-        productId: product.id,
-        quantity: 1,
-        token: user.token,
-      })).unwrap();
+      await dispatch(
+        addItem({
+          cartId: cart.id,
+          productId: product.id,
+          quantity: 1,
+          token: user.token,
+        }),
+      ).unwrap();
       await dispatch(fetchCart({ token: user.token })).unwrap();
     } else {
       dispatch(productCardToAdd(product));
@@ -128,9 +131,16 @@ const OneProductCard: React.FC<Props> = ({ product }) => {
       />
       <CardContent>
         <Typography variant="body2">{product.productName}</Typography>
-        <Typography variant="h6" color="orange" display="flex" alignItems="center" justifyContent="center" gap={1}>
+        <Typography
+          variant="h6"
+          color="orange"
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          gap={1}
+        >
           {product.productPrice.toLocaleString()} сом
-          <Button onClick={ toggleFavorite }  sx={{ minWidth: 0, p: 0 }}>
+          <Button onClick={toggleFavorite} sx={{ minWidth: 0, p: 0 }}>
             {isFavorite ? (
               <FavoriteIcon color="error" />
             ) : (
@@ -139,16 +149,17 @@ const OneProductCard: React.FC<Props> = ({ product }) => {
           </Button>
         </Typography>
         <Typography variant="body2" color="textSecondary">
-           💎  {product.productPrice.toLocaleString()} бонусов
+          💎 {product.productPrice.toLocaleString()} бонусов
         </Typography>
         <Button
           onClick={() => addProductToCart(product)}
           variant="contained"
           className="cart-button"
+          disabled={isAddToCartDisabled}
           sx={{
             mt: "10px",
-            backgroundColor: "#FFC107",
-            color: "white",
+            backgroundColor: isAddToCartDisabled ? "#e0e0e0" : "#FFC107",
+            color: isAddToCartDisabled ? "#9e9e9e" : "white",
             width: "100px",
             padding: "20px 0",
             borderRadius: 0,
@@ -157,7 +168,9 @@ const OneProductCard: React.FC<Props> = ({ product }) => {
             fontSize: "12px",
           }}
         >
-          <span className="cart-text">В корзину</span>
+          <span className="cart-text">
+            {isAddToCartDisabled ? "Нет в наличии" : "В корзину"}
+          </span>
           <span className="cart-icon">
             <ShoppingCartIcon />
           </span>
