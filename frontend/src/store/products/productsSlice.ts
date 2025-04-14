@@ -54,13 +54,11 @@ const productsSlice = createSlice({
       .addCase(getProducts.pending, (state) => {
         state.loading = true;
       })
-      .addCase(
-        getProducts.fulfilled,
-        (state, action: PayloadAction<ProductResponse[]>) => {
-          state.products = action.payload;
-          state.loading = false;
-        },
-      )
+      .addCase(getProducts.fulfilled, (state, action: PayloadAction<ProductResponse[]>) => {
+        state.products = [];
+        state.loading = false;
+        state.products = action.payload;
+      })
       .addCase(getProducts.rejected, (state) => {
         state.loading = false;
       })
@@ -90,6 +88,7 @@ const productsSlice = createSlice({
         state.loading = true;
       })
       .addCase(getProductsByBrand.fulfilled, (state, {payload: products}) => {
+        state.products = [];
         state.loading = false;
         state.products = products;
       })
