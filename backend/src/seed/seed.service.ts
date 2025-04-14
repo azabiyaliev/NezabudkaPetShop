@@ -60,7 +60,7 @@ export class SeedService {
         whatsapp: 'https://api.whatsapp.com/send?phone=99655533889',
         schedule: '10:00-20:00',
         address: 'г. Бишкек, Гоголя 127',
-        email: 'nezabudka.zoo@gmial.com',
+        email: 'nezabudka.zoo@gmail.com',
         phone: '+(996)500-430-481',
         linkAddress: 'https://go.2gis.com/ZA3mL',
       },

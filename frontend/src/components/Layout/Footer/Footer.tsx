@@ -44,6 +44,7 @@ const Footer = () => {
             component="img"
             src={logo_transparent}
             alt="Nezabudka"
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             sx={{
               height: "50px",
               width: "50px",
@@ -53,10 +54,12 @@ const Footer = () => {
           />
           <Typography
             variant="h6"
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             sx={{
               color: "black",
               textTransform: "uppercase",
               fontFamily: "Georgia, sans-serif",
+              cursor: "pointer",
             }}
           >
             Незабудка
@@ -70,35 +73,67 @@ const Footer = () => {
             marginRight: "70px",
           }}
         >
+          <a
+            href={site?.linkAddress || "/"}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              color: "black",
+              textDecoration: "none",
+            }}
+          >
+            <Typography sx={{ color: "black", fontSize: "14px" }}>
+              <NearMeOutlinedIcon sx={{ color: "black" }} />
+              {site?.address}
+            </Typography>
+          </a>
           <Typography sx={{ color: "black", fontSize: "14px" }}>
-            <NearMeOutlinedIcon sx={{ color: "black" }} />
-            {site?.address}
+            <PhoneIphoneOutlinedIcon sx={{ color: "black", marginRight: "5px" }} />
+            <a
+              href={`tel:${site?.phone}`}
+              style={{ textDecoration: "none", color: "black" }}
+            >
+              {site?.phone}
+            </a>
           </Typography>
-          <Typography sx={{ color: "black", fontSize: "14px" }}>
-            <PhoneIphoneOutlinedIcon sx={{ color: "black" }} />
-            {site?.phone}
-          </Typography>
-          <Typography sx={{ color: "black", fontSize: "14px" }}>
-            <AlternateEmailOutlinedIcon sx={{ color: "black" }} />
-            {site?.email}
+          <Typography sx={{ color: "black", fontSize: "14px", display: "flex", alignItems: "center" }}>
+            <AlternateEmailOutlinedIcon sx={{ color: "black", marginRight: "4px" }} />
+            <a
+              href={`https://mail.google.com/mail/?view=cm&to=${site?.email}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "black", textDecoration: "none" }}
+            >
+              {site?.email}
+            </a>
           </Typography>
         </Box>
 
         <Box sx={{ display: "flex", gap: "10px", marginRight: "20px" }}>
-          <IconButton
-            href="https://www.instagram.com/nezabudka.zoo/"
+          {site?.instagram && (
+            <IconButton
+              href={site.instagram}
+              target="_blank"
+              rel="noopener noreferrer"
+              color="inherit"
+              sx={{ color: "black" }}
+            >
+              <InstagramIcon />
+            </IconButton>
+          )}
+
+          {site && site.whatsapp && (
+            <IconButton
+            href={site.whatsapp}
+            target="_blank"
+            rel="noopener noreferrer"
             color="inherit"
             sx={{ color: "black" }}
-          >
-            <InstagramIcon />
-          </IconButton>
-          <IconButton
-            href="https://api.whatsapp.com/send?phone=996555338899"
-            color="inherit"
-            sx={{ color: "black" }}
-          >
-            <WhatsAppIcon />
-          </IconButton>
+            >
+                <WhatsAppIcon />
+            </IconButton>
+            )}
+
         </Box>
       </Box>
 
