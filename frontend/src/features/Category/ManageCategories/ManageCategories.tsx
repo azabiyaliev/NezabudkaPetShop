@@ -16,8 +16,6 @@ import {
 
 import NewCategory from "../NewCategory/NewCategory.tsx";
 import { toast } from 'react-toastify';
-import { NavLink } from 'react-router-dom';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AddIcon from '@mui/icons-material/Add';
 import Tooltip from '@mui/material/Tooltip';
 import EditCategory from '../../../components/Forms/CategoryForm/EditCategory.tsx';
@@ -189,19 +187,6 @@ const ManageCategories = () => {
   return (
     <>
       <Box sx={{ display: "flex", flexDirection: "column" }}>
-        <NavLink
-          to="/private_account"
-          style={{
-            color: "green",
-            textDecoration: "none",
-            fontWeight: "bold",
-            marginTop: "20px",
-            padding: "2px",
-          }}
-        >
-          <ArrowBackIcon />
-          Назад...
-        </NavLink>
         <Typography variant="h4" textAlign="left" sx={{ mt: 2 }}>
           Управление категориями
         </Typography>
