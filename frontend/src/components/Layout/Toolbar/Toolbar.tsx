@@ -95,6 +95,7 @@ const MainToolbar = () => {
           textAlign: "left",
         }}
       >
+        {(!user || (user.role !== "admin" && user.role !== "superAdmin")) && (
         <Container>
           <Box
             sx={{
@@ -227,6 +228,7 @@ const MainToolbar = () => {
             </Box>
           </Box>
         </Container>
+        )}
       </Box>
       <div style={{ backgroundColor: "#8EA58C" }}>
         <Container style={{ padding: "0px" }}>
