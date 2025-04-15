@@ -40,7 +40,6 @@ const EditSubcategory: React.FC<EditSubcategoryProps> = ({ subcategory,  onClose
 
     await dispatch(updateSubcategoryThunk({
       id: Number(subcategory.id),
-      parentId: subcategory.parentId,
       subcategory: {
         title: editedSubcategory.title,
       },

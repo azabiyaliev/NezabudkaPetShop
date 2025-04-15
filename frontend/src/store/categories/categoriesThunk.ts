@@ -93,7 +93,7 @@ export const updateSubcategoryThunk = createAsyncThunk<
   void,
   {
     id: number;
-    parentId: number;
+    parentId?: number;
     subcategory: { title: string };
     token: string;
   }
@@ -101,10 +101,11 @@ export const updateSubcategoryThunk = createAsyncThunk<
   'category/updateSubcategory',
   async ({ id, parentId, subcategory, token }, { rejectWithValue }) => {
     try {
-      await axiosApi.put(`/category/${id}`, {
+      const dataToSend = {
         ...subcategory,
-        parentId,
-      }, {
+        ...(parentId !== undefined && { parentId }),
+      };
+      await axiosApi.put(`/category/${id}`, dataToSend, {
         headers: { Authorization: token },
       });
     } catch (error) {

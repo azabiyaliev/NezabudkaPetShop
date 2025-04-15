@@ -116,7 +116,9 @@ export class CategoryService {
       where: { id },
       data: {
         title: categoryDto.title,
-        parentId: categoryDto.parentId ?? null,
+        ...(categoryDto.parentId !== undefined && {
+          parentId: categoryDto.parentId,
+        }),
       },
     });
 

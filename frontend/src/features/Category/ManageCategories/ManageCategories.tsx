@@ -75,6 +75,7 @@ const ManageCategories = () => {
   const handleSubEditClose = () => {
     setOpenSubModal(false);
     setSelectedSubCategory(null);
+    dispatch(fetchCategoriesThunk());
   };
 
 
