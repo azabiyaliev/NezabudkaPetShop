@@ -88,24 +88,33 @@ const ExistsUser = () => {
               "@media (max-width: 1100px)": { color: "black" },
             }}
           />
+          {user && (
+            <Typography
+              sx={{
+                color: "white",
+                fontSize: "16px",
+                fontWeight: "500",
+                textTransform: "uppercase",
+                "@media (max-width: 1100px)": {
+                  color: "black",
+                  fontSize: "14px",
+                  marginTop: "-10px",
+                  marginLeft: 0,
+                },
+              }}
+            >
+              {user.role === "superAdmin" ? (
+                <span style={{ color: "white" }}>Super Admin</span>
+              ) : user.role === "admin" ? (
+                <>
+                  <span style={{ color: "#ffcc00" }}>Admin:</span> {user.firstName}
+                </>
+              ) : (
+                user.firstName
+              )}
+            </Typography>
+          )}
         </Button>
-        <Typography
-          sx={{
-            color: "white",
-            fontSize: "16px",
-            fontWeight: "500",
-            textTransform: "uppercase",
-            marginLeft:"-20px",
-            "@media (max-width: 1100px)": {
-              color: "black",
-              fontSize: "14px",
-              marginTop: "-10px",
-              marginLeft:0
-            },
-          }}
-        >
-          Мой аккаунт
-        </Typography>
       </Box>
 
       <Drawer anchor="right" open={isDrawerOpen} onClose={toggleDrawer(false)}>

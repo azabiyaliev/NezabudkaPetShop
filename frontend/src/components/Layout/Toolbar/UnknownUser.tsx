@@ -1,24 +1,44 @@
 import { NavLink } from "react-router-dom";
 import React, { useState } from "react";
-import { Box, Button, Menu, MenuItem } from "@mui/material";
+import {
+  Box,
+  Button,
+  Menu,
+  MenuItem,
+  Typography,
+} from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import Typography from "@mui/material/Typography";
 
 const UnknownUser = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
 
-  const onClick = (e: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(e.currentTarget);
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
   };
 
-  const onClose = () => {
+  const handleClose = () => {
     setAnchorEl(null);
   };
+
   return (
     <>
-      <Box sx={{ display: "flex", alignItems: "center", gap: 2,  "@media (min-width: 1100px)": {flexDirection: "row",}}}>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 2,
+          "@media (min-width: 1100px)": {
+            flexDirection: "row",
+          },
+        }}
+      >
         <Button
-          onClick={onClick}
+          id="account-button"
+          aria-controls={open ? "account-menu" : undefined}
+          aria-haspopup="true"
+          aria-expanded={open ? "true" : undefined}
+          onClick={handleClick}
           sx={{
             display: "flex",
             flexDirection: "column",
@@ -44,7 +64,7 @@ const UnknownUser = () => {
               color: "white",
               "@media (max-width: 1100px)": {
                 color: "black",
-                marginLeft:0
+                marginLeft: 0,
               },
             }}
           >
@@ -52,22 +72,26 @@ const UnknownUser = () => {
           </Typography>
         </Button>
       </Box>
-      <Menu
-        anchorEl={anchorEl}
-        keepMounted
-        open={Boolean(anchorEl)}
-        onClose={onClose}
-      >
-        <MenuItem>
-          <NavLink to="/login" className="text-decoration-none text-black">
-            Войти
-          </NavLink>
-        </MenuItem>
 
-        <MenuItem>
-          <NavLink to="/register" className="text-decoration-none text-black">
-            Зарегистрироваться
-          </NavLink>
+      <Menu
+        id="account-menu"
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "center",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "center",
+        }}
+      >
+        <MenuItem component={NavLink} to="/login" onClick={handleClose}>
+          Войти
+        </MenuItem>
+        <MenuItem component={NavLink} to="/register" onClick={handleClose}>
+          Зарегистрироваться
         </MenuItem>
       </Menu>
     </>
