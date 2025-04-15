@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
-import { Box, Input, Button, FormHelperText } from "@mui/material";
+import { Box, Button, FormHelperText } from "@mui/material";
 
 interface Props {
   name: string;
   label: string;
   onGetFile: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  file: File | null;
+  file: File | string | null;
   id: string;
   className?: string;
   error?: boolean;
@@ -25,12 +25,15 @@ const FileInput: React.FC<Props> = ({
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [fileName, setFileName] = useState("");
+  const [touched, setTouched] = useState(false);
 
   const activateInput = () => {
     inputRef.current?.click();
   };
 
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTouched(true);
+
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
       setFileName(selectedFile.name);
@@ -44,20 +47,13 @@ const FileInput: React.FC<Props> = ({
   useEffect(() => {
     if (!file) {
       setFileName("");
-    } else {
+    } else if (file instanceof File) {
       setFileName(file.name);
+    } else if (typeof file === "string") {
+      const parts = file.split("/");
+      setFileName(parts[parts.length - 1]);
     }
   }, [file]);
-
-  const inputStyle = error || !fileName
-    ? {
-      backgroundColor: "white",
-      borderColor: "#FF0000",
-    }
-    : {
-      backgroundColor: "white",
-      borderColor: "darkgreen",
-    };
 
   const finalHelperText = helperText || "Фото обязательно для загрузки";
 
@@ -68,13 +64,10 @@ const FileInput: React.FC<Props> = ({
         flexDirection: "column",
         gap: 2,
         width: "100%",
-        "@media (max-width: 600px)": {
-          flexDirection: "column",
-        },
       }}
     >
       <input
-        style={{ ...inputStyle, display: "none" }}
+        style={{ display: "none" }}
         type="file"
         name={name}
         ref={inputRef}
@@ -82,35 +75,41 @@ const FileInput: React.FC<Props> = ({
       />
 
       <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-        <Input
+        <Box
           id={id}
           className={className}
-          disabled
-          placeholder={label}
-          value={fileName || ""}
           onClick={activateInput}
           sx={{
             padding: "15px 30px",
             borderRadius: "20px",
-            border: `1px solid ${error || !fileName ? "#FF0000" : "darkgreen"}`,
+            border: `1px solid ${error || (touched && !fileName) ? "#FF0000" : "darkgreen"}`,
             backgroundColor: "white",
-            width: "100%",
+            width: "240px",
+            maxWidth: "100%",
+            cursor: "pointer",
+            userSelect: "none",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
             "@media (max-width: 600px)": {
-              width: "100%",
               padding: "12px 20px",
             },
           }}
-        />
+        >
+          {fileName || label}
+        </Box>
+
         <Button
           variant="outlined"
           onClick={activateInput}
           sx={{
-            borderColor: error || !fileName ? "#FF0000" : "darkgreen",
+            borderColor: error || (touched && !fileName) ? "#FF0000" : "darkgreen",
             borderRadius: "15px",
             backgroundColor: "white",
             padding: "15px 20px",
             cursor: "pointer",
-            color: error || !fileName ? "#FF0000" : "darkgreen",
+            color: error || (touched && !fileName) ? "#FF0000" : "darkgreen",
+            minWidth: "50px",
             "@media (max-width: 600px)": {
               padding: "10px 15px",
             },
@@ -120,8 +119,16 @@ const FileInput: React.FC<Props> = ({
         </Button>
       </Box>
 
-      {(error || !fileName) && (
-        <FormHelperText sx={{ color: "#FF0000", fontSize: "12px", marginTop:"-10px", marginLeft: "10px", marginBottom: "10px" }}>
+      {(error || (touched && !fileName)) && (
+        <FormHelperText
+          sx={{
+            color: "#FF0000",
+            fontSize: "12px",
+            marginTop: "-10px",
+            marginLeft: "10px",
+            marginBottom: "10px",
+          }}
+        >
           {finalHelperText}
         </FormHelperText>
       )}

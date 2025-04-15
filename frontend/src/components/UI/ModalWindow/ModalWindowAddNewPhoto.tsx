@@ -1,4 +1,4 @@
-import { DialogContent, Dialog, DialogTitle, Button } from '@mui/material';
+import { DialogContent, Dialog, DialogTitle, Button, Box } from '@mui/material';
 import React, { useState } from 'react';
 import { PhotoForm } from '../../../types';
 import TextField from '@mui/material/TextField';
@@ -7,6 +7,8 @@ import { addNewPhoto, fetchPhoto } from '../../../store/photoCarousel/photoCarou
 import FileInput from '../FileInput/FileInput.tsx';
 import { ToastContainer } from 'react-toastify';
 import { enqueueSnackbar } from 'notistack';
+import { apiUrl } from '../../../globalConstants.ts';
+import CloseIcon from '@mui/icons-material/Close';
 
 interface Props {
   open: boolean;
@@ -61,6 +63,18 @@ const ModalWindowAddNewPhoto: React.FC<Props> = ({ open, onClose }) => {
         [name]: files[0],
       }));
     }
+  };
+
+  const resetForm = () => {
+    setNewPhoto({ ...initialState });
+    setLinkError("");
+  }
+
+  const deletePhoto = () => {
+    setNewPhoto({
+      ...newPhoto,
+      photo: null,
+    });
   };
 
   const isButtonFormInvalid = Boolean(linkError) || !newPhoto.photo;
@@ -142,6 +156,28 @@ const ModalWindowAddNewPhoto: React.FC<Props> = ({ open, onClose }) => {
                 onGetFile={onFileChange}
                 file={newPhoto.photo}
               />
+              {newPhoto.photo && (
+                <Box sx={{
+                  display: "flex",
+                }}>
+                  <img
+                    style={{
+                      width: "200px",
+                      height: "200px",
+                      textIndent: "-9999px",
+                      display: "block",
+                      objectFit: "contain",
+                    }}
+                    src={
+                      newPhoto.photo instanceof File
+                        ? URL.createObjectURL(newPhoto.photo)
+                        : apiUrl + newPhoto.photo
+                    }
+                    alt="Фото для курсели"
+                  />
+                  <CloseIcon onClick={() => deletePhoto()}/>
+                </Box>
+              )}
             </div>
             <div style={{ marginTop: '20px' }}>
               <Button
@@ -156,7 +192,12 @@ const ModalWindowAddNewPhoto: React.FC<Props> = ({ open, onClose }) => {
               >
                 Добавить
               </Button>
-              <Button style={{ color: "red", marginLeft: '10px' }} onClick={onClose}>
+              <Button
+                style={{ color: "red", marginLeft: '10px' }}
+                onClick={() => {
+                   resetForm();
+                    onClose();
+              }}>
                 Отмена
               </Button>
             </div>

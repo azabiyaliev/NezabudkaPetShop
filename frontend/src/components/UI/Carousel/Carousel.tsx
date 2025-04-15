@@ -1,20 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
 import { apiUrl } from "../../../globalConstants.ts";
-import { useNavigate } from "react-router-dom";
-import { fetchPhoto } from '../../../store/photoCarousel/photoCarouselThunk.ts';
-import { selectPhotoCarousel } from '../../../store/photoCarousel/photoCarouselSlice.ts';
-import PauseIcon from '@mui/icons-material/Pause';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import { Box } from '@mui/joy';
+import { fetchPhoto } from "../../../store/photoCarousel/photoCarouselThunk.ts";
+import { selectPhotoCarousel } from "../../../store/photoCarousel/photoCarouselSlice.ts";
+import { Box } from "@mui/joy";
 
 const Carousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isAutoScroll, setIsAutoScroll] = useState(true);
-  const [isHovered, setIsHovered] = useState(false); // Состояние для отслеживания наведения мыши
   const carousel = useAppSelector(selectPhotoCarousel);
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
@@ -25,30 +19,37 @@ const Carousel = () => {
   const currentImage = images[currentIndex]?.photo;
 
   useEffect(() => {
-    if (isAutoScroll) {
-      timerRef.current = setInterval(() => {
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-      }, 2500);
-    } else {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-      }
-    }
+    startAutoScroll();
 
     return () => {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-      }
+      stopAutoScroll();
     };
-  }, [isAutoScroll, currentIndex, images.length]);
+  }, [images.length]);
 
-  const clickByPhoto = () => {
-    const link = carousel[currentIndex]?.link || "/sale";
-    navigate(link);
+  const startAutoScroll = () => {
+    stopAutoScroll();
+    timerRef.current = setInterval(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+    }, 3000);
   };
 
-  const toggleAutoScroll = () => {
-    setIsAutoScroll((prev) => !prev);
+  const stopAutoScroll = () => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+    }
+  };
+
+  const handleDotClick = (index: number) => {
+    stopAutoScroll();
+    setCurrentIndex(index);
+    startAutoScroll();
+  };
+
+  const clickByPhoto = () => {
+    const link = carousel[currentIndex]?.link;
+    if (link) {
+      window.location.href = link; // переход в этой же вкладке
+    }
   };
 
   return (
@@ -59,7 +60,7 @@ const Carousel = () => {
         position: "relative",
         cursor: "pointer",
         marginTop: "30px",
-        "@media (max-width: 990px)": { padding: "10px", }
+        "@media (max-width: 990px)": { padding: "10px" },
       }}
     >
       <Box
@@ -68,7 +69,7 @@ const Carousel = () => {
           width: "100%",
           height: "100%",
           marginLeft: "40px",
-          "@media (max-width: 990px)": {marginLeft: "0px", }
+          "@media (max-width: 990px)": { marginLeft: "0px" },
         }}
       >
         <div
@@ -92,6 +93,7 @@ const Carousel = () => {
             }}
           />
         </div>
+
         <Box
           sx={{
             display: "flex",
@@ -100,59 +102,10 @@ const Carousel = () => {
             alignItems: "center",
           }}
         >
-          <button
-            onClick={toggleAutoScroll}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-            style={{
-              color: "rgb(35, 120, 3)",
-              cursor: "pointer",
-              marginRight: "10px",
-              marginTop:"-2px",
-              background: "none",
-              border: "none",
-              padding: "0",
-              position: "relative",
-            }}
-          >
-            {isAutoScroll ? <PauseIcon /> : <PlayArrowIcon />}
-            {isHovered && isAutoScroll && (
-              <span
-                style={{
-                  position: "absolute",
-                  bottom: "-14px",
-                  left: "15px",
-                  backgroundColor: "whitesmoke",
-                  color: "black",
-                  borderRadius: "10px",
-                  padding: "2px 5px",
-                  fontSize: "10px",
-                }}
-              >
-                Пауза
-              </span>
-            )}
-            {isHovered && !isAutoScroll && (
-              <span
-                style={{
-                  position: "absolute",
-                  bottom: "-14px",
-                  left: "15px",
-                  backgroundColor: "whitesmoke",
-                  color: "black",
-                  borderRadius: "10px",
-                  padding: "2px 5px",
-                  fontSize: "10px",
-                }}
-              >
-                Играть
-              </span>
-            )}
-          </button>
           {images.map((_, index) => (
             <button
               key={index}
-              onClick={() => setCurrentIndex(index)}
+              onClick={() => handleDotClick(index)}
               style={{
                 backgroundColor:
                   currentIndex === index ? "rgb(35, 120, 3)" : "white",
@@ -169,7 +122,6 @@ const Carousel = () => {
         </Box>
       </Box>
     </Box>
-
   );
 };
 
