@@ -106,6 +106,8 @@ const ManageCategories = () => {
     }
   };
 
+  console.log(categories)
+
   const handleAddSubcategory = (categoryId: number) => {
     setParentCategoryId(categoryId);
     setOpenAddSubModal(true);
@@ -293,7 +295,7 @@ const ManageCategories = () => {
           }}
         >
           <Box sx={{ bgcolor: "white", p: 4, borderRadius: 2 }}>
-            {selectedCategory && <EditCategory category={selectedCategory} />}
+            {selectedCategory && <EditCategory category={selectedCategory} onClose={handleClose}/>}
           </Box>
         </Modal>
 
@@ -308,7 +310,7 @@ const ManageCategories = () => {
         >
           <Box sx={{ bgcolor: "white", p: 4, borderRadius: 2 }}>
             {selectedSubCategory && (
-              <EditSubcategory subcategory={selectedSubCategory} />
+              <EditSubcategory subcategory={selectedSubCategory} onClose={handleSubEditClose}/>
             )}
           </Box>
         </Modal>
@@ -324,7 +326,7 @@ const ManageCategories = () => {
         >
           <Box sx={{ bgcolor: "white", p: 4, borderRadius: 2, width: 400 }}>
             {parentCategoryId && (
-              <SubcategoryForm categoryId={parentCategoryId} />
+              <SubcategoryForm categoryId={parentCategoryId} onClose={handleCloseAddSubcategory}/>
             )}
           </Box>
         </Modal>

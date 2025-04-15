@@ -15,12 +15,13 @@ interface EditCategoryProps {
     id: number;
     title: string;
   };
+  onClose: () => void;
 }
 
 const WARNING_SELECT_CATEGORY = "Не оставляйте поля пустыми!!";
 const SUCCESSFUL_CATEGORY_UPDATE = "Категория успешно обновлена!";
 
-const EditCategory: React.FC<EditCategoryProps> = ({ category }) => {
+const EditCategory: React.FC<EditCategoryProps> = ({ category, onClose }) => {
   const [editedCategory, setEditedCategory] = useState<CategoryMutation>({
     title: category.title,
   });
@@ -47,6 +48,7 @@ const EditCategory: React.FC<EditCategoryProps> = ({ category }) => {
     toast.success(SUCCESSFUL_CATEGORY_UPDATE, { position: 'top-center' });
 
     await dispatch(fetchCategoriesThunk());
+    onClose();
   };
 
   const inputChangeHandler = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
