@@ -68,7 +68,7 @@
 }
 
 .nested-subcategories a {
-  border-radius: 0 10px 10px 0;
+  border-radius: 10px;
   display: block;
   padding: 13px;
   text-decoration: none;
@@ -93,7 +93,7 @@
   border: 1px solid #ccc;
   min-width: 200px;
   z-index: 15;
-  border-radius: 5px;
+  border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
