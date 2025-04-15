@@ -88,22 +88,32 @@ const ExistsUser = () => {
               "@media (max-width: 1100px)": { color: "black" },
             }}
           />
-          <Typography
-            sx={{
-              color: "white",
-              fontSize: "16px",
-              fontWeight: "500",
-              textTransform: "uppercase",
-              "@media (max-width: 1100px)": {
-                color: "black",
-                fontSize: "14px",
-                marginTop: "-10px",
-                marginLeft:0
-              },
-            }}
-          >
-            Мой аккаунт
-          </Typography>
+          {user && (
+            <Typography
+              sx={{
+                color: "white",
+                fontSize: "16px",
+                fontWeight: "500",
+                textTransform: "uppercase",
+                "@media (max-width: 1100px)": {
+                  color: "black",
+                  fontSize: "14px",
+                  marginTop: "-10px",
+                  marginLeft: 0,
+                },
+              }}
+            >
+              {user.role === "superAdmin" ? (
+                <span style={{ color: "#ffcc00" }}>Super Admin</span>
+              ) : user.role === "admin" ? (
+                <>
+                  <span style={{ color: "#ffcc00" }}>Admin:</span> {user.firstName}
+                </>
+              ) : (
+                user.firstName
+              )}
+            </Typography>
+          )}
         </Button>
       </Box>
 
