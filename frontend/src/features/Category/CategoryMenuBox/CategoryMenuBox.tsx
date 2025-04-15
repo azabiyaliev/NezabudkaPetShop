@@ -4,11 +4,14 @@ import { selectCategories } from "../../../store/categories/categoriesSlice.ts";
 import "./CategoryMenuBox.css";
 import paw from "../../.../../../assets/paw-solid-svgrepo-com.svg";
 import { fetchCategoriesThunk } from '../../../store/categories/categoriesThunk.ts';
+import { Subcategory } from '../../../types';
+
 
 const CategoryMenuBox = () => {
   const categories = useAppSelector(selectCategories);
   const [selectedCategory, setSelectedCategory] = useState<string>("Собаки");
   const dispatch = useAppDispatch();
+  const [hoveredSubcategory, setHoveredSubcategory] = useState<Subcategory | null>(null);
 
   const handleCategoryClick = (categoryTitle: string) => {
     setSelectedCategory(categoryTitle);
@@ -22,6 +25,7 @@ const CategoryMenuBox = () => {
     (cat) => cat.title === selectedCategory,
   );
 
+  console.log(categories);
 
   return (
     <div className="menu-box mt-5 col-lg-3 col-md-4 d-none d-md-block">
@@ -55,18 +59,35 @@ const CategoryMenuBox = () => {
         </li>
       </ul>
 
-      <div className="subcategory-content">
-        { currentCategory && (
-          <div className="subcategory-menu-desktop">
-            {currentCategory.subcategories?.map((sub) => (
-              <a key={sub.id} href="#" className="nav-category-link">
-                <img src={paw} alt="paw icon" className="paw-icon" />
-                {sub.title}
-              </a>
-            ))}
+      <div className="subcategory-menu-desktop">
+        {currentCategory?.subcategories?.map((sub) => (
+          <div
+            key={sub.id}
+            className="subcategory-item-in-box"
+            onMouseEnter={() => setHoveredSubcategory(sub)}
+            onMouseLeave={() => setHoveredSubcategory(null)}
+            style={{position: "relative"}}
+          >
+            <a href="#" className="nav-category-link">
+              <img src={paw} alt="paw icon" className="paw-icon"/>
+              {sub.title}
+            </a>
+
+            {hoveredSubcategory?.id === sub.id &&
+              sub.subcategories &&
+              sub.subcategories.length > 0 && (
+                <div className="nested-subcategories">
+                  {sub.subcategories.map((nested) => (
+                    <a key={nested.id} href="#" className="nav-category-link">
+                      {nested.title}
+                    </a>
+                  ))}
+                </div>
+              )}
           </div>
-        )}
+        ))}
       </div>
+
     </div>
   );
 };
