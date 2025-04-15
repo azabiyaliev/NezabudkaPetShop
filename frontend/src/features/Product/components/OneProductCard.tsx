@@ -105,6 +105,12 @@ const OneProductCard: React.FC<Props> = ({ product }) => {
     } else {
       dispatch(productCardToAdd(product));
     }
+
+    const isFirstTimeAdded = cart?.products.some((item) => item.product.id === product.id);
+
+    if (!isFirstTimeAdded) {
+      enqueueSnackbar("Данный товар успешно добавлен в корзину!", { variant: "success" });
+    }
   };
 
   useEffect(() => {

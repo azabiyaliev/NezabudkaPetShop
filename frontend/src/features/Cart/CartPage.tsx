@@ -29,10 +29,10 @@ const CartPage = () => {
     if (user && (user.role === userRoleClient) && cart) {
       await dispatch(deleteItemsCart({cartId: cart.id, token: user.token})).unwrap();
       await dispatch(fetchCart({ token: user.token })).unwrap();
-      enqueueSnackbar("Корзина успешно очищена!", { variant: "success" });
     } else {
       dispatch(clearCart());
     }
+    enqueueSnackbar("Корзина успешно очищена!", { variant: "success" });
   };
 
   useEffect(() => {

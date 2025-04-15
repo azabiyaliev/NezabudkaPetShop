@@ -13,6 +13,7 @@ import {
 } from '../../../../../../store/cart/cartSlice.ts';
 import { deleteItemCart, fetchCart, updateCartItem } from '../../../../../../store/cart/cartThunk.ts';
 import { selectUser } from '../../../../../../store/users/usersSlice.ts';
+import { enqueueSnackbar } from 'notistack';
 
 interface Props {
   product: ICartItem;
@@ -56,6 +57,9 @@ const Cart: React.FC<Props> = ({ product }) => {
     } else {
       dispatch(deleteProductInCart(id));
     }
+    enqueueSnackbar("Данный товар удален из корзины!", {
+      variant: "success",
+    });
   };
 
   return (

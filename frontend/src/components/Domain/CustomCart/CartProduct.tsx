@@ -22,12 +22,13 @@ const CartProduct: React.FC<Props> = ({ productCart }) => {
     if (user && (user.role === userRoleClient) && cart) {
       await dispatch(deleteItemCart({cartId: cart.id, productId: id, token: user.token})).unwrap();
       await dispatch(fetchCart({ token: user.token })).unwrap();
-      enqueueSnackbar("Данный товар успешно удален из корзины!", {
-        variant: "success",
-      });
     } else {
       dispatch(deleteProductInCart(id));
     }
+
+    enqueueSnackbar("Данный товар успешно удален из корзины!", {
+      variant: "success",
+    });
   };
 
   return (
