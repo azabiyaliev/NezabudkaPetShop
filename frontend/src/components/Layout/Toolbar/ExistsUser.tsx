@@ -104,7 +104,7 @@ const ExistsUser = () => {
               }}
             >
               {user.role === "superAdmin" ? (
-                <span style={{ color: "#ffcc00" }}>Super Admin</span>
+                <span style={{ color: "white" }}>Super Admin</span>
               ) : user.role === "admin" ? (
                 <>
                   <span style={{ color: "#ffcc00" }}>Admin:</span> {user.firstName}

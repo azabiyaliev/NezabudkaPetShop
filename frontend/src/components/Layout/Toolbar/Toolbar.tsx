@@ -230,7 +230,9 @@ const MainToolbar = () => {
         </Container>
         )}
       </Box>
-      <div style={{ backgroundColor: "#8EA58C" }}>
+      <div  style={{
+        backgroundColor: user?.role === "superAdmin" ? "#FE5D26" : "#8EA58C",
+      }}>
         <Container style={{ padding: "0px" }}>
           <Box
             sx={{
