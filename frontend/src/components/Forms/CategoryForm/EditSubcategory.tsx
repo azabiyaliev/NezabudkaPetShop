@@ -15,12 +15,13 @@ interface EditSubcategoryProps {
     title: string;
     parentId: number;
   };
+  onClose: () => void;
 }
 
 const WARNING_EMPTY_FIELD = "Не оставляйте поля пустыми!";
 const SUCCESSFUL_SUBCATEGORY_UPDATE = "Подкатегория успешно обновлена!";
 
-const EditSubcategory: React.FC<EditSubcategoryProps> = ({ subcategory }) => {
+const EditSubcategory: React.FC<EditSubcategoryProps> = ({ subcategory,  onClose}) => {
   const [editedSubcategory, setEditedSubcategory] = useState<CategoryMutation>({
     title: subcategory.title,
   });
@@ -39,7 +40,6 @@ const EditSubcategory: React.FC<EditSubcategoryProps> = ({ subcategory }) => {
 
     await dispatch(updateSubcategoryThunk({
       id: Number(subcategory.id),
-      parentId: subcategory.parentId,
       subcategory: {
         title: editedSubcategory.title,
       },
@@ -49,6 +49,7 @@ const EditSubcategory: React.FC<EditSubcategoryProps> = ({ subcategory }) => {
     toast.success(SUCCESSFUL_SUBCATEGORY_UPDATE, { position: 'top-center' });
 
     await dispatch(fetchCategoriesThunk());
+    onClose();
   };
 
   const inputChangeHandler = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {

@@ -116,7 +116,9 @@ export class CategoryService {
       where: { id },
       data: {
         title: categoryDto.title,
-        parentId: categoryDto.parentId ?? null,
+        ...(categoryDto.parentId !== undefined && {
+          parentId: categoryDto.parentId,
+        }),
       },
     });
 
@@ -133,6 +135,31 @@ export class CategoryService {
     }
 
     return { message: 'Категория обновлена успешно' };
+  }
+
+  async updateSubcategoryParent(
+    subcategoryId: number,
+    newParentId: number | null,
+  ) {
+    const subcategory = await this.prisma.category.findUnique({
+      where: { id: subcategoryId },
+    });
+
+    if (!subcategory) {
+      throw new NotFoundException(
+        `Подкатегория с ID ${subcategoryId} не найдена`,
+      );
+    }
+
+    if (newParentId !== null) {
+      await this.validateCategory(newParentId);
+    }
+    await this.prisma.category.update({
+      where: { id: subcategoryId },
+      data: { parentId: newParentId },
+    });
+
+    return { message: 'Родительская категория подкатегории успешно обновлена' };
   }
 
   async deleteCategory(id: number) {

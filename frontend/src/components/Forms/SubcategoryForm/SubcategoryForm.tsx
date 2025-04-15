@@ -19,9 +19,10 @@ const SUCCESS_SUBCATEGORY = "Подкатегория была добавлен�
 
 interface Props {
   categoryId: number;
+  onClose: () => void;
 }
 
-const SubcategoryForm: React.FC<Props> = ({ categoryId }) => {
+const SubcategoryForm: React.FC<Props> = ({ categoryId, onClose }) => {
   const [newSubcategory, setNewSubcategory] = useState("");
 
   const dispatch = useAppDispatch();
@@ -47,6 +48,7 @@ const SubcategoryForm: React.FC<Props> = ({ categoryId }) => {
         await dispatch(fetchCategoriesThunk());
         setNewSubcategory("");
         toast.success(SUCCESS_SUBCATEGORY, { position: "top-center" });
+        onClose();
       }
     } catch (error) {
       console.error(error);

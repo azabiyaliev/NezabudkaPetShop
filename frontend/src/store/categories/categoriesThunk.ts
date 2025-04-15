@@ -89,31 +89,11 @@ export const updateCategoryThunk = createAsyncThunk<
   },
 );
 
-export const updateCategoriesThunk = createAsyncThunk<
-  void,
-  ICategories[]
->('category/updateCategories', async (categories, { rejectWithValue }) => {
-  try {
-    for (const category of categories) {
-      if (category.subcategories) {
-        for (const subcategory of category.subcategories) {
-          await axiosApi.put(`/category/${subcategory.id}`, {
-            title: subcategory.title,
-            parentId: category.id,
-          });
-        }
-      }
-    }
-  } catch (error) {
-    return rejectWithValue(error);
-  }
-});
-
 export const updateSubcategoryThunk = createAsyncThunk<
   void,
   {
     id: number;
-    parentId: number;
+    parentId?: number;
     subcategory: { title: string };
     token: string;
   }
@@ -121,10 +101,11 @@ export const updateSubcategoryThunk = createAsyncThunk<
   'category/updateSubcategory',
   async ({ id, parentId, subcategory, token }, { rejectWithValue }) => {
     try {
-      await axiosApi.put(`/category/${id}`, {
+      const dataToSend = {
         ...subcategory,
-        parentId,
-      }, {
+        ...(parentId !== undefined && { parentId }),
+      };
+      await axiosApi.put(`/category/${id}`, dataToSend, {
         headers: { Authorization: token },
       });
     } catch (error) {
@@ -179,6 +160,30 @@ export const fetchSubcategories = createAsyncThunk<
     throw error;
   }
 });
+
+export const updateSubcategoryParentThunk = createAsyncThunk<
+  void,
+  { subcategoryId: number; newParentId: number | null; token: string },
+  { rejectValue: GlobalError }
+>(
+  'category/updateSubcategoryParent',
+  async ({ subcategoryId, newParentId, token }, { rejectWithValue }) => {
+    try {
+      await axiosApi.put(
+        `/category/${subcategoryId}/parent`,
+        { parentId: newParentId },
+        {
+          headers: { Authorization: token },
+        },
+      );
+    } catch (error) {
+      if (isAxiosError(error) && error.response) {
+        return rejectWithValue(error.response.data as GlobalError);
+      }
+      throw error;
+    }
+  },
+);
 
 export const deleteCategory = createAsyncThunk<void, string>(
   "category/deleteCategory",

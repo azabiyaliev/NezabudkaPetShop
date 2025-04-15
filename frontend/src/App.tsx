@@ -27,7 +27,6 @@ import AdminTable from './features/SuperAdmin/container/AdminTable.tsx';
 import BrandPage from './features/Brand/BrandPage.tsx';
 import RestorationPasswordFrom from './components/Forms/UserFrom/RestorationPasswordFrom.tsx';
 import ClientTable from './features/SuperAdmin/container/ClientTable/ClientTable.tsx';
-import ManageCategories from './features/Category/ManageCategories/ManageCategories.tsx';
 import OrderStats from './features/Admin/AdminOrderPage/OrderStats.tsx';
 import FavoriteProduct from './features/FavoriteProduct/containers/FavoriteProduct.tsx';
 import CompanyPage from './features/CompanyPage/CompanyPage.tsx';
@@ -37,6 +36,7 @@ import BonusProgramForm from './components/Forms/BonusProgramForm/BonusProgramFo
 import { userRoleAdmin, userRoleSuperAdmin } from './globalConstants.ts';
 import DeliveryPage from './features/DeliveryPage/DeliveryPage.tsx';
 import DeliveryPageForm from './components/Forms/DeliveryPageFrom/DeliveryPageFrom.tsx';
+import CategoryPage from './features/Category/CategoryPage/CategoryPage.tsx';
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -152,7 +152,7 @@ const App = () => {
             path="/private/manage_categories"
             element={
               <ProtectedRoute isAllowed={user && can(["admin", "superAdmin"])}>
-                <ManageCategories />
+                <CategoryPage />
               </ProtectedRoute>
             }
           />

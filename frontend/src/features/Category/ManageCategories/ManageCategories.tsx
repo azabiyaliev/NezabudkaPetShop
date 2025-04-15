@@ -11,13 +11,11 @@ import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
 import { selectCategories } from "../../../store/categories/categoriesSlice.ts";
 import {
   deleteCategory,
-  fetchCategoriesThunk,
+  fetchCategoriesThunk, updateSubcategoryParentThunk,
 } from '../../../store/categories/categoriesThunk.ts';
 
 import NewCategory from "../NewCategory/NewCategory.tsx";
 import { toast } from 'react-toastify';
-import { NavLink } from 'react-router-dom';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AddIcon from '@mui/icons-material/Add';
 import Tooltip from '@mui/material/Tooltip';
 import EditCategory from '../../../components/Forms/CategoryForm/EditCategory.tsx';
@@ -28,6 +26,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import { ICategories, Subcategory } from '../../../types';
 import { DndProvider, getBackendOptions, MultiBackend, NodeModel, Tree } from '@minoru/react-dnd-treeview';
 import './ManageCategories.css'
+import { selectUser } from '../../../store/users/usersSlice.ts';
 
 const SUCCESSFUL_CATEGORY_DELETE = "Удаление прошло успешно!";
 const ERROR_CATEGORY_DELETE = "Ошибка при удалении подкатегории!";
@@ -37,11 +36,13 @@ const WARNING_CATEGORY_DELETE = "Категория не пуста или ис�
 const ManageCategories = () => {
   const categories = useAppSelector(selectCategories);
   const dispatch = useAppDispatch();
+  const user = useAppSelector(selectUser);
 
   const [open, setOpen] = useState(false);
   const [openSubModal, setOpenSubModal] = useState(false);
   const [openAddSubModal, setOpenAddSubModal] = useState(false);
   const [parentCategoryId, setParentCategoryId] = useState<number | null>(null);
+  const [treeData, setTreeData] = useState<NodeModel[]>([]);
 
   const [selectedCategory, setSelectedCategory] = useState<{
     id: number;
@@ -58,7 +59,6 @@ const ManageCategories = () => {
     dispatch(fetchCategoriesThunk());
   }, [dispatch]);
 
-  console.log(categories);
 
   const handleOpen = (category: { id: number; title: string; }) => {
     setSelectedCategory({
@@ -75,6 +75,7 @@ const ManageCategories = () => {
   const handleSubEditClose = () => {
     setOpenSubModal(false);
     setSelectedSubCategory(null);
+    dispatch(fetchCategoriesThunk());
   };
 
 
@@ -105,6 +106,8 @@ const ManageCategories = () => {
       toast.error(ERROR_CATEGORY_DELETE, { position: 'top-center' });
     }
   };
+
+  console.log(categories)
 
   const handleAddSubcategory = (categoryId: number) => {
     setParentCategoryId(categoryId);
@@ -148,25 +151,45 @@ const ManageCategories = () => {
     }
   }, [categories, transformCategoriesToTree]);
 
-  const [treeData, setTreeData] = useState<NodeModel[]>([]);
-  const handleDrop = (newTree: NodeModel[]) => setTreeData(newTree);
+  const handleDrop = async (newTree: NodeModel[]) => {
+    setTreeData(newTree);
+
+    for (const node of newTree) {
+      const originalNode = treeData.find((n) => n.id === node.id);
+      if (originalNode && originalNode.parent !== node.parent) {
+        const subcategoryId = node.id as number;
+        const newParentId = node.parent === 0 ? null : (node.parent as number);
+
+        if (!user) return null;
+
+        try {
+          await dispatch(
+            updateSubcategoryParentThunk({
+              subcategoryId,
+              newParentId,
+              token: user.token,
+            }),
+          );
+          toast.success('Положение подкатегории успешно сохранено', {
+            position: 'top-center',
+          });
+        } catch (error) {
+          console.error('Ошибка при сохранении положения подкатегории:', error);
+          toast.error('Ошибка при сохранении положения подкатегории', {
+            position: 'top-center',
+          });
+          setTreeData(treeData);
+          return;
+        }
+      }
+    }
+
+    await dispatch(fetchCategoriesThunk());
+  };
 
   return (
     <>
       <Box sx={{ display: "flex", flexDirection: "column" }}>
-        <NavLink
-          to="/private_account"
-          style={{
-            color: "green",
-            textDecoration: "none",
-            fontWeight: "bold",
-            marginTop: "20px",
-            padding: "2px",
-          }}
-        >
-          <ArrowBackIcon />
-          Назад...
-        </NavLink>
         <Typography variant="h4" textAlign="left" sx={{ mt: 2 }}>
           Управление категориями
         </Typography>
@@ -195,27 +218,34 @@ const ManageCategories = () => {
                 onDrop={handleDrop}
                 render={(node, { depth, isOpen, onToggle }) => {
                   const category = node.data as ICategories;
+                  const isSubcategory = depth > 0;
+
                   return (
                     <div
+                      className={isSubcategory ? 'subcategory-item' : 'category-item'}
                       style={{
                         marginInlineStart: depth * 20,
-                        display: "flex",
-                        alignItems: "center",
+                        display: 'flex',
+                        alignItems: 'center',
                       }}
                     >
                       <ListItemButton onClick={onToggle} sx={{ flex: 1 }}>
                         {node.droppable && (
                           <ArrowDropDownOutlinedIcon
                             sx={{
-                              transform: isOpen
-                                ? "rotate(0deg)"
-                                : "rotate(-90deg)",
-                              transition: "transform 0.2s",
-                              marginRight: "20px",
+                              transform: isOpen ? 'rotate(0deg)' : 'rotate(-90deg)',
+                              transition: 'transform 0.2s',
+                              marginRight: '20px',
                             }}
                           />
                         )}
-                        <ListItemText primary={node.text} />
+                        <ListItemText
+                          primary={node.text}
+                          sx={{
+                            fontSize: isSubcategory ? '0.9rem' : '1rem',
+                            fontWeight: isSubcategory ? 'normal' : 'bold',
+                          }}
+                        />
                       </ListItemButton>
 
                       <Tooltip title="Редактировать категорию">
@@ -266,7 +296,7 @@ const ManageCategories = () => {
           }}
         >
           <Box sx={{ bgcolor: "white", p: 4, borderRadius: 2 }}>
-            {selectedCategory && <EditCategory category={selectedCategory} />}
+            {selectedCategory && <EditCategory category={selectedCategory} onClose={handleClose}/>}
           </Box>
         </Modal>
 
@@ -281,7 +311,7 @@ const ManageCategories = () => {
         >
           <Box sx={{ bgcolor: "white", p: 4, borderRadius: 2 }}>
             {selectedSubCategory && (
-              <EditSubcategory subcategory={selectedSubCategory} />
+              <EditSubcategory subcategory={selectedSubCategory} onClose={handleSubEditClose}/>
             )}
           </Box>
         </Modal>
@@ -297,7 +327,7 @@ const ManageCategories = () => {
         >
           <Box sx={{ bgcolor: "white", p: 4, borderRadius: 2, width: 400 }}>
             {parentCategoryId && (
-              <SubcategoryForm categoryId={parentCategoryId} />
+              <SubcategoryForm categoryId={parentCategoryId} onClose={handleCloseAddSubcategory}/>
             )}
           </Box>
         </Modal>

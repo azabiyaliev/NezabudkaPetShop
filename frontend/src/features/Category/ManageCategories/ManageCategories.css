@@ -1,21 +1,37 @@
-.categories-ul ul {
-  list-style: none;
-  padding-left: 0;
-  margin: 0;
-}
-
-.categories-ul ul li {
-  background-color: #dddddd;
-  margin: 10px 0;
-  padding: 5px;
-  border-radius: 4px;
-  transition: background-color 0.3s ease;
-}
-
 .categories-ul {
   margin-top: 20px;
   overflow-y: auto;
   padding: 25px;
   border-radius: 8px;
   border: 1px solid #ddd;
+}
+
+.categories-ul ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.category-item {
+  background-color: #f0f0f0;
+  margin: 25px 0;
+  padding: 8px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+  border-left: 4px solid #1976d2;
+}
+
+
+.subcategory-item {
+  background-color: #e0e0e0;
+  margin: 5px 0;
+  padding: 6px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+  border-left: 4px solid #ff9800;
+}
+
+.category-item:hover,
+.subcategory-item:hover {
+  background-color: #d0d0d0;
 }
