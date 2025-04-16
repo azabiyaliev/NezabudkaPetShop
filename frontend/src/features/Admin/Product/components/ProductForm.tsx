@@ -65,6 +65,13 @@ const ProductForm: React.FC<Props> = ({
   const selectedCategory = categories.find(
     (category) => category.id === Number(form.categoryId),
   );
+  const [titleError, setTitleError] = useState("");
+  const [priceError, setPriceError] = useState("");
+  const [sizeError, setSizeError] = useState("");
+  const [ageError, setAgeError] = useState("");
+  const [weightError, setWeightError] = useState("");
+  const [feedClassError, setFeedClassError] = useState("");
+  const [manufacturerError, setManufacturerError] = useState("");
   useEffect(() => {
     dispatch(getBrands()).unwrap();
     dispatch(fetchCategoriesThunk()).unwrap();
@@ -118,6 +125,43 @@ const ProductForm: React.FC<Props> = ({
       ...prevState,
       [name]: value,
     }));
+
+    if (name === "productName") setTitleError("");
+    if (name === "productName" && value.trim() === "") {
+      setTitleError("Название товара является обязательным полем и не может быть пустым.");
+    }
+    if (name === "productPrice") {
+      if (Number(value) <= 0) {
+        setPriceError("Цена товара должна быть больше нуля.");
+      } else {
+        setPriceError("");
+      }
+    }
+    if (showAdvancedFields) {
+      if (name === "productSize") setSizeError("");
+      if (name === "productSize" && value.trim() === "") {
+        setSizeError("Поле размер не может быть пустым.");
+      }
+      if (name === "productAge") setAgeError("");
+      if (name === "productAge" && value.trim() === "") {
+        setAgeError("Поле возраста не может быть пустым.");
+      }
+      if (name === "productWeight") {
+        if (Number(value) <= 0) {
+          setWeightError("Поле вес не может быть равна нулю.");
+        } else {
+          setWeightError("");
+        }
+      }
+      if (name === "productFeedClass") setFeedClassError("");
+      if (name === "productFeedClass" && value.trim() === "") {
+        setFeedClassError("Поле класс корма не может быть пустым.");
+      }
+      if (name === "productManufacturer") setManufacturerError("");
+      if (name === "productManufacturer" && value.trim() === "") {
+        setManufacturerError("Поле производитель не может быть пустым.");
+      }
+    }
   };
 
   const submitFormHandler = (e: FormEvent) => {
@@ -241,6 +285,8 @@ const ProductForm: React.FC<Props> = ({
               required
               value={form.productName}
               onChange={inputChangeHandler}
+              error={!!titleError}
+              helperText={titleError}
             />
           </Grid>
           <Grid size={{ xs: 12 }}>
@@ -261,7 +307,9 @@ const ProductForm: React.FC<Props> = ({
               required
               value={form.productPrice}
               onChange={inputChangeHandler}
-              inputProps={{ min: 0 }}
+              inputProps={{ min: 1 }}
+              error={!!priceError}
+              helperText={priceError}
             />
           </Grid>
           <Grid size={{ xs: 12 }}>
@@ -419,6 +467,8 @@ const ProductForm: React.FC<Props> = ({
                       "&.Mui-focused fieldset": { borderColor: orange[500] },
                     }
                   }}
+                  error={!!sizeError}
+                  helperText={sizeError}
                 />
               </Grid>
               <Grid size={{ xs: 12 }}>
@@ -436,6 +486,8 @@ const ProductForm: React.FC<Props> = ({
                       "&.Mui-focused fieldset": { borderColor: orange[500] },
                     }
                   }}
+                  error={!!ageError}
+                  helperText={ageError}
                 />
               </Grid>
               <Grid size={{ xs: 12 }}>
@@ -454,6 +506,8 @@ const ProductForm: React.FC<Props> = ({
                       "&.Mui-focused fieldset": { borderColor: orange[500] },
                     }
                   }}
+                  error={!!weightError}
+                  helperText={weightError}
                 />
               </Grid>
               <Grid size={{ xs: 12 }}>
@@ -471,6 +525,8 @@ const ProductForm: React.FC<Props> = ({
                       "&.Mui-focused fieldset": { borderColor: orange[500] },
                     }
                   }}
+                  error={!!feedClassError}
+                  helperText={feedClassError}
                 />
               </Grid>
               <Grid size={{ xs: 12 }}>
@@ -488,6 +544,8 @@ const ProductForm: React.FC<Props> = ({
                       "&.Mui-focused fieldset": { borderColor: orange[500] },
                     }
                   }}
+                  error={!!manufacturerError}
+                  helperText={manufacturerError}
                 />
               </Grid>
             </>
