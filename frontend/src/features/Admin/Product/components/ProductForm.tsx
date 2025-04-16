@@ -210,6 +210,15 @@ const ProductForm: React.FC<Props> = ({
     setShowAdvancedFields((prev) => !prev);
   };
 
+  const disableButton = Boolean(
+    form.productName.trim() &&
+    form.productPrice > 0 &&
+    form.productDescription.trim() &&
+    form.categoryId &&
+    form.productPhoto &&
+    (!form.sales || (form.startDateSales && form.endDateSales && form.startDateSales <= form.endDateSales))
+  );
+
   return (
     <form onSubmit={submitFormHandler}>
       <Typography variant={"h5"} sx={{ mt: 4, textAlign: "center" }}>
@@ -578,7 +587,7 @@ const ProductForm: React.FC<Props> = ({
               sx={{ color: "#ff9800", width: "100%" }}
               variant="outlined"
               color="inherit"
-              disabled={loading}
+              disabled={!disableButton || loading}
             >
               {!isProduct ? "Добавить" : "Сохранить"}
             </Button>
