@@ -24,6 +24,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import CategoryNavMenu from '../../Domain/CategoryNavMenu.tsx';
 import { cartFromSlice, getFromLocalStorage } from '../../../store/cart/cartSlice.ts';
 import { userRoleAdmin, userRoleSuperAdmin } from '../../../globalConstants.ts';
+import ReactHtmlParser from 'html-react-parser';
 
 const MainToolbar = () => {
   const [openCart, setOpenCart] = useState<boolean>(false);
@@ -395,7 +396,7 @@ const MainToolbar = () => {
                         >
                           <div key={product.id} style={{ padding: '10px', borderBottom: '1px solid #ddd' }}>
                             <h3>{product.productName}</h3>
-                            <p>{product.productDescription}</p>
+                            <p>{ReactHtmlParser(product.productDescription)}</p>
                           </div>
                         </NavLink>
                       ))
