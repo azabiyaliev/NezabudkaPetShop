@@ -5,7 +5,7 @@ import { getBrands } from '../../store/brands/brandsThunk.ts';
 import BrandForHomePage from '../../components/Domain/Brand/BrandForHomePage/BrandForHomePage.tsx';
 import { Box, Container } from '@mui/material';
 import Typography from '@mui/joy/Typography';
-import Carousel from '../../components/UI/Carousel/Carousel.tsx';
+import SwiperCarousel from '../../components/UI/Carousel/SwiperCarousel.tsx';
 import CustomCart from '../../components/Domain/CustomCart/CustomCart.tsx';
 import CategoryMenuBox from '../Category/CategoryMenuBox/CategoryMenuBox.tsx';
 import CategoryCard from '../Category/CategoryCard/CategoryCard.tsx';
@@ -122,7 +122,7 @@ const HomePage = () => {
         }}
       >
         <CategoryMenuBox />
-        <Carousel />
+        <SwiperCarousel />
       </Box>
 
       <Box className="mb-5">
