@@ -1,5 +1,5 @@
 import { Box, Typography } from "@mui/material";
-import logo_transparent from "../../../assets/logo_transparent.png";
+import logo from "../../../../public/logo.png";
 import { useAppDispatch } from "../../../app/hooks.ts";
 import  { useEffect } from 'react';
 import { fetchSite } from '../../../store/editionSite/editionSiteThunk.ts';
@@ -46,7 +46,7 @@ const Footer = () => {
           >
             <Box
               component="img"
-              src={logo_transparent}
+              src={logo}
               alt="Nezabudka"
               sx={{
                 height: "65px",
