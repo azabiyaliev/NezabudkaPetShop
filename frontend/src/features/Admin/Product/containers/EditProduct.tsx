@@ -8,8 +8,8 @@ import { selectUser } from "../../../../store/users/usersSlice.ts";
 import { ProductRequest } from "../../../../types";
 import {
   editProduct,
-  getOneProduct,
-} from "../../../../store/products/productsThunk.ts";
+  getOneProductForEdit,
+} from '../../../../store/products/productsThunk.ts';
 import { toast } from "react-toastify";
 import { CircularProgress } from "@mui/material";
 import Grid from "@mui/material/Grid2";
@@ -26,7 +26,7 @@ const EditProduct = () => {
   const { id } = useParams();
 
   useEffect(() => {
-    if (id) dispatch(getOneProduct(Number(id))).unwrap();
+    if (id) dispatch(getOneProductForEdit(Number(id))).unwrap();
   }, [dispatch, id]);
 
   const onSubmitForm = async (newProduct: ProductRequest) => {
