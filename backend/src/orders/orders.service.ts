@@ -7,6 +7,8 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateOrderDto } from '../dto/createOrderDto';
 import { TelegramService } from '../telegram/telegram.service';
+import { OrderStatus } from '@prisma/client';
+import { UpdateStatusDto } from '../dto/update-status.dto';
 
 @Injectable()
 export class OrdersService {
@@ -110,11 +112,20 @@ export class OrdersService {
   }
 
   async getOrderStats() {
-    const stats = await this.prisma.orderStatistic.upsert({
+    const stats = await this.prisma.statistic.upsert({
       where: {
         id: 1,
       },
-      create: { pickUpStatistic: 0, deliveryStatistic: 0 },
+      create: {
+        totalOrders: 0,
+        pickUpStatistic: 0,
+        deliveryStatistic: 0,
+        paymentByCard: 0,
+        paymentByCash: 0,
+        bonusUsage: 0,
+        canceledOrderCount: 0,
+        date: new Date(),
+      },
       update: {},
     });
     return stats;
@@ -188,14 +199,112 @@ export class OrdersService {
     const finalAmount = orderAmount - bonusToUse;
 
     if (deliveryMethod === 'Delivery') {
-      await this.prisma.orderStatistic.updateMany({
+      await this.prisma.statistic.upsert({
         where: { id: 1 },
-        data: { deliveryStatistic: { increment: 1 } },
+        update: { deliveryStatistic: { increment: 1 } },
+        create: {
+          id: 1,
+          deliveryStatistic: 1,
+          pickUpStatistic: 0,
+          paymentByCard: 0,
+          paymentByCash: 0,
+          bonusUsage: 0,
+          canceledOrderCount: 0,
+          totalOrders: 0,
+          date: new Date(),
+        },
       });
-    } else if (deliveryMethod === 'PickUp') {
-      await this.prisma.orderStatistic.updateMany({
+    }
+
+    if (deliveryMethod === 'PickUp') {
+      await this.prisma.statistic.upsert({
         where: { id: 1 },
-        data: { pickUpStatistic: { increment: 1 } },
+        update: { pickUpStatistic: { increment: 1 } },
+        create: {
+          id: 1,
+          deliveryStatistic: 0,
+          pickUpStatistic: 1,
+          paymentByCard: 0,
+          paymentByCash: 0,
+          bonusUsage: 0,
+          canceledOrderCount: 0,
+          totalOrders: 0,
+          date: new Date(),
+        },
+      });
+    }
+
+    if (paymentMethod === 'ByCard') {
+      await this.prisma.statistic.upsert({
+        where: { id: 1 },
+        update: { paymentByCard: { increment: 1 } },
+        create: {
+          id: 1,
+          deliveryStatistic: 0,
+          pickUpStatistic: 0,
+          paymentByCard: 1,
+          paymentByCash: 0,
+          bonusUsage: 0,
+          canceledOrderCount: 0,
+          totalOrders: 0,
+          date: new Date(),
+        },
+      });
+    }
+
+    if (paymentMethod === 'ByCash') {
+      await this.prisma.statistic.upsert({
+        where: { id: 1 },
+        update: { paymentByCash: { increment: 1 } },
+        create: {
+          id: 1,
+          deliveryStatistic: 0,
+          pickUpStatistic: 0,
+          paymentByCard: 0,
+          paymentByCash: 1,
+          bonusUsage: 0,
+          canceledOrderCount: 0,
+          totalOrders: 0,
+          date: new Date(),
+        },
+      });
+    }
+
+    if (bonusUsed) {
+      await this.prisma.statistic.upsert({
+        where: { id: 1 },
+        update: { bonusUsage: { increment: 1 } },
+        create: {
+          id: 1,
+          deliveryStatistic: 0,
+          pickUpStatistic: 0,
+          paymentByCard: 0,
+          paymentByCash: 0,
+          bonusUsage: 1,
+          canceledOrderCount: 0,
+          totalOrders: 0,
+          date: new Date(),
+        },
+      });
+    }
+
+    if (createOrderDto.status === OrderStatus.Canceled) {
+      await this.prisma.statistic.upsert({
+        where: { id: 1 },
+        update: {
+          canceledOrderCount: { increment: 1 },
+        },
+        create: {
+          id: 1,
+          deliveryStatistic: 0,
+          pickUpStatistic: 0,
+          paymentByCard: 0,
+          paymentByCash: 0,
+          bonusUsage: 0,
+          canceledOrderCount: 1,
+          totalOrders: 0,
+          date: new Date(),
+        },
       });
     }
 
@@ -261,19 +370,37 @@ export class OrdersService {
       this.logger.error('Не удалось отправить уведомление в Telegram', e);
     }
 
+    if (order) {
+      await this.prisma.statistic.upsert({
+        where: { id: 1 },
+        update: { totalOrders: { increment: 1 } },
+        create: {
+          id: 1,
+          deliveryStatistic: 0,
+          pickUpStatistic: 0,
+          paymentByCard: 0,
+          paymentByCash: 0,
+          bonusUsage: 0,
+          canceledOrderCount: 0,
+          totalOrders: 1,
+          date: new Date(),
+        },
+      });
+    }
+
     return {
       ...order,
       user: updatedUser || order.user,
     };
   }
 
-  async updateStatus(createOrderDto: CreateOrderDto, orderId: number) {
+  async updateStatus(updateStatus: UpdateStatusDto, orderId: number) {
     const order = await this.prisma.order.update({
       where: {
         id: orderId,
       },
       data: {
-        status: createOrderDto.status,
+        status: updateStatus.status,
       },
       include: {
         user: true,
@@ -290,7 +417,7 @@ export class OrdersService {
       );
     }
 
-    if (createOrderDto.status === 'isDelivered') {
+    if (updateStatus.status === 'Delivered') {
       const updateStats = order.items.map((item) =>
         this.prisma.products.update({
           where: { id: item.productId },
@@ -303,8 +430,11 @@ export class OrdersService {
       );
       await Promise.all(updateStats);
     }
+    if (!order.user) {
+      return null;
+    }
 
-    if (createOrderDto.status === 'Canceled') {
+    if (updateStatus.status === 'Canceled') {
       await this.prisma.order.delete({
         where: { id: orderId, status: 'Canceled' },
       });

@@ -18,6 +18,7 @@ import { AuthRequest } from '../types';
 import { TokenAuthGuard } from '../token.auth/token-auth.guard';
 import { RolesGuard } from '../token.auth/token.role.guard';
 import { Roles } from '../roles/roles.decorator';
+import { UpdateStatusDto } from '../dto/update-status.dto';
 
 @Controller('orders')
 export class OrdersController {
@@ -87,7 +88,7 @@ export class OrdersController {
   @Patch(':id')
   async updateOrderStatus(
     @Param('id') orderId: string,
-    @Body() orderDto: CreateOrderDto,
+    @Body() orderDto: UpdateStatusDto,
   ) {
     return await this.ordersService.updateStatus(orderDto, Number(orderId));
   }

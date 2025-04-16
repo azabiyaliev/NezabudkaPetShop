@@ -12,6 +12,9 @@
     "format": "npx prettier . --write"
   },
   "dependencies": {
+    "@amcharts/amcharts5": "^5.12.1",
+    "@amcharts/amcharts5-fonts": "^5.0.1",
+    "@amcharts/amcharts5-geodata": "^5.1.4",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@greatsumini/react-facebook-login": "^3.4.0",

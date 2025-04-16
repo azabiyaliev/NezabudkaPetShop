@@ -136,7 +136,7 @@ model Order {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  status OrderStatus @default(inProcess)
+  status OrderStatus @default(Pending)
 
   address        String?
   guestEmail     String?        @map("guest_email")
@@ -173,19 +173,28 @@ model OrderItem {
   @@map("order_items")
 }
 
-model OrderStatistic {
+model Statistic {
   id Int @id @default(autoincrement())
 
-  pickUpStatistic   Int @map("pickup_stats")
-  deliveryStatistic Int @map("delivery_stats")
+  date               DateTime
+  totalOrders        Int      @default(0) @map("totalOrders")
+  pickUpStatistic    Int      @default(0) @map("pickup_stats")
+  deliveryStatistic  Int      @default(0) @map("delivery_stats")
+  paymentByCard      Int      @default(0) @map("payment_by_card")
+  paymentByCash      Int      @default(0) @map("payment_by_cash")
+  bonusUsage         Int      @default(0) @map("bonus_usage")
+  canceledOrderCount Int      @default(0) @map("canceled_order_count")
 
   @@map("order_statistic")
 }
 
 enum OrderStatus {
-  inProcess
-  onTheWay
-  isDelivered
+  Pending
+  Confirmed
+  Packed
+  Shipped
+  Delivered
+  Returned
   Canceled
 }
 

@@ -293,6 +293,11 @@ export interface OrderStats {
   id: number;
   deliveryStatistic: number;
   pickUpStatistic: number;
+  totalOrders: number;
+  paymentByCard: number;
+  paymentByCash: number;
+  bonusUsage: number;
+  canceledOrderCount: number;
 }
 
 export interface FavoritesResponse {
