@@ -196,7 +196,7 @@ export class SeedService {
           brandId: 1,
           categoryId: 1,
           productPhoto: '/fixtures/products/dog_food.jpg',
-          existence: false,
+          existence: true,
           sales: false,
         },
         {
@@ -206,7 +206,7 @@ export class SeedService {
           brandId: 1,
           categoryId: 2,
           productPhoto: '/fixtures/products/dog_food.jpg',
-          existence: false,
+          existence: true,
           sales: false,
         },
         {

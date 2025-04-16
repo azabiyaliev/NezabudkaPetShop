@@ -3,6 +3,8 @@ import { Box, List, ListItem, ListItemDecorator } from '@mui/joy';
 import { ICartItem } from '../../../../../types';
 import Typography from '@mui/joy/Typography';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
+import { useAppSelector } from '../../../../../app/hooks.ts';
+import { selectUser } from '../../../../../store/users/usersSlice.ts';
 
 interface Props {
   products: ICartItem[];
@@ -10,6 +12,7 @@ interface Props {
 }
 
 const TotalPrice: React.FC<Props> = ({ products, bonusUsed }) => {
+  const user = useAppSelector(selectUser);
   const productsToBuy: { price: number; amount: number }[] = products.map(
     (product) => {
       if (product.product) {
@@ -286,7 +289,7 @@ const TotalPrice: React.FC<Props> = ({ products, bonusUsed }) => {
               </span>
             </Typography>
           </ListItem>
-          { bonusUsed > 0&& (
+          {user?.role === "client" && bonusUsed > 0&& (
             <ListItem>
               <ListItemDecorator
                 sx={{
