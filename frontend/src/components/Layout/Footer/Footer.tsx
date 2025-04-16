@@ -1,5 +1,5 @@
 import { Box, Typography } from "@mui/material";
-import logo from "../../../../public/logo.png";
+import logo from "../../../assets/logo-nezabudka.png";
 import { useAppDispatch } from "../../../app/hooks.ts";
 import  { useEffect } from 'react';
 import { fetchSite } from '../../../store/editionSite/editionSiteThunk.ts';
