@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
-import { selectUser, unsetUser } from "../../../store/users/usersSlice.ts";
+import { selectUser } from "../../../store/users/usersSlice.ts";
 import { usePermission} from '../../../app/hooks.ts';
 
 import {
@@ -27,6 +27,7 @@ import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import FavoriteOutlinedIcon from "@mui/icons-material/FavoriteOutlined";
 import LocalMallOutlinedIcon from "@mui/icons-material/LocalMallOutlined";
+import { logout } from '../../../store/users/usersThunk.ts';
 
 const ExistsUser = () => {
   const addError = useAppSelector(addErrorFromSlice);
@@ -41,7 +42,7 @@ const ExistsUser = () => {
   };
 
   const userLogout = () => {
-    dispatch(unsetUser());
+    dispatch(logout());
     navigate("/");
   };
 

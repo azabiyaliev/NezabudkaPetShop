@@ -5,7 +5,7 @@ import AdminProfile from "./features/Admin/AdminProfile/AdminProfile.tsx";
 import NewBrandPage from "./features/Admin/Brand/NewBrandPage.tsx";
 import HomePage from "./features/Home/HomePage.tsx";
 import ProtectedRoute from "./components/UI/ProtectedRoute/ProtectedRoute.tsx";
-import { useAppSelector, usePermission } from './app/hooks.ts';
+import { useAppDispatch, useAppSelector, usePermission } from './app/hooks.ts';
 import { selectUser } from "./store/users/usersSlice.ts";
 import Layout from "./components/Layout/Layout/Layout.tsx";
 import EditBrandPage from "./features/Admin/Brand/EditBrandPage.tsx";
@@ -37,10 +37,18 @@ import { userRoleAdmin, userRoleSuperAdmin } from './globalConstants.ts';
 import DeliveryPage from './features/DeliveryPage/DeliveryPage.tsx';
 import DeliveryPageForm from './components/Forms/DeliveryPageFrom/DeliveryPageFrom.tsx';
 import CategoryPage from './features/Category/CategoryPage/CategoryPage.tsx';
+import { useEffect } from 'react';
+import { fetchMe } from './store/users/usersThunk.ts';
 
 const App = () => {
   const user = useAppSelector(selectUser);
   const can = usePermission(user);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(fetchMe());
+  }, [dispatch]);
+
   return (
     <div>
       <Layout>
