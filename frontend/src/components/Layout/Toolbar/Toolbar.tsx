@@ -23,6 +23,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import MenuIcon from '@mui/icons-material/Menu';
 import CategoryNavMenu from '../../Domain/CategoryNavMenu.tsx';
 import { cartFromSlice, getFromLocalStorage } from '../../../store/cart/cartSlice.ts';
+import { userRoleAdmin, userRoleSuperAdmin } from '../../../globalConstants.ts';
 
 const MainToolbar = () => {
   const [openCart, setOpenCart] = useState<boolean>(false);
@@ -58,14 +59,18 @@ const MainToolbar = () => {
     dispatch(getFromLocalStorage());
     dispatch(fetchSite()).unwrap()
   }, [dispatch]);
-
   useEffect(() => {
     if (search) {
       dispatch(getProducts(debouncedSearch));
     } else {
       dispatch(getProducts(''));
+
+      if (user && (user.role === userRoleAdmin || user.role === userRoleSuperAdmin)) {
+        console.log(debouncedSearch);
+        console.log(search);
+      }
     }
-  }, [dispatch, debouncedSearch, search]);
+  }, [dispatch, debouncedSearch, search, user]);
 
   const closeCart = () => {
     setOpenCart(false);
@@ -368,7 +373,6 @@ const MainToolbar = () => {
                     <SearchIcon />
                   </button>
                 </Box>
-
                 {search && (
                   <Box
                     sx={{
@@ -387,7 +391,11 @@ const MainToolbar = () => {
                   >
                     {products.length > 0 ? (
                       products.map((product) => (
-                        <NavLink className='text-decoration-none text-black' to={`/product/${product.id}`} onClick={() => setSearch('')}>
+                        <NavLink
+                          className='text-decoration-none text-black'
+                          to={user && (user.role === userRoleAdmin || user.role === userRoleSuperAdmin) ? `/private/edit_product/${product.id}`: `/product/${product.id}`}
+                          onClick={() => setSearch('')}
+                        >
                           <div key={product.id} style={{ padding: '10px', borderBottom: '1px solid #ddd' }}>
                             <h3>{product.productName}</h3>
                             <p>{product.productDescription}</p>
