@@ -13,7 +13,8 @@ import { cartErrorFromSlice, cartFromSlice, setToLocalStorage } from '../../stor
 import { selectUser } from '../../store/users/usersSlice.ts';
 import { addItem, createCart, deleteItemsCart, fetchCart } from '../../store/cart/cartThunk.ts';
 import { ICartBack, ICartItem } from '../../types';
-import { userRoleClient } from '../../globalConstants.ts';
+import { userRoleAdmin, userRoleClient, userRoleSuperAdmin } from '../../globalConstants.ts';
+import { useNavigate } from 'react-router-dom';
 
 const HomePage = () => {
   const [openCart, setOpenCart] = useState<boolean>(false);
@@ -24,6 +25,7 @@ const HomePage = () => {
   const cart = useAppSelector(cartFromSlice);
   const createCartError = useAppSelector(cartErrorFromSlice);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const mergeCarts = (cart: ICartBack, localCart: ICartBack): ICartItem[] => {
     const mergedCart: ICartItem[] = [...cart.products];
@@ -102,8 +104,12 @@ const HomePage = () => {
   useEffect(() => {
     if (!user) {
       dispatch(setToLocalStorage(cart));
+    } else {
+      if (user && (user.role === userRoleAdmin || user.role === userRoleSuperAdmin)) {
+        navigate("/private_account");
+      }
     }
-  }, [dispatch, cart, user]);
+  }, [dispatch, cart, user, navigate]);
 
   return (
     <Container>
