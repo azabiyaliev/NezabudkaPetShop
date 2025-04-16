@@ -1,18 +1,14 @@
-import { Box, Typography, IconButton } from "@mui/material";
-import InstagramIcon from "@mui/icons-material/Instagram";
-import WhatsAppIcon from "@mui/icons-material/WhatsApp";
+import { Box, Typography } from "@mui/material";
 import logo_transparent from "../../../assets/logo_transparent.png";
-import NearMeOutlinedIcon from "@mui/icons-material/NearMeOutlined";
-import { useAppSelector, useAppDispatch } from "../../../app/hooks.ts";
-import { selectEditSite } from "../../../store/editionSite/editionSiteSlice.ts";
-import PhoneIphoneOutlinedIcon from "@mui/icons-material/PhoneIphoneOutlined";
-import AlternateEmailOutlinedIcon from "@mui/icons-material/AlternateEmailOutlined";
+import { useAppDispatch } from "../../../app/hooks.ts";
 import  { useEffect } from 'react';
 import { fetchSite } from '../../../store/editionSite/editionSiteThunk.ts';
 import { NavLink } from 'react-router-dom';
 import CatygoryFooter from './CatygoryFooter/CatygoryFooter.tsx';
+import BuyerBlockFooter from './BuyerBlockFooter/BuyerBlockFooter.tsx';
+import CabinetBlockFooter from './CabinetBlockFooter/CabinetBlockFooter.tsx';
+import LinkBlockFooter from './LinkBlockFooter/LinkBlockFooter.tsx';
 const Footer = () => {
-  const site = useAppSelector(selectEditSite);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -26,23 +22,24 @@ const Footer = () => {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        justifyContent: "center",
         textAlign: "center",
-        backgroundColor:"rgb(33, 33, 33)"
+        backgroundColor: "rgb(33, 33, 33)",
       }}
     >
       <Box
         sx={{
           display: "flex",
           justifyContent: "space-between",
-          alignItems: "center",
+          alignItems: "flex-start",
           width: "100%",
           maxWidth: "1200px",
           padding: "0 20px",
           marginBottom: "20px",
+          flexDirection: "column",
+          gap: "20px",
         }}
       >
-        <Box sx={{ display: "flex", alignItems: "flex-start", flexDirection: "column" }}>
+        <Box sx={{ display: "flex", alignItems: "center" }}>
           <NavLink
             to="/"
             className="text-decoration-none d-flex align-items-center gap-2"
@@ -78,80 +75,28 @@ const Footer = () => {
               Незабудка
             </Typography>
           </NavLink>
-
-          <Box sx={{ marginTop: "12px", flex:"end" }}>
-            <CatygoryFooter />
-          </Box>
         </Box>
 
         <Box
           sx={{
-            alignItems: "center",
-            paddingTop: "20px",
-            marginRight: "70px",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+            width: "100%",
+            flexWrap: "wrap",
+            gap: "40px",
           }}
         >
-          <a
-            href={site?.linkAddress || "/"}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              color: "black",
-              textDecoration: "none",
-            }}
-          >
-            <Typography sx={{ color: "black", fontSize: "14px" }}>
-              <NearMeOutlinedIcon sx={{ color: "black" }} />
-              {site?.address}
-            </Typography>
-          </a>
-          <Typography sx={{ color: "black", fontSize: "14px" }}>
-            <PhoneIphoneOutlinedIcon sx={{ color: "black", marginRight: "5px" }} />
-            <a
-              href={`tel:${site?.phone}`}
-              style={{ textDecoration: "none", color: "black" }}
-            >
-              {site?.phone}
-            </a>
-          </Typography>
-          <Typography sx={{ color: "black", fontSize: "14px", display: "flex", alignItems: "center" }}>
-            <AlternateEmailOutlinedIcon sx={{ color: "black", marginRight: "4px" }} />
-            <a
-              href={`https://mail.google.com/mail/?view=cm&to=${site?.email}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ color: "black", textDecoration: "none" }}
-            >
-              {site?.email}
-            </a>
-          </Typography>
-        </Box>
-
-        <Box sx={{ display: "flex", gap: "10px", marginRight: "20px" }}>
-          {site?.instagram && (
-            <IconButton
-              href={site.instagram}
-              target="_blank"
-              rel="noopener noreferrer"
-              color="inherit"
-              sx={{ color: "black" }}
-            >
-              <InstagramIcon />
-            </IconButton>
-          )}
-
-          {site && site.whatsapp && (
-            <IconButton
-            href={site.whatsapp}
-            target="_blank"
-            rel="noopener noreferrer"
-            color="inherit"
-            sx={{ color: "black" }}
-            >
-                <WhatsAppIcon />
-            </IconButton>
-            )}
-
+          <CatygoryFooter />
+          <Box>
+            <BuyerBlockFooter />
+          </Box>
+          <Box sx={{ display: "flex", gap: "10px" }}>
+            <CabinetBlockFooter/>
+          </Box>
+          <Box sx={{ display: "flex", gap: "10px" }}>
+            <LinkBlockFooter/>
+          </Box>
         </Box>
       </Box>
 
@@ -162,6 +107,7 @@ const Footer = () => {
         &copy; {new Date().getFullYear()} Nezabudka. Все права защищены.
       </Typography>
     </Box>
+
   );
 };
 

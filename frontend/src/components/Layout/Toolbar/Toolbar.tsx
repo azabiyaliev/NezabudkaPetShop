@@ -1,4 +1,4 @@
-import { Badge, Box, Button, Container, Menu, MenuItem, Toolbar, } from '@mui/material';
+import { Badge, Box, Button, Container, Toolbar, } from '@mui/material';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector, usePermission } from '../../../app/hooks.ts';
 import ExistsUser from './ExistsUser.tsx';
@@ -10,9 +10,8 @@ import Typography from '@mui/material/Typography';
 import './Fonts.css';
 import { selectEditSite } from '../../../store/editionSite/editionSiteSlice.ts';
 import { selectUser } from '../../../store/users/usersSlice.ts';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import CustomCart from '../../Domain/CustomCart/CustomCart.tsx';
-import KeyboardArrowDownOutlinedIcon from '@mui/icons-material/KeyboardArrowDownOutlined';
 import { fetchSite } from '../../../store/editionSite/editionSiteThunk.ts';
 import { selectProducts } from '../../../store/products/productsSlice.ts';
 import { getProducts } from '../../../store/products/productsThunk.ts';
@@ -32,19 +31,10 @@ const MainToolbar = () => {
   const cart = useAppSelector(cartFromSlice);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const products = useAppSelector(selectProducts);
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState<string>('');
   const can = usePermission(user);
-
-  const onClick = (e: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(e.currentTarget);
-  };
-
-  const onClose = () => {
-    setAnchorEl(null);
-  };
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -122,7 +112,6 @@ const MainToolbar = () => {
                   textDecoration: "none",
                   display: "flex",
                   alignItems: "center",
-                  borderRight: "1px solid black",
                   paddingRight: "10px",
                 }}
               >
@@ -136,62 +125,6 @@ const MainToolbar = () => {
                   {site?.address}
                 </Typography>
               </a>
-              <Button
-                onClick={onClick}
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  color: "black",
-                  gap: "5px",
-                  textTransform: "none",
-                  "@media (max-width: 460px)": { display:"none" }
-                }}
-              >
-                <Typography sx={{ color: "black", fontSize: 16,  "@media (max-width: 800px)": { fontSize: 13 } }}> Покупателям</Typography>
-                <KeyboardArrowDownOutlinedIcon />
-              </Button>
-              <Menu
-                anchorEl={anchorEl}
-                keepMounted
-                open={Boolean(anchorEl)}
-                onClose={onClose}
-              >
-                <MenuItem>
-                  <NavLink
-                    to="/my_company"
-                    className="text-decoration-none text-black"
-                  >
-                    О компании
-                  </NavLink>
-                </MenuItem>
-
-                <MenuItem>
-                  <NavLink
-                    to="/delivery"
-                    className="text-decoration-none text-black"
-                  >
-                    Доставка и опалата
-                  </NavLink>
-                </MenuItem>
-
-                <MenuItem>
-                  <NavLink
-                    to="/bonus_program"
-                    className="text-decoration-none text-black"
-                  >
-                    Бонусная программа
-                  </NavLink>
-                </MenuItem>
-
-                <MenuItem>
-                  <NavLink
-                    to="/contacts"
-                    className="text-decoration-none text-black"
-                  >
-                    Контакты
-                  </NavLink>
-                </MenuItem>
-              </Menu>
             </Box>
             <Box
               sx={{
