@@ -54,7 +54,7 @@ const OneProductCard: React.FC<Props> = ({ product }) => {
   useEffect(() => {
     if (user) {
       dispatch(clearCart());
-      dispatch(fetchCart({ token: user.token })).unwrap();
+      dispatch(fetchCart()).unwrap();
     } else {
       dispatch(newUserLogin());
     }
@@ -100,10 +100,9 @@ const OneProductCard: React.FC<Props> = ({ product }) => {
           cartId: cart.id,
           productId: product.id,
           quantity: 1,
-          token: user.token,
         }),
       ).unwrap();
-      await dispatch(fetchCart({ token: user.token })).unwrap();
+      await dispatch(fetchCart()).unwrap();
     } else {
       dispatch(productCardToAdd(product));
     }
