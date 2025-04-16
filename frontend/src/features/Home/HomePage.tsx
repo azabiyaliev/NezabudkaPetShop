@@ -122,8 +122,18 @@ const HomePage = () => {
         }}
       >
         <CategoryMenuBox />
-        <SwiperCarousel />
+        <Box
+          sx={{
+            flex: 1,
+            minWidth: 0,
+            maxWidth: "100%",
+            overflow: "hidden",
+          }}
+        >
+          <SwiperCarousel />
+        </Box>
       </Box>
+
 
       <Box className="mb-5">
         <Typography
