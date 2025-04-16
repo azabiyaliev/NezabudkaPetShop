@@ -138,6 +138,7 @@ export interface Subcategory {
   title: string;
   parentId: string | number | null;
   subcategories?: Subcategory[];
+  logo?: File | null;
 }
 
 export interface ProductRequest {

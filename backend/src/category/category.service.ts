@@ -24,7 +24,7 @@ export class CategoryService {
   }
 
   async createCategory(categoryDto: CategoryDto) {
-    const { title, parentId, icon } = categoryDto;
+    const { title, parentId } = categoryDto;
 
     if (title.trim() === '') {
       throw new BadRequestException(
@@ -37,7 +37,7 @@ export class CategoryService {
     }
 
     const newCategory = await this.prisma.category.create({
-      data: { title, parentId: parentId ?? null, icon: icon ?? null },
+      data: { title, parentId: parentId ?? null },
     });
 
     return newCategory;
@@ -50,7 +50,7 @@ export class CategoryService {
     categoryId = parseInt(categoryId.toString());
     await this.validateCategory(categoryId);
 
-    for (const { title, icon } of subCategoryDtos) {
+    for (const { title } of subCategoryDtos) {
       if (!title.trim()) {
         throw new BadRequestException('Название подкатегории отсутствует');
       }
@@ -67,7 +67,6 @@ export class CategoryService {
         data: {
           title,
           parentId: categoryId,
-          icon: icon ?? null,
         },
       });
     }
@@ -119,9 +118,6 @@ export class CategoryService {
         title: categoryDto.title,
         ...(categoryDto.parentId !== undefined && {
           parentId: categoryDto.parentId,
-        }),
-        ...(categoryDto.icon !== undefined && {
-          icon: categoryDto.icon,
         }),
       },
     });

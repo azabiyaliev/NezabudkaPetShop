@@ -8,6 +8,4 @@ export class CategoryDto {
   parentId?: null | number;
   @IsOptional()
   subcategories?: SubcategoryDto[];
-  @IsOptional()
-  icon?: string | null;
 }
