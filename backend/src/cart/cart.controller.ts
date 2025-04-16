@@ -1,23 +1,22 @@
 import { Controller, Delete, Get, Param, Post, Req } from '@nestjs/common';
 import { CartService } from './cart.service';
-import { RequestUser } from '../types';
-import { Request } from 'express';
+import { AuthRequest, RequestUser } from '../types';
 
 @Controller('cart')
 export class CartController {
   constructor(private cartService: CartService) {}
 
   @Get()
-  async getOneCart(@Req() req: Request & { user: RequestUser }) {
-    const token = req.headers.authorization;
+  async getOneCart(@Req() req: AuthRequest & { user: RequestUser }) {
+    const token = req.cookies.token;
     if (token) {
       return await this.cartService.getOneCart(token);
     }
   }
 
   @Post()
-  async create(@Req() req: Request & { user: RequestUser }) {
-    const token = req.headers.authorization;
+  async create(@Req() req: AuthRequest & { user: RequestUser }) {
+    const token = req.cookies.token;
     if (token) {
       return await this.cartService.createCart(token);
     }
@@ -26,9 +25,9 @@ export class CartController {
   @Delete(':id')
   async deleteCart(
     @Param('id') id: number,
-    @Req() req: Request & { user: RequestUser },
+    @Req() req: AuthRequest & { user: RequestUser },
   ) {
-    const token = req.headers.authorization;
+    const token = req.cookies.token;
     if (token) {
       return await this.cartService.deleteCart(id, token);
     }
