@@ -20,10 +20,8 @@ export const fetchCategoriesThunk = createAsyncThunk<ICategories[], void>(
 export const addNewCategory = createAsyncThunk<
   void,
   { category: CategoryMutation; token: string }
->("category/addNewCategory", async ({ category, token }) => {
-  await axiosApi.post("/category", category, {
-    headers: { Authorization: token },
-  });
+>("category/addNewCategory", async ({ category }) => {
+  await axiosApi.post("/category", category);
 });
 
 export const addNewSubcategory = createAsyncThunk<
@@ -31,15 +29,12 @@ export const addNewSubcategory = createAsyncThunk<
   { id: number; subcategories: string[]; token: string }
 >(
   "category/addNewSubcategory",
-  async ({ id, subcategories, token }, { rejectWithValue }) => {
+  async ({ id, subcategories }, { rejectWithValue }) => {
     try {
       const subcategoryData = subcategories.map((sub) => ({ title: sub }));
       await axiosApi.post(
         `/category/${id}/subcategories`,
         { subcategories: subcategoryData },
-        {
-          headers: { Authorization: token },
-        },
       );
     } catch (error) {
       if (isAxiosError(error) && error.response) {
@@ -67,10 +62,9 @@ export const updateCategoryThunk = createAsyncThunk<
   }
 >(
   "category/updateCategory",
-  async ({ id, category, token }, { rejectWithValue }) => {
+  async ({ id, category }, { rejectWithValue }) => {
     try {
       await axiosApi.put(`/category/${id}`, category, {
-        headers: { Authorization: token },
       });
     } catch (error) {
       if (isAxiosError(error) && error.response) {

@@ -69,6 +69,26 @@ export const login = createAsyncThunk<
   }
 });
 
+export const fetchMe = createAsyncThunk<User>(
+  'users/fetchMe',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axiosApi.get('/auth/me');
+      return response.data;
+    } catch (e) {
+      if (isAxiosError(e)) {
+        if (e.response?.status === 401) {
+          return null;
+        }
+        if (e.response?.data) {
+          return rejectWithValue(e.response.data);
+        }
+      }
+      return rejectWithValue('Ошибка получения данных');
+    }
+  }
+);
+
 export const updateUser = createAsyncThunk<
   User,
   { id: number; data: Partial<User> },
@@ -144,6 +164,13 @@ export const googleLogin = createAsyncThunk<
     throw e;
   }
 });
+
+export const logout = createAsyncThunk<void>(
+  'users/logout',
+  async () => {
+    await axiosApi.delete('/auth/logout');
+  }
+);
 
 export const facebookLogin = createAsyncThunk<
   User,
@@ -225,8 +252,7 @@ export const changePasswordAsync = createAsyncThunk<
   { state: RootState; rejectValue: ErrorMutation }
 >(
   "user/changePassword",
-  async ({ currentPassword, newPassword }, { getState, rejectWithValue }) => {
-    const token = getState().users.user?.token;
+  async ({ currentPassword, newPassword }, { rejectWithValue }) => {
     console.log("Sending PATCH request with:", {
       currentPassword,
       newPassword,
@@ -237,9 +263,6 @@ export const changePasswordAsync = createAsyncThunk<
         {
           currentPassword,
           newPassword,
-        },
-        {
-          headers: { Authorization: token },
         },
       );
       return response.data;

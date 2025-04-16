@@ -4,17 +4,11 @@ import axiosApi from '../../axiosApi.ts';
 import { RootState } from '../../app/store.ts';
 import { Pagination } from './ordersSlice.ts';
 
-export const getAllOrders = createAsyncThunk<{ data: IOrder[], meta: Pagination }, number, { state: RootState }>(
+export const getAllOrders = createAsyncThunk<{ data: IOrder[], meta: Pagination }, number>(
   'orders/getAllOrders',
-  async (page, { getState }) => {
-    const token = getState().users.user?.token;
-
+  async (page) => {
     const response = await axiosApi.get(`/orders/all-orders?page=${page}&limit=10`, {
-      headers: {
-        Authorization: token,
-      },
     });
-
     return response.data;
   }
 );
@@ -25,7 +19,7 @@ export const GetMyOrders = createAsyncThunk<IOrder[], string, {state: RootState}
     try {
       const token = getState().users.user?.token;
       if(token) {
-        const response = await axiosApi.get('orders/my-orders', {headers: {Authorization: token}});
+        const response = await axiosApi.get('orders/my-orders');
         return response.data;
       } else {
         const response = await axiosApi.get(`orders/guest-orders?email=${email}`);
@@ -37,11 +31,10 @@ export const GetMyOrders = createAsyncThunk<IOrder[], string, {state: RootState}
   }
 )
 
-export const getStatistics = createAsyncThunk<OrderStats, void, {state:RootState}>(
+export const getStatistics = createAsyncThunk<OrderStats, void>(
   'orders/getStatistics',
-  async(_, {getState}) => {
-    const token = getState().users.user?.token;
-    const response = await axiosApi.get('orders/statistics', {headers: {Authorization: token}});
+  async () => {
+    const response = await axiosApi.get('orders/statistics');
     return response.data;
   }
 )
@@ -53,11 +46,7 @@ export const checkoutAuthUserOrder = createAsyncThunk<void, OrderMutation, {stat
       const token = getState().users.user?.token;
       console.log('Отправка заказа:', order);
       if (token) {
-       await axiosApi.post('orders/checkout', order, {
-          headers: {
-            Authorization: token
-          }
-        })
+       await axiosApi.post('orders/checkout', order)
       } else if(!token) {
         await axiosApi.post('orders/guest-checkout', order);
       }
@@ -73,13 +62,8 @@ export const updateOrderStatus = createAsyncThunk<
   { state: RootState }
 >(
   'orders/updateOrderStatus',
-  async({ orderId, updatedStatus }, {getState}) => {
-    const token = getState().users.user?.token;
-    const response = await axiosApi.patch<IOrder>(`orders/${orderId}`, updatedStatus, {
-      headers: {
-        Authorization: token
-      },
-    });
+  async({ orderId, updatedStatus }) => {
+    const response = await axiosApi.patch<IOrder>(`orders/${orderId}`, updatedStatus,);
     return response.data;
   }
 )

@@ -3,8 +3,8 @@ import { RootState } from "../../app/store.ts";
 import { ErrorMutation, GlobalError, User, UserWithOrder, ValidationError } from '../../types';
 import {
   changePasswordAsync,
-  facebookLogin, fetchUserIdBonus, getAllUserWithOrder,
-  googleLogin,
+  facebookLogin, fetchMe, fetchUserIdBonus, getAllUserWithOrder,
+  googleLogin, logout,
   sendPasswordCode,
   verifyResetCode,
 } from './usersThunk.ts';
@@ -57,11 +57,7 @@ export const selectLoginError = (state: RootState) => state.users.loginError;
 export const userSlice = createSlice({
   name: "users",
   initialState,
-  reducers: {
-    unsetUser: (state) => {
-      state.user = null;
-    },
-  },
+  reducers: {},
   extraReducers: (build) => {
     build
       .addCase(register.pending, (state) => {
@@ -87,6 +83,19 @@ export const userSlice = createSlice({
       .addCase(login.rejected, (state, { payload: error }) => {
         state.loginLoading = false;
         state.loginError = error || null;
+      })
+      .addCase(fetchMe.pending, (state) => {
+        state.loginLoading = true;
+      })
+      .addCase(fetchMe.fulfilled, (state, action) => {
+        state.user = action.payload;
+        state.loginLoading = false;
+      })
+      .addCase(fetchMe.rejected, (state) => {
+        state.loginLoading = false;
+      })
+      .addCase(logout.fulfilled, (state) => {
+        state.user = null;
       })
       .addCase(googleLogin.pending, (state) => {
         state.loginLoading = true;
@@ -185,4 +194,3 @@ export const userSlice = createSlice({
 });
 
 export const userReducer = userSlice.reducer;
-export const { unsetUser } = userSlice.actions;
