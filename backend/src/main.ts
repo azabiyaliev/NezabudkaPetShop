@@ -6,9 +6,11 @@ import * as dotenv from 'dotenv';
 import { ValidationPipe } from '@nestjs/common';
 import * as process from 'node:process';
 import { ValidationExceptionFilter } from './auth/auth.validate';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  app.use(cookieParser());
 
   const result = dotenv.config();
 
@@ -23,7 +25,7 @@ async function bootstrap() {
 
   app.useStaticAssets(join(__dirname, '..', 'public'));
   app.enableCors({
-    origin: '*',
+    origin: 'http://localhost:5173',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     allowedHeaders: 'Content-Type, Accept, Authorization',
   });
