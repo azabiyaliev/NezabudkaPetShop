@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Box, Button, Divider, Drawer, List, ListItem, ListItemText, Typography, } from '@mui/material';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector, usePermission } from '../../../app/hooks.ts';
@@ -15,7 +15,6 @@ import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import FavoriteOutlinedIcon from '@mui/icons-material/FavoriteOutlined';
 import LocalMallOutlinedIcon from '@mui/icons-material/LocalMallOutlined';
-import { userRoleAdmin, userRoleSuperAdmin } from '../../../globalConstants.ts';
 
 const ExistsUser = () => {
   const addError = useAppSelector(addErrorFromSlice);
@@ -40,12 +39,6 @@ const ExistsUser = () => {
       dispatch(clearError());
     }
   };
-
-  useEffect(() => {
-    if (user && (user.role === userRoleAdmin || user.role === userRoleSuperAdmin)) {
-      navigate("/private_account");
-    }
-  }, [user, navigate]);
 
   return (
     <>
