@@ -7,8 +7,10 @@ import { useAppSelector, useAppDispatch } from "../../../app/hooks.ts";
 import { selectEditSite } from "../../../store/editionSite/editionSiteSlice.ts";
 import PhoneIphoneOutlinedIcon from "@mui/icons-material/PhoneIphoneOutlined";
 import AlternateEmailOutlinedIcon from "@mui/icons-material/AlternateEmailOutlined";
-import { useEffect } from 'react';
+import  { useEffect } from 'react';
 import { fetchSite } from '../../../store/editionSite/editionSiteThunk.ts';
+import { NavLink } from 'react-router-dom';
+import CatygoryFooter from './CatygoryFooter/CatygoryFooter.tsx';
 const Footer = () => {
   const site = useAppSelector(selectEditSite);
   const dispatch = useAppDispatch();
@@ -26,6 +28,7 @@ const Footer = () => {
         alignItems: "center",
         justifyContent: "center",
         textAlign: "center",
+        backgroundColor:"rgb(33, 33, 33)"
       }}
     >
       <Box
@@ -39,31 +42,46 @@ const Footer = () => {
           marginBottom: "20px",
         }}
       >
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          <Box
-            component="img"
-            src={logo_transparent}
-            alt="Nezabudka"
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            sx={{
-              height: "50px",
-              width: "50px",
-              cursor: "pointer",
-              marginRight: "15px",
-            }}
-          />
-          <Typography
-            variant="h6"
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            sx={{
-              color: "black",
-              textTransform: "uppercase",
-              fontFamily: "Georgia, sans-serif",
-              cursor: "pointer",
-            }}
+        <Box sx={{ display: "flex", alignItems: "flex-start", flexDirection: "column" }}>
+          <NavLink
+            to="/"
+            className="text-decoration-none d-flex align-items-center gap-2"
           >
-            Незабудка
-          </Typography>
+            <Box
+              component="img"
+              src={logo_transparent}
+              alt="Nezabudka"
+              sx={{
+                height: "65px",
+                width: "65px",
+                cursor: "pointer",
+                marginRight: "8px",
+                "@media (max-width: 800px)": {
+                  height: "50px",
+                  width: "50px",
+                },
+              }}
+            />
+            <Typography
+              sx={{
+                fontSize: "28px",
+                textTransform: "uppercase",
+                fontWeight: "bold",
+                fontFamily: "COMIC SANS MS, Roboto, Arial, sans-serif",
+                color: "white",
+                cursor: "pointer",
+                "@media (max-width: 800px)": {
+                  fontSize: "26px",
+                },
+              }}
+            >
+              Незабудка
+            </Typography>
+          </NavLink>
+
+          <Box sx={{ marginTop: "12px", flex:"end" }}>
+            <CatygoryFooter />
+          </Box>
         </Box>
 
         <Box
