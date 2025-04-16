@@ -35,6 +35,7 @@ import {
   removeFavoriteProductThunk,
 } from "../../../store/favoriteProducts/favoriteProductsThunks.ts";
 import { selectedFavorite } from "../../../store/favoriteProducts/favoriteProductsSlice.ts";
+import { Box } from "@mui/joy";
 
 interface Props {
   product: ProductResponse;
@@ -48,6 +49,7 @@ const OneProductCard: React.FC<Props> = ({ product }) => {
   const favorites = useAppSelector(selectedFavorite);
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const isAddToCartDisabled = !product.existence;
+  const cartItem = cart && cart.products.find((item) => item.productId === product.id);
 
   useEffect(() => {
     if (user) {
@@ -104,6 +106,12 @@ const OneProductCard: React.FC<Props> = ({ product }) => {
       await dispatch(fetchCart({ token: user.token })).unwrap();
     } else {
       dispatch(productCardToAdd(product));
+    }
+
+    const isFirstTimeAdded = cart?.products.some((item) => item.product.id === product.id);
+
+    if (!isFirstTimeAdded) {
+      enqueueSnackbar("Данный товар успешно добавлен в корзину!", { variant: "success" });
     }
   };
 
@@ -175,6 +183,15 @@ const OneProductCard: React.FC<Props> = ({ product }) => {
             <ShoppingCartIcon />
           </span>
         </Button>
+        {cartItem && cartItem.quantity > 0 && (
+          <Box sx={{
+            marginTop: "10px"
+          }}>
+            <Typography variant="body2" color="textSecondary">
+              В корзине: {cartItem ? cartItem.quantity : 0} шт.
+            </Typography>
+          </Box>
+        )}
       </CardContent>
     </Card>
   );

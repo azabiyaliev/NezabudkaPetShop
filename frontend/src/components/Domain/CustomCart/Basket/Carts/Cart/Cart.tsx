@@ -13,6 +13,7 @@ import {
 } from '../../../../../../store/cart/cartSlice.ts';
 import { deleteItemCart, fetchCart, updateCartItem } from '../../../../../../store/cart/cartThunk.ts';
 import { selectUser } from '../../../../../../store/users/usersSlice.ts';
+import { enqueueSnackbar } from 'notistack';
 
 interface Props {
   product: ICartItem;
@@ -39,7 +40,7 @@ const Cart: React.FC<Props> = ({ product }) => {
   const removeQuantity = async (product: ProductResponse) => {
     if (user && (user.role === userRoleClient) && cart) {
       const existingProduct = cart.products.find((item) => item.product.id === product.id);
-      if (existingProduct) {
+      if (existingProduct && existingProduct.quantity > 1) {
         const amount = existingProduct.quantity - 1;
         await dispatch(updateCartItem({cartId: cart.id,  productId: product.id, quantity: amount, token: user.token})).unwrap();
         await dispatch(fetchCart({ token: user.token })).unwrap();
@@ -56,6 +57,9 @@ const Cart: React.FC<Props> = ({ product }) => {
     } else {
       dispatch(deleteProductInCart(id));
     }
+    enqueueSnackbar("Данный товар удален из корзины!", {
+      variant: "success",
+    });
   };
 
   return (
@@ -197,15 +201,16 @@ const Cart: React.FC<Props> = ({ product }) => {
               <IconButton
                 sx={{
                   borderRadius: "50%",
-                  backgroundColor: "rgb(112,168,71)",
+                  backgroundColor: product.quantity <= 1 ? "lightgray" : "rgb(112,168,71)",
                   border: "transparent",
                   "&:hover": {
-                    backgroundColor: "#237803",
+                    backgroundColor: product.quantity <= 1 ? "lightgray" : "#237803",
                   },
                 }}
                 size="sm"
                 variant="outlined"
                 onClick={() => removeQuantity(product.product)}
+                disabled={product.quantity <= 1}
               >
                 <Remove sx={{ color: "white" }} />
               </IconButton>
@@ -309,15 +314,16 @@ const Cart: React.FC<Props> = ({ product }) => {
             <IconButton
               sx={{
                 borderRadius: "50%",
-                backgroundColor: "rgb(112,168,71)",
+                backgroundColor: product.quantity <= 1 ? "lightgray" : "rgb(112,168,71)",
                 border: "transparent",
                 "&:hover": {
-                  backgroundColor: "#237803",
+                  backgroundColor: product.quantity <= 1 ? "lightgray" : "#237803",
                 },
               }}
               size="sm"
               variant="outlined"
               onClick={() => removeQuantity(product.product)}
+              disabled={product.quantity <= 1}
             >
               <Remove sx={{ color: "white" }} />
             </IconButton>
