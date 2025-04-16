@@ -7,18 +7,42 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { CategoryDto } from '../dto/category.dto';
 import { SubcategoryDto } from '../dto/subCategoryDto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
+import crypto from 'crypto';
 
 @Controller('category')
 export class CategoryController {
   constructor(private categoryService: CategoryService) {}
 
   @Post()
-  async createCategory(@Body() categoryDto: CategoryDto) {
-    return this.categoryService.createCategory(categoryDto);
+  @UseInterceptors(
+    FileInterceptor('icon', {
+      storage: diskStorage({
+        destination: './public/icon_category',
+        filename: (_req, file, callback) => {
+          const imageFormat = extname(file.originalname);
+          callback(null, `${crypto.randomUUID()}${imageFormat}`);
+        },
+      }),
+    }),
+  )
+  async createCategory(
+    @Body() categoryDto: CategoryDto,
+    @UploadedFile() icon?: Express.Multer.File,
+  ) {
+    const iconPath = icon ? `/icon_category/${icon.filename}` : null;
+    return this.categoryService.createCategory({
+      ...categoryDto,
+      icon: iconPath,
+    });
   }
 
   @Get()
@@ -50,14 +74,30 @@ export class CategoryController {
   }
 
   @Post(':id/subcategories')
+  @UseInterceptors(
+    FileInterceptor('icon', {
+      storage: diskStorage({
+        destination: './public/icon_category',
+        filename: (_req, file, callback) => {
+          const imageFormat = extname(file.originalname);
+          callback(null, `${crypto.randomUUID()}${imageFormat}`);
+        },
+      }),
+    }),
+  )
   async addSubcategory(
     @Param('id', ParseIntPipe) id: number,
     @Body() subCategoryDto: { subcategories: SubcategoryDto[] },
+    @UploadedFile() icon?: Express.Multer.File,
   ) {
-    return this.categoryService.createSubcategory(
-      id,
-      subCategoryDto.subcategories,
-    );
+    const iconPath = icon ? `/icon_category/${icon.filename}` : null;
+
+    const subcategoriesWithIcon = subCategoryDto.subcategories.map((sub) => ({
+      ...sub,
+      icon: iconPath,
+    }));
+
+    return this.categoryService.createSubcategory(id, subcategoriesWithIcon);
   }
   @Put(':id/parent')
   async updateSubcategoryParent(
