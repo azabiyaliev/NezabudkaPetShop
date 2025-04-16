@@ -1,11 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IOrder, OrderStats } from '../../types';
 import {
-  checkoutAuthUserOrder,
+  checkoutAuthUserOrder, deleteOrder,
   getAllOrders, GetMyOrders, getStatistics,
   updateOrderStatus
 } from './ordersThunk.ts';
-import { RootState } from '../../app/store.ts';
 
 export interface Pagination {
   total: number;
@@ -35,8 +34,6 @@ const initialState: OrderSliceState = {
   isError: false,
 }
 
-export const selectOrder = (state: RootState) => state.orders.oneOrder
-
 const ordersSlice = createSlice({
   name: 'orders',
   initialState,
@@ -52,6 +49,7 @@ const ordersSlice = createSlice({
       .addCase(
         getAllOrders.fulfilled, (state, action: PayloadAction<{ data: IOrder[]; meta: Pagination }>) => {
           state.isLoading = false;
+          state.orders = action.payload.data;
           state.paginationOrders = action.payload;
         }
       )
@@ -128,6 +126,24 @@ const ordersSlice = createSlice({
       )
       .addCase(
         updateOrderStatus.rejected, (state) => {
+          state.isLoading = false;
+          state.isError = true;
+        }
+      )
+      .addCase(
+        deleteOrder.pending, (state) => {
+          state.isLoading = true;
+          state.isError = false
+        }
+      )
+      .addCase(
+        deleteOrder.fulfilled, (state, action) => {
+          state.isLoading = false;
+          state.orders = state.orders.filter((order) => String(order.id) !== action.meta.arg)
+        }
+      )
+      .addCase(
+        deleteOrder.rejected, (state) => {
           state.isLoading = false;
           state.isError = true;
         }

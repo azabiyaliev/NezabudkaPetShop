@@ -4,12 +4,16 @@ import axiosApi from '../../axiosApi.ts';
 import { RootState } from '../../app/store.ts';
 import { Pagination } from './ordersSlice.ts';
 
-export const getAllOrders = createAsyncThunk<{ data: IOrder[], meta: Pagination }, number, { state: RootState }>(
+export const getAllOrders = createAsyncThunk<{ data: IOrder[], meta: Pagination }, number | undefined, { state: RootState }>(
   'orders/getAllOrders',
   async (page, { getState }) => {
     const token = getState().users.user?.token;
 
-    const response = await axiosApi.get(`/orders/all-orders?page=${page}&limit=10`, {
+    const url = page !== undefined
+      ? `/orders/all-orders?page=${page}&limit=10`
+      : `/orders/all-orders`;
+
+    const response = await axiosApi.get(url, {
       headers: {
         Authorization: token,
       },
@@ -69,17 +73,25 @@ export const checkoutAuthUserOrder = createAsyncThunk<void, OrderMutation, {stat
 
 export const updateOrderStatus = createAsyncThunk<
   IOrder,
-  { orderId: number; updatedStatus: OrderMutation },
+  { orderId: string; updatedStatus: string },
   { state: RootState }
 >(
   'orders/updateOrderStatus',
   async({ orderId, updatedStatus }, {getState}) => {
     const token = getState().users.user?.token;
-    const response = await axiosApi.patch<IOrder>(`orders/${orderId}`, updatedStatus, {
+    const response = await axiosApi.patch<IOrder>(`orders/${orderId}`, {status: updatedStatus}, {
       headers: {
         Authorization: token
       },
     });
     return response.data;
+  }
+)
+
+export const deleteOrder = createAsyncThunk<void, string, {state: RootState}>(
+  'orders/deleteOrder',
+  async(orderId, {getState}) => {
+    const token = getState().users.user?.token;
+    await axiosApi.delete(`orders/${orderId}`, {headers: {Authorization: token}});
   }
 )

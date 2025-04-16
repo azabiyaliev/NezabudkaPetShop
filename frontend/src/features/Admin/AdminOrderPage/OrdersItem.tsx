@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import {
   Card,
@@ -9,7 +9,7 @@ import {
   ListItemText,
   Chip,
   Divider,
-  Box
+  Box, Button, SelectChangeEvent, Select, MenuItem
 } from '@mui/material';
 import {
   LocalShipping,
@@ -21,26 +21,74 @@ import {
   ShoppingBasket
 } from '@mui/icons-material';
 import { IOrder } from '../../../types';
+import { useAppDispatch } from '../../../app/hooks.ts';
+import { deleteOrder, getAllOrders, updateOrderStatus } from '../../../store/orders/ordersThunk.ts';
+import { toast } from 'react-toastify';
 
 interface Props {
   order: IOrder;
 }
 
+enum OrderStatus {
+  Pending = 'Pending',
+Confirmed = 'Confirmed',
+Packed = 'Packed',
+Shipped = 'Shipped',
+Delivered = 'Delivered',
+Returned = 'Returned',
+Canceled = 'Canceled',
+}
+
 const OrderAdminItem: React.FC<Props> = ({ order }) => {
+  const dispatch = useAppDispatch();
+  const [selectedStatus, setSelectedStatus] = useState(order.status);
+  const [isEditingStatus, setIsEditingStatus] = useState(false);
+
+  const handleStatusChange = (e: SelectChangeEvent) => {
+    setSelectedStatus(e.target.value);
+  };
+
+  const handleSaveStatus = async () => {
+    try {
+      await dispatch(updateOrderStatus({
+        orderId: String(order.id),
+        updatedStatus: selectedStatus
+      })).unwrap();
+      await dispatch(getAllOrders())
+      setIsEditingStatus(false);
+      toast.success('Статус заказа обновлен');
+    } catch {
+      toast.error('Ошибка при обновлении статуса');
+    }
+  };
+
   const getStatusColor = () => {
     switch (order.status) {
-      case 'completed':
-        return 'success';
-      case 'cancelled':
+      case 'Canceled':
+      case 'Returned':
         return 'error';
-      case 'inProcess':
+      case 'Pending':
+        return 'warning';
+      case 'Confirmed':
         return 'info';
-      case 'delivered':
+      case 'Packed':
         return 'primary';
+      case 'Shipped':
+        return 'secondary';
+      case 'Delivered':
+        return 'success';
       default:
         return 'default';
     }
   };
+
+  const handleDelete = async () => {
+    if (order.status === 'Delivered') {
+      await dispatch(deleteOrder(String(order.id)));
+      await dispatch(getAllOrders());
+      toast.success('Заказ удалён');
+    }
+  }
 
   return (
     <Card
@@ -64,6 +112,59 @@ const OrderAdminItem: React.FC<Props> = ({ order }) => {
             size="small"
           />
         </Box>
+
+        {isEditingStatus ? (
+            <Box display="flex" alignItems="center">
+              <Select
+                value={selectedStatus}
+                onChange={handleStatusChange}
+                size="small"
+                sx={{ mr: 1, minWidth: 120 }}
+              >
+                <MenuItem value={OrderStatus.Pending}>В обработке</MenuItem>
+                <MenuItem value={OrderStatus.Confirmed}>Подтвержден</MenuItem>
+                <MenuItem value={OrderStatus.Packed}>Упакован</MenuItem>
+                <MenuItem value={OrderStatus.Shipped}>Отправлен</MenuItem>
+                <MenuItem value={OrderStatus.Delivered}>Доставлен</MenuItem>
+                <MenuItem value={OrderStatus.Canceled}>Отменен</MenuItem>
+              </Select>
+              <Button
+                variant="contained"
+                size="small"
+                onClick={handleSaveStatus}
+                sx={{ mr: 1 }}
+              >
+                Сохранить
+              </Button>
+              <Button
+                variant="outlined"
+                size="small"
+                onClick={() => setIsEditingStatus(false)}
+              >
+                Отмена
+              </Button>
+            </Box>
+          ) : (
+            <>
+        <Button
+          variant="outlined"
+          color="error"
+          onClick={handleDelete}
+          disabled={order.status !== 'Delivered'}
+          sx={{
+            marginRight: '20px'
+          }}
+        >
+          Удалить заказ
+        </Button>
+
+              <Button
+                variant="outlined"
+                size="small"
+                onClick={() => setIsEditingStatus(true)}
+              >
+                Изменить статус
+              </Button>
 
         <Divider sx={{ my: 2 }} />
 
@@ -170,6 +271,8 @@ const OrderAdminItem: React.FC<Props> = ({ order }) => {
             }, 0)} сом
           </Typography>
         </Box>
+            </>
+      )}
       </CardContent>
     </Card>
   );

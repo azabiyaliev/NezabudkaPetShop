@@ -9,6 +9,7 @@ import { CreateOrderDto } from '../dto/createOrderDto';
 import { TelegramService } from '../telegram/telegram.service';
 import { OrderStatus } from '@prisma/client';
 import { UpdateStatusDto } from '../dto/update-status.dto';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class OrdersService {
@@ -18,7 +19,8 @@ export class OrdersService {
     private telegramBot: TelegramService,
   ) {}
 
-  async getAllOrders(query: { page: number; limit: number }) {
+  async getAllOrders(query?: { page: number; limit: number }) {
+    if (!query) return '';
     const page = Number(query.page) || 1;
     const skip = (page - 1) * 10;
     const orders = await this.prisma.order.findMany({
@@ -429,9 +431,11 @@ export class OrdersService {
         }),
       );
       await Promise.all(updateStats);
-    }
-    if (!order.user) {
-      return null;
+
+      await this.prisma.order.update({
+        where: { id: orderId },
+        data: { deliveredAt: new Date() },
+      });
     }
 
     if (updateStatus.status === 'Canceled') {
@@ -441,5 +445,40 @@ export class OrdersService {
       return { message: 'Заказ был отменен' };
     }
     return order;
+  }
+
+  async deleteOrder(orderId: number) {
+    const status = OrderStatus;
+
+    const order = await this.prisma.order.findUnique({
+      where: { id: orderId },
+      select: { status: true },
+    });
+
+    if (!order) {
+      throw new NotFoundException('Заказ не найден');
+    }
+
+    if (status.Delivered) {
+      await this.prisma.order.delete({
+        where: { id: orderId },
+      });
+    }
+    return { message: 'Заказ был успешно удален' };
+  }
+
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  async autoDeletingOrder() {
+    const tenDaysAgo = new Date();
+    tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
+
+    await this.prisma.order.deleteMany({
+      where: {
+        status: OrderStatus.Delivered,
+        deliveredAt: {
+          lte: tenDaysAgo,
+        },
+      },
+    });
   }
 }

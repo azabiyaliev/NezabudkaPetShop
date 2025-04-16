@@ -169,6 +169,7 @@ const OrderForm = () => {
       ...form,
     };
 
+
     await dispatch(checkoutAuthUserOrder(orderData)).unwrap();
     toast.success("Заказ успешно оформлен!");
     dispatch(clearCart())

@@ -133,8 +133,9 @@ model Products {
 model Order {
   id Int @id @default(autoincrement())
 
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  deliveredAt DateTime? @default(now()) @map("delivered_at")
 
   status OrderStatus @default(Pending)
 

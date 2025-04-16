@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   Param,
@@ -91,5 +92,12 @@ export class OrdersController {
     @Body() orderDto: UpdateStatusDto,
   ) {
     return await this.ordersService.updateStatus(orderDto, Number(orderId));
+  }
+
+  @UseGuards(TokenAuthGuard, RolesGuard)
+  @Roles('admin')
+  @Delete(':id')
+  async deleteOrder(@Param('id') orderId: string) {
+    return await this.ordersService.deleteOrder(Number(orderId));
   }
 }

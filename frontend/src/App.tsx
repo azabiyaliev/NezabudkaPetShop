@@ -37,6 +37,7 @@ import BonusProgramForm from './components/Forms/BonusProgramForm/BonusProgramFo
 import { userRoleAdmin, userRoleSuperAdmin } from './globalConstants.ts';
 import DeliveryPage from './features/DeliveryPage/DeliveryPage.tsx';
 import DeliveryPageForm from './components/Forms/DeliveryPageFrom/DeliveryPageFrom.tsx';
+import AllOrders from './features/Admin/AdminOrderPage/AllOrders.tsx';
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -92,6 +93,15 @@ const App = () => {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/private/client_orders"
+            element={
+              <ProtectedRoute isAllowed={user && can(["admin", "superAdmin"])}>
+                <AllOrders />
+              </ProtectedRoute>
+            }
+          />
+
           <Route
             path="/private/order_stats"
             element={
