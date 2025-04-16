@@ -18,6 +18,7 @@ const Layout: React.FC<PropsWithChildren> = ({ children }) => {
       <main
         style={{
           flex: 1,
+          marginBottom:"100px"
         }}
       >
         <Container maxWidth={false} sx={{ maxWidth: "1350px" }}>
