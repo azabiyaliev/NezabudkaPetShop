@@ -4,7 +4,7 @@ import { checkoutAuthUserOrder } from '../../store/orders/ordersThunk.ts';
 import { Button, TextField } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import { OrderMutation } from '../../types';
 import { cartFromSlice, clearCart } from '../../store/cart/cartSlice.ts';
@@ -643,43 +643,51 @@ const OrderForm = () => {
         {carts.products && (
           <TotalPrice products={carts.products} bonusUsed={form.bonusUsed || 0} />
         )}
+        {user && user.role === "client" && (
+          <>
+            <Grid
+              container
+              spacing={2}
+              sx={{
+                marginTop: "17px",
+                display: "flex",
+                flexDirection: "column",
+                border: "1px solid #e5e2dc",
+                width: "700px",
+                padding: "2rem",
+                borderRadius: "20px",
+                marginBottom: "20px",
+                "@media (max-width: 820px)": {
+                  padding: "1rem",
+                  width: "600px",
+                },
+                "@media (max-width: 720px)": {
+                  width: "100%",
+                },
+              }}
+            >
+              <Typography sx={{ fontSize: "20px" }}>Использовать бонусы:</Typography>
 
-        <Grid
-          container
-          spacing={2}
-          sx={{
-            marginTop: "17px",
-            display: "flex",
-            flexDirection: "column",
-            border: "1px solid #e5e2dc",
-            width: "700px",
-            padding: "2rem",
-            borderRadius: "20px",
-            marginBottom: "20px",
-            "@media (max-width: 820px)": {
-              padding: "1rem",
-              width: "600px",
-            },
-            "@media (max-width: 720px)": {
-              width: "100%",
-            },
-          }}
-        >
-          <Typography sx={{ fontSize: "20px" }}>Использовать бонусы:</Typography>
+              <TextField
+                label="Сколько бонусов использовать"
+                type="number"
+                value={form.bonusUsed}
+                onChange={handleBonusChange}
+                inputProps={{ min: 0, max: maxBonusesToUse }}
+                sx={{ width: "100%" }}
+                disabled={isBonusInputDisabled}
+              />
+            </Grid>
 
-          <TextField
-            label="Сколько бонусов использовать"
-            type="number"
-            value={form.bonusUsed}
-            onChange={handleBonusChange}
-            inputProps={{ min: 0, max: maxBonusesToUse }}
-            sx={{ width: "100%" }}
-            disabled={isBonusInputDisabled}
-          />
-        </Grid>
-        <Typography sx={{ marginTop: 2 }}>
-          Ваши бонусы: {availableBonuses} (Вы можете потратить до {maxBonusesToUse})
-        </Typography>
+            <Typography sx={{ marginTop: 2 }}>
+              Ваши бонусы: {availableBonuses} (Вы можете потратить до {maxBonusesToUse})
+            </Typography>
+          </>
+        )}
+
+        {(!user || user.role !== "client") && (
+          <NavLink to="/register" style={{ color:"black"}}>Зарегистрируйтесь, чтобы получить бонусы</NavLink>
+        )}
 
         <Button
           type="submit"
