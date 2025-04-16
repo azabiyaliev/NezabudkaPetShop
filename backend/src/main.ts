@@ -26,6 +26,7 @@ async function bootstrap() {
   app.useStaticAssets(join(__dirname, '..', 'public'));
   app.enableCors({
     origin: 'http://localhost:5173',
+    credentials: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     allowedHeaders: 'Content-Type, Accept, Authorization',
   });
