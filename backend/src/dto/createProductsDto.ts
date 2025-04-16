@@ -27,7 +27,6 @@ export class CreateProductsDto {
   @IsNumberString()
   subcategoryId?: number;
 
-  @IsNotEmpty()
   @IsNumberString()
   brandId?: number;
 
