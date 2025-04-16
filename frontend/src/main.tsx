@@ -12,7 +12,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { CssBaseline } from "@mui/material";
 import { SnackbarProvider } from "notistack";
 
-addInterceptors(store);
+addInterceptors();
 
 createRoot(document.getElementById("root")!).render(
   <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
