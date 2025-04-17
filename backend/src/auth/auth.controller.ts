@@ -6,19 +6,17 @@ import {
   Delete,
   UseGuards,
   BadRequestException,
+  Res,
+  Get,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { TokenAuthGuard } from '../token.auth/token-auth.guard';
 import { LoginDto, RegisterDto } from '../dto/auth.dto';
-import { User } from '@prisma/client';
 import { FacebookUserDto } from '../dto/facebook-user.dto';
 import { GoogleUserDto } from '../dto/google-user.dto';
 import { PrismaService } from '../prisma/prisma.service';
-
-interface AuthRequest extends Request {
-  user: User;
-}
+import { AuthRequest } from '../types';
 
 @Controller('auth')
 export class AuthController {
@@ -28,13 +26,54 @@ export class AuthController {
   ) {}
 
   @Post('register')
-  async register(@Body() registerDto: RegisterDto) {
-    return this.authService.register(registerDto);
+  async register(
+    @Body() registerDto: RegisterDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const { user } = await this.authService.register(registerDto);
+
+    const token = await this.authService.generateUserToken(user.id);
+
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      maxAge: 10 * 24 * 60 * 60 * 1000,
+    });
+
+    res.cookie('tokenPresent', 'true', {
+      httpOnly: false,
+      secure: true,
+      sameSite: 'strict',
+      maxAge: 10 * 24 * 60 * 60 * 1000,
+    });
+
+    return {
+      message: 'Пользователь зарегистрирован и авторизован',
+      user,
+    };
   }
 
   @Post('login')
-  async login(@Body() loginDto: LoginDto) {
+  async login(
+    @Body() loginDto: LoginDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     const user = await this.authService.validateUser(loginDto);
+
+    res.cookie('token', user.token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      maxAge: 10 * 24 * 60 * 60 * 1000,
+    });
+
+    res.cookie('tokenPresent', 'true', {
+      httpOnly: false,
+      secure: true,
+      sameSite: 'strict',
+      maxAge: 10 * 24 * 60 * 60 * 1000,
+    });
 
     return {
       message: 'Вход выполнен успешно',
@@ -44,10 +83,27 @@ export class AuthController {
 
   @UseGuards(TokenAuthGuard)
   @Delete('logout')
-  async logout(@Req() req: Request) {
+  async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
     const user = (req as AuthRequest).user;
     await this.authService.logout(user.id);
+
+    res.clearCookie('token');
+    res.clearCookie('tokenPresent');
     return { message: 'Выход выполнен успешно' };
+  }
+
+  @UseGuards(TokenAuthGuard)
+  @Get('me')
+  getMe(@Req() req: Request) {
+    const user = (req as AuthRequest).user;
+    return {
+      email: user.email,
+      firstName: user.firstName,
+      secondName: user.secondName,
+      id: user.id,
+      role: user.role,
+      phone: user.phone,
+    };
   }
 
   @Post('google')

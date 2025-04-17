@@ -76,6 +76,16 @@ export const getOneProduct = createAsyncThunk<ProductRequest, number>(
   "products/getOneProduct",
   async (productId) => {
     const response = await axiosApi.get<ProductRequest>(
+      `/products/${productId}`,
+    );
+    return response.data || null;
+  },
+);
+
+export const getOneProductForEdit = createAsyncThunk<ProductRequest, number>(
+  "products/getOneProduct",
+  async (productId) => {
+    const response = await axiosApi.get<ProductRequest>(
       `/products/edit/${productId}`,
     );
     return response.data || null;
@@ -88,10 +98,8 @@ export const deleteProduct = createAsyncThunk<
     productId: number;
     token: string;
   }
->("products/deleteProduct", async ({ productId, token }) => {
-  await axiosApi.delete(`products/${productId}`, {
-    headers: { Authorization: token },
-  });
+>("products/deleteProduct", async ({ productId }) => {
+  await axiosApi.delete(`products/${productId}`);
 });
 
 export const getAllProductsByCategory = createAsyncThunk<

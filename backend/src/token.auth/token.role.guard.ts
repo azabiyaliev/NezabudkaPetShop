@@ -4,7 +4,6 @@ import {
   Injectable,
   ForbiddenException,
 } from '@nestjs/common';
-import { Request } from 'express';
 import { Reflector } from '@nestjs/core';
 import { ROLES_KEY } from '../roles/roles.decorator';
 import { PrismaService } from '../prisma/prisma.service';
@@ -27,8 +26,8 @@ export class RolesGuard implements CanActivate {
       return true;
     }
 
-    const req: Request = context.switchToHttp().getRequest();
-    const token = req.headers.authorization;
+    const req: AuthRequest = context.switchToHttp().getRequest();
+    const token = req.cookies?.token;
 
     if (!token) {
       throw new ForbiddenException('No token provided');
@@ -46,7 +45,7 @@ export class RolesGuard implements CanActivate {
       throw new ForbiddenException('Forbidden: You do not have access');
     }
 
-    (req as AuthRequest).user = user;
+    req.user = user;
     return true;
   }
 }

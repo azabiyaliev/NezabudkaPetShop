@@ -7,7 +7,7 @@ export const addBrand = createAsyncThunk<
   void,
   { brand: IBrandForm; token: string },
   { rejectValue: BrandError }
->("brands/addBrand", async ({ brand, token }, { rejectWithValue }) => {
+>("brands/addBrand", async ({ brand }, { rejectWithValue }) => {
   try {
     const formData = new FormData();
     const keys = Object.keys(brand) as (keyof IBrandForm)[];
@@ -23,9 +23,7 @@ export const addBrand = createAsyncThunk<
       }
     });
 
-    await axiosApi.post("/brands", formData, {
-      headers: { Authorization: token },
-    });
+    await axiosApi.post("/brands", formData);
   } catch (error) {
     if (
       isAxiosError(error) &&
@@ -40,7 +38,7 @@ export const addBrand = createAsyncThunk<
 
 export const editBrand = createAsyncThunk<void, {brand: IBrandForm, token: string }, {rejectValue: BrandError}>(
   'brands/editBrand',
-  async ({ brand, token}, {rejectWithValue}) => {
+  async ({ brand}, {rejectWithValue}) => {
     try {
       const formData = new FormData();
       const { id, ...brandData } = brand;
@@ -58,7 +56,7 @@ export const editBrand = createAsyncThunk<void, {brand: IBrandForm, token: strin
         }
       });
 
-      await axiosApi.patch(`/brands/${id}`, formData, {headers: {'Authorization': token}});
+      await axiosApi.patch(`/brands/${id}`, formData);
     } catch (error) {
       if (isAxiosError(error) && error.response && (error.response.status === 409 || error.response.status === 404 || error.response.status === 400)) {
         return rejectWithValue(error.response.data as BrandError);
@@ -93,9 +91,9 @@ export const getOneBrand = createAsyncThunk<IBrandForm, number, {rejectValue: Gl
 
 export const brandeDelete = createAsyncThunk<void, {brandId: number; token: string}, {rejectValue: GlobalError}>(
   'brands/brandeDelete',
-  async ({brandId, token}, {rejectWithValue}) => {
+  async ({brandId}, {rejectWithValue}) => {
     try {
-      await axiosApi.delete(`/brands/${brandId}`, {headers: { Authorization: token }});
+      await axiosApi.delete(`/brands/${brandId}`);
     } catch (error) {
       if (isAxiosError(error) && error.response && (error.response.status === 409 || error.response.status === 404)) {
         return rejectWithValue(error.response.data as GlobalError);

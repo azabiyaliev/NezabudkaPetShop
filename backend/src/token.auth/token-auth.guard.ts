@@ -5,21 +5,16 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { AuthService } from '../auth/auth.service';
-import { Request } from 'express';
-import { User } from '@prisma/client';
-
-interface AuthRequest extends Request {
-  user?: User;
-}
+import { AuthRequest } from '../types';
 
 @Injectable()
 export class TokenAuthGuard implements CanActivate {
   constructor(private readonly authService: AuthService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const req: Request = context.switchToHttp().getRequest();
+    const req: AuthRequest = context.switchToHttp().getRequest();
 
-    const token = req.headers.authorization;
+    const token = req.cookies?.token;
     if (!token) {
       throw new UnauthorizedException('No token provided');
     }
@@ -29,7 +24,7 @@ export class TokenAuthGuard implements CanActivate {
       throw new UnauthorizedException('Invalid token');
     }
 
-    (req as AuthRequest).user = user;
+    req.user = user;
     return true;
   }
 }

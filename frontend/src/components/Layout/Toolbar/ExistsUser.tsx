@@ -1,20 +1,24 @@
 import { useState } from 'react';
 import { Box, Button, Divider, Drawer, List, ListItem, ListItemText, Typography, } from '@mui/material';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { useAppDispatch, useAppSelector, usePermission } from '../../../app/hooks.ts';
-import { selectUser, unsetUser } from '../../../store/users/usersSlice.ts';
-
-import { addErrorFromSlice, clearError, } from '../../../store/brands/brandsSlice.ts';
-import PermIdentityOutlinedIcon from '@mui/icons-material/PermIdentityOutlined';
-import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
-import EditNoteOutlinedIcon from '@mui/icons-material/EditNoteOutlined';
-import CreditScoreOutlinedIcon from '@mui/icons-material/CreditScoreOutlined';
-import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
-import SettingsSuggestOutlinedIcon from '@mui/icons-material/SettingsSuggestOutlined';
-import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
-import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
-import FavoriteOutlinedIcon from '@mui/icons-material/FavoriteOutlined';
-import LocalMallOutlinedIcon from '@mui/icons-material/LocalMallOutlined';
+import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
+import { selectUser } from "../../../store/users/usersSlice.ts";
+import { usePermission} from '../../../app/hooks.ts';
+import {
+  addErrorFromSlice,
+  clearError,
+} from "../../../store/brands/brandsSlice.ts";
+import PermIdentityOutlinedIcon from "@mui/icons-material/PermIdentityOutlined";
+import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
+import EditNoteOutlinedIcon from "@mui/icons-material/EditNoteOutlined";
+import CreditScoreOutlinedIcon from "@mui/icons-material/CreditScoreOutlined";
+import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined";
+import SettingsSuggestOutlinedIcon from "@mui/icons-material/SettingsSuggestOutlined";
+import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
+import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
+import FavoriteOutlinedIcon from "@mui/icons-material/FavoriteOutlined";
+import LocalMallOutlinedIcon from "@mui/icons-material/LocalMallOutlined";
+import { logout } from '../../../store/users/usersThunk.ts';
 
 const ExistsUser = () => {
   const addError = useAppSelector(addErrorFromSlice);
@@ -29,7 +33,7 @@ const ExistsUser = () => {
   };
 
   const userLogout = () => {
-    dispatch(unsetUser());
+    dispatch(logout());
     navigate("/");
   };
 

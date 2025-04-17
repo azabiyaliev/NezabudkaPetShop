@@ -21,14 +21,14 @@ const CartPage = () => {
 
   useEffect(() => {
     if (user && (user.role === userRoleClient)) {
-      dispatch(fetchCart({ token: user.token })).unwrap();
+      dispatch(fetchCart()).unwrap();
     }
   }, [dispatch, user]);
 
   const deleteAllProducts = async () => {
     if (user && (user.role === userRoleClient) && cart) {
-      await dispatch(deleteItemsCart({cartId: cart.id, token: user.token})).unwrap();
-      await dispatch(fetchCart({ token: user.token })).unwrap();
+      await dispatch(deleteItemsCart({cartId: cart.id})).unwrap();
+      await dispatch(fetchCart()).unwrap();
     } else {
       dispatch(clearCart());
     }

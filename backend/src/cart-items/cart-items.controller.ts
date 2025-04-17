@@ -9,8 +9,7 @@ import {
 } from '@nestjs/common';
 import { CartItemsService } from './cart-items.service';
 import { CartItemDto } from '../dto/cart-item.dto';
-import { Request } from 'express';
-import { RequestUser } from '../types';
+import { AuthRequest, RequestUser } from '../types';
 
 @Controller('cart')
 export class CartItemsController {
@@ -18,11 +17,11 @@ export class CartItemsController {
 
   @Post(':cartId/item')
   async createItem(
-    @Req() req: Request & { user: RequestUser },
+    @Req() req: AuthRequest & { user: RequestUser },
     @Param('cartId') cartId: number,
     @Body() cartItemDto: CartItemDto,
   ) {
-    const token = req.headers.authorization;
+    const token = req.cookies.token;
     if (token) {
       return await this.cartItemService.createCartItem(
         cartId,
@@ -34,12 +33,12 @@ export class CartItemsController {
 
   @Patch(':cartId/item/:productId')
   async updateItem(
-    @Req() req: Request & { user: RequestUser },
+    @Req() req: AuthRequest & { user: RequestUser },
     @Param('cartId') cartId: number,
     @Param('productId') productId: number,
     @Body() cartItemDto: CartItemDto,
   ) {
-    const token = req.headers.authorization;
+    const token = req.cookies.token;
     if (token) {
       return await this.cartItemService.updateCartItem(
         cartId,
@@ -52,11 +51,11 @@ export class CartItemsController {
 
   @Delete(':cartId/item/:productId')
   async deleteItem(
-    @Req() req: Request & { user: RequestUser },
+    @Req() req: AuthRequest & { user: RequestUser },
     @Param('cartId') cartId: number,
     @Param('productId') productId: number,
   ) {
-    const token = req.headers.authorization;
+    const token = req.cookies.token;
     if (token) {
       return await this.cartItemService.deleteCartItem(
         cartId,
@@ -68,10 +67,10 @@ export class CartItemsController {
 
   @Delete(':cartId/items')
   async deleteItems(
-    @Req() req: Request & { user: RequestUser },
+    @Req() req: AuthRequest & { user: RequestUser },
     @Param('cartId') cartId: number,
   ) {
-    const token = req.headers.authorization;
+    const token = req.cookies.token;
     if (token) {
       return await this.cartItemService.deleteCartItems(cartId, token);
     }

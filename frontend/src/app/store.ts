@@ -1,14 +1,4 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import storage from "redux-persist/lib/storage";
-import { persistReducer, persistStore } from "redux-persist";
-import {
-  FLUSH,
-  PAUSE,
-  PURGE,
-  REGISTER,
-  REHYDRATE,
-  PERSIST,
-} from "redux-persist";
 import { userReducer } from "../store/users/usersSlice.ts";
 import { editSiteReducer } from "../store/editionSite/editionSiteSlice.ts";
 import { categoriesReducer } from "../store/categories/categoriesSlice.ts";
@@ -24,14 +14,10 @@ import { companyPageReducer } from '../store/companyPage/compantPageSlice.ts';
 import { bonusPageReducer } from '../store/bonusProgramPage/bonusProgramPageSlice.ts';
 import { deliveryPageReducer } from '../store/deliveryPage/deliveryPageSlice.ts';
 
-const userPersistConfig = {
-  key: "store:users",
-  storage,
-  whitelist: ["user"],
-};
+
 
 const rootReducer = combineReducers({
-  users: persistReducer(userPersistConfig, userReducer),
+  users:  userReducer,
   brands: brandReducer,
   edit_site: editSiteReducer,
   categories: categoriesReducer,
@@ -49,15 +35,8 @@ const rootReducer = combineReducers({
 
 export const store = configureStore({
   reducer: rootReducer,
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-      },
-    }),
 });
 
-export const persistor = persistStore(store);
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

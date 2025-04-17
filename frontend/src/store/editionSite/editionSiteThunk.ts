@@ -9,9 +9,7 @@ export const updateSite = createAsyncThunk<
   { rejectValue: ValidationError }
 >("edit_site/updateSite", async ({ id, data }, { rejectWithValue }) => {
   try {
-
     await axiosApi.put(`/edition_site/${id}`, data)
-
   } catch (error) {
     if (isAxiosError(error) && error.response) {
       const { data, status } = error.response;
