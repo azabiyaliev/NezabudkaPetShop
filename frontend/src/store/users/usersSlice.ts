@@ -25,6 +25,7 @@ interface UserState {
   passwordCodeMessage: string | null;
   message: string | null;
   error: string | null;
+  meChecked: boolean;
 }
 
 const initialState: UserState = {
@@ -42,6 +43,7 @@ const initialState: UserState = {
   passwordCodeMessage: null,
   message: null,
   error: null,
+  meChecked: false,
 };
 
 export const selectUser = (state: RootState) => state.users.user;
@@ -53,11 +55,16 @@ export const selectUserError = (state: RootState) => state.users.registerError;
 export const selectLoginLoading = (state: RootState) =>
   state.users.loginLoading;
 export const selectLoginError = (state: RootState) => state.users.loginError;
+export const meCheck = (state: RootState) => state.users.meChecked;
 
 export const userSlice = createSlice({
   name: "users",
   initialState,
-  reducers: {},
+  reducers: {
+    setMeChecked(state) {
+      state.meChecked = true;
+    }
+  },
   extraReducers: (build) => {
     build
       .addCase(register.pending, (state) => {
@@ -88,11 +95,13 @@ export const userSlice = createSlice({
         state.loginLoading = true;
       })
       .addCase(fetchMe.fulfilled, (state, action) => {
-        state.user = action.payload;
+        state.user = action.payload
         state.loginLoading = false;
+        state.meChecked = true;
       })
       .addCase(fetchMe.rejected, (state) => {
         state.loginLoading = false;
+        state.meChecked = true;
       })
       .addCase(logout.fulfilled, (state) => {
         state.user = null;
@@ -194,3 +203,4 @@ export const userSlice = createSlice({
 });
 
 export const userReducer = userSlice.reducer;
+export const {setMeChecked} = userSlice.actions
