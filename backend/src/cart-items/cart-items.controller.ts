@@ -9,8 +9,7 @@ import {
 } from '@nestjs/common';
 import { CartItemsService } from './cart-items.service';
 import { CartItemDto } from '../dto/cart-item.dto';
-import { Request } from 'express';
-import {AuthRequest, RequestUser} from '../types';
+import { AuthRequest, RequestUser } from '../types';
 
 @Controller('cart')
 export class CartItemsController {
