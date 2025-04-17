@@ -41,6 +41,13 @@ export class AuthController {
       maxAge: 10 * 24 * 60 * 60 * 1000,
     });
 
+    res.cookie('tokenPresent', 'true', {
+      httpOnly: false,
+      secure: true,
+      sameSite: 'strict',
+      maxAge: 10 * 24 * 60 * 60 * 1000,
+    });
+
     return {
       message: 'Пользователь зарегистрирован и авторизован',
       user,
@@ -61,6 +68,13 @@ export class AuthController {
       maxAge: 10 * 24 * 60 * 60 * 1000,
     });
 
+    res.cookie('tokenPresent', 'true', {
+      httpOnly: false,
+      secure: true,
+      sameSite: 'strict',
+      maxAge: 10 * 24 * 60 * 60 * 1000,
+    });
+
     return {
       message: 'Вход выполнен успешно',
       user,
@@ -74,6 +88,7 @@ export class AuthController {
     await this.authService.logout(user.id);
 
     res.clearCookie('token');
+    res.clearCookie('tokenPresent');
     return { message: 'Выход выполнен успешно' };
   }
 
