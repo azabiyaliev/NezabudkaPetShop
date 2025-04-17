@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IOrder, OrderStats } from '../../types';
 import {
   checkoutAuthUserOrder, deleteOrder,
-  getAllOrders, GetMyOrders, getStatistics,
+  getAllOrders, GetClientOrders, GetGuestOrders, getStatistics, transferGuestOrders,
   updateOrderStatus
 } from './ordersThunk.ts';
 
@@ -37,7 +37,11 @@ const initialState: OrderSliceState = {
 const ordersSlice = createSlice({
   name: 'orders',
   initialState,
-  reducers: {},
+  reducers: {
+    clearOrders: (state) => {
+      state.orders = [];
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(
@@ -77,19 +81,55 @@ const ordersSlice = createSlice({
         }
       )
       .addCase(
-        GetMyOrders.pending, (state) => {
+        GetClientOrders.pending, (state) => {
           state.isLoading = true;
           state.isError = false
         }
       )
       .addCase(
-        GetMyOrders.fulfilled, (state, {payload: order}) => {
+        GetClientOrders.fulfilled, (state, {payload: order}) => {
           state.isLoading = false;
           state.orders = order
         }
       )
       .addCase(
-        GetMyOrders.rejected, (state) => {
+        GetClientOrders.rejected, (state) => {
+          state.isLoading = false;
+          state.isError = true;
+        }
+      )
+      .addCase(
+        GetGuestOrders.pending, (state) => {
+          state.isLoading = true;
+          state.isError = false
+        }
+      )
+      .addCase(
+        GetGuestOrders.fulfilled, (state, {payload: order}) => {
+          state.isLoading = false;
+          state.orders = order
+        }
+      )
+      .addCase(
+        GetGuestOrders.rejected, (state) => {
+          state.isLoading = false;
+          state.isError = true;
+        }
+      )
+      .addCase(
+        transferGuestOrders.pending, (state) => {
+          state.isLoading = true;
+          state.isError = false;
+        }
+      )
+      .addCase(
+        transferGuestOrders.fulfilled, (state) => {
+          state.isLoading = false;
+          state.isError = false;
+        }
+      )
+      .addCase(
+        transferGuestOrders.rejected, (state) => {
           state.isLoading = false;
           state.isError = true;
         }
@@ -152,3 +192,5 @@ const ordersSlice = createSlice({
 })
 
 export const orderReducer = ordersSlice.reducer
+
+export const {clearOrders} = ordersSlice.actions

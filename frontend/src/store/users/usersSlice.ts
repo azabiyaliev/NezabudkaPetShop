@@ -60,6 +60,7 @@ export const userSlice = createSlice({
   reducers: {
     unsetUser: (state) => {
       state.user = null;
+      localStorage.removeItem('guestEmail');
     },
   },
   extraReducers: (build) => {

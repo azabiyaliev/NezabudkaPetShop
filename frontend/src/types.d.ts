@@ -5,6 +5,7 @@ export interface RegisterMutation {
   password: string;
   phone: string;
   bonus?: number
+  guestEmail?: string;
 }
 
 export interface LogInMutation {
@@ -21,6 +22,7 @@ export interface User {
   token: string;
   phone: string;
   bonus : number
+  guestEmail: string;
 }
 
 export interface UserWithOrder {

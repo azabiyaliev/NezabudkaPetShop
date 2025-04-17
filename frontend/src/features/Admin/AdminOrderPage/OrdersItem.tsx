@@ -227,8 +227,8 @@ const OrderAdminItem: React.FC<Props> = ({ order }) => {
 
         <List dense>
           {order.items && order.items.length > 0 ? (
-            order.items.map((item, index) => (
-              <ListItem key={index} sx={{ py: 0.5 }}>
+            order.items.map((item) => (
+              <ListItem key={item.id} sx={{ py: 0.5 }}>
                 <ListItemText
                   primary={
                     <Typography variant="body2">

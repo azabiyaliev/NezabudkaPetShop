@@ -5,6 +5,7 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Typography from "@mui/material/Typography";
 
 const UnknownUser = () => {
+  const guestEmail = localStorage.getItem('guestEmail');
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const onClick = (e: React.MouseEvent<HTMLElement>) => {
@@ -14,6 +15,8 @@ const UnknownUser = () => {
   const onClose = () => {
     setAnchorEl(null);
   };
+
+  // if(!user) return null;
   return (
     <>
       <Box sx={{ display: "flex", alignItems: "center", gap: 2,  "@media (min-width: 1100px)": {flexDirection: "row",}}}>
@@ -67,6 +70,12 @@ const UnknownUser = () => {
         <MenuItem>
           <NavLink to="/register" className="text-decoration-none text-black">
             Зарегистрироваться
+          </NavLink>
+        </MenuItem>
+
+        <MenuItem>
+          <NavLink to={`/my_orders?email=${guestEmail}`} className="text-decoration-none text-black">
+            Мои заказы
           </NavLink>
         </MenuItem>
       </Menu>

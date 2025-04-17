@@ -38,6 +38,7 @@ import { userRoleAdmin, userRoleSuperAdmin } from './globalConstants.ts';
 import DeliveryPage from './features/DeliveryPage/DeliveryPage.tsx';
 import DeliveryPageForm from './components/Forms/DeliveryPageFrom/DeliveryPageFrom.tsx';
 import AllOrders from './features/Admin/AdminOrderPage/AllOrders.tsx';
+import MyOrders from './features/Order/MyOrders.tsx';
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -57,6 +58,7 @@ const App = () => {
               </ProtectedRoute>
             }
           />
+          <Route path ="/my_orders" element={<MyOrders /> } />
           <Route path="/edit-carousel" element={<DragAndDropPhoto />} />
           <Route path="/photos/:id" element={<Photo/>}/>
           <Route path="/change-password" element={<RestorationPasswordFrom/>}/>

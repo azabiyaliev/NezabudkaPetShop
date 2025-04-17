@@ -126,6 +126,26 @@ export class AuthService {
       data: { token },
     });
 
+    const guestOrdersExist = await this.prisma.order.count({
+      where: {
+        guestEmail: email,
+        userId: null,
+      },
+    });
+
+    if (guestOrdersExist > 0) {
+      await this.prisma.order.updateMany({
+        where: {
+          guestEmail: email,
+          userId: null,
+        },
+        data: {
+          userId: user.id,
+          guestEmail: null,
+        },
+      });
+    }
+
     return {
       email: user.email,
       firstName: user.firstName,

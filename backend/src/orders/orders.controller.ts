@@ -10,7 +10,6 @@ import {
   Post,
   Query,
   Req,
-  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
@@ -46,21 +45,31 @@ export class OrdersController {
   }
 
   @UseGuards(TokenAuthGuard, RolesGuard)
-  @Get('my-orders')
-  async userOrders(@Req() req: AuthRequest) {
+  @Get('client-orders')
+  async getClientOrders(@Req() req: AuthRequest) {
     const userId = req.user?.id;
-    console.log(userId);
-    if (!userId) {
-      throw new UnauthorizedException('Необходима авторизация');
+    if (userId) {
+      return await this.ordersService.getUserOrders(userId);
     }
-    return await this.ordersService.getUserOrders(userId);
   }
+
   @Get('guest-orders')
-  async guestOrder(@Query('email') guestEmail: string) {
-    if (!guestEmail) {
-      throw new BadRequestException('Email гостя обязателен');
+  async getGuestOrders(@Query('guestEmail') guestEmail?: string) {
+    if (guestEmail) {
+      return await this.ordersService.getUserOrders(undefined, guestEmail);
     }
-    return await this.ordersService.getUserOrders(undefined, guestEmail);
+  }
+
+  @Post('transfer-guest-orders')
+  @UseGuards(TokenAuthGuard)
+  async transferOrders(
+    @Req() req: AuthRequest,
+    @Body() body: { guestEmail: string },
+  ) {
+    return this.ordersService.transferGuestOrdersToUser(
+      body.guestEmail,
+      req.user.id,
+    );
   }
 
   @UseGuards(TokenAuthGuard)

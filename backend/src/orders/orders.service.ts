@@ -14,6 +14,7 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 @Injectable()
 export class OrdersService {
   private readonly logger = new Logger(OrdersService.name);
+
   constructor(
     private prisma: PrismaService,
     private telegramBot: TelegramService,
@@ -81,36 +82,41 @@ export class OrdersService {
         },
       });
 
-      if (orders.length === 0) {
-        throw new NotFoundException('Заказы не найдены');
-      }
-
       return { user, orders };
     }
 
-    if (!guestEmail) {
-      throw new BadRequestException('Email гостя обязателен');
-    }
-
-    const orders = await this.prisma.order.findMany({
-      where: { guestEmail },
-      include: {
-        items: {
-          include: {
-            product: true,
+    if (guestEmail) {
+      const orders = await this.prisma.order.findMany({
+        where: { guestEmail },
+        include: {
+          items: {
+            include: {
+              product: true,
+            },
           },
         },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      });
+
+      return orders;
+    }
+  }
+
+  async transferGuestOrdersToUser(guestEmail: string, userId: number) {
+    await this.prisma.order.updateMany({
+      where: {
+        guestEmail,
+        userId: null,
       },
-      orderBy: {
-        createdAt: 'desc',
+      data: {
+        userId,
+        guestEmail: null,
       },
     });
 
-    if (orders.length === 0) {
-      throw new NotFoundException('Заказы не найдены');
-    }
-
-    return orders;
+    return this.getUserOrders(userId);
   }
 
   async getOrderStats() {
@@ -161,7 +167,8 @@ export class OrdersService {
         throw new NotFoundException('Пользователь не найден');
       }
 
-      personEmail = guestEmail || user.email;
+      personEmail =
+        guestEmail || (user.email && userId) ? null : createOrderDto.guestEmail;
       personPhone = guestPhone || user.phone;
       personName = guestName || user.firstName;
     } else {
@@ -478,6 +485,18 @@ export class OrdersService {
         deliveredAt: {
           lte: tenDaysAgo,
         },
+      },
+    });
+  }
+  async transferOrders(guestEmail: string, userId: number) {
+    return this.prisma.order.updateMany({
+      where: {
+        guestEmail,
+        userId: null,
+      },
+      data: {
+        guestEmail: null,
+        userId,
       },
     });
   }

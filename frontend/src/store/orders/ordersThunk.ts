@@ -23,23 +23,37 @@ export const getAllOrders = createAsyncThunk<{ data: IOrder[], meta: Pagination 
   }
 );
 
-export const GetMyOrders = createAsyncThunk<IOrder[], string, {state: RootState}>(
-  'orders/getMyOrders',
-  async (email, {getState}) => {
-    try {
-      const token = getState().users.user?.token;
-      if(token) {
-        const response = await axiosApi.get('orders/my-orders', {headers: {Authorization: token}});
-        return response.data;
-      } else {
-        const response = await axiosApi.get(`orders/guest-orders?email=${email}`);
-        return response.data;
-      }
-    } catch(e) {
-      console.log(e)
-    }
+export const GetClientOrders = createAsyncThunk<IOrder[], void, { state: RootState }>(
+  'orders/getUserOrders',
+  async (_, { getState }) => {
+    const token = getState().users.user?.token;
+    const response = await axiosApi.get('orders/client-orders', {
+      headers: { Authorization: token },
+    });
+    return response.data.orders;
   }
-)
+);
+
+export const GetGuestOrders = createAsyncThunk<IOrder[], string>(
+  'orders/getGuestOrders',
+  async (guestEmail) => {
+    const response = await axiosApi.get(`orders/guest-orders?guestEmail=${guestEmail}`);
+    return response.data || [];
+  }
+);
+
+export const transferGuestOrders = createAsyncThunk<OrderMutation, string, {state: RootState}>(
+  'orders/transfer',
+  async (guestEmail: string, { getState }) => {
+    const token = getState().users.user?.token;
+    const response = await axiosApi.post(
+      'orders/transfer-guest-orders',
+      { guestEmail },
+      { headers: { Authorization: token} }
+    );
+    return response.data;
+  }
+);
 
 export const getStatistics = createAsyncThunk<OrderStats, void, {state:RootState}>(
   'orders/getStatistics',
@@ -64,6 +78,7 @@ export const checkoutAuthUserOrder = createAsyncThunk<void, OrderMutation, {stat
         })
       } else if(!token) {
         await axiosApi.post('orders/guest-checkout', order);
+        localStorage.setItem('guestEmail', order.guestEmail);
       }
     } catch(e) {
       console.log('Ошибка оформления заказа:', e);
