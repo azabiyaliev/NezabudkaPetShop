@@ -8,6 +8,8 @@ export class SeedService {
   constructor(private prisma: PrismaService) {}
 
   async seed() {
+    await this.prisma.cart.deleteMany({});
+    await this.prisma.cartItem.deleteMany({});
     await this.prisma.passwordReset.deleteMany();
     await this.prisma.user.deleteMany({});
     await this.prisma.products.deleteMany({});
@@ -51,6 +53,7 @@ export class SeedService {
           secondName: 'Bekov',
           role: 'client',
           phone: '+996555100444',
+          bonus: 50,
         },
       ],
     });
