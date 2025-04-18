@@ -36,9 +36,6 @@ const initialState: categoriesState = {
 };
 
 export const selectCategories = (state: RootState) => state.categories.Categories;
-export const selectOneCategory = (state: RootState) => state.categories.oneCategory;
-export const selectLoading = (state: RootState) => state.categories.isLoading;
-export const selectAllSubcategories = (state: RootState) => state.categories.SubCategories;
 
 const categoriesSlice = createSlice({
   name: 'categories',

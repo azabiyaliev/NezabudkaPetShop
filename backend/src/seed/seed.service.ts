@@ -172,18 +172,78 @@ export class SeedService {
     });
     await this.prisma.category.createMany({
       data: [
-        { id: 111, title: 'Сухой корм', parentId: 1 },
-        { id: 112, title: 'Влажные корма', parentId: 1 },
-        { id: 113, title: 'Сухие корма', parentId: 2 },
-        { id: 114, title: 'Влажные корм', parentId: 2 },
-        { id: 115, title: 'Амуниция', parentId: 1 },
-        { id: 116, title: 'Ветеринарная аптека', parentId: 2 },
-        { id: 117, title: 'Витамины и добавки', parentId: 1 },
-        { id: 118, title: 'Домики и лежанки', parentId: 1 },
-        { id: 119, title: 'Ошейники и шлейки', parentId: 2 },
-        { id: 120, title: 'Лакомства', parentId: 1 },
-        { id: 121, title: 'Игрушки', parentId: 2 },
-        { id: 122, title: 'Сено', parentId: 3 },
+        {
+          id: 111,
+          title: 'Сухой корм',
+          parentId: 1,
+          icon: '/fixtures/categoryIcons/1icon.png',
+        },
+        {
+          id: 112,
+          title: 'Влажные корма',
+          parentId: 1,
+          icon: '/fixtures/categoryIcons/2icon.png',
+        },
+        {
+          id: 113,
+          title: 'Сухие корма',
+          parentId: 2,
+          icon: '/fixtures/categoryIcons/3icon.png',
+        },
+        {
+          id: 114,
+          title: 'Влажные корм',
+          parentId: 2,
+          icon: '/fixtures/categoryIcons/4icon.png',
+        },
+        {
+          id: 115,
+          title: 'Амуниция',
+          parentId: 1,
+          icon: '/fixtures/categoryIcons/5icon.png',
+        },
+        {
+          id: 116,
+          title: 'Ветеринарная аптека',
+          parentId: 2,
+          icon: '/fixtures/categoryIcons/2icon.png',
+        },
+        {
+          id: 117,
+          title: 'Витамины и добавки',
+          parentId: 1,
+          icon: '/fixtures/categoryIcons/7icon.png',
+        },
+        {
+          id: 118,
+          title: 'Домики и лежанки',
+          parentId: 1,
+          icon: '/fixtures/categoryIcons/8icon.png',
+        },
+        {
+          id: 119,
+          title: 'Ошейники и шлейки',
+          parentId: 2,
+          icon: '/fixtures/categoryIcons/9icon.png',
+        },
+        {
+          id: 120,
+          title: 'Лакомства',
+          parentId: 1,
+          icon: '/fixtures/categoryIcons/1icon.png',
+        },
+        {
+          id: 121,
+          title: 'Игрушки',
+          parentId: 2,
+          icon: '/fixtures/categoryIcons/9icon.png',
+        },
+        {
+          id: 122,
+          title: 'Сено',
+          parentId: 3,
+          icon: '/fixtures/categoryIcons/1icon.png',
+        },
       ],
     });
 

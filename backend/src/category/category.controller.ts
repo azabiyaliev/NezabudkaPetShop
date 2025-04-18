@@ -1,10 +1,12 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
   Get,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   Put,
   UploadedFile,
@@ -22,25 +24,35 @@ import * as crypto from 'crypto';
 export class CategoryController {
   constructor(private categoryService: CategoryService) {}
 
-  @Post()
+  @Patch(':id/icon')
   @UseInterceptors(
     FileInterceptor('icon', {
       storage: diskStorage({
         destination: './public/category_icon',
         filename: (_req, file, callback) => {
           const imageFormat = extname(file.originalname);
-          callback(null, `${crypto.randomUUID()}${imageFormat}`);
+          const fileName = `${crypto.randomUUID()}${imageFormat}`;
+          callback(null, fileName);
         },
       }),
     }),
   )
-  async createCategory(
-    @Body() categoryDto: CategoryDto,
-    @UploadedFile() icon?: Express.Multer.File,
+  async addIconToCategory(
+    @Param('id', ParseIntPipe) id: number,
+    @UploadedFile() file: Express.Multer.File,
   ) {
-    if (icon) {
-      categoryDto.icon = `/category_icon/${icon.filename}`;
+    if (file && file.filename) {
+      const filePath = '/category_icon/' + file.filename;
+
+      await this.categoryService.addIconToCategory(id, filePath);
+
+      return { success: true, icon: filePath };
     }
+    throw new BadRequestException('Файл не был загружен');
+  }
+
+  @Post()
+  async createCategory(@Body() categoryDto: CategoryDto) {
     return this.categoryService.createCategory(categoryDto);
   }
 
@@ -55,25 +67,10 @@ export class CategoryController {
   }
 
   @Put(':id')
-  @UseInterceptors(
-    FileInterceptor('icon', {
-      storage: diskStorage({
-        destination: './public/category_icon',
-        filename: (_req, file, callback) => {
-          const imageFormat = extname(file.originalname);
-          callback(null, `${crypto.randomUUID()}${imageFormat}`);
-        },
-      }),
-    }),
-  )
   async updateCategory(
     @Param('id', ParseIntPipe) id: number,
     @Body() categoryDto: CategoryDto,
-    @UploadedFile() icon?: Express.Multer.File,
   ) {
-    if (icon) {
-      categoryDto.icon = `/category_icon/${icon.filename}`;
-    }
     return this.categoryService.updateCategory(id, categoryDto);
   }
 

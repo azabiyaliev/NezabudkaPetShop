@@ -24,7 +24,7 @@ export class CategoryService {
   }
 
   async createCategory(categoryDto: CategoryDto) {
-    const { title, parentId, icon } = categoryDto;
+    const { title, parentId } = categoryDto;
 
     if (title.trim() === '') {
       throw new BadRequestException(
@@ -37,7 +37,7 @@ export class CategoryService {
     }
 
     const newCategory = await this.prisma.category.create({
-      data: { title, parentId: parentId ?? null, icon: icon ?? null },
+      data: { title, parentId: parentId ?? null },
     });
 
     return newCategory;
@@ -50,7 +50,7 @@ export class CategoryService {
     categoryId = parseInt(categoryId.toString());
     await this.validateCategory(categoryId);
 
-    for (const { title, icon } of subCategoryDtos) {
+    for (const { title } of subCategoryDtos) {
       if (!title.trim()) {
         throw new BadRequestException('Название подкатегории отсутствует');
       }
@@ -67,7 +67,6 @@ export class CategoryService {
         data: {
           title,
           parentId: categoryId,
-          icon: icon ?? null,
         },
       });
     }
@@ -88,7 +87,6 @@ export class CategoryService {
         const children = await this.getAllCategories(category.id);
         return {
           ...category,
-          icon: category.icon,
           subcategories: children,
         };
       }),
@@ -118,7 +116,6 @@ export class CategoryService {
       where: { id },
       data: {
         title: categoryDto.title,
-        icon: categoryDto.icon ?? null,
         ...(categoryDto.parentId !== undefined && {
           parentId: categoryDto.parentId,
         }),
@@ -132,7 +129,6 @@ export class CategoryService {
           data: {
             title: subcategory.title,
             parentId: id,
-            icon: subcategory.icon ?? null,
           },
         });
       }
@@ -164,6 +160,19 @@ export class CategoryService {
     });
 
     return { message: 'Родительская категория подкатегории успешно обновлена' };
+  }
+
+  async addIconToCategory(id: number, filename: string) {
+    await this.validateCategory(id);
+
+    await this.prisma.category.update({
+      where: { id },
+      data: {
+        icon: filename,
+      },
+    });
+
+    return { message: 'Иконка добавлена успешно', icon: filename };
   }
 
   async deleteCategory(id: number) {
