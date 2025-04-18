@@ -39,6 +39,7 @@ import DeliveryPageForm from './components/Forms/DeliveryPageFrom/DeliveryPageFr
 import CategoryPage from './features/Category/CategoryPage/CategoryPage.tsx';
 import { useEffect } from 'react';
 import { fetchMe } from './store/users/usersThunk.ts';
+import ContactPage from './features/ContactPage/ContactPage.tsx';
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -215,6 +216,7 @@ const App = () => {
               <DeliveryPageForm/>
             </ProtectedRoute>
           }/>
+          <Route path='/contacts' element={<ContactPage/>}/>
         </Routes>
       </Layout>
     </div>
