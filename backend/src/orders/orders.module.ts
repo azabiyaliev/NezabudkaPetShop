@@ -9,5 +9,6 @@ import { TelegramModule } from '../telegram/telegram.module';
   imports: [PrismaModule, AuthModule, TelegramModule],
   controllers: [OrdersController],
   providers: [OrdersService],
+  exports: [OrdersService],
 })
 export class OrdersModule {}

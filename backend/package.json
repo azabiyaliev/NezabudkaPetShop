@@ -28,6 +28,7 @@
     "@nestjs/mapped-types": "*",
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.0.1",
+    "@nestjs/schedule": "^5.0.1",
     "@prisma/client": "^6.4.1",
     "@types/node-telegram-bot-api": "^0.64.8",
     "bcrypt": "^5.1.1",

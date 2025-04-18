@@ -5,6 +5,7 @@ export interface RegisterMutation {
   password: string;
   phone: string;
   bonus?: number
+  guestEmail?: string;
 }
 
 export interface LogInMutation {
@@ -21,6 +22,7 @@ export interface User {
   token: string;
   phone: string;
   bonus : number
+  guestEmail: string;
 }
 
 export interface UserWithOrder {
@@ -169,7 +171,6 @@ export interface ICartBack {
 export interface ICartItem {
   id?: number,
   cartId?: number,
-  productId: number,
   quantity: number;
   productId: number;
   product: ProductResponse;
@@ -293,6 +294,11 @@ export interface OrderStats {
   id: number;
   deliveryStatistic: number;
   pickUpStatistic: number;
+  totalOrders: number;
+  paymentByCard: number;
+  paymentByCash: number;
+  bonusUsage: number;
+  canceledOrderCount: number;
 }
 
 export interface FavoritesResponse {

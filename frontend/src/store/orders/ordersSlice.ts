@@ -1,11 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IOrder, OrderStats } from '../../types';
 import {
-  checkoutAuthUserOrder,
-  getAllOrders, GetMyOrders, getStatistics,
+  checkoutAuthUserOrder, deleteOrder,
+  getAllOrders, GetClientOrders, GetGuestOrders, getStatistics, transferGuestOrders,
   updateOrderStatus
 } from './ordersThunk.ts';
-import { RootState } from '../../app/store.ts';
 
 export interface Pagination {
   total: number;
@@ -35,12 +34,14 @@ const initialState: OrderSliceState = {
   isError: false,
 }
 
-export const selectOrder = (state: RootState) => state.orders.oneOrder
-
 const ordersSlice = createSlice({
   name: 'orders',
   initialState,
-  reducers: {},
+  reducers: {
+    clearOrders: (state) => {
+      state.orders = [];
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(
@@ -52,6 +53,7 @@ const ordersSlice = createSlice({
       .addCase(
         getAllOrders.fulfilled, (state, action: PayloadAction<{ data: IOrder[]; meta: Pagination }>) => {
           state.isLoading = false;
+          state.orders = action.payload.data;
           state.paginationOrders = action.payload;
         }
       )
@@ -79,19 +81,55 @@ const ordersSlice = createSlice({
         }
       )
       .addCase(
-        GetMyOrders.pending, (state) => {
+        GetClientOrders.pending, (state) => {
           state.isLoading = true;
           state.isError = false
         }
       )
       .addCase(
-        GetMyOrders.fulfilled, (state, {payload: order}) => {
+        GetClientOrders.fulfilled, (state, {payload: order}) => {
           state.isLoading = false;
           state.orders = order
         }
       )
       .addCase(
-        GetMyOrders.rejected, (state) => {
+        GetClientOrders.rejected, (state) => {
+          state.isLoading = false;
+          state.isError = true;
+        }
+      )
+      .addCase(
+        GetGuestOrders.pending, (state) => {
+          state.isLoading = true;
+          state.isError = false
+        }
+      )
+      .addCase(
+        GetGuestOrders.fulfilled, (state, {payload: order}) => {
+          state.isLoading = false;
+          state.orders = order
+        }
+      )
+      .addCase(
+        GetGuestOrders.rejected, (state) => {
+          state.isLoading = false;
+          state.isError = true;
+        }
+      )
+      .addCase(
+        transferGuestOrders.pending, (state) => {
+          state.isLoading = true;
+          state.isError = false;
+        }
+      )
+      .addCase(
+        transferGuestOrders.fulfilled, (state) => {
+          state.isLoading = false;
+          state.isError = false;
+        }
+      )
+      .addCase(
+        transferGuestOrders.rejected, (state) => {
           state.isLoading = false;
           state.isError = true;
         }
@@ -132,7 +170,27 @@ const ordersSlice = createSlice({
           state.isError = true;
         }
       )
+      .addCase(
+        deleteOrder.pending, (state) => {
+          state.isLoading = true;
+          state.isError = false
+        }
+      )
+      .addCase(
+        deleteOrder.fulfilled, (state, action) => {
+          state.isLoading = false;
+          state.orders = state.orders.filter((order) => String(order.id) !== action.meta.arg)
+        }
+      )
+      .addCase(
+        deleteOrder.rejected, (state) => {
+          state.isLoading = false;
+          state.isError = true;
+        }
+      )
   }
 })
 
 export const orderReducer = ordersSlice.reducer
+
+export const {clearOrders} = ordersSlice.actions

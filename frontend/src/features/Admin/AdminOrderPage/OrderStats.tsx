@@ -1,16 +1,10 @@
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { getStatistics } from '../../../store/orders/ordersThunk';
-import { Box, Typography } from '@mui/material';
-import {  ResponsiveContainer, BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend } from 'recharts';
-import AllOrder from './AllOrders.tsx';
-
+import ColumnChart from '../../../components/UI/ColumnChart/ColumnChart.tsx';
+import { DataGrid, gridClasses, GridToolbar } from '@mui/x-data-grid';
+import { Box, Paper } from '@mui/material';
+import Typography from '@mui/material/Typography';
 
 const OrderStats = () => {
   const dispatch = useAppDispatch();
@@ -30,43 +24,85 @@ const OrderStats = () => {
     return <div>Загрузка...</div>;
   }
 
-  const data = [
-    { id: 1, name: 'Самовывоз', value: orders.pickUpStatistic },
-    { id: 1, name: 'Доставка', value: orders.deliveryStatistic },
+  const percentageCount = (a: number, b: number) => {
+    if (b === 0) return '0.0';
+    return ((a / b) * 100).toFixed(1);
+  };
+
+  const calculatedTotalOrders =
+    orders.deliveryStatistic +
+    orders.pickUpStatistic +
+    orders.canceledOrderCount;
+
+  const rows = [
+    {id: 1, name: "Доставка", count: orders.deliveryStatistic, percentage: `${percentageCount(orders.deliveryStatistic, calculatedTotalOrders)}%`},
+    {id: 2, name: "Самовывоз", count: orders.pickUpStatistic, percentage: `${percentageCount(orders.pickUpStatistic, calculatedTotalOrders)}%`},
+    {id: 3, name: "Оплата картой", count: orders.paymentByCard, percentage: `${percentageCount(orders.paymentByCard, calculatedTotalOrders)}%`},
+    {id: 4, name: "Оплата наличными", count: orders.paymentByCash, percentage: `${percentageCount(orders.paymentByCash, calculatedTotalOrders)}%`},
+    {id: 5, name: "Пользование бонусами", count: orders.bonusUsage, percentage: `${percentageCount(orders.bonusUsage, calculatedTotalOrders)}%`},
+    {id: 6, name: "Общее кол-во заказов", count: orders.totalOrders, percentage: `${percentageCount(orders.paymentByCard, calculatedTotalOrders)}%`},
+    {id: 7, name: "Отмененные заказы", count: orders.canceledOrderCount, percentage: `${percentageCount(orders.canceledOrderCount, calculatedTotalOrders)}%`},
+  ];
+
+  const columns = [
+    { field: 'name', headerName: 'Название', flex: 1 },
+    { field: 'count', headerName: 'Количество', flex: 1 },
+    { field: 'percentage', headerName: 'Проценты', flex: 1 },
   ];
 
   return (
-    <div>
-    <div style={{ display: 'flex', gap: '30px', alignItems: 'center', height: 300 }}>
-      <div style={{ width: 300, height: 300 }}>
-        <Box sx={{ width: '100%', height: 300, mt: 4 }}>
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={data}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis allowDecimals={false} />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="value" fill="#8884d8" />
-            </BarChart>
-          </ResponsiveContainer>
-        </Box>
-      </div>
+    <Box sx={{ p: 3 }}>
+      <Typography
+        variant="h4"
+        component="h1"
+        sx={{
+          mb: 4,
+          fontWeight: 600,
+        }}
+      >
+        Статистика заказов
+      </Typography>
 
-      <div>
-        <Typography variant="h5">Статистика заказов</Typography>
-        <Typography>
-          Самовывоз: <span style={{ color: '#0088FE' }}>{orders.pickUpStatistic}</span>
-        </Typography>
-        <Typography>
-          Доставка: <span style={{ color: '#00C49F' }}>{orders.deliveryStatistic}</span>
-        </Typography>
-      </div>
-    </div>
-      <div>
-        <AllOrder/>
-      </div>
-    </div>
+      <Paper
+        elevation={3}
+        sx={{
+          mb: 4,
+          p: 2,
+          borderRadius: '12px',
+        }}
+      >
+        <ColumnChart stats={orders} />
+      </Paper>
+
+      <Paper
+        elevation={3}
+        sx={{
+          borderRadius: '12px',
+          overflow: 'hidden',
+        }}
+      >
+        <DataGrid
+          rows={rows}
+          columns={columns}
+          autoHeight
+          slots={{
+            toolbar: GridToolbar,
+          }}
+          sx={{
+            [`& .${gridClasses.cell}`]: {
+              py: 2,
+            },
+            [`& .bold-cell`]: {
+              fontWeight: 500,
+            },
+            '& .MuiDataGrid-toolbarContainer': {
+              p: 2,
+              pb: 0,
+            },
+          }}
+        />
+      </Paper>
+    </Box>
   );
 };
 

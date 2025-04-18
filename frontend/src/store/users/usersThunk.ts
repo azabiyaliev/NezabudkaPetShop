@@ -26,6 +26,13 @@ export const register = createAsyncThunk<
       "/auth/register",
       registerMutation,
     );
+
+    if(registerMutation.guestEmail) {
+      await axiosApi.patch('/orders/transfer', {
+        guestEmail: registerMutation.guestEmail,
+        userId: user.user.id,
+      })
+    }
     return user;
   } catch (error) {
     if (isAxiosError(error) && error.response) {

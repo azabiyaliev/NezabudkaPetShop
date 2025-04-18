@@ -40,6 +40,8 @@ import CategoryPage from './features/Category/CategoryPage/CategoryPage.tsx';
 import { useEffect } from 'react';
 import { fetchMe } from './store/users/usersThunk.ts';
 import ContactPage from './features/ContactPage/ContactPage.tsx';
+import AllOrders from './features/Admin/AdminOrderPage/AllOrders.tsx';
+import MyOrders from './features/Order/MyOrders.tsx';
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -73,6 +75,7 @@ const App = () => {
               </ProtectedRoute>
             }
           />
+          <Route path ="/my_orders" element={<MyOrders /> } />
           <Route path="/edit-carousel" element={<DragAndDropPhoto />} />
           <Route path="/photos/:id" element={<Photo/>}/>
           <Route path="/change-password" element={<RestorationPasswordFrom/>}/>
@@ -110,9 +113,18 @@ const App = () => {
             }
           />
           <Route
-            path="/private/order_stats"
+            path="/private/client_orders"
             element={
               <ProtectedRoute isAllowed={user && can(["admin", "superAdmin"])}>
+                <AllOrders />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/private/order_stats"
+            element={
+              <ProtectedRoute isAllowed={user && can(["superAdmin"])}>
                 <OrderStats />
               </ProtectedRoute>
             }

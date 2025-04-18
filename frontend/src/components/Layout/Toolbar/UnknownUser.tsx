@@ -10,6 +10,7 @@ import {
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
 const UnknownUser = () => {
+  const guestEmail = localStorage.getItem('guestEmail');
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -92,6 +93,12 @@ const UnknownUser = () => {
         </MenuItem>
         <MenuItem component={NavLink} to="/register" onClick={handleClose}>
           Зарегистрироваться
+        </MenuItem>
+
+        <MenuItem>
+          <NavLink to={`/my_orders?email=${guestEmail}`} className="text-decoration-none text-black">
+            Мои заказы
+          </NavLink>
         </MenuItem>
       </Menu>
     </>

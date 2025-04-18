@@ -63,7 +63,11 @@ export const userSlice = createSlice({
   reducers: {
     setMeChecked(state) {
       state.meChecked = true;
-    }
+    },
+    unsetUser: (state) => {
+      state.user = null;
+      localStorage.removeItem('guestEmail');
+    },
   },
   extraReducers: (build) => {
     build
@@ -203,4 +207,4 @@ export const userSlice = createSlice({
 });
 
 export const userReducer = userSlice.reducer;
-export const {setMeChecked} = userSlice.actions
+export const  {setMeChecked, unsetUser} = userSlice.actions
