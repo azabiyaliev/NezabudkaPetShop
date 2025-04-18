@@ -2,16 +2,11 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { IOrder, OrderMutation, OrderStats } from '../../types';
 import axiosApi from '../../axiosApi.ts';
 import { RootState } from '../../app/store.ts';
-import { Pagination } from './ordersSlice.ts';
 
-export const getAllOrders = createAsyncThunk<{ data: IOrder[], meta: Pagination }, number>(
+export const getAllOrders = createAsyncThunk<IOrder[], void>(
   'orders/getAllOrders',
-  async (page) => {
-    const url = page !== undefined
-      ? `/orders/all-orders?page=${page}&limit=10`
-      : `/orders/all-orders`;
-
-    const response = await axiosApi.get(url);
+  async () => {
+    const response = await axiosApi.get("/orders/all-orders");
     return response.data;
   }
 );

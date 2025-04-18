@@ -177,7 +177,7 @@ model OrderItem {
 model Statistic {
   id Int @id @default(autoincrement())
 
-  date               DateTime
+  date               DateTime @default(now())
   totalOrders        Int      @default(0) @map("totalOrders")
   pickUpStatistic    Int      @default(0) @map("pickup_stats")
   deliveryStatistic  Int      @default(0) @map("delivery_stats")
