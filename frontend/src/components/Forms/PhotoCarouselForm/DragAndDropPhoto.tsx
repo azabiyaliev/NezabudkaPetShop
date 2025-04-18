@@ -1,20 +1,18 @@
-import { useAppSelector, useAppDispatch } from '../../../app/hooks.ts';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
 import { selectPhotoCarousel, updatePhotoOrder } from '../../../store/photoCarousel/photoCarouselSlice.ts';
 import { apiUrl } from '../../../globalConstants.ts';
-import { Typography, Button } from '@mui/material';
-import { DragEvent, useState, useEffect } from 'react';
+import { Button } from '@mui/material';
+import { DragEvent, useEffect, useState } from 'react';
 import { PhotoCarousel } from '../../../types';
-import { NavLink, useNavigate } from 'react-router-dom';
-import { fetchPhoto, updatePhotoOrders , deletePhoto} from '../../../store/photoCarousel/photoCarouselThunk.ts';
+import { useNavigate } from 'react-router-dom';
+import { deletePhoto, fetchPhoto, updatePhotoOrders } from '../../../store/photoCarousel/photoCarouselThunk.ts';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import Swal from "sweetalert2";
-import ModalWindowAddNewPhoto from '../../UI/ModalWindow/ModalWindowAddNewPhoto.tsx';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import Swal from 'sweetalert2';
 import { enqueueSnackbar } from 'notistack';
-import {Box} from "@mui/joy";
+import { Box } from '@mui/joy';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
-import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
+import AdminBar from '../../../features/Admin/AdminProfile/AdminBar.tsx';
 
 const DragAndDropPhoto = () => {
   const photos = useAppSelector(selectPhotoCarousel) || [];
@@ -22,7 +20,6 @@ const DragAndDropPhoto = () => {
   const dispatch = useAppDispatch();
   const [currentPhoto, setCurrentPhoto] = useState<PhotoCarousel | null>(null);
   const navigate = useNavigate();
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   useEffect(() => {
     dispatch(fetchPhoto());
@@ -111,153 +108,136 @@ const DragAndDropPhoto = () => {
   };
 
   return (
-    <>
-      <Typography
-        component="h1"
-        variant="h4"
-        sx={{ color: "black", textAlign: "center", marginTop:"30px",  "@media (max-width: 900px)": { fontSize: 24 } }}
-      >
-        Редактирование карусели
-      </Typography>
-      <hr/>
-      <Box
-        sx={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: "50px",
-          marginTop: "40px",
-          justifyContent: "center",
-          "@media (max-width: 900px)": {
-            flexDirection: "column",
-            alignItems: "center",
-            gap: "20px",
-          }
-        }}
-      >
-        {isLoading ? (
-          <div>Загрузка...</div>
-        ) : Array.isArray(photos) ? (
-          photos.map((image, index) => (
-            <Box
-              key={image.id}
-              sx={{
-                width: "400px",
-                height: "200px",
-                overflow: "hidden",
-                borderRadius: "8px",
-                border: "1px solid #ccc",
-                boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                cursor: "grab",
-                position: "relative",
-                "@media (max-width: 420px)": {
-                  width: "auto",
-                  height: "auto",
-                }
-              }}
-              draggable={true}
-              onDragStart={(e) => dragStart(e, image)}
-              onDragEnd={dragEnd}
-              onDragOver={dragOver}
-              onDrop={(e) => drop(e, image)}
-            >
-              <Button
-                onClick={() => navigate(`/photos/${image.id}`)}
-                sx={{
-                  position: 'absolute',
-                  top: 7,
-                  right: 10,
-                  backgroundColor: "#FDE910",
-                  borderRadius: "50%",
-                  width: "30px",
-                  height: "30px",
-                  minWidth: "30px",
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                <ModeEditIcon style={{ color: "rgb(52, 51, 50)" }} />
-              </Button>
-
-              <Button
-                onClick={() => handleDeleteClick(image.id)}
-                sx={{
-                  position: 'absolute',
-                  top: 7,
-                  left: 10,
-                  width: "30px",
-                  height: "30px",
-                  minWidth: "30px",
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                <DeleteIcon style={{ color: "#B00000" }} />
-              </Button>
-              <Box
-                  component="img"
-                src={`${apiUrl}/${image.photo}`}
-                alt={`Slide ${index}`}
-                sx={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                  "@media (max-width: 420px)": {
-                    width: "100%",
-                    height: "auto",
-                  }
-                }}
-              />
-            </Box>
-          ))
-        ) : (
-          <div>Данные не загружены.</div>
-        )}
-      </Box>
-      <Box sx={{ marginTop: "40px", display: "flex", justifyContent: "center", marginBottom:"50px",
-        "@media (max-width: 550px)": {
-          display:"none"
-        }
+    <Box sx={{
+      display: "flex",
+    }}>
+      <AdminBar />
+      <Box sx={{
+        marginLeft: "20px",
+        width: "90%",
       }}>
-        <Button
-          onClick={handleSave}
-          variant="contained"
-          color="primary"
+        <Box
           sx={{
-            backgroundColor: "#738A6E",
-            color: "white",
-            marginRight: "20px",
-            fontSize: "16px",
-            borderRadius:"20px",
-            "@media (max-width: 550px)": {
-              display:"none"
-            }}}
-        >
-          Сохранить порядок
-        </Button>
-        <Button
-          onClick={() => setIsAddModalOpen(true)}
-          variant="contained"
-          color="primary"
-          sx={{
-            backgroundColor: "#FDE910",
-            color: "rgb(52, 51, 50)",
-            fontSize: "16px",
-            borderRadius:"20px",
-            "@media (max-width: 550px)": {
-              display:"none"
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "50px",
+            marginTop: "40px",
+            justifyContent: "center",
+            "@media (max-width: 900px)": {
+              flexDirection: "column",
+              alignItems: "center",
+              gap: "20px",
             }
           }}
         >
-          Добавить новое фото
-        </Button>
-      </Box>
-      <div style={{ marginTop: "10px", display: "flex", justifyContent: "center", gap: "20px",marginBottom:"30px" }}>
-        <Button
+          {isLoading ? (
+            <div>Загрузка...</div>
+          ) : Array.isArray(photos) ? (
+            photos.map((image, index) => (
+              <Box
+                key={image.id}
+                sx={{
+                  width: "400px",
+                  height: "200px",
+                  overflow: "hidden",
+                  borderRadius: "8px",
+                  border: "1px solid #ccc",
+                  boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  cursor: "grab",
+                  position: "relative",
+                  "@media (max-width: 420px)": {
+                    width: "auto",
+                    height: "auto",
+                  }
+                }}
+                draggable={true}
+                onDragStart={(e) => dragStart(e, image)}
+                onDragEnd={dragEnd}
+                onDragOver={dragOver}
+                onDrop={(e) => drop(e, image)}
+              >
+                <Button
+                  onClick={() => navigate(`/photos/${image.id}`)}
+                  sx={{
+                    position: 'absolute',
+                    top: 7,
+                    right: 10,
+                    backgroundColor: "#FDE910",
+                    borderRadius: "50%",
+                    width: "30px",
+                    height: "30px",
+                    minWidth: "30px",
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  <ModeEditIcon style={{ color: "rgb(52, 51, 50)" }} />
+                </Button>
+
+                <Button
+                  onClick={() => handleDeleteClick(image.id)}
+                  sx={{
+                    position: 'absolute',
+                    top: 7,
+                    left: 10,
+                    width: "30px",
+                    height: "30px",
+                    minWidth: "30px",
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  <DeleteIcon style={{ color: "#B00000" }} />
+                </Button>
+                <Box
+                  component="img"
+                  src={`${apiUrl}/${image.photo}`}
+                  alt={`Slide ${index}`}
+                  sx={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    "@media (max-width: 420px)": {
+                      width: "100%",
+                      height: "auto",
+                    }
+                  }}
+                />
+              </Box>
+            ))
+          ) : (
+            <div>Данные не загружены.</div>
+          )}
+        </Box>
+        <Box sx={{ marginTop: "40px", display: "flex", justifyContent: "center", marginBottom:"50px",
+          "@media (max-width: 550px)": {
+            display:"none"
+          }
+        }}>
+          <Button
+            onClick={handleSave}
+            variant="contained"
+            color="primary"
+            sx={{
+              backgroundColor: "#738A6E",
+              color: "white",
+              marginRight: "20px",
+              fontSize: "16px",
+              borderRadius:"20px",
+              "@media (max-width: 550px)": {
+                display:"none"
+              }}}
+          >
+            Сохранить порядок
+          </Button>
+        </Box>
+        <div style={{ marginTop: "10px", display: "flex", justifyContent: "center", gap: "20px",marginBottom:"30px" }}>
+          <Button
             onClick={handleSave}
             variant="contained"
             color="primary"
@@ -274,37 +254,12 @@ const DragAndDropPhoto = () => {
                 justifyContent: "center",
                 alignItems: "center",
               }}}
-        >
-          <PublishedWithChangesIcon style={{ width: "25px", height: "25px" }}/>
-        </Button>
-        <Button
-            onClick={() => setIsAddModalOpen(true)}
-            variant="contained"
-            color="primary"
-            sx={{
-              display: "none",
-              "@media (max-width: 550px)": {
-                display: "flex",
-                backgroundColor: "#FDE910",
-                color: "rgb(52, 51, 50)",
-                borderRadius: "50%",
-                width: "45px",
-                height: "45px",
-                minWidth: "45px",
-                justifyContent: "center",
-                alignItems: "center",
-              },
-            }}
-        >
-          <AddPhotoAlternateIcon style={{ width: "25px", height: "25px" }} />
-        </Button>
-      </div>
-      <ModalWindowAddNewPhoto
-        open={isAddModalOpen}
-        onClose={() => setIsAddModalOpen(false)}
-      />
-      <NavLink to="/edition_site" style={{ color:"#738A6E", textDecoration:"none" }}><span><ArrowBackIcon sx={{width:"20px", marginRight:"10px"}}/>Вернуться к редактированию сайта</span></NavLink>
-    </>
+          >
+            <PublishedWithChangesIcon style={{ width: "25px", height: "25px" }}/>
+          </Button>
+        </div>
+      </Box>
+    </Box>
   );
 };
 
