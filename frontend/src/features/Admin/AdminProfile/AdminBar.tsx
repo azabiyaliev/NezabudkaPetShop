@@ -9,9 +9,10 @@ import { NavLink } from "react-router-dom";
 import "./Admin.css";
 import { ListItemButton } from "@mui/joy";
 import { ExpandLess } from "@mui/icons-material";
-import React from "react";
+import { useState } from 'react';
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import ReorderOutlinedIcon from "@mui/icons-material/ReorderOutlined";
+import EditNoteIcon from '@mui/icons-material/EditNote';
 import PlaylistAddOutlinedIcon from "@mui/icons-material/PlaylistAddOutlined";
 import {
   addErrorFromSlice,
@@ -21,20 +22,31 @@ import { useAppDispatch, useAppSelector, usePermission } from '../../../app/hook
 import { selectUser } from "../../../store/users/usersSlice.ts";
 
 const AdminBar = () => {
-  const [open, setOpen] = React.useState(true);
-  const [openProducts, setOpenProducts] = React.useState(true);
+  const [openCategories, setOpenCategories] = useState(false);
+  const [openCarousel, setOpenCarousel] = useState(false);
+  const [openBrands, setOpenBrands] = useState(false);
+  const [openProducts, setOpenProducts] = useState(true);
   const addError = useAppSelector(addErrorFromSlice);
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
   const can = usePermission(user);
 
-  const handleClick = () => {
-    setOpen(!open);
+  const handleCategoriesClick = () => {
+    setOpenCategories(!openCategories);
   };
 
-  const handleClose = () => {
+  const handleCarouselClick = () => {
+    setOpenCarousel(!openCarousel);
+  };
+
+  const handleBrandsClick = () => {
+    setOpenBrands(!openBrands);
+  };
+
+  const handleProductsClick = () => {
     setOpenProducts(!openProducts);
   };
+
 
   return (
     <div className="admin-bar">
@@ -68,22 +80,13 @@ const AdminBar = () => {
             <ListItemText primary="Клиенты" className="text-black" />
           </ListItem>
 
-          <ListItemButton
-            onClick={handleClick}
-            sx={{
-              marginLeft: "15px",
-            }}
-          >
+          <ListItemButton onClick={handleCategoriesClick} sx={{ marginLeft: "15px" }}>
             <ListItemText primary="Категории" />
-            {open ? <ExpandLess /> : <KeyboardArrowRightIcon />}
+            {openCategories ? <ExpandLess /> : <KeyboardArrowRightIcon />}
           </ListItemButton>
-          <Collapse in={open} timeout="auto" unmountOnExit>
+          <Collapse in={openCategories} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-              <ListItemButton
-                sx={{ pl: 3 }}
-                component={NavLink}
-                to="/private/manage_categories"
-              >
+              <ListItemButton sx={{ pl: 3 }} component={NavLink} to="/private/manage_categories">
                 <ListItemIcon>
                   <ReorderOutlinedIcon />
                 </ListItemIcon>
@@ -92,70 +95,80 @@ const AdminBar = () => {
             </List>
           </Collapse>
 
-          <ListItemButton
-            onClick={handleClick}
-            sx={{
-              marginLeft: "15px",
-            }}
-          >
-            <ListItemText primary="Бренды" />
-            {open ? <ExpandLess /> : <KeyboardArrowRightIcon />}
+          <ListItemButton onClick={handleCarouselClick} sx={{ marginLeft: "15px" }}>
+            <ListItemText primary="Карусель" />
+            {openCarousel ? <ExpandLess /> : <KeyboardArrowRightIcon />}
           </ListItemButton>
-          <Collapse in={open} timeout="auto" unmountOnExit>
+          <Collapse in={openCarousel} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-              <ListItemButton
-                sx={{ pl: 3 }}
-                component={NavLink}
-                to="/private/brands"
-              >
-                <ListItemIcon>
-                  <ReorderOutlinedIcon />
-                </ListItemIcon>
-                <ListItemText primary="Все бренды" />
-              </ListItemButton>
-              <ListItemButton
-                sx={{ pl: 3 }}
-                component={NavLink}
-                to="/private/add_brand"
-                onClick={() =>
-                  addError !== null ? dispatch(clearError()) : null
-                }
-              >
+              <ListItemButton sx={{ pl: 3 }} component={NavLink} to="/private/brands">
                 <ListItemIcon>
                   <PlaylistAddOutlinedIcon />
                 </ListItemIcon>
-                <ListItemText primary="Добавить бренд" />
+                <ListItemText primary="Добавить изображение в карусель" />
+              </ListItemButton>
+              <ListItemButton sx={{ pl: 3 }} component={NavLink} to="/private/add_brand" onClick={() => addError !== null ? dispatch(clearError()) : null}>
+                <ListItemIcon>
+                  <EditNoteIcon fontSize="medium" />
+                </ListItemIcon>
+                <ListItemText primary="Редактирование каруселя" />
               </ListItemButton>
             </List>
           </Collapse>
 
-          <ListItemButton
-            onClick={handleClose}
-            sx={{
-              marginLeft: "15px",
-            }}
-          >
+          <ListItemButton onClick={handleBrandsClick} sx={{ marginLeft: "15px" }}>
+            <ListItemText primary="Бренды" />
+            {openBrands ? <ExpandLess /> : <KeyboardArrowRightIcon />}
+          </ListItemButton>
+          <Collapse in={openBrands} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              <ListItemButton sx={{ pl: 1 }}>
+                <ListItem component={NavLink} to="/private/brands">
+                  <ListItemIcon>
+                    <ReorderOutlinedIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Все бренды" className="text-black" />
+                </ListItem>
+              </ListItemButton>
+              <ListItemButton sx={{ pl: 1 }}>
+                <ListItem
+                  component={NavLink}
+                  to="/private/add_brand"
+                  onClick={() => addError !== null ? dispatch(clearError()) : null}
+                >
+                  <ListItemIcon>
+                    <PlaylistAddOutlinedIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Добавить бренд" className="text-black" />
+                </ListItem>
+              </ListItemButton>
+            </List>
+          </Collapse>
+
+          <ListItemButton onClick={handleProductsClick} sx={{ marginLeft: "15px" }}>
             <ListItemText primary="Товары" />
             {openProducts ? <ExpandLess /> : <KeyboardArrowRightIcon />}
           </ListItemButton>
           <Collapse in={openProducts} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-              <ListItemButton sx={{ pl: 3 }}>
+              <ListItemButton sx={{ pl: 1 }}>
                 <ListItem component={NavLink} to="/private/products">
+                  <ListItemIcon>
+                    <ReorderOutlinedIcon />
+                  </ListItemIcon>
                   <ListItemText primary="Все товары" className="text-black" />
                 </ListItem>
               </ListItemButton>
-              <ListItemButton sx={{ pl: 3 }}>
+              <ListItemButton sx={{ pl: 1 }}>
                 <ListItem component={NavLink} to="/private/add_product">
-                  <ListItemText
-                    primary="Добавить товар"
-                    className="text-black"
-                  />
+                  <ListItemIcon>
+                    <PlaylistAddOutlinedIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Добавить товар" className="text-black" />
                 </ListItem>
               </ListItemButton>
             </List>
           </Collapse>
-
         </List>
       )}
     </div>
