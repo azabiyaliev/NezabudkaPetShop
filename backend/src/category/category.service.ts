@@ -162,6 +162,19 @@ export class CategoryService {
     return { message: 'Родительская категория подкатегории успешно обновлена' };
   }
 
+  async addIconToCategory(id: number, filename: string) {
+    await this.validateCategory(id);
+
+    await this.prisma.category.update({
+      where: { id },
+      data: {
+        icon: filename,
+      },
+    });
+
+    return { message: 'Иконка добавлена успешно', icon: filename };
+  }
+
   async deleteCategory(id: number) {
     await this.validateCategory(id);
 

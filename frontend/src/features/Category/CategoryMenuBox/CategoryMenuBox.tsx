@@ -1,12 +1,17 @@
-import { useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
+import React, { useEffect, useState } from 'react';
+import { useAppDispatch, useAppSelector, usePermission } from '../../../app/hooks.ts';
 import { selectCategories } from "../../../store/categories/categoriesSlice.ts";
 import "./CategoryMenuBox.css";
-import paw from "../../.../../../assets/paw-solid-svgrepo-com.svg";
 import { fetchCategoriesThunk } from '../../../store/categories/categoriesThunk.ts';
 import { Subcategory } from '../../../types';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { useNavigate } from 'react-router-dom';
+import { Box, IconButton, Modal } from '@mui/material';
+import CategoryIcons from '../../../components/Forms/CategoryIcons/CategoryIcons.tsx';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import Tooltip from '@mui/material/Tooltip';
+import { selectUser } from '../../../store/users/usersSlice.ts';
+import { apiUrl } from '../../../globalConstants.ts';
 
 const CategoryMenuBox = () => {
   const categories = useAppSelector(selectCategories);
@@ -15,6 +20,11 @@ const CategoryMenuBox = () => {
   const [hoveredSubcategory, setHoveredSubcategory] = useState<Subcategory | null>(null);
   const [hoveredNestedSubcategory, setHoveredNestedSubcategory] = useState<Subcategory | null>(null);
   const navigate = useNavigate();
+  const [selectedSubcategoryId, setSelectedSubcategoryId] = useState<number | null>(null);
+  const [openIconForm, setOpenIconForm] = useState(false);
+
+  const user = useAppSelector(selectUser);
+  const can = usePermission(user);
 
   const handleCategoryClick = (categoryTitle: string) => {
     setSelectedCategory(categoryTitle);
@@ -28,36 +38,30 @@ const CategoryMenuBox = () => {
     (cat) => cat.title === selectedCategory,
   );
 
+  const handleCloseIconForm = () => {
+    setOpenIconForm(false);
+  };
+
+  const handleOpenIconForm = (e: React.FormEvent, subId: number) => {
+    e.preventDefault();
+    setSelectedSubcategoryId(subId);
+    setOpenIconForm(true);
+  };
+
   return (
     <div className="menu-box mt-5 col-lg-3 col-md-4 d-none d-md-block">
       <ul className="nav category-nav">
-        <li className="nav-item-category">
-          <a
-            href="#"
-            className={selectedCategory === "Собаки" ? "active" : ""}
-            onClick={() => handleCategoryClick("Собаки")}
-          >
-            Собаки
-          </a>
-        </li>
-        <li className="nav-item-category">
-          <a
-            href="#"
-            className={selectedCategory === "Кошки" ? "active" : ""}
-            onClick={() => handleCategoryClick("Кошки")}
-          >
-            Кошки
-          </a>
-        </li>
-        <li className="nav-item-category">
-          <a
-            href="#"
-            className={selectedCategory === "Другие питомцы" ? "active" : ""}
-            onClick={() => handleCategoryClick("Другие питомцы")}
-          >
-            Другие питомцы
-          </a>
-        </li>
+        {["Собаки", "Кошки", "Другие питомцы"].map((catTitle) => (
+          <li className="nav-item-category" key={catTitle}>
+            <a
+              href="#"
+              className={selectedCategory === catTitle ? "active" : ""}
+              onClick={() => handleCategoryClick(catTitle)}
+            >
+              {catTitle}
+            </a>
+          </li>
+        ))}
       </ul>
 
       <div className="subcategory-menu-desktop">
@@ -74,7 +78,18 @@ const CategoryMenuBox = () => {
             style={{ position: "relative" }}
           >
             <a href="#" className="nav-category-link">
-              <img src={paw} alt="paw icon" className="paw-icon" />
+              {user && can(["admin", "superAdmin"]) && (
+                <Tooltip title="Добавить иконку">
+                  <IconButton onClick={(e) => handleOpenIconForm(e, sub.id)}>
+                    <AddCircleOutlineIcon />
+                  </IconButton>
+                </Tooltip>
+              )}
+              <img
+                alt={sub.title}
+                src={`${apiUrl}/${sub.icon}`}
+                style={{ width: "30px", height: "30px" }}
+              />
               {sub.title}
             </a>
 
@@ -82,7 +97,7 @@ const CategoryMenuBox = () => {
               sub.subcategories &&
               sub.subcategories.length > 0 && (
                 <div className="nested-subcategories">
-                  {sub.subcategories.map((nested) => (
+                  {sub.subcategories?.map((nested) => (
                     <div
                       key={nested.id}
                       className="nested-subcategory-item"
@@ -105,7 +120,7 @@ const CategoryMenuBox = () => {
                         nested.subcategories &&
                         nested.subcategories.length > 0 && (
                           <div className="third-level-subcategories">
-                            {nested.subcategories.map((third) => (
+                            {nested.subcategories?.map((third) => (
                               <a
                                 key={third.id}
                                 href="#"
@@ -123,6 +138,25 @@ const CategoryMenuBox = () => {
           </div>
         ))}
       </div>
+
+      <Modal
+        open={openIconForm}
+        onClose={handleCloseIconForm}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Box sx={{ bgcolor: "white", p: 4, borderRadius: 2, width: 400 }}>
+          {selectedSubcategoryId !== null && (
+            <CategoryIcons
+              subcategoryId={selectedSubcategoryId}
+              onClose={handleCloseIconForm}
+            />
+          )}
+        </Box>
+      </Modal>
     </div>
   );
 };

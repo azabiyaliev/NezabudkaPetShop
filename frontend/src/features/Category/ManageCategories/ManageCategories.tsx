@@ -41,6 +41,7 @@ const ManageCategories = () => {
   const [open, setOpen] = useState(false);
   const [openSubModal, setOpenSubModal] = useState(false);
   const [openAddSubModal, setOpenAddSubModal] = useState(false);
+
   const [parentCategoryId, setParentCategoryId] = useState<number | null>(null);
   const [treeData, setTreeData] = useState<NodeModel[]>([]);
 
@@ -106,8 +107,6 @@ const ManageCategories = () => {
       toast.error(ERROR_CATEGORY_DELETE, { position: 'top-center' });
     }
   };
-
-  console.log(categories)
 
   const handleAddSubcategory = (categoryId: number) => {
     setParentCategoryId(categoryId);
@@ -331,6 +330,7 @@ const ManageCategories = () => {
             )}
           </Box>
         </Modal>
+
       </Box>
     </>
   );

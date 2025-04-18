@@ -17,6 +17,34 @@ export const fetchCategoriesThunk = createAsyncThunk<ICategories[], void>(
   },
 );
 
+export const addIconToCategoryThunk = createAsyncThunk<
+  { icon: string },
+  { id: number; iconFile: File; },
+  { rejectValue: GlobalError }
+>(
+  "category/addIconToCategory",
+  async ({ id, iconFile }, { rejectWithValue }) => {
+    const formData = new FormData();
+    formData.append("icon", iconFile);
+
+    try {
+      const response = await axiosApi.patch(
+        `/category/${id}/icon`,
+        formData,
+      );
+
+      return response.data;
+    } catch (error) {
+      if (isAxiosError(error) && error.response) {
+        return rejectWithValue(error.response.data);
+      }
+      throw error;
+    }
+  }
+);
+
+
+
 export const addNewCategory = createAsyncThunk<
   void,
   { category: CategoryMutation; token: string }

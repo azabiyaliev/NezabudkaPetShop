@@ -19,7 +19,6 @@ const CategoryForm: React.FC<Props> = ({ onSubmit }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(category);
     if (category.title.trim() === "") {
       return toast.warning(WARNING_EMPTY_SUBCATEGORY , { position: "top-center" });
     }
