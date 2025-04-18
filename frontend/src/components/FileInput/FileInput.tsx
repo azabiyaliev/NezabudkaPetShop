@@ -44,7 +44,7 @@ const FileInput: React.FC<Props> = ({ name, label, onGetFile }) => {
             label={label}
             value={fileName}
             onClick={activateInput}
-            sx={{ width: 1 }}
+            sx={{ width: '100%' }}
           />
         </Grid>
         <Grid size={{ xs: 3 }}>
@@ -55,6 +55,9 @@ const FileInput: React.FC<Props> = ({ name, label, onGetFile }) => {
               color: "white",
               textTransform: "uppercase",
               background: "#237803",
+              width: "100%",
+              fontSize: "0.75rem",
+              padding: "6px 12px",
             }}
           >
             Выбрать изображение
