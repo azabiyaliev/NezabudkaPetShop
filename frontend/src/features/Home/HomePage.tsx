@@ -15,6 +15,8 @@ import { addItem, createCart, deleteItemsCart, fetchCart } from '../../store/car
 import { ICartBack, ICartItem } from '../../types';
 import { userRoleAdmin, userRoleClient, userRoleSuperAdmin } from '../../globalConstants.ts';
 import { useNavigate } from 'react-router-dom';
+import { selectEditSite } from '../../store/editionSite/editionSiteSlice.ts';
+import { fetchSite } from '../../store/editionSite/editionSiteThunk.ts';
 
 const HomePage = () => {
   const [openCart, setOpenCart] = useState<boolean>(false);
@@ -23,6 +25,7 @@ const HomePage = () => {
   const brands = useAppSelector(brandsFromSlice);
   const user = useAppSelector(selectUser);
   const cart = useAppSelector(cartFromSlice);
+  const site = useAppSelector(selectEditSite)
   const createCartError = useAppSelector(cartErrorFromSlice);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -59,6 +62,10 @@ const HomePage = () => {
       }
     }
   }, [user, cart, dispatch]);
+
+  useEffect(() => {
+    dispatch(fetchSite())
+  }, [dispatch]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -111,6 +118,8 @@ const HomePage = () => {
     }
   }, [dispatch, cart, user, navigate]);
 
+  console.log(site)
+
   return (
     <Container>
       <CustomCart openCart={openCart} closeCart={closeCart}/>
@@ -120,14 +129,16 @@ const HomePage = () => {
         sx={{
           display: "flex",
           justifyContent: "space-between",
-          flexDirection: { xs: "column", md: "row" },
-          alignItems: { xs: "center", md: "stretch" },
+          flexDirection: {xs: "column", md: "row"},
+          alignItems: {xs: "center", md: "stretch"},
           gap: 2,
-          "@media (max-width: 990px)": { display: "flex",
-            justifyContent: "row", },
+          "@media (max-width: 990px)": {
+            display: "flex",
+            justifyContent: "row",
+          },
         }}
       >
-        <CategoryMenuBox />
+        <CategoryMenuBox/>
         <Box
           sx={{
             flex: 1,
@@ -136,7 +147,7 @@ const HomePage = () => {
             overflow: "hidden",
           }}
         >
-          <SwiperCarousel />
+          <SwiperCarousel/>
         </Box>
       </Box>
 
@@ -155,8 +166,19 @@ const HomePage = () => {
         <CategoryCard/>
       </Box>
 
+      <Box sx={{ width: "480px", height: "480px", flexShrink: 0 }}>
+        <iframe
+          src={site?.linkAddress}
+          width="100%"
+          height="100%"
+          style={{ border: 0 }}
+          allowFullScreen
+          loading="lazy"
+        ></iframe>
+      </Box>
+
       {brands.length > 0 && (
-        <Box sx={{ marginTop: "40px" }}>
+        <Box sx={{marginTop: "40px"}}>
           <Typography
             sx={{
               fontSize: "40px",
@@ -167,7 +189,7 @@ const HomePage = () => {
           >
             Наши бренды
           </Typography>
-          <BrandForHomePage brands={brands} />
+          <BrandForHomePage brands={brands}/>
         </Box>
       )}
     </Container>

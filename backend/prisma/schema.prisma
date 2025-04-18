@@ -280,3 +280,11 @@ model DeliveryPage {
 
   @@map("deliveryPage")
 }
+
+model ContactsPage {
+  id   Int    @id @default(autoincrement())
+  text String
+  map  String
+
+  @@map("contactsPage")
+}
