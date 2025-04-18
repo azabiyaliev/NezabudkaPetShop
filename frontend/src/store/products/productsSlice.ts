@@ -1,6 +1,6 @@
 import { ProductRequest, ProductResponse } from "../../types";
 import { PayloadAction } from "@reduxjs/toolkit";
-import { editProduct, getOneProduct, getProducts, getProductsByBrand } from './productsThunk.ts';
+import { editProduct, getOneProduct, getProducts, getProductsByBrand, getProductsByCategory } from './productsThunk.ts';
 import { SubcategoryWithBrand } from "../../types";
 import { createSlice } from "@reduxjs/toolkit";
 import { addProduct, getAllProductsByCategory } from "./productsThunk.ts";
@@ -94,7 +94,18 @@ const productsSlice = createSlice({
       })
       .addCase(getProductsByBrand.rejected, (state) => {
         state.loading = false;
-      });
+      })
+      .addCase(getProductsByCategory.pending, (state) => {
+      state.loading = true;
+    })
+      .addCase(getProductsByCategory.fulfilled, (state, action: PayloadAction<ProductResponse[]>) => {
+        state.products = [];
+        state.loading = false;
+        state.products = action.payload;
+      })
+      .addCase(getProductsByCategory.rejected, (state) => {
+        state.loading = false;
+      })
   },
 });
 

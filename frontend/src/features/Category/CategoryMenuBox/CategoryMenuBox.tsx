@@ -6,7 +6,7 @@ import paw from "../../.../../../assets/paw-solid-svgrepo-com.svg";
 import { fetchCategoriesThunk } from '../../../store/categories/categoriesThunk.ts';
 import { Subcategory } from '../../../types';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-
+import { useNavigate } from 'react-router-dom';
 
 const CategoryMenuBox = () => {
   const categories = useAppSelector(selectCategories);
@@ -14,6 +14,7 @@ const CategoryMenuBox = () => {
   const dispatch = useAppDispatch();
   const [hoveredSubcategory, setHoveredSubcategory] = useState<Subcategory | null>(null);
   const [hoveredNestedSubcategory, setHoveredNestedSubcategory] = useState<Subcategory | null>(null);
+  const navigate = useNavigate();
 
   const handleCategoryClick = (categoryTitle: string) => {
     setSelectedCategory(categoryTitle);
@@ -62,6 +63,7 @@ const CategoryMenuBox = () => {
       <div className="subcategory-menu-desktop">
         {currentCategory?.subcategories?.map((sub) => (
           <div
+            onClick={() => navigate(`/all-products/${sub.id}`)}
             key={sub.id}
             className="subcategory-item-in-box"
             onMouseEnter={() => setHoveredSubcategory(sub)}

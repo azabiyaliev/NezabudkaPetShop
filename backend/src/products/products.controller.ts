@@ -113,4 +113,11 @@ export class ProductsController {
   async getProductByCategory(@Param('id') categoryId: string) {
     return await this.productsService.getBrandsByCategoryId(Number(categoryId));
   }
+
+  @Get('productsByCategory/:id')
+  async getProductsByCategory(@Param('id') categoryId: string) {
+    return await this.productsService.getProductsByCategoryId(
+      Number(categoryId),
+    );
+  }
 }

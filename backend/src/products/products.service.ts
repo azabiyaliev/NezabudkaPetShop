@@ -358,4 +358,53 @@ export class ProductsService {
       ),
     }));
   }
+
+  async getProductsByCategoryId(id: number) {
+    const category = await this.prismaService.category.findUnique({
+      where: { id },
+    });
+
+    if (!category) {
+      throw new Error('Категория не найдена');
+    }
+
+    let products;
+
+    if (!category.parentId) {
+      const subcategories = await this.prismaService.category.findMany({
+        where: { parentId: id },
+        select: { id: true },
+      });
+
+      const subcategoryId = subcategories.map((cat) => cat.id);
+
+      subcategoryId.push(id);
+
+      products = await this.prismaService.products.findMany({
+        where: {
+          categoryId: { in: subcategoryId },
+        },
+        include: {
+          category: {
+            include: {
+              parent: true,
+            },
+          },
+        },
+      });
+    } else {
+      products = await this.prismaService.products.findMany({
+        where: { categoryId: id },
+        include: {
+          category: {
+            include: {
+              parent: true,
+            },
+          },
+        },
+      });
+    }
+
+    return products;
+  }
 }

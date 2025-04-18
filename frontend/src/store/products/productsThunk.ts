@@ -119,3 +119,11 @@ export const getProductsByBrand = createAsyncThunk<ProductResponse[], number>(
     return products.data || [];
   }
 );
+
+export const getProductsByCategory = createAsyncThunk<ProductResponse[], number>(
+  "products/productByCategory",
+  async (id) => {
+    const products = await axiosApi<ProductResponse[]>(`products/productsByCategory/${id}`);
+    return products.data || [];
+  }
+)
