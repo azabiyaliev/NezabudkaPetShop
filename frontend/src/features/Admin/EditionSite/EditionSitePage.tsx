@@ -24,9 +24,6 @@ const EditionSitePage = () => {
   return (
     <div>
       <div>
-        <h2 className="text-uppercase text-center mt-5">
-          Редактирование сайта
-        </h2>
         <div className="d-flex ">
           <div className="col-3 mt-5 ">
             <AdminBar />
