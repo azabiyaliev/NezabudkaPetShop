@@ -25,7 +25,7 @@ export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
   @UseGuards(TokenAuthGuard, RolesGuard)
-  @Roles('admin')
+  @Roles('admin', 'superAdmin')
   @Get('all-orders')
   async getAllOrders(
     @Query('page') page?: string,
@@ -38,7 +38,7 @@ export class OrdersController {
   }
 
   @UseGuards(TokenAuthGuard, RolesGuard)
-  @Roles('admin')
+  @Roles('superAdmin')
   @Get('statistics')
   async getStatistics() {
     return await this.ordersService.getOrderStats();
@@ -94,7 +94,7 @@ export class OrdersController {
   }
 
   @UseGuards(TokenAuthGuard, RolesGuard)
-  @Roles('admin')
+  @Roles('admin', 'superAdmin')
   @Patch(':id')
   async updateOrderStatus(
     @Param('id') orderId: string,
@@ -103,8 +103,7 @@ export class OrdersController {
     return await this.ordersService.updateStatus(orderDto, Number(orderId));
   }
 
-  @UseGuards(TokenAuthGuard, RolesGuard)
-  @Roles('admin')
+  @UseGuards(TokenAuthGuard)
   @Delete(':id')
   async deleteOrder(@Param('id') orderId: string) {
     return await this.ordersService.deleteOrder(Number(orderId));

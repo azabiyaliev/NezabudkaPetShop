@@ -8,6 +8,13 @@ interface Props {
   stats: OrderStats;
 }
 
+interface ChartDataItem {
+  category: string;
+  value1?: number;
+  value2?: number;
+  name?: string;
+}
+
 const ColumnChart: React.FC<Props> = ({stats}) => {
 
   useLayoutEffect(() => {
@@ -31,11 +38,11 @@ const ColumnChart: React.FC<Props> = ({stats}) => {
       })
     );
 
-    const data = [
-      {category: 'Доставка', value1: stats.pickUpStatistic, value2: stats.deliveryStatistic},
-      {category: 'Оплата', value1: stats.paymentByCard, value2: stats.paymentByCash},
+    const data: ChartDataItem[] = [
+      {category: 'Тип получения', value1: stats.pickUpStatistic, value2: stats.deliveryStatistic},
+      {category: 'Способ оплаты', value1: stats.paymentByCard, value2: stats.paymentByCash},
       {category: 'Использование бонусов', value1: stats.bonusUsage},
-      {category: 'Заказы', value1: stats.canceledOrderCount, value2: stats.totalOrders},
+      {category: 'Статус заказа', value1: stats.canceledOrderCount, value2: stats.totalOrders},
     ];
 
     const yAxis = chart.yAxes.push(
@@ -69,7 +76,6 @@ const ColumnChart: React.FC<Props> = ({stats}) => {
 
     const series1 = chart.series.push(
       am5xy.ColumnSeries.new(root, {
-        name: "Положительная статистика",
         xAxis: xAxis,
         yAxis: yAxis,
         valueYField: 'value1',
@@ -81,11 +87,17 @@ const ColumnChart: React.FC<Props> = ({stats}) => {
         interpolationEasing: am5.ease.inOut(am5.ease.elastic),
       })
     );
-    series1.data.setAll(data);
+    series1.data.setAll(data.map(d => ({
+      ...d,
+      name:
+        d.category === 'Тип получения' ? 'Доставка' :
+          d.category === 'Способ оплаты' ? 'Карта' :
+            d.category === 'Использование бонусов' ? 'Бонусы' :
+              d.category === 'Статус заказа' ? 'Всего' : ''
+    })));
 
     const series2 = chart.series.push(
       am5xy.ColumnSeries.new(root, {
-        name: "Отрицательная статистика",
         xAxis: xAxis,
         yAxis: yAxis,
         valueYField: 'value2',
@@ -97,7 +109,13 @@ const ColumnChart: React.FC<Props> = ({stats}) => {
         })
       })
     );
-    series2.data.setAll(data);
+    series2.data.setAll(data.map(d => ({
+      ...d,
+      name:
+        d.category === 'Тип получения' ? 'Самовывоз' :
+          d.category === 'Способ оплаты' ? 'Наличные' :
+            d.category === 'Статус заказа' ? 'Отменено' : ''
+    })));
 
     [series1, series2].forEach(series => {
       series.columns.template.setAll({
@@ -108,11 +126,14 @@ const ColumnChart: React.FC<Props> = ({stats}) => {
         width: am5.percent(70)
       });
 
-      series.columns.template.adapters.add("fill", (fill) => {
-        if (fill) {
-          return am5.Color.brighten(fill, -0.2);
-        }
-        return am5.color("#000000");
+      series.columns.template.adapters.add("fill", (fill, target) => {
+        const context = target.dataItem?.dataContext as ChartDataItem;
+        const category = context?.category;
+        if (category === 'Тип получения') return am5.color('#4CAF50');
+        if (category === 'Способ оплаты') return am5.color('#2196F3');
+        if (category === 'Использование бонусов') return am5.color('#FF9800');
+        if (category === 'Статус заказа') return am5.color('#9C27B0');
+        return fill;
       });
 
       series.columns.template.events.on("pointerover", (ev) => {

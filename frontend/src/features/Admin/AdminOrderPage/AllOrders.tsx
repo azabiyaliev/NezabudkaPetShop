@@ -3,14 +3,25 @@ import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { getAllOrders } from '../../../store/orders/ordersThunk';
 import { Box, Button, CircularProgress, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material';
 import OrderAdminItem from './OrdersItem.tsx';
+import dayjs from 'dayjs';
+import { IOrder } from '../../../types';
 
 const AllOrders = () => {
   const dispatch = useAppDispatch();
-  const { data, meta } = useAppSelector((state) => state.orders.paginationOrders) || { data: [], meta: { total: 0, perPage: 10, currentPage: 1, lastPage: 1 } };
+  const { data, meta } = useAppSelector((state) => state.orders.paginationOrders) ||
+  { data: [],
+    meta: {
+    total: 0,
+      perPage: 10,
+      currentPage: 1,
+      lastPage: 1
+  }
+  };
   const [page, setPage] = useState(1);
   const orders = useAppSelector((state) => state.orders.orders);
   const loading = useAppSelector((state) => state.orders.isLoading);
   const [statusFilter, setStatusFilter] = useState<string>('All');
+  const [timeFilter, setTimeFilter] = useState<string>('All');
 
   useEffect(() => {
     dispatch(getAllOrders(page));
@@ -20,13 +31,32 @@ const AllOrders = () => {
     return <CircularProgress />;
   }
 
-  const handleFilterChange = (event: SelectChangeEvent) => {
+  const handleStatusFilterChange = (event: SelectChangeEvent) => {
     setStatusFilter(event.target.value);
   };
 
-  const filteredOrders = statusFilter === 'All'
-    ? orders
-    : orders.filter(order => order.status === statusFilter);
+  const handleTimeFilterChange = (event: SelectChangeEvent) => {
+    setTimeFilter(event.target.value);
+  };
+
+  const filterByStatus = (order: IOrder) => {
+    return statusFilter === 'All' || order.status === statusFilter;
+  };
+
+  const filterByTime = (order: IOrder) => {
+    const orderDate = dayjs(order.createdAt);
+    if (timeFilter === 'Today') {
+      return orderDate.isSame(dayjs(), 'day');
+    }
+    if (timeFilter === 'Last7Days') {
+      return orderDate.isAfter(dayjs().subtract(7, 'day'));
+    }
+    if (timeFilter === 'Last30Days') {
+      return orderDate.isAfter(dayjs().subtract(30, 'day'));
+    }
+    return true;
+  };
+  const filteredOrders = orders.filter(order => filterByStatus(order) && filterByTime(order));
 
   return (
     <>
@@ -35,7 +65,7 @@ const AllOrders = () => {
 
         <Select
           value={statusFilter}
-          onChange={handleFilterChange}
+          onChange={handleStatusFilterChange}
           sx={{ mb: 3, minWidth: 200 }}
         >
           <MenuItem value="All">Все</MenuItem>
@@ -45,7 +75,17 @@ const AllOrders = () => {
           <MenuItem value="Shipped">Shipped</MenuItem>
           <MenuItem value="Delivered">Delivered</MenuItem>
           <MenuItem value="Returned">Returned</MenuItem>
-          <MenuItem value="Canceled">Canceled</MenuItem>
+        </Select>
+
+        <Select
+          value={timeFilter}
+          onChange={handleTimeFilterChange}
+          sx={{ minWidth: 200 }}
+        >
+          <MenuItem value="All">За всё время</MenuItem>
+          <MenuItem value="Today">Сегодня</MenuItem>
+          <MenuItem value="Last7Days">Последние 7 дней</MenuItem>
+          <MenuItem value="Last30Days">Последние 30 дней</MenuItem>
         </Select>
 
         {loading ? (

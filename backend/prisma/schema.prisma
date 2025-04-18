@@ -195,6 +195,7 @@ enum OrderStatus {
   Packed
   Shipped
   Delivered
+  Received
   Returned
   Canceled
 }

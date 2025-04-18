@@ -12,12 +12,12 @@ import { selectUser } from '../../store/users/usersSlice.ts';
 import { fetchCart } from '../../store/cart/cartThunk.ts';
 import TotalPrice from '../../components/Domain/CustomCart/Basket/TotalPrice/TotalPrice.tsx';
 
-enum PaymentMethod {
+export enum PaymentMethod {
   ByCash = 'ByCash',
   ByCard = 'ByCard',
 }
 
-enum DeliveryMethod {
+export enum DeliveryMethod {
   Delivery = 'Delivery',
   PickUp = 'PickUp',
 }

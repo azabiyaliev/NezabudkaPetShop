@@ -107,7 +107,7 @@ const App = () => {
           <Route
             path="/private/order_stats"
             element={
-              <ProtectedRoute isAllowed={user && can(["admin", "superAdmin"])}>
+              <ProtectedRoute isAllowed={user && can(["superAdmin"])}>
                 <OrderStats />
               </ProtectedRoute>
             }

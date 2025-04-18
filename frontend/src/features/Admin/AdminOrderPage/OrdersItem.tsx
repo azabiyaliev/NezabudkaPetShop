@@ -24,17 +24,19 @@ import { IOrder } from '../../../types';
 import { useAppDispatch } from '../../../app/hooks.ts';
 import { deleteOrder, getAllOrders, updateOrderStatus } from '../../../store/orders/ordersThunk.ts';
 import { toast } from 'react-toastify';
+import { DeliveryMethod } from '../../Order/OrderForm.tsx';
 
 interface Props {
   order: IOrder;
 }
 
-enum OrderStatus {
+export enum OrderStatus {
   Pending = 'Pending',
 Confirmed = 'Confirmed',
 Packed = 'Packed',
 Shipped = 'Shipped',
 Delivered = 'Delivered',
+  Received = 'Received',
 Returned = 'Returned',
 Canceled = 'Canceled',
 }
@@ -77,13 +79,15 @@ const OrderAdminItem: React.FC<Props> = ({ order }) => {
         return 'secondary';
       case 'Delivered':
         return 'success';
+        case 'Received':
+          return 'success';
       default:
         return 'default';
     }
   };
 
   const handleDelete = async () => {
-    if (order.status === 'Delivered') {
+    if (order.status === 'Delivered' || order.status === 'Received') {
       await dispatch(deleteOrder(String(order.id)));
       await dispatch(getAllOrders());
       toast.success('Заказ удалён');
@@ -112,10 +116,24 @@ const OrderAdminItem: React.FC<Props> = ({ order }) => {
             size="small"
           />
         </Box>
-
         {isEditingStatus ? (
             <Box display="flex" alignItems="center">
-              <Select
+              {order.deliveryMethod === DeliveryMethod.PickUp ? (
+                <Select
+                  value={selectedStatus}
+                  onChange={handleStatusChange}
+                  size="small"
+                  sx={{ mr: 1, minWidth: 120 }}
+                >
+                  <MenuItem value={OrderStatus.Pending}>В обработке</MenuItem>
+                  <MenuItem value={OrderStatus.Confirmed}>Подтвержден</MenuItem>
+                  <MenuItem value={OrderStatus.Packed}>Упакован</MenuItem>
+                  <MenuItem value={OrderStatus.Shipped} disabled>Отправлен</MenuItem>
+                  <MenuItem value={OrderStatus.Delivered} disabled>Доставлен</MenuItem>
+                  <MenuItem value={OrderStatus.Received}>Получен</MenuItem>
+                </Select>
+              ) : (
+                <Select
                 value={selectedStatus}
                 onChange={handleStatusChange}
                 size="small"
@@ -126,8 +144,9 @@ const OrderAdminItem: React.FC<Props> = ({ order }) => {
                 <MenuItem value={OrderStatus.Packed}>Упакован</MenuItem>
                 <MenuItem value={OrderStatus.Shipped}>Отправлен</MenuItem>
                 <MenuItem value={OrderStatus.Delivered}>Доставлен</MenuItem>
-                <MenuItem value={OrderStatus.Canceled}>Отменен</MenuItem>
+                <MenuItem value={OrderStatus.Received}>Получен</MenuItem>
               </Select>
+              )}
               <Button
                 variant="contained"
                 size="small"
@@ -150,7 +169,7 @@ const OrderAdminItem: React.FC<Props> = ({ order }) => {
           variant="outlined"
           color="error"
           onClick={handleDelete}
-          disabled={order.status !== 'Delivered'}
+          disabled={order.status !== 'Delivered' && order.status !== 'Received'}
           sx={{
             marginRight: '20px'
           }}
