@@ -4,11 +4,13 @@ import { selectCategories } from "../../../store/categories/categoriesSlice.ts";
 import "./CategoryMenuBox.css";
 import paw from "../../.../../../assets/paw-solid-svgrepo-com.svg";
 import { fetchCategoriesThunk } from '../../../store/categories/categoriesThunk.ts';
+import { useNavigate } from 'react-router-dom';
 
 const CategoryMenuBox = () => {
   const categories = useAppSelector(selectCategories);
   const [selectedCategory, setSelectedCategory] = useState<string>("Собаки");
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const handleCategoryClick = (categoryTitle: string) => {
     setSelectedCategory(categoryTitle);
@@ -59,7 +61,7 @@ const CategoryMenuBox = () => {
         { currentCategory && (
           <div className="subcategory-menu-desktop">
             {currentCategory.subcategories?.map((sub) => (
-              <a key={sub.id} href="#" className="nav-category-link">
+              <a key={sub.id} href="#" className="nav-category-link" onClick={() => navigate(`/all-products/${sub.id}`)}>
                 <img src={paw} alt="paw icon" className="paw-icon" />
                 {sub.title}
               </a>
