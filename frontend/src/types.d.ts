@@ -96,6 +96,7 @@ export interface EditSiteMutation {
   email: string;
   phone: string;
   linkAddress: string;
+  mapGoogleLink: string;
 }
 
 export interface EditSite {
@@ -107,6 +108,7 @@ export interface EditSite {
   email: string;
   phone: string;
   linkAddress: string;
+  mapGoogleLink: string;
 }
 
 export interface PhotoCarousel {
