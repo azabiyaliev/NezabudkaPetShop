@@ -65,19 +65,19 @@ const HomePage = () => {
       await dispatch(getBrands()).unwrap();
 
       if (user && (user.role === userRoleClient)) {
-        await dispatch(createCart({token: user.token})).unwrap();
+        await dispatch(createCart()).unwrap();
 
         if (!createCartError) {
-          await dispatch(fetchCart({ token: user.token })).unwrap();
+          await dispatch(fetchCart()).unwrap();
         }
 
-        const userCart = await dispatch(fetchCart({ token: user.token })).unwrap();
+        const userCart = await dispatch(fetchCart()).unwrap();
 
         if (products.length > 0 && userCart && !synced) {
           setSynced(true);
 
           if (userCart.products.length > 0) {
-            await dispatch(deleteItemsCart({cartId: userCart.id, token: user.token})).unwrap();
+            await dispatch(deleteItemsCart({cartId: userCart.id})).unwrap();
           }
 
           for (const product of products) {
@@ -86,11 +86,10 @@ const HomePage = () => {
                 cartId: userCart.id,
                 productId: product.productId,
                 quantity: product.quantity,
-                token: user.token,
               })
             ).unwrap();
           }
-          await dispatch(fetchCart({ token: user.token })).unwrap();
+          await dispatch(fetchCart()).unwrap();
         }
       }
     };
