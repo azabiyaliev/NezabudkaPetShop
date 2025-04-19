@@ -51,7 +51,7 @@ const OrderForm = () => {
 
   useEffect(() => {
     if (user) {
-      dispatch(fetchCart({ token: user.token })).unwrap();
+      dispatch(fetchCart()).unwrap();
     }
   }, [dispatch, user]);
 

@@ -27,14 +27,8 @@ export class OrdersController {
   @UseGuards(TokenAuthGuard, RolesGuard)
   @Roles('admin', 'superAdmin')
   @Get('all-orders')
-  async getAllOrders(
-    @Query('page') page?: string,
-    @Query('limit') limit?: string,
-  ) {
-    return this.ordersService.getAllOrders({
-      page: Number(page),
-      limit: Number(limit),
-    });
+  async getAllOrders() {
+    return this.ordersService.getAllOrders();
   }
 
   @UseGuards(TokenAuthGuard, RolesGuard)
