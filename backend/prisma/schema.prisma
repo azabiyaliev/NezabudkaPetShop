@@ -65,14 +65,15 @@ model Brand {
 }
 
 model SiteEdition {
-  id          Int    @id @default(autoincrement())
-  instagram   String
-  whatsapp    String
-  schedule    String
-  address     String
-  email       String
-  phone       String
-  linkAddress String
+  id            Int    @id @default(autoincrement())
+  instagram     String
+  whatsapp      String
+  schedule      String
+  address       String
+  email         String
+  phone         String
+  linkAddress   String
+  mapGoogleLink String
 
   @@map("editionSite")
 }

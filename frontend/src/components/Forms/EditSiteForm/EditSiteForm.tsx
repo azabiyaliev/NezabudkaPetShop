@@ -16,7 +16,8 @@ const initialState: EditSiteMutation = {
   address: "",
   email: "",
   phone: "",
-  linkAddress: ""
+  linkAddress: "",
+  mapGoogleLink: "",
 };
 
 const regPhone = /^(\+996|0)\s?\d{3}\s?\d{3}\s?\d{3}$/;
@@ -329,8 +330,58 @@ const EditSiteForm = () => {
           <TextField
             fullWidth
             name="linkAddress"
-            label="Ссылка на местоположение на карте"
+            label="Ссылка на местоположение на карте 2GIS"
             value={form.linkAddress}
+            onChange={inputChangeHandler}
+            variant="outlined"
+            error={!!getFieldError("linkAddress") || Boolean(linkAddressError)}
+            helperText={getFieldError("linkAddress") || linkAddressError}
+            sx={{
+              mb: 3,
+              borderRadius: "20px",
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "20px",
+                backgroundColor: "#E4E6D9",
+                transition: "all 0.3s ease",
+                height: "56px",
+                "&.Mui-focused": {
+                  borderColor: "green",
+                },
+                "& .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "green",
+                  transition: "border-color 0.3s ease",
+                },
+                "&:hover .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "darkgreen",
+                },
+              },
+              "& .MuiInputLabel-root.Mui-focused": {
+                color: "green",
+              },
+              "& .MuiOutlinedInput-root.Mui-error": {
+                backgroundColor: "#FFECEC",
+                "& .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "#FF0000",
+                },
+              },
+              "& .MuiInputLabel-root.Mui-error": {
+                color: "#FF0000",
+              },
+              "& .MuiFormHelperText-root": {
+                minHeight: "20px",
+              },
+              "& .MuiFormHelperText-root.Mui-error": {
+                color: "#FF0000",
+                fontSize: "0.9rem",
+                fontWeight: 500,
+              },
+            }}
+          />
+          <TextField
+            fullWidth
+            name="mapGoogleLink"
+            label="Ссылка на местоположение на Google Map"
+            value={form.mapGoogleLink}
             onChange={inputChangeHandler}
             variant="outlined"
             error={!!getFieldError("linkAddress") || Boolean(linkAddressError)}
