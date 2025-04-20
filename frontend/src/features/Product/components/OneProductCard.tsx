@@ -14,9 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
 import { addItem, fetchCart } from "../../../store/cart/cartThunk.ts";
 import {
-  cartFromSlice,
-  clearCart,
-  newUserLogin,
+  cartFromSlice, newUserLogin,
   productCardToAdd,
   setToLocalStorage,
 } from "../../../store/cart/cartSlice.ts";
@@ -50,15 +48,6 @@ const OneProductCard: React.FC<Props> = ({ product }) => {
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const isAddToCartDisabled = !product.existence;
   const cartItem = cart && cart.products.find((item) => item.productId === product.id);
-
-  useEffect(() => {
-    if (user) {
-      dispatch(clearCart());
-      dispatch(fetchCart()).unwrap();
-    } else {
-      dispatch(newUserLogin());
-    }
-  }, [dispatch, user]);
 
   useEffect(() => {
     if (user) {
@@ -104,7 +93,12 @@ const OneProductCard: React.FC<Props> = ({ product }) => {
       ).unwrap();
       await dispatch(fetchCart()).unwrap();
     } else {
-      dispatch(productCardToAdd(product));
+      if (!cart) {
+        dispatch(newUserLogin());
+        dispatch(productCardToAdd(product));
+      } else {
+        dispatch(productCardToAdd(product));
+      }
     }
 
     const isFirstTimeAdded = cart?.products.some((item) => item.product.id === product.id);

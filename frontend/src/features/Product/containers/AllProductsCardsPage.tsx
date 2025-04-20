@@ -1,23 +1,16 @@
-import { Box, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
-import {
-  getProducts,
-  getProductsByCategory,
-} from "../../../store/products/productsThunk.ts";
-import { selectProducts } from "../../../store/products/productsSlice.ts";
-import OneProductCard from "../components/OneProductCard.tsx";
-import { getFavoriteProducts } from "../../../store/favoriteProducts/favoriteProductsThunks.ts";
-import { selectUser } from "../../../store/users/usersSlice.ts";
-import { useNavigate, useParams } from "react-router-dom";
-import {
-  fetchCategoriesThunk,
-  fetchSubcategories,
-} from "../../../store/categories/categoriesThunk.ts";
-import {
-  selectAllSubcategories,
-  selectCategories,
-} from "../../../store/categories/categoriesSlice.ts";
+import { Box, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
+import { getProducts, getProductsByCategory, } from '../../../store/products/productsThunk.ts';
+import { selectProducts } from '../../../store/products/productsSlice.ts';
+import OneProductCard from '../components/OneProductCard.tsx';
+import { getFavoriteProducts } from '../../../store/favoriteProducts/favoriteProductsThunks.ts';
+import { selectUser } from '../../../store/users/usersSlice.ts';
+import { useNavigate, useParams } from 'react-router-dom';
+import { fetchCategoriesThunk, fetchSubcategories, } from '../../../store/categories/categoriesThunk.ts';
+import { selectAllSubcategories, selectCategories, } from '../../../store/categories/categoriesSlice.ts';
+import { clearCart } from '../../../store/cart/cartSlice.ts';
+import { fetchCart } from '../../../store/cart/cartThunk.ts';
 
 const AllProductsCardsPage = () => {
   const dispatch = useAppDispatch();
@@ -51,7 +44,12 @@ const AllProductsCardsPage = () => {
 
   useEffect(() => {
     dispatch(fetchCategoriesThunk()).unwrap();
-  }, [dispatch]);
+
+    if (user) {
+      dispatch(clearCart());
+      dispatch(fetchCart()).unwrap();
+    }
+  }, [dispatch, user]);
 
   return (
     <Box sx={{ maxWidth: "1350px", margin: "0 auto", padding: 4 }}>
