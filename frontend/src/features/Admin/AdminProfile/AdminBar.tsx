@@ -34,6 +34,12 @@ const AdminBar = () => {
           <ListItem component={NavLink} to="/edition_site">
             <ListItemText primary="Редактирование сайта" className="text-black"/>
           </ListItem>
+          <ListItem component={NavLink} to="/edition_site">
+            <ListItemText primary="Редактирование сайта" className="text-black"/>
+          </ListItem>
+          <ListItem component={NavLink} to="/admin/statistic">
+            <ListItemText primary="Статистика" className="text-black"/>
+          </ListItem>
           <ListItemButton onClick={handleCategoriesClick}>
             <ListItemText primary="Категории"/>
             {openCategories ? <ExpandLess/> : <KeyboardArrowRight/>}
