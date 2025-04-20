@@ -10,6 +10,7 @@ export class SeedService {
   async seed() {
     await this.prisma.cart.deleteMany({});
     await this.prisma.cartItem.deleteMany({});
+    await this.prisma.favorite.deleteMany({});
     await this.prisma.passwordReset.deleteMany();
     await this.prisma.user.deleteMany({});
     await this.prisma.products.deleteMany({});
@@ -23,10 +24,9 @@ export class SeedService {
     await this.prisma.deliveryPage.deleteMany({});
 
     const password = await bcrypt.hash('123', 10);
-
-    await this.prisma.user.createMany({
-      data: [
-        {
+    const users = await Promise.all([
+      this.prisma.user.create({
+        data: {
           email: 'superAdmin@gmail.com',
           password: password,
           token: randomUUID(),
@@ -36,7 +36,9 @@ export class SeedService {
           phone: '+996555100333',
           isProtected: true,
         },
-        {
+      }),
+      this.prisma.user.create({
+        data: {
           email: 'kama@gmail.com',
           password: password,
           token: randomUUID(),
@@ -45,7 +47,20 @@ export class SeedService {
           role: 'admin',
           phone: '+996555100222',
         },
-        {
+      }),
+      this.prisma.user.create({
+        data: {
+          email: 'igor@gmail.com',
+          password: password,
+          token: randomUUID(),
+          firstName: 'Igor',
+          secondName: 'Blinov',
+          role: 'admin',
+          phone: '+996555100700',
+        },
+      }),
+      this.prisma.user.create({
+        data: {
           email: 'mirana@gmail.com',
           password: password,
           token: randomUUID(),
@@ -53,10 +68,45 @@ export class SeedService {
           secondName: 'Bekov',
           role: 'client',
           phone: '+996555100444',
-          bonus: 50,
         },
-      ],
-    });
+      }),
+      this.prisma.user.create({
+        data: {
+          email: 'ilon@gmail.com',
+          password: password,
+          token: randomUUID(),
+          firstName: 'Ilon',
+          secondName: 'Mask',
+          role: 'client',
+          phone: '+996555100555',
+        },
+      }),
+      this.prisma.user.create({
+        data: {
+          email: 'michael@gmail.com',
+          password: password,
+          token: randomUUID(),
+          firstName: 'Michael',
+          secondName: 'Jackson',
+          role: 'client',
+          phone: '+996555444444',
+        },
+      }),
+      this.prisma.user.create({
+        data: {
+          email: 'cristiano@gmail.com',
+          password: password,
+          token: randomUUID(),
+          firstName: 'Cristiano',
+          secondName: 'Ronaldo',
+          role: 'client',
+          phone: '+996555555555',
+        },
+      }),
+    ]);
+
+    const [, , , miranaClient, ilonClient, michaelClient, cristianoClient] =
+      users;
 
     await this.prisma.siteEdition.create({
       data: {
@@ -67,7 +117,8 @@ export class SeedService {
         email: 'nezabudka.zoo@gmail.com',
         phone: '+(996)500-430-481',
         linkAddress: 'https://go.2gis.com/ZA3mL',
-        mapGoogleLink: "https://www.google.com/maps/d/u/0/embed?mid=13x6QctVrCI831zyl84NAk4f4rI6LUDI&usp=sharing",
+        mapGoogleLink:
+          'https://www.google.com/maps/d/u/0/embed?mid=13x6QctVrCI831zyl84NAk4f4rI6LUDI&usp=sharing',
       },
     });
 
@@ -101,155 +152,203 @@ export class SeedService {
       ],
     });
 
-    await this.prisma.brand.createMany({
-      data: [
-        {
-          id: 1,
+    const brands = await Promise.all([
+      this.prisma.brand.create({
+        data: {
           title: 'AVZ',
           logo: '/fixtures/Brands/avz.png',
           description:
-            'НВЦ Агроветзащита был основан в 1993 году. Вот уже более 20 лет компания занимается разработкой, производством и продажей ветеринарных препаратов для сельскохозяйственных животных и птицы, для домашних животных, рептилий, декоративных птиц, грызунов, лошадей и товарной рыбы.',
+            'НВЦ Агроветзащита был основан в 1993 году. Вот уже более 20 лет компания занимается разработкой, производством и продажей ветеринарных препаратов...',
         },
-        {
-          id: 2,
+      }),
+      this.prisma.brand.create({
+        data: {
           title: 'BAYER',
           logo: '/fixtures/Brands/bayer.png',
           description:
-            'Bayer – продукция, которая создана для оздоровления домашних животных. Компания выпускает эффективные препараты, отличное качество которых контролируется в каждой товарной партии. Особое внимание уделяется совершенствованию проверенных решений, своевременному выпуску новинок с лучшими потребительскими параметрами. В ассортименте представлены следующие группы защитных продуктов: средства от клещей, блох, иных наружных паразитов, разносчиков заболеваний; средства от гельминтов и других внутренних паразитов; комплексные средства; антибактериальные препараты. Все продукты Bayer при правильном применении совершенно безвредны для домашних любимцев и людей.',
+            'Bayer – продукция, которая создана для оздоровления домашних животных. Компания выпускает эффективные препараты...',
         },
-        {
-          id: 3,
+      }),
+      this.prisma.brand.create({
+        data: {
           title: 'Catchow',
           logo: '/fixtures/Brands/catchow_logofina.jpg',
           description: null,
         },
-        {
-          id: 4,
+      }),
+      this.prisma.brand.create({
+        data: {
           title: 'Dog-Chow',
           logo: '/fixtures/Brands/dog-chow-logo.png',
           description: null,
         },
-        {
-          id: 5,
+      }),
+      this.prisma.brand.create({
+        data: {
           title: 'Flexi',
           logo: '/fixtures/Brands/flexi-logo.png',
           description: null,
         },
-        {
-          id: 6,
+      }),
+      this.prisma.brand.create({
+        data: {
           title: 'Friskies',
           logo: '/fixtures/Brands/friskies.png',
           description: null,
         },
-        {
-          id: 7,
+      }),
+      this.prisma.brand.create({
+        data: {
           title: 'Gourmet',
           logo: '/fixtures/Brands/gourmet.png',
           description: null,
         },
-        {
-          id: 8,
+      }),
+      this.prisma.brand.create({
+        data: {
           title: 'Happy Сat',
           logo: '/fixtures/Brands/happy-cat.png',
           description: null,
         },
-        {
-          id: 9,
+      }),
+      this.prisma.brand.create({
+        data: {
           title: 'Happy Dog',
           logo: '/fixtures/Brands/happy-dog.png',
           description: null,
         },
-        {
-          id: 10,
+      }),
+      this.prisma.brand.create({
+        data: {
           title: 'Purina Pro Plan',
           logo: '/fixtures/Brands/proplan.png',
           description: null,
         },
-      ],
-    });
-    await this.prisma.category.createMany({
-      data: [
-        { id: 1, title: 'Собаки' },
-        { id: 2, title: 'Кошки' },
-        { id: 3, title: 'Другие питомцы' },
-      ],
-    });
-    await this.prisma.category.createMany({
-      data: [
-        {
-          id: 111,
+      }),
+    ]);
+
+    const [
+      avz,
+      bayer,
+      catchHow,
+      dogShow,
+      flexi,
+      friskies,
+      gourmet,
+      happyCat,
+      happyDog,
+      purinaProPlan,
+    ] = brands;
+
+    const category = await Promise.all([
+      this.prisma.category.create({ data: { title: 'Собаки' } }),
+      this.prisma.category.create({ data: { title: 'Кошки' } }),
+      this.prisma.category.create({ data: { title: 'Другие питомцы' } }),
+    ]);
+
+    const [dogs, cats, others] = category;
+
+    const subCategory = await Promise.all([
+      this.prisma.category.create({
+        data: {
           title: 'Сухой корм',
-          parentId: 1,
+          parentId: dogs.id,
           icon: '/fixtures/categoryIcons/1icon.png',
         },
-        {
-          id: 112,
+      }),
+      this.prisma.category.create({
+        data: {
           title: 'Влажные корма',
-          parentId: 1,
+          parentId: dogs.id,
           icon: '/fixtures/categoryIcons/2icon.png',
         },
-        {
-          id: 113,
+      }),
+      this.prisma.category.create({
+        data: {
           title: 'Сухие корма',
-          parentId: 2,
+          parentId: cats.id,
           icon: '/fixtures/categoryIcons/3icon.png',
         },
-        {
-          id: 114,
+      }),
+      this.prisma.category.create({
+        data: {
           title: 'Влажные корм',
-          parentId: 2,
+          parentId: cats.id,
           icon: '/fixtures/categoryIcons/4icon.png',
         },
-        {
-          id: 115,
+      }),
+      this.prisma.category.create({
+        data: {
           title: 'Амуниция',
-          parentId: 1,
+          parentId: dogs.id,
           icon: '/fixtures/categoryIcons/5icon.png',
         },
-        {
-          id: 116,
+      }),
+      this.prisma.category.create({
+        data: {
           title: 'Ветеринарная аптека',
-          parentId: 2,
+          parentId: cats.id,
           icon: '/fixtures/categoryIcons/2icon.png',
         },
-        {
-          id: 117,
+      }),
+      this.prisma.category.create({
+        data: {
           title: 'Витамины и добавки',
-          parentId: 1,
+          parentId: dogs.id,
           icon: '/fixtures/categoryIcons/7icon.png',
         },
-        {
-          id: 118,
+      }),
+      this.prisma.category.create({
+        data: {
           title: 'Домики и лежанки',
-          parentId: 1,
+          parentId: dogs.id,
           icon: '/fixtures/categoryIcons/8icon.png',
         },
-        {
-          id: 119,
+      }),
+      this.prisma.category.create({
+        data: {
           title: 'Ошейники и шлейки',
-          parentId: 2,
+          parentId: cats.id,
           icon: '/fixtures/categoryIcons/9icon.png',
         },
-        {
-          id: 120,
+      }),
+      this.prisma.category.create({
+        data: {
           title: 'Лакомства',
-          parentId: 1,
+          parentId: dogs.id,
           icon: '/fixtures/categoryIcons/1icon.png',
         },
-        {
-          id: 121,
+      }),
+      this.prisma.category.create({
+        data: {
           title: 'Игрушки',
-          parentId: 2,
+          parentId: cats.id,
           icon: '/fixtures/categoryIcons/9icon.png',
         },
-        {
-          id: 122,
+      }),
+      this.prisma.category.create({
+        data: {
           title: 'Сено',
-          parentId: 3,
+          parentId: others.id,
           icon: '/fixtures/categoryIcons/1icon.png',
         },
-      ],
-    });
+      }),
+    ]);
+
+    const [
+      dryDogFood,
+      wetDogFood,
+      dryCatFood,
+      wetCatFood,
+      ammunition,
+      vetPharmacy,
+      vitamins,
+      beds,
+      collars,
+      treats,
+      toys,
+      hay,
+    ] = subCategory;
 
     await this.prisma.products.createMany({
       data: [
@@ -257,8 +356,8 @@ export class SeedService {
           productName: 'Сухой корм для собак',
           productPrice: 1200,
           productDescription: 'Качественный сухой корм для взрослых собак.',
-          brandId: 1,
-          categoryId: 1,
+          brandId: avz.id,
+          categoryId: dryDogFood.id,
           productPhoto: '/fixtures/products/dog_food.jpg',
           existence: true,
           sales: false,
@@ -267,8 +366,8 @@ export class SeedService {
           productName: 'Сухой корм для кошек',
           productPrice: 1200,
           productDescription: 'Качественный сухой корм для кошек.',
-          brandId: 1,
-          categoryId: 2,
+          brandId: bayer.id,
+          categoryId: wetDogFood.id,
           productPhoto: '/fixtures/products/dog_food.jpg',
           existence: true,
           sales: false,
@@ -278,8 +377,8 @@ export class SeedService {
           productPrice: 1200,
           productDescription:
             'Щебень для создания ландшафтных решений для собак.',
-          brandId: 1,
-          categoryId: 1,
+          brandId: catchHow.id,
+          categoryId: dryCatFood.id,
           productPhoto: '/fixtures/products/dog_food.jpg',
           existence: false,
           sales: false,
@@ -288,8 +387,8 @@ export class SeedService {
           productName: 'Игрушка для собак',
           productPrice: 2500,
           productDescription: 'Прочная когтеточка для развлечения вашей кошки.',
-          brandId: 2,
-          categoryId: 1,
+          brandId: dogShow.id,
+          categoryId: wetCatFood.id,
           productPhoto: '/fixtures/products/cat_scratcher.jpg',
           existence: false,
           sales: false,
@@ -298,8 +397,8 @@ export class SeedService {
           productName: 'Когтеточка для кошек',
           productPrice: 2500,
           productDescription: 'Прочная когтеточка для развлечения вашей кошки.',
-          brandId: 2,
-          categoryId: 2,
+          brandId: flexi.id,
+          categoryId: ammunition.id,
           productPhoto: '/fixtures/products/cat_scratcher.jpg',
           existence: false,
           sales: false,
@@ -308,8 +407,8 @@ export class SeedService {
           productName: 'Ошейник',
           productPrice: 2500,
           productDescription: 'Прочная когтеточка для развлечения вашей кошки.',
-          brandId: 2,
-          categoryId: 2,
+          brandId: friskies.id,
+          categoryId: vetPharmacy.id,
           productPhoto: '/fixtures/products/cat_scratcher.jpg',
           existence: false,
           sales: false,
@@ -318,8 +417,8 @@ export class SeedService {
           productName: 'Клетка для птиц',
           productPrice: 4500,
           productDescription: 'Просторная и удобная клетка для мелких птиц.',
-          brandId: 3,
-          categoryId: 3,
+          brandId: gourmet.id,
+          categoryId: vetPharmacy.id,
           productPhoto: '/fixtures/products/bird_cage.jpg',
           existence: false,
           sales: false,
@@ -329,8 +428,8 @@ export class SeedService {
           productPrice: 1800,
           productDescription:
             'Мощный фильтр для чистой и прозрачной воды в аквариуме.',
-          brandId: 4,
-          categoryId: 3,
+          brandId: happyCat.id,
+          categoryId: vitamins.id,
           productPhoto: '/fixtures/products/aquarium_filter.jpg',
           existence: false,
           sales: false,
@@ -340,14 +439,59 @@ export class SeedService {
           productPrice: 900,
           productDescription:
             'Удобная кормушка для сена для кроликов и мелких грызунов.',
-          brandId: 5,
-          categoryId: 3,
+          brandId: happyDog.id,
+          categoryId: beds.id,
+          productPhoto: '/fixtures/products/rabbit_feeder.jpg',
+          existence: false,
+          sales: false,
+        },
+        {
+          productName: 'Кормушка для сена для драконов',
+          productPrice: 500,
+          productDescription:
+            'Удобная кормушка для сена для кроликов и мелких грызунов.',
+          brandId: purinaProPlan.id,
+          categoryId: collars.id,
+          productPhoto: '/fixtures/products/rabbit_feeder.jpg',
+          existence: false,
+          sales: false,
+        },
+        {
+          productName: 'Лакомства для драконов',
+          productPrice: 500,
+          productDescription:
+            'Удобная кормушка для сена для кроликов и мелких грызунов.',
+          brandId: purinaProPlan.id,
+          categoryId: treats.id,
+          productPhoto: '/fixtures/products/rabbit_feeder.jpg',
+          existence: false,
+          sales: false,
+        },
+        {
+          productName: 'Игрушка для драконов',
+          productPrice: 500,
+          productDescription:
+            'Удобная игрушка для сена для кроликов и мелких грызунов.',
+          brandId: purinaProPlan.id,
+          categoryId: toys.id,
+          productPhoto: '/fixtures/products/rabbit_feeder.jpg',
+          existence: false,
+          sales: false,
+        },
+        {
+          productName: 'Сена для драконов',
+          productPrice: 500,
+          productDescription:
+            'Удобная кормушка для сена для кроликов и мелких грызунов.',
+          brandId: purinaProPlan.id,
+          categoryId: hay.id,
           productPhoto: '/fixtures/products/rabbit_feeder.jpg',
           existence: false,
           sales: false,
         },
       ],
     });
+
     await this.prisma.companyPages.createMany({
       data: {
         text:
