@@ -158,7 +158,7 @@ export interface ProductRequest {
   productManufacturer?: string | null;
   existence?: boolean;
   sales?: boolean;
-  brandId: string;
+  brandId?: string;
   categoryId: string;
   subcategoryId?: string;
   id?: number;

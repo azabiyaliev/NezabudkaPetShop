@@ -110,16 +110,10 @@ export class ProductsService {
         brandId: Number(brandId) || null,
         categoryId: Number(categoryId),
         productPrice: Number(productPrice),
-        sales: sales === 'true',
+        sales,
         existence: existence === 'true',
-        startDateSales:
-          startDateSales && startDateSales !== 'null' && startDateSales !== ''
-            ? new Date(startDateSales)
-            : null,
-        endDateSales:
-          endDateSales && endDateSales !== 'null' && endDateSales !== ''
-            ? new Date(endDateSales)
-            : null,
+        startDateSales,
+        endDateSales,
       },
       select: {
         id: true,
@@ -269,15 +263,9 @@ export class ProductsService {
         brandId: Number(brandId),
         categoryId: Number(categoryId),
         existence: existence === 'true',
-        sales: sales === 'true',
-        startDateSales:
-          startDateSales && startDateSales !== 'null' && startDateSales !== ''
-            ? new Date(startDateSales)
-            : null,
-        endDateSales:
-          endDateSales && endDateSales !== 'null' && endDateSales !== ''
-            ? new Date(endDateSales)
-            : null,
+        sales,
+        startDateSales,
+        endDateSales,
         productWeight:
           productWeight === undefined || productWeight === null
             ? null
