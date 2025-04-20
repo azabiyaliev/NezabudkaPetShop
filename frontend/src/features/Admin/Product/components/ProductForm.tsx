@@ -19,11 +19,11 @@ import { brandsFromSlice } from "../../../../store/brands/brandsSlice.ts";
 import { getBrands } from "../../../../store/brands/brandsThunk.ts";
 import { selectCategories } from "../../../../store/categories/categoriesSlice.ts";
 import { fetchCategoriesThunk } from "../../../../store/categories/categoriesThunk.ts";
-import QuillEditor from "../../../../components/UI/QuillEditor/QuillEditor.tsx";
 import { orange } from "@mui/material/colors";
 import FormControl from "@mui/material/FormControl";
 import FileInput from "../../../../components/FileInput/FileInput.tsx";
 import { addProductLoading } from "../../../../store/products/productsSlice.ts";
+import TextEditor from '../../../../components/TextEditor/TextEditor.tsx';
 
 
 interface Props {
@@ -322,7 +322,7 @@ const ProductForm: React.FC<Props> = ({
             />
           </Grid>
           <Grid size={{ xs: 12 }}>
-            <QuillEditor
+            <TextEditor
               value={form.productDescription}
               onChange={(html) =>
                 setForm((prev) => ({

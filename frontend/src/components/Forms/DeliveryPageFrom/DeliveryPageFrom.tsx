@@ -103,6 +103,7 @@ const DeliveryPageForm = () => {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
+            gap: 4,
           }}
         >
           <TextEditor

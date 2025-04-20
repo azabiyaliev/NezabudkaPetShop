@@ -8,9 +8,10 @@ interface Props {
   onChange: (html: string) => void;
   error?: boolean;
   helperText?: string;
+  placeholder?: string;
 }
 
-const TextEditor: React.FC<Props> = ({ value, onChange, error = false, helperText }) => {
+const TextEditor: React.FC<Props> = ({ value, onChange, error = false, helperText, placeholder = "Введите описание" }) => {
   const quillRef = useRef<HTMLDivElement | null>(null);
   const editorInstance = useRef<Quill | null>(null);
   const lastSetValue = useRef<string>("");
@@ -24,16 +25,16 @@ const TextEditor: React.FC<Props> = ({ value, onChange, error = false, helperTex
     if (quillRef.current && !editorInstance.current) {
       const quill = new Quill(quillRef.current, {
         theme: "snow",
+        placeholder,
         modules: {
           toolbar: [
-            [{ header: "1" }, { header: "2" }, { font: [] }, { size: [] }],
+            [{ 'header': [] }, { 'font': [] }],
             [{ list: "ordered" }, { list: "bullet" }],
             ["bold", "italic", "underline", "strike"],
             [{ align: [] }],
             ["link", "image", "video"],
             [{ color: [] }, { background: [] }],
             ["blockquote", "code-block"],
-            ["clean"],
           ],
         },
       });
@@ -51,7 +52,7 @@ const TextEditor: React.FC<Props> = ({ value, onChange, error = false, helperTex
         }
       });
     }
-  }, [onChange]);
+  }, [onChange, placeholder]);
 
   useEffect(() => {
     const quill = editorInstance.current;
@@ -66,13 +67,13 @@ const TextEditor: React.FC<Props> = ({ value, onChange, error = false, helperTex
   }, [value]);
 
   return (
-    <Box sx={{ padding: 2 }}>
+    <Box>
       {error && helperText && (
         <Typography variant="body2" color="error" sx={{ mt: 1, ml: 1 }}>
           {helperText}
         </Typography>
       )}
-      <Paper elevation={3} sx={{ padding: 2 }}>
+      <Paper elevation={3}>
         <div ref={quillRef} style={{ height: "200px", borderRadius: "4px" }} />
       </Paper>
     </Box>
