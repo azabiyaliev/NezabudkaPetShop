@@ -52,7 +52,7 @@ const AdminBar = () => {
           </ListItem>
           <ListItem component={NavLink} to="/edition_site">
             <ListItemText
-              primary="Редактирование сайта"
+              primary="Редактирование главной страницы"
               className="text-black"
             />
           </ListItem>
