@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography';
 import { OrderMutation } from '../../types';
 import { cartFromSlice, clearCart } from '../../store/cart/cartSlice.ts';
 import { selectUser } from '../../store/users/usersSlice.ts';
-import { fetchCart } from '../../store/cart/cartThunk.ts';
+import { deleteItemsCart, fetchCart } from '../../store/cart/cartThunk.ts';
 import TotalPrice from '../../components/Domain/CustomCart/Basket/TotalPrice/TotalPrice.tsx';
 
 export enum PaymentMethod {
@@ -164,16 +164,24 @@ const OrderForm = () => {
       return;
     }
 
-
-    const orderData = {
-      ...form,
-    };
-
-
-    await dispatch(checkoutAuthUserOrder(orderData)).unwrap();
-    toast.success("Заказ успешно оформлен!");
+try {
+  const orderData = {
+    ...form,
+  };
+  await dispatch(checkoutAuthUserOrder(orderData)).unwrap();
+  toast.success("Заказ успешно оформлен!");
+  if (!orderData.userId) {
     dispatch(clearCart())
-    navigate("/all-products");
+  } else {
+    if (carts?.id) {
+      await dispatch(deleteItemsCart({cartId: carts.id})).unwrap()
+      dispatch(clearCart());
+    }
+  }
+  navigate("/");
+} catch {
+      toast.error("Ошибка при оформлении заказа")
+}
   };
 
   const totalPrice = carts && carts.products.reduce(

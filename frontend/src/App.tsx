@@ -199,6 +199,11 @@ const App = () => {
               <AdminForm/>
             </ProtectedRoute>
           } />
+          <Route path="/admin/statistic" element={
+            <ProtectedRoute isAllowed={user && can(['superAdmin'])}>
+              <OrderStats />
+            </ProtectedRoute>
+          }/>
           <Route path='/admin-table' element={
             <ProtectedRoute isAllowed={user && can(["superAdmin"])}>
               <AdminTable/>
