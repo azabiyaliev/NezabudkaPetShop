@@ -13,8 +13,7 @@ import { cartErrorFromSlice, cartFromSlice, setToLocalStorage } from '../../stor
 import { selectUser } from '../../store/users/usersSlice.ts';
 import { addItem, createCart, deleteItemsCart, fetchCart } from '../../store/cart/cartThunk.ts';
 import { ICartBack, ICartItem } from '../../types';
-import { userRoleAdmin, userRoleClient, userRoleSuperAdmin } from '../../globalConstants.ts';
-import { useNavigate } from 'react-router-dom';
+import { userRoleClient } from '../../globalConstants.ts';
 
 const HomePage = () => {
   const [openCart, setOpenCart] = useState<boolean>(false);
@@ -25,7 +24,6 @@ const HomePage = () => {
   const cart = useAppSelector(cartFromSlice);
   const createCartError = useAppSelector(cartErrorFromSlice);
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
 
   const mergeCarts = (cart: ICartBack, localCart: ICartBack): ICartItem[] => {
     const mergedCart: ICartItem[] = [...cart.products];
@@ -65,19 +63,19 @@ const HomePage = () => {
       await dispatch(getBrands()).unwrap();
 
       if (user && (user.role === userRoleClient)) {
-        await dispatch(createCart({token: user.token})).unwrap();
+        await dispatch(createCart()).unwrap();
 
         if (!createCartError) {
-          await dispatch(fetchCart({ token: user.token })).unwrap();
+          await dispatch(fetchCart()).unwrap();
         }
 
-        const userCart = await dispatch(fetchCart({ token: user.token })).unwrap();
+        const userCart = await dispatch(fetchCart()).unwrap();
 
         if (products.length > 0 && userCart && !synced) {
           setSynced(true);
 
           if (userCart.products.length > 0) {
-            await dispatch(deleteItemsCart({cartId: userCart.id, token: user.token})).unwrap();
+            await dispatch(deleteItemsCart({cartId: userCart.id})).unwrap();
           }
 
           for (const product of products) {
@@ -86,11 +84,10 @@ const HomePage = () => {
                 cartId: userCart.id,
                 productId: product.productId,
                 quantity: product.quantity,
-                token: user.token,
               })
             ).unwrap();
           }
-          await dispatch(fetchCart({ token: user.token })).unwrap();
+          await dispatch(fetchCart()).unwrap();
         }
       }
     };
@@ -104,12 +101,8 @@ const HomePage = () => {
   useEffect(() => {
     if (!user) {
       dispatch(setToLocalStorage(cart));
-    } else {
-      if (user && (user.role === userRoleAdmin || user.role === userRoleSuperAdmin)) {
-        navigate("/private_account");
-      }
     }
-  }, [dispatch, cart, user, navigate]);
+  }, [dispatch, cart, user]);
 
   return (
     <Container>

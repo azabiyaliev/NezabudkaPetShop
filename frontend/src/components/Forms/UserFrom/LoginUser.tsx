@@ -1,25 +1,21 @@
-import React, { useState } from "react";
-import { Avatar, Box, Button, Container, Divider } from "@mui/material";
-import TextField from "@mui/material/TextField";
-import Grid from "@mui/material/Grid2";
-import LockOpenIcon from "@mui/icons-material/LockOpen";
-import Typography from "@mui/material/Typography";
-import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
-import { NavLink, useNavigate } from "react-router-dom";
-import { LogInMutation } from "../../../types";
-import {
-  facebookLogin,
-  googleLogin,
-  login,
-} from "../../../store/users/usersThunk.ts";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { GoogleLogin } from "@react-oauth/google";
-import FacebookLogin from "@greatsumini/react-facebook-login";
-import FacebookIcon from "@mui/icons-material/Facebook";
-import { selectLoginError } from "../../../store/users/usersSlice.ts";
-import ModalWindow from "../../UI/ModalWindow/ModalWindowEmail.tsx";
-import { regEmail } from '../../../globalConstants.ts';
+import React, { useState } from 'react';
+import { Avatar, Box, Button, Container, Divider } from '@mui/material';
+import TextField from '@mui/material/TextField';
+import Grid from '@mui/material/Grid2';
+import LockOpenIcon from '@mui/icons-material/LockOpen';
+import Typography from '@mui/material/Typography';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { LogInMutation } from '../../../types';
+import { facebookLogin, googleLogin, login, } from '../../../store/users/usersThunk.ts';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { GoogleLogin } from '@react-oauth/google';
+import FacebookLogin from '@greatsumini/react-facebook-login';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import { selectLoginError } from '../../../store/users/usersSlice.ts';
+import ModalWindow from '../../UI/ModalWindow/ModalWindowEmail.tsx';
+import { regEmail, userRoleAdmin, userRoleSuperAdmin } from '../../../globalConstants.ts';
 
 const LoginUser = () => {
   const dispatch = useAppDispatch();
@@ -51,8 +47,16 @@ const LoginUser = () => {
   const submitHandler = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await dispatch(login(form)).unwrap();
-      navigate("/");
+      const loggedInUser = await dispatch(login(form)).unwrap();
+
+      if (
+        loggedInUser.user.role === userRoleAdmin ||
+        loggedInUser.user.role === userRoleSuperAdmin
+      ) {
+        navigate("/private_account");
+      } else {
+        navigate("/");
+      }
     } catch (error) {
       toast.error((error as { error: string }).error, {
         position: "top-right",
