@@ -21,11 +21,6 @@ const CustomCart: React.FC<Props> = ({ openCart, closeCart }) => {
   const cart = useAppSelector(cartFromSlice);
   const navigate = useNavigate();
 
-  const backToShop = () => {
-    closeCart();
-    navigate("/all-products");
-  };
-
   const makeOrder = () => {
     closeCart();
     navigate("/my_cart");
@@ -129,26 +124,6 @@ const CustomCart: React.FC<Props> = ({ openCart, closeCart }) => {
               >
                 Корзина пуста!
               </Typography>
-              <Button
-                type="button"
-                onClick={backToShop}
-                sx={{
-                  backgroundColor: "#237803",
-                  borderRadius: "50px",
-                  fontFamily: "Nunito, sans-serif",
-                  color: "white",
-                  fontWeight: 600,
-                  width: "200px",
-                  margin: "0 auto",
-                  padding: "15px 0",
-                  fontSize: "16px",
-                  "&:hover": {
-                    backgroundColor: "#154902",
-                  },
-                }}
-              >
-                Вернуться в магазин
-              </Button>
             </>
           ) : (
             <>
