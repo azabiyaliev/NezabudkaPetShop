@@ -13,6 +13,7 @@ import OrderAdminItem from './OrdersItem.tsx';
 import dayjs from 'dayjs';
 import { IOrder } from '../../../types';
 import CustomPagination from '../../../components/Pagination/Pagination.tsx';
+import AdminBar from '../AdminProfile/AdminBar.tsx';
 
 const AllOrders = () => {
   const dispatch = useAppDispatch();
@@ -54,8 +55,12 @@ const AllOrders = () => {
   const filteredOrders = orders.filter(order => filterByStatus(order) && filterByTime(order));
 
   return (
-    <>
+    <Box sx={{display: 'flex', gap: '100px'}} className='mt-5'>
       <Box>
+        <AdminBar/>
+      </Box>
+      <Box>
+        <Box>
         <Typography variant="h4" sx={{ mb: 2 }}>Заказы</Typography>
 
         <Select
@@ -82,6 +87,7 @@ const AllOrders = () => {
           <MenuItem value="Last7Days">Последние 7 дней</MenuItem>
           <MenuItem value="Last30Days">Последние 30 дней</MenuItem>
         </Select>
+          </Box>
 
         {loading ? (
           <CircularProgress />
@@ -89,10 +95,11 @@ const AllOrders = () => {
           <CustomPagination
             items={filteredOrders}
             renderItem={(item) => <OrderAdminItem key={item.id} order={item} />}
+            columns={2}
           />
         )}
       </Box>
-    </>
+    </Box>
   );
 };
 
