@@ -36,11 +36,11 @@ export class CategoryService {
       await this.validateCategory(parentId);
     }
 
-    const newCategory = await this.prisma.category.create({
+    await this.prisma.category.create({
       data: { title, parentId: parentId ?? null },
     });
 
-    return newCategory;
+    return { message: 'Категория успешно создана' };
   }
 
   async createSubcategory(
@@ -96,10 +96,10 @@ export class CategoryService {
   async getSubcategories(categoryId: number) {
     await this.validateCategory(categoryId);
 
-    const subcategories = await this.prisma.category.findMany({
+    await this.prisma.category.findMany({
       where: { parentId: categoryId },
     });
-    return subcategories;
+    return { message: 'Подкатегории успешно получены' };
   }
 
   async getOneCategory(id: number) {
