@@ -6,18 +6,8 @@ import {
   updateOrderStatus
 } from './ordersThunk.ts';
 
-export interface Pagination {
-  total: number;
-  perPage: number;
-  currentPage: number;
-  lastPage: number;
-}
 
 interface OrderSliceState {
-  paginationOrders: {
-    data: IOrder[];
-    meta: Pagination;
-  } | null;
   orders: IOrder[];
   oneOrder: IOrder | null;
   orderStats: OrderStats | null;
@@ -27,7 +17,6 @@ interface OrderSliceState {
 
 const initialState: OrderSliceState = {
   orders: [],
-  paginationOrders: null,
   oneOrder: null,
   orderStats: null,
   isLoading: false,
@@ -51,10 +40,9 @@ const ordersSlice = createSlice({
         }
       )
       .addCase(
-        getAllOrders.fulfilled, (state, action: PayloadAction<{ data: IOrder[]; meta: Pagination }>) => {
+        getAllOrders.fulfilled, (state, action: PayloadAction<IOrder[]>) => {
           state.isLoading = false;
-          state.orders = action.payload.data;
-          state.paginationOrders = action.payload;
+          state.orders = action.payload;
         }
       )
       .addCase(

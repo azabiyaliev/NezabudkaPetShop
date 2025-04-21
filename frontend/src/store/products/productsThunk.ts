@@ -20,9 +20,16 @@ export const addProduct = createAsyncThunk<
     const keys = Object.keys(product) as (keyof ProductRequest)[];
     keys.forEach((key) => {
       const value = product[key];
-      if (value !== undefined) {
+      if (
+        value !== undefined &&
+        value !== null &&
+        value !== "" &&
+        !(typeof value === "boolean" && !value)
+      ) {
         if (value instanceof File) {
           formData.append(key, value, value.name);
+        } else if (typeof value === "boolean") {
+          formData.append(key, value ? "true" : "false");
         } else {
           formData.append(key, String(value));
         }
@@ -53,11 +60,18 @@ export const editProduct = createAsyncThunk<
 
   keys.forEach((key) => {
     const value = product[key];
-    if (value !== undefined && value !== null) {
+    if (
+      value !== undefined &&
+      value !== null &&
+      value !== "" &&
+      !(typeof value === "boolean" && !value)
+    ) {
       if (key === "productPhoto") {
         if (value instanceof File) {
           formData.append('productPhoto', value, value.name);
         }
+      } else if (typeof value === "boolean") {
+        formData.append(key, value ? "true" : "false");
       } else {
         formData.append(key, String(value));
       }

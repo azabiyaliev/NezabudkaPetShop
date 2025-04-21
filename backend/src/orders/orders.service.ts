@@ -20,13 +20,8 @@ export class OrdersService {
     private telegramBot: TelegramService,
   ) {}
 
-  async getAllOrders(query?: { page: number; limit: number }) {
-    if (!query) return '';
-    const page = Number(query.page) || 1;
-    const skip = (page - 1) * 10;
+  async getAllOrders() {
     const orders = await this.prisma.order.findMany({
-      skip,
-      take: 10,
       include: {
         user: true,
         items: {
@@ -39,16 +34,8 @@ export class OrdersService {
         createdAt: 'desc',
       },
     });
-    const total = await this.prisma.order.count();
-    return {
-      data: orders,
-      meta: {
-        total,
-        currentPage: page,
-        lastPage: Math.ceil(total / 10),
-        perPage: 10,
-      },
-    };
+
+    return orders;
   }
 
   async getUserOrders(userId?: number, guestEmail?: string) {

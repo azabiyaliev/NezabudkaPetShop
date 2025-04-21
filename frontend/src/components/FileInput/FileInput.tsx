@@ -53,7 +53,7 @@ const FileInput: React.FC<Props> = ({ name, label, onGetFile, initialValue }) =>
             slotProps={{ input: { readOnly: true } }}
             value={fileName}
             onClick={activateInput}
-            sx={{ width: 1 }}
+            sx={{ width: '100%' }}
           />
         </Grid>
         <Grid size={{ xs: 3 }}>
@@ -63,8 +63,10 @@ const FileInput: React.FC<Props> = ({ name, label, onGetFile, initialValue }) =>
             sx={{
               color: "white",
               textTransform: "uppercase",
-              background:
-                "linear-gradient(90deg, rgba(250, 134, 1, 1) 0%, rgba(250, 179, 1, 1) 28%, rgba(250, 143, 1, 1) 100%)",
+              background: "#237803",
+              width: "100%",
+              fontSize: "0.75rem",
+              padding: "6px 12px",
             }}
           >
             Выбрать изображение

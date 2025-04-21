@@ -1,12 +1,13 @@
-import { Box, Button, Container, Typography, TextField } from '@mui/material';
-import { toast, ToastContainer } from "react-toastify";
-import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
+import { Box, Button, Container, TextField } from '@mui/material';
+import { toast, ToastContainer } from 'react-toastify';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
 import { useNavigate } from 'react-router-dom';
-import React, { useEffect, useState } from "react";
-import { EditSiteMutation } from "../../../types";
-import { fetchSite, updateSite } from "../../../store/editionSite/editionSiteThunk.ts";
-import { selectEditSite, selectError } from "../../../store/editionSite/editionSiteSlice.ts";
+import React, { useEffect, useState } from 'react';
+import { EditSiteMutation } from '../../../types';
+import { fetchSite, updateSite } from '../../../store/editionSite/editionSiteThunk.ts';
+import { selectEditSite, selectError } from '../../../store/editionSite/editionSiteSlice.ts';
 import { enqueueSnackbar } from 'notistack';
+import Typography from '@mui/joy/Typography';
 
 const initialState: EditSiteMutation = {
   instagram: "",
@@ -15,7 +16,8 @@ const initialState: EditSiteMutation = {
   address: "",
   email: "",
   phone: "",
-  linkAddress: ""
+  linkAddress: "",
+  mapGoogleLink: "",
 };
 
 const regPhone = /^(\+996|0)\s?\d{3}\s?\d{3}\s?\d{3}$/;
@@ -102,10 +104,6 @@ const EditSiteForm = () => {
     }
   };
 
-  const handleCarouselChange = () => {
-    navigate("/edit-carousel");
-  };
-
   const getFieldError = (fieldName: string) => editError?.errors?.[fieldName] || "";
 
   const isButtonFormInvalid =
@@ -121,8 +119,12 @@ const EditSiteForm = () => {
   return (
     <Container component="main">
       <Box sx={{ marginTop: 3, display: "flex", flexDirection: "column", alignItems: "center", padding: 4, position: "relative" }}>
-        <Typography component="h1" variant="h4" sx={{ color: "black", marginBottom: 3 }}>
-          Редактировать сайт
+        <Typography
+          level="h2"
+          component="h1"
+          sx={{ textAlign: "center", margin: "10px 0" }}
+        >
+          Редактирование информации о магазине 'Незабудка'
         </Typography>
         <Box component="form" noValidate onSubmit={submitHandler} sx={{ mt: 3, display: "flex", flexDirection: "column", alignItems: "center", }} width="70%">
           <TextField
@@ -328,8 +330,58 @@ const EditSiteForm = () => {
           <TextField
             fullWidth
             name="linkAddress"
-            label="Ссылка на местоположение на карте"
+            label="Ссылка на местоположение на карте 2GIS"
             value={form.linkAddress}
+            onChange={inputChangeHandler}
+            variant="outlined"
+            error={!!getFieldError("linkAddress") || Boolean(linkAddressError)}
+            helperText={getFieldError("linkAddress") || linkAddressError}
+            sx={{
+              mb: 3,
+              borderRadius: "20px",
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "20px",
+                backgroundColor: "#E4E6D9",
+                transition: "all 0.3s ease",
+                height: "56px",
+                "&.Mui-focused": {
+                  borderColor: "green",
+                },
+                "& .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "green",
+                  transition: "border-color 0.3s ease",
+                },
+                "&:hover .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "darkgreen",
+                },
+              },
+              "& .MuiInputLabel-root.Mui-focused": {
+                color: "green",
+              },
+              "& .MuiOutlinedInput-root.Mui-error": {
+                backgroundColor: "#FFECEC",
+                "& .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "#FF0000",
+                },
+              },
+              "& .MuiInputLabel-root.Mui-error": {
+                color: "#FF0000",
+              },
+              "& .MuiFormHelperText-root": {
+                minHeight: "20px",
+              },
+              "& .MuiFormHelperText-root.Mui-error": {
+                color: "#FF0000",
+                fontSize: "0.9rem",
+                fontWeight: 500,
+              },
+            }}
+          />
+          <TextField
+            fullWidth
+            name="mapGoogleLink"
+            label="Ссылка на местоположение на Google Map"
+            value={form.mapGoogleLink}
             onChange={inputChangeHandler}
             variant="outlined"
             error={!!getFieldError("linkAddress") || Boolean(linkAddressError)}
@@ -478,7 +530,7 @@ const EditSiteForm = () => {
             }}
           />
 
-          <Box sx={{ width: "100%", display: "flex", justifyContent: "flex-start" }}>
+          <Box sx={{ width: "100%", display: "flex", justifyContent: "center" }}>
             <Button
               type="submit"
               variant="contained"
@@ -496,7 +548,6 @@ const EditSiteForm = () => {
             </Button>
           </Box>
         </Box>
-        <Button variant="contained" style={{backgroundColor: "#738A6E",width: "27%", color: "white",  borderRadius:"20px", position:'absolute', bottom:47 , right:165}} onClick={handleCarouselChange}>Редактировать карусель</Button>
       </Box>
       <ToastContainer />
     </Container>

@@ -55,6 +55,7 @@ const SubcategoryForm: React.FC<Props> = ({ categoryId, onClose }) => {
       toast.error(ERROR_SUBCATEGORY, { position: "top-center" });
     }
   };
+
   return (
     <Box
       component="form"

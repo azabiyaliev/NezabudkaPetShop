@@ -24,46 +24,98 @@ const ContactPage = () => {
           sx={{
             border: "1px solid lightgray",
             mt: 8,
-            width: "700px",
-            p: 6,
+            width: "100%",
+            maxWidth: "1000px",
+            p: 4,
             borderRadius: "20px",
             position: "relative",
+            display: "flex",
+            gap: 4,
+            justifyContent: "space-between",
+              backgroundColor: '#fafafa',
           }}
         >
-          <div style={{ padding: '16px'}}>
-            <h4 style={{ marginBottom: '12px' }}>Контакты магазина <strong>Незабудка</strong>:</h4>
+          <Box sx={{ flex: 1 }}>
+            <h4 style={{ marginBottom: '12px' }}>
+              Контакты магазина <strong>Незабудка</strong>:
+            </h4>
 
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'max-content 1fr',
-              rowGap: '12px',
-              columnGap: '12px',
-              fontFamily: 'Arial, sans-serif',
-              fontSize: '16px',
-            }}>
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'max-content 1fr',
+                rowGap: '12px',
+                columnGap: '12px',
+                fontFamily: 'Arial, sans-serif',
+                fontSize: '16px',
+              }}
+            >
               <span>📍 <strong>Адрес:</strong></span>
               <span>{site?.address}</span>
 
               <span>✉️ <strong>Почта:</strong></span>
-              <a href={`https://mail.google.com/mail/?view=cm&to=:${site?.email}`}
-                 className="text-blue-600 hover:underline"
-                 target="_blank"
-                 rel="noopener noreferrer"
-                 style={{ color: "black", textDecoration: "none" }}
+              <a
+                href={`mailto:${site?.email}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: "black", textDecoration: "none" }}
               >
                 {site?.email}
               </a>
 
               <span>📞 <strong>Телефон:</strong></span>
-              <a href={`tel:${site?.phone}`} className="text-blue-600 hover:underline"  style={{ color: "black", textDecoration: "none" }}>
+              <a
+                href={`tel:${site?.phone}`}
+                style={{ color: "black", textDecoration: "none" }}
+              >
                 {site?.phone}
               </a>
 
               <span>⏰ <strong>График:</strong></span>
               <span>{site?.schedule}</span>
             </div>
-          </div>
+            {site?.linkAddress && (
+              <a
+                href={site.linkAddress}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  marginTop: '20px',
+                  display: 'inline-block',
+                  padding: '8px 16px',
+                  backgroundColor: '#2b7bb9',
+                  color: '#fff',
+                  borderRadius: '8px',
+                  textDecoration: 'none',
+                  fontWeight: 500,
+                }}
+              >
+                Открыть в 2ГИС
+              </a>
+            )}
+          </Box>
+
+          <Box
+            sx={{
+              width: "480px",
+              height: "480px",
+              flexShrink: 0,
+              borderRadius: "12px",
+              overflow: "hidden",
+              boxShadow: 2,
+            }}
+          >
+            <iframe
+              src={site?.mapGoogleLink}
+              width="100%"
+              height="100%"
+              style={{ border: 0 }}
+              allowFullScreen
+              loading="lazy"
+            ></iframe>
+          </Box>
         </Box>
+
       </div>
     </div>
   );

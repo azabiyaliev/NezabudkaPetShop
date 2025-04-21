@@ -13,7 +13,7 @@ interface Props {
 
 const OrderCard: React.FC<Props> = ({ order }) => {
   const dispatch = useAppDispatch();
-  const totalAmount = order.items.reduce((_, item) => item.product.productPrice * item.quantity, 0);
+  const totalAmount = order.items.reduce((sum, item) => sum + item.product.productPrice * item.quantity, 0);
 
   const cancelOrder = async() => {
       await dispatch(deleteOrder(String(order.id)));

@@ -11,4 +11,6 @@ export class SubcategoryDto {
   id?: number;
   @IsOptional()
   subcategories?: SubcategoryDto[];
+  @IsOptional()
+  icon?: string | null;
 }

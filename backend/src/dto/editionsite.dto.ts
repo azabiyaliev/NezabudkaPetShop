@@ -31,4 +31,8 @@ export class EditionSitedDto {
     message: 'linkAddress Поле для ссылки для адреса обязательно к заполнению',
   })
   linkAddress!: string;
+  @IsNotEmpty({
+    message: 'mapGoogleLink Поле для ссылки Google карты обязательно к заполнению',
+  })
+  mapGoogleLink!: string;
 }

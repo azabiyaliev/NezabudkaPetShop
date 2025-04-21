@@ -8,23 +8,27 @@ export class SeedService {
   constructor(private prisma: PrismaService) {}
 
   async seed() {
+    await this.prisma.cartItem.deleteMany({});
+    await this.prisma.cart.deleteMany({});
+    await this.prisma.favorite.deleteMany({});
     await this.prisma.passwordReset.deleteMany();
     await this.prisma.user.deleteMany({});
+    await this.prisma.order.deleteMany({});
+    await this.prisma.orderItem.deleteMany({});
+    await this.prisma.statistic.deleteMany({});
     await this.prisma.products.deleteMany({});
     await this.prisma.siteEdition.deleteMany({});
     await this.prisma.photoByCarousel.deleteMany({});
     await this.prisma.brand.deleteMany({});
     await this.prisma.category.deleteMany({});
-    await this.prisma.orderItem.deleteMany({});
     await this.prisma.companyPages.deleteMany({});
     await this.prisma.bonusProgramPage.deleteMany({});
     await this.prisma.deliveryPage.deleteMany({});
 
     const password = await bcrypt.hash('123', 10);
-
-    await this.prisma.user.createMany({
-      data: [
-        {
+    const users = await Promise.all([
+      this.prisma.user.create({
+        data: {
           email: 'superAdmin@gmail.com',
           password: password,
           token: randomUUID(),
@@ -34,7 +38,9 @@ export class SeedService {
           phone: '+996555100333',
           isProtected: true,
         },
-        {
+      }),
+      this.prisma.user.create({
+        data: {
           email: 'kama@gmail.com',
           password: password,
           token: randomUUID(),
@@ -43,7 +49,20 @@ export class SeedService {
           role: 'admin',
           phone: '+996555100222',
         },
-        {
+      }),
+      this.prisma.user.create({
+        data: {
+          email: 'igor@gmail.com',
+          password: password,
+          token: randomUUID(),
+          firstName: 'Igor',
+          secondName: 'Blinov',
+          role: 'admin',
+          phone: '+996555100700',
+        },
+      }),
+      this.prisma.user.create({
+        data: {
           email: 'mirana@gmail.com',
           password: password,
           token: randomUUID(),
@@ -52,8 +71,44 @@ export class SeedService {
           role: 'client',
           phone: '+996555100444',
         },
-      ],
-    });
+      }),
+      this.prisma.user.create({
+        data: {
+          email: 'ilon@gmail.com',
+          password: password,
+          token: randomUUID(),
+          firstName: 'Ilon',
+          secondName: 'Mask',
+          role: 'client',
+          phone: '+996555100555',
+        },
+      }),
+      this.prisma.user.create({
+        data: {
+          email: 'michael@gmail.com',
+          password: password,
+          token: randomUUID(),
+          firstName: 'Michael',
+          secondName: 'Jackson',
+          role: 'client',
+          phone: '+996555444444',
+        },
+      }),
+      this.prisma.user.create({
+        data: {
+          email: 'cristiano@gmail.com',
+          password: password,
+          token: randomUUID(),
+          firstName: 'Cristiano',
+          secondName: 'Ronaldo',
+          role: 'client',
+          phone: '+996555555555',
+        },
+      }),
+    ]);
+
+    const [, , , miranaClient, ilonClient, michaelClient, cristianoClient] =
+      users;
 
     await this.prisma.siteEdition.create({
       data: {
@@ -64,6 +119,8 @@ export class SeedService {
         email: 'nezabudka.zoo@gmail.com',
         phone: '+(996)500-430-481',
         linkAddress: 'https://go.2gis.com/ZA3mL',
+        mapGoogleLink:
+          'https://www.google.com/maps/d/u/0/embed?mid=13x6QctVrCI831zyl84NAk4f4rI6LUDI&usp=sharing',
       },
     });
 
@@ -97,95 +154,605 @@ export class SeedService {
       ],
     });
 
-    await this.prisma.brand.createMany({
-      data: [
-        {
-          id: 1,
+    const brands = await Promise.all([
+      this.prisma.brand.create({
+        data: {
           title: 'AVZ',
           logo: '/fixtures/Brands/avz.png',
           description:
-            'НВЦ Агроветзащита был основан в 1993 году. Вот уже более 20 лет компания занимается разработкой, производством и продажей ветеринарных препаратов для сельскохозяйственных животных и птицы, для домашних животных, рептилий, декоративных птиц, грызунов, лошадей и товарной рыбы.',
+            'НВЦ Агроветзащита был основан в 1993 году. Вот уже более 20 лет компания занимается разработкой, производством и продажей ветеринарных препаратов...',
         },
-        {
-          id: 2,
+      }),
+      this.prisma.brand.create({
+        data: {
           title: 'BAYER',
           logo: '/fixtures/Brands/bayer.png',
           description:
-            'Bayer – продукция, которая создана для оздоровления домашних животных. Компания выпускает эффективные препараты, отличное качество которых контролируется в каждой товарной партии. Особое внимание уделяется совершенствованию проверенных решений, своевременному выпуску новинок с лучшими потребительскими параметрами. В ассортименте представлены следующие группы защитных продуктов: средства от клещей, блох, иных наружных паразитов, разносчиков заболеваний; средства от гельминтов и других внутренних паразитов; комплексные средства; антибактериальные препараты. Все продукты Bayer при правильном применении совершенно безвредны для домашних любимцев и людей.',
+            'Bayer – продукция, которая создана для оздоровления домашних животных. Компания выпускает эффективные препараты...',
         },
-        {
-          id: 3,
+      }),
+      this.prisma.brand.create({
+        data: {
           title: 'Catchow',
           logo: '/fixtures/Brands/catchow_logofina.jpg',
           description: null,
         },
-        {
-          id: 4,
+      }),
+      this.prisma.brand.create({
+        data: {
           title: 'Dog-Chow',
           logo: '/fixtures/Brands/dog-chow-logo.png',
           description: null,
         },
-        {
-          id: 5,
+      }),
+      this.prisma.brand.create({
+        data: {
           title: 'Flexi',
           logo: '/fixtures/Brands/flexi-logo.png',
           description: null,
         },
-        {
-          id: 6,
+      }),
+      this.prisma.brand.create({
+        data: {
           title: 'Friskies',
           logo: '/fixtures/Brands/friskies.png',
           description: null,
         },
-        {
-          id: 7,
+      }),
+      this.prisma.brand.create({
+        data: {
           title: 'Gourmet',
           logo: '/fixtures/Brands/gourmet.png',
           description: null,
         },
-        {
-          id: 8,
+      }),
+      this.prisma.brand.create({
+        data: {
           title: 'Happy Сat',
           logo: '/fixtures/Brands/happy-cat.png',
           description: null,
         },
-        {
-          id: 9,
+      }),
+      this.prisma.brand.create({
+        data: {
           title: 'Happy Dog',
           logo: '/fixtures/Brands/happy-dog.png',
           description: null,
         },
-        {
-          id: 10,
+      }),
+      this.prisma.brand.create({
+        data: {
           title: 'Purina Pro Plan',
           logo: '/fixtures/Brands/proplan.png',
           description: null,
         },
-      ],
-    });
-    await this.prisma.category.createMany({
-      data: [
-        { id: 1, title: 'Собаки' },
-        { id: 2, title: 'Кошки' },
-        { id: 3, title: 'Другие питомцы' },
-      ],
-    });
-    await this.prisma.category.createMany({
-      data: [
-        { id: 111, title: 'Сухой корм', parentId: 1 },
-        { id: 112, title: 'Влажные корма', parentId: 1 },
-        { id: 113, title: 'Сухие корма', parentId: 2 },
-        { id: 114, title: 'Влажные корм', parentId: 2 },
-        { id: 115, title: 'Амуниция', parentId: 1 },
-        { id: 116, title: 'Ветеринарная аптека', parentId: 2 },
-        { id: 117, title: 'Витамины и добавки', parentId: 1 },
-        { id: 118, title: 'Домики и лежанки', parentId: 1 },
-        { id: 119, title: 'Ошейники и шлейки', parentId: 2 },
-        { id: 120, title: 'Лакомства', parentId: 1 },
-        { id: 121, title: 'Игрушки', parentId: 2 },
-        { id: 122, title: 'Сено', parentId: 3 },
-      ],
-    });
+      }),
+      this.prisma.brand.create({
+        data: {
+          title: 'ROYAL CANIN',
+          logo: '/fixtures/Brands/ROYAL_CANIN.webp',
+          description:
+            'Здоровье каждой собаки и кошки настолько индивидуально, как и само животное. Оно зависит от размера, породы и условий жизни питомца. Откройте для себя специальные диеты от ROYAL CANIN, которые адаптированы к уникальным потребностям собак и кошек и разработаны для оптимальной поддержки их здоровья.',
+        },
+      }),
+      this.prisma.brand.create({
+        data: {
+          title: 'WOLF OF WILDERNESS',
+          logo: '/fixtures/Brands/wolf-of-wilderness_f.png',
+          description:
+            'Собаки и волки имеют 99% общего ДНК. Именно поэтому мы разработали корм Wolf of Wilderness. Наш рацион основан на природных инстинктах вашей собаки — он на 100% беззерновой и содержит много свежего мяса.',
+        },
+      }),
+      this.prisma.brand.create({
+        data: {
+          title: 'James Wellbeloved',
+          logo: '/fixtures/Brands/James_Wellbeloved.webp',
+          description:
+            'Уже более 30 лет владельцы домашних животных доверяют James Wellbeloved заботу о своих четвероногих друзьях, помогая им быть счастливыми, здоровыми и полными энергии. Наши натуральные и вкусные рационы разработаны с учётом потребностей питомцев, чтобы обеспечивать их всем необходимым. Мы стремимся не просто сделать питание лучше — мы хотим, чтобы жизнь ваших любимцев стала лучше. Ведь это естественно — желать, чтобы ваш питомец с удовольствием ел и жил здоровой и счастливой жизнью.',
+        },
+      }),
+      this.prisma.brand.create({
+        data: {
+          title: "HILL'S PET NUTRITION",
+          logo: '/fixtures/Brands/Hills.webp',
+          description:
+            "От щенков и котят до пожилых питомцев — питание для собак и кошек от Hill's, основанное на научном подходе, всегда на шаг впереди, чтобы вы могли видеть, чувствовать и доверять результату.",
+        },
+      }),
+      this.prisma.brand.create({
+        data: {
+          title: 'Arden Grange',
+          logo: '/fixtures/Brands/ArdenGrange.webp',
+          description:
+            'Наша основная философия — «питание без компромиссов» — лежит в основе всего, что мы делаем. Все наши рационы для собак и кошек являются натурально гипоаллергенными, содержат пребиотики и поддерживают здоровье суставов. Каждый ингредиент в составе выбран не случайно — он несёт реальную питательную ценность и способствует достижению оптимального здоровья и жизненной энергии питомца.',
+        },
+      }),
+      this.prisma.brand.create({
+        data: {
+          title: 'Applaws',
+          logo: '/fixtures/Brands/Applaws.webp',
+          description:
+            'Добро пожаловать в Applaws — мир для любознательных натур и ещё более любознательных аппетитов. У нас новый облик, но наш корм для кошек по-прежнему такой же натуральный и вкусный, с тем самым любимым вкусом, который оценит ваш питомец. Каждая кошка уникальна, и мы стремимся удовлетворить её любопытство и постоянно меняющиеся вкусовые предпочтения. Благодаря разнообразию натурально вкусных рецептов в нашем меню, у нас найдётся блюдо для любой «мяу»-личности!',
+        },
+      }),
+      this.prisma.brand.create({
+        data: {
+          title: 'Burns',
+          logo: '/fixtures/Brands/Burns.png',
+          description:
+            'Мы — новаторский бренд в мире питания для домашних животных и стоим у истоков рынка здорового корма с момента основания компании ветеринарным врачом Джоном Бёрнсом в 1993 году. Мы специализируемся на простых, полезных и натуральных ингредиентах, создавая отмеченные наградами рецепты, которые любят питомцы. С момента выпуска нашего первого рецепта с курицей и рисом почти 30 лет назад, мы разработали разнообразные линейки здорового и гипоаллергенного корма, в которых используется один источник белка и ингредиенты, максимально полезные, натуральные и устойчивые с точки зрения экологии. С момента нашего скромного старта мы выиграли множество наград, продали более 2 миллиардов порций корма и продолжаем поддерживать приюты, благотворительные организации и социальные проекты по всей Великобритании, ежегодно жертвуя 25% своей прибыли.',
+        },
+      }),
+      this.prisma.brand.create({
+        data: {
+          title: 'Whiskas',
+          logo: '/fixtures/Brands/Whiskas.webp',
+          description:
+            'Откройте для себя вкусное разнообразие влажного и сухого корма, а также лакомств от Whiskas® — для довольного мурчания во время еды и не только.',
+        },
+      }),
+      this.prisma.brand.create({
+        data: {
+          title: 'Concept for Life',
+          logo: '/fixtures/Brands/CFL.webp',
+          description:
+            'Корм Concept for Life обеспечивает вашего питомца правильным питанием на каждом этапе жизни. Этот вкусный сухой и влажный корм создан с учётом индивидуальных потребностей и особенностей рациона вашей кошки или собаки. Будь то котёнок, щенок, пожилое животное, рабочая собака, домашняя кошка или любительница прогулок — Concept for Life предлагает премиальное питание по отличной цене. Калорийность и питательная ценность каждого вида корма оптимизированы под конкретные потребности на каждом этапе жизни, чтобы состав и польза точно соответствовали образу жизни вашего питомца. Во всех рационах используются качественные ингредиенты, соответствующие виду животного и выполняющие конкретные функции. Этот сбалансированный комплекс питательных веществ помогает вашему питомцу жить счастливой и здоровой жизнью.',
+        },
+      }),
+      this.prisma.brand.create({
+        data: {
+          title: 'Cosma',
+          logo: '/fixtures/Brands/Cosma.png',
+          description:
+            'Каждый ответственный владелец кошки ценит качественное питание в миске своего питомца. Корм для кошек Cosma — это вкусный премиальный рацион, приготовленный из 100% натуральных ингредиентов с высоким содержанием чистого мяса или рыбы. Он не содержит консервантов, искусственных красителей или усилителей вкуса. Корм Cosma предлагает наилучшую питательную ценность и разработан для самых взыскательных домашних кошек и их утончённых вкусов. Cosma — это именно то, что ваша кошка заслуживает каждый день: чистое мясо и настоящая забота!',
+        },
+      }),
+      this.prisma.brand.create({
+        data: {
+          title: 'Purizon',
+          logo: '/fixtures/Brands/purizon.jpg',
+          description:
+            'Корм для собак и кошек Purizon ориентирован на естественный рацион наших любимцев. Он содержит до 80% мяса, рыбы и других ингредиентов животного происхождения.',
+        },
+      }),
+      this.prisma.brand.create({
+        data: {
+          title: "Rosie's Farm",
+          logo: '/fixtures/Brands/RosiesFarm.webp',
+          description:
+            "Rosie's Farm предлагает широкий выбор беззерновых влажных и сухих кормов, а также лакомств для собак и кошек. Они приготовлены с заботой и любовью из питательных ингредиентов. Каждый рецепт содержит свежее мясо или рыбу, а также тщательно отобранные овощи и травы. В Rosie's Farm знают, что хорошая еда объединяет семьи. Именно потому вы можете быть уверены, что еда в миске питомца будет не менее вкусной и полезной, чем ваша!",
+        },
+      }),
+      this.prisma.brand.create({
+        data: {
+          title: 'Tigerino',
+          logo: '/fixtures/Brands/Tigerino.jpg',
+          description:
+            'Tigerino — это не только сверхвпитывающий, но и экологичный наполнитель для кошек. Он мгновенно устраняет неприятные запахи и надёжно запирает бактерии внутри. Удивительно, но он способен впитать почти собственный вес жидкости.',
+        },
+      }),
+      this.prisma.brand.create({
+        data: {
+          title: 'Pedigree',
+          logo: '/fixtures/Brands/Pedigree.png',
+          description:
+            'PEDIGREE® верит, что собаки делают нашу жизнь лучше и делают нас лучшими людьми. Их искренняя преданность раскрывает в нас всё хорошее, поэтому мы стараемся, чтобы наше питание раскрывало всё лучшее в них. Вся наша продукция разрабатывается ветеринарами на основе научных исследований Института Waltham Petcare Science, чтобы каждая собака была максимально здоровой и счастливой.',
+        },
+      }),
+      this.prisma.brand.create({
+        data: {
+          title: 'SkogsFRO',
+          logo: '/fixtures/Brands/SkogsFRO.webp',
+          description: null,
+        },
+      }),
+      this.prisma.brand.create({
+        data: {
+          title: 'Qushy',
+          logo: '/fixtures/Brands/Qushy.webp',
+          description:
+            'Бренд «Qushy» берёт своё название от двух слов: французского «Queue», что значит «хвост», и английского «Bushy» — «пушистый». Изготавливаемые под этой маркой наполнители будут радовать абсолютно всех котиков, ведь для каждого из них можно подобрать любимый вид. Впитывающий, комкующийся и древесный наполнители производятся в разных регионах России, и сырьё для них отбирается самым тщательным образом. Поддерживая тенденции по сбережению окружающей среды, мы производим наш продукт таким образом, чтобы он полностью подлежал переработке. Благодаря этому важному условию, вы можете безопасно утилизировать наполнитель и его упаковку без вреда для экологии. Когда вы выбираете «Qushy», вы делаете шаг в сторону заботы не только о своём питомце, но и о природе в целом.',
+        },
+      }),
+      this.prisma.brand.create({
+        data: {
+          title: 'Мнямс',
+          logo: '/fixtures/Brands/Мнямс.webp',
+          description:
+            'Многие хозяева кошек выбирают уже готовую продукцию для своего питомца. При таком кормлении не нужно тратить много времени на готовку. К тому же, такую пищу можно купить в зоомагазине, либо заказать по интернету. Это немецкая марка представляет собой товар премиум-класса. По отзывам потребителей, качество корма Мнямс выше большинства представителей данного класса. Продукт сбалансирован, содержит все необходимые витамины и микроэлементы. Корма Мнямс выпускается в большом ассортименте: в виде влажных и сухих рационов, консервов и лакомств. Изобилие вкусов порадует самых привередливых в еде кошек. У нас выгодные цены, сертифицированная продукция, отличная бонусная программа! Наличие собственных складов товаров и более 185 магазинов, дает возможность нашим клиентам купить корма и лакомства Мнямс с доставкой на дом в течение 1 часа в городах: Москва, Санкт-Петербург, Нижний Новгород, Казань, или воспользоваться услугой самовывоз на ближайшем пункте доставки уже через 30 минут после заказа!',
+        },
+      }),
+      this.prisma.brand.create({
+        data: {
+          title: 'Brit',
+          logo: '/fixtures/Brands/Brit.webp',
+          description:
+            'Среди многообразия питания для домашних животных на рынке зоотоваров можно легко растеряться. Здесь представлен широчайший ассортимент различной ценовой категории, начиная от бюджетных кормов и заканчивая элитными. Многие заводчики отдают предпочтение рационам чешского производителя Brit. Корма производятся в широком ассортименте для кошек и собак всех пород и возрастов. Продукция Брит на 100% отвечает высоким стандартам и требованиям и по праву занимает свое место в рейтинге лучших кормов. Питание относится к премиум-классу и выпускается как в сухом, так и влажном виде. Заводские рационы Brit отличают сбалансированная рецептура, качественные ингредиенты и натуральный состав, в котором исключено содержание сои и ГМО. Продукция содержит все необходимые домашнему животному витамины и полезные минеральные вещества. Сбалансированный состав, экологически чистое серьё, высочайшее качество, доступные цены делают продукцию Брит популярной и востребованной. Купить корм Brit по самым выгодным ценам можно на сайте нашего интернет-магазина. У нас представлена широкая линейка самой разнообразной продукции популярной торговой марки. Грамотные консультанты помогут определиться с выбором необходимого товара. К тому же, уже через полчаса после оформления заказа, можно самостоятельно забрать товар в любом магазине в Москве, Санкт-Петербурге, Нижнем Новгороде и Казани, где он есть в наличии. Наша сеть насчитывает более 185 магазинов и имеет собственные склады для хранения. Это дает возможность доставить корм Brit в кратчайшие сроки. Звоните прямо сейчас.',
+        },
+      }),
+      this.prisma.brand.create({
+        data: {
+          title: 'Jarvi',
+          logo: '/fixtures/Brands/Jarvi.svg',
+          description:
+            'Järvi – для тех, кто выбирает лучшее для своего любимца. В составе только проверенные источники белка, витамины, аминокислоты, пребиотики, пробиотики и полезные добавки, которые учитывают все физиологические потребности организма. Продукция представляет собой сбалансированное полнорационное питание, изготовленное с учётом индивидуальных особенностей питомцев. Широкая палитра вкусов и разнообразие продуктов превращают процесс кормления в ежедневное удовольствие.',
+        },
+      }),
+      this.prisma.brand.create({
+        data: {
+          title: 'ANIMAL ISLAND',
+          logo: '/fixtures/Brands/ANIMAL_ISLAND.jpg',
+          description: null,
+        },
+      }),
+    ]);
+
+    const [
+      avz,
+      bayer,
+      catchHow,
+      dogShow,
+      flexi,
+      friskies,
+      gourmet,
+      happyCat,
+      happyDog,
+      purinaProPlan,
+      ROYAL_CANIN,
+      WOLF_OF_WILDERNESS,
+      James_Wellbeloved,
+      hills,
+      ArdenGrange,
+      Applaws,
+      Burns,
+      Whiskas,
+      CFL,
+      Cosma,
+      purizon,
+      RosiesFarm,
+      Tigerino,
+      Pedigree,
+      SkogsFRO,
+      Qushy,
+      Мнямс,
+      Brit,
+      Jarvi,
+      ANIMAL_ISLAND,
+    ] = brands;
+
+    const category = await Promise.all([
+      this.prisma.category.create({ data: { title: 'Собаки' } }),
+      this.prisma.category.create({ data: { title: 'Кошки' } }),
+      this.prisma.category.create({ data: { title: 'Грызуны' } }),
+      this.prisma.category.create({ data: { title: 'Птицы' } }),
+      this.prisma.category.create({ data: { title: 'Рыбки' } }),
+      this.prisma.category.create({ data: { title: 'Рептилии' } }),
+      this.prisma.category.create({ data: { title: 'Другие питомцы' } }),
+    ]);
+
+    const [dogs, cats, rodents, birds, fishes, reptiles, others] = category;
+
+    const subCategory = await Promise.all([
+        //собаки
+      this.prisma.category.create({
+        data: {
+          title: 'Сухой корм',
+          parentId: dogs.id,
+          icon: '/fixtures/categoryIcons/1icon.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Влажные корма',
+          parentId: dogs.id,
+          icon: '/fixtures/categoryIcons/2icon.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Шампуни и гели',
+          parentId: dogs.id,
+          icon: '/fixtures/categoryIcons/5icon.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Одежда для собак',
+          parentId: dogs.id,
+          icon: '/fixtures/categoryIcons/icon10.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Лежаки и подушки',
+          parentId: dogs.id,
+          icon: '/fixtures/categoryIcons/6icon.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Питание для щенков',
+          parentId: dogs.id,
+          icon: '/fixtures/categoryIcons/3icon.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Переноски',
+          parentId: dogs.id,
+          icon: '/fixtures/categoryIcons/6icon.png',
+        },
+      }),
+      //кошки
+      this.prisma.category.create({
+        data: {
+          title: 'Сухие корма',
+          parentId: cats.id,
+          icon: '/fixtures/categoryIcons/3icon.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Влажные корм',
+          parentId: cats.id,
+          icon: '/fixtures/categoryIcons/4icon.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Шампуни для кошек',
+          parentId: cats.id,
+          icon: '/fixtures/categoryIcons/5icon.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Одежда для кошек',
+          parentId: cats.id,
+          icon: '/fixtures/categoryIcons/icon10.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Груминг и уход',
+          parentId: cats.id,
+          icon: '/fixtures/categoryIcons/5icon.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Игрушки для кошек',
+          parentId: cats.id,
+          icon: '/fixtures/categoryIcons/9icon.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Когтеточки',
+          parentId: cats.id,
+          icon: '/fixtures/categoryIcons/yarn-ball.png',
+        },
+      }),
+      //другие
+      this.prisma.category.create({
+        data: {
+          title: 'Пищевые смеси',
+          parentId: others.id,
+          icon: '/fixtures/categoryIcons/8icon.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Миски и поилки',
+          parentId: others.id,
+          icon: '/fixtures/categoryIcons/dog-food.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Палочки и витаминные добавки',
+          parentId: others.id,
+          icon: '/fixtures/categoryIcons/8icon.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Гнезда и укрытия',
+          parentId: others.id,
+          icon: '/fixtures/categoryIcons/6icon.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Минеральные добавки ',
+          parentId: others.id,
+          icon: '/fixtures/categoryIcons/8icon.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Обогреватели для воды',
+          parentId: others.id,
+          icon: '/fixtures/categoryIcons/6icon.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Влажные и сухие смеси для кормления',
+          parentId: others.id,
+          icon: '/fixtures/categoryIcons/4icon.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Солевые растворы и добавки',
+          parentId: others.id,
+          icon: '/fixtures/categoryIcons/8icon.png',
+        },
+      }),
+      //рыбы
+      this.prisma.category.create({
+        data: {
+          title: 'Корма для рыб',
+          parentId: fishes.id,
+          icon: '/fixtures/categoryIcons/4icon.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Аквариумы и аксессуары',
+          parentId: fishes.id,
+          icon: '/fixtures/categoryIcons/fish-bowl.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Фильтры для аквариумов',
+          parentId: fishes.id,
+          icon: '/fixtures/categoryIcons/fish-bowl.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Освещение для аквариумов',
+          parentId: fishes.id,
+          icon: '/fixtures/categoryIcons/fish-bowl.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Декорации для аквариумов',
+          parentId: fishes.id,
+          icon: '/fixtures/categoryIcons/fish-bowl.png',
+        },
+      }),
+      //рептилии
+      this.prisma.category.create({
+        data: {
+          title: 'Корма для рептилий',
+          parentId: reptiles.id,
+          icon: '/fixtures/categoryIcons/4icon.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Террариумы',
+          parentId: reptiles.id,
+          icon: '/fixtures/categoryIcons/terrarium.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Обогреватели для террариумов',
+          parentId: reptiles.id,
+          icon: '/fixtures/categoryIcons/terrarium.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Декорации для террариумов',
+          parentId: reptiles.id,
+          icon: '/fixtures/categoryIcons/terrarium.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Термометры и гигрометры для террариумов',
+          parentId: reptiles.id,
+          icon: '/fixtures/categoryIcons/terrarium.png',
+        },
+      }),
+        // грызуны
+      this.prisma.category.create({
+        data: {
+          title: 'Корма для грызунов',
+          parentId: rodents.id,
+          icon: '/fixtures/categoryIcons/4icon.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Клетки для грызунов',
+          parentId: rodents.id,
+          icon: '/fixtures/categoryIcons/pet-cage.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Игрушки для грызунов',
+          parentId: rodents.id,
+          icon: '/fixtures/categoryIcons/9icon.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Наполнитель для клеток',
+          parentId: rodents.id,
+          icon: '/fixtures/categoryIcons/tray.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Лакомства для грызунов',
+          parentId: rodents.id,
+          icon: '/fixtures/categoryIcons/8icon.png',
+        },
+      }),
+        //птицы
+      this.prisma.category.create({
+        data: {
+          title: 'Корм для птиц',
+          parentId: birds.id,
+          icon: '/fixtures/categoryIcons/4icon.png',
+        },
+      }),
+     this.prisma.category.create({
+      data: {
+        title: 'Клетки и вольеры',
+        parentId: birds.id,
+        icon: '/fixtures/categoryIcons/pet-cage.png',
+      },
+    }),
+
+     this.prisma.category.create({
+      data: {
+        title: 'Игрушки для птиц',
+        parentId: birds.id,
+        icon: '/fixtures/categoryIcons/9icon.png',
+      },
+    }),
+
+     this.prisma.category.create({
+      data: {
+        title: 'Витамины и добавки',
+        parentId: birds.id,
+        icon: '/fixtures/categoryIcons/2icon.png',
+      },
+    }),
+
+     this.prisma.category.create({
+      data: {
+        title: 'Поилки и кормушки',
+        parentId: birds.id,
+        icon: '/fixtures/categoryIcons/pet-feeder.png',
+      },
+    }),
+  ]);
+
+    const [
+      dryDogFood,
+      wetDogFood,
+      dryCatFood,
+      wetCatFood,
+      ammunition,
+      vetPharmacy,
+      vitamins,
+      beds,
+      collars,
+      treats,
+      toys,
+      hay,
+    ] = subCategory;
 
     await this.prisma.products.createMany({
       data: [
@@ -193,8 +760,8 @@ export class SeedService {
           productName: 'Сухой корм для собак',
           productPrice: 1200,
           productDescription: 'Качественный сухой корм для взрослых собак.',
-          brandId: 1,
-          categoryId: 1,
+          brandId: avz.id,
+          categoryId: dryDogFood.id,
           productPhoto: '/fixtures/products/dog_food.jpg',
           existence: true,
           sales: false,
@@ -203,8 +770,8 @@ export class SeedService {
           productName: 'Сухой корм для кошек',
           productPrice: 1200,
           productDescription: 'Качественный сухой корм для кошек.',
-          brandId: 1,
-          categoryId: 2,
+          brandId: bayer.id,
+          categoryId: wetDogFood.id,
           productPhoto: '/fixtures/products/dog_food.jpg',
           existence: true,
           sales: false,
@@ -214,8 +781,8 @@ export class SeedService {
           productPrice: 1200,
           productDescription:
             'Щебень для создания ландшафтных решений для собак.',
-          brandId: 1,
-          categoryId: 1,
+          brandId: catchHow.id,
+          categoryId: dryCatFood.id,
           productPhoto: '/fixtures/products/dog_food.jpg',
           existence: false,
           sales: false,
@@ -224,8 +791,8 @@ export class SeedService {
           productName: 'Игрушка для собак',
           productPrice: 2500,
           productDescription: 'Прочная когтеточка для развлечения вашей кошки.',
-          brandId: 2,
-          categoryId: 1,
+          brandId: dogShow.id,
+          categoryId: wetCatFood.id,
           productPhoto: '/fixtures/products/cat_scratcher.jpg',
           existence: false,
           sales: false,
@@ -234,8 +801,8 @@ export class SeedService {
           productName: 'Когтеточка для кошек',
           productPrice: 2500,
           productDescription: 'Прочная когтеточка для развлечения вашей кошки.',
-          brandId: 2,
-          categoryId: 2,
+          brandId: flexi.id,
+          categoryId: ammunition.id,
           productPhoto: '/fixtures/products/cat_scratcher.jpg',
           existence: false,
           sales: false,
@@ -244,8 +811,8 @@ export class SeedService {
           productName: 'Ошейник',
           productPrice: 2500,
           productDescription: 'Прочная когтеточка для развлечения вашей кошки.',
-          brandId: 2,
-          categoryId: 2,
+          brandId: friskies.id,
+          categoryId: vetPharmacy.id,
           productPhoto: '/fixtures/products/cat_scratcher.jpg',
           existence: false,
           sales: false,
@@ -254,8 +821,8 @@ export class SeedService {
           productName: 'Клетка для птиц',
           productPrice: 4500,
           productDescription: 'Просторная и удобная клетка для мелких птиц.',
-          brandId: 3,
-          categoryId: 3,
+          brandId: gourmet.id,
+          categoryId: vetPharmacy.id,
           productPhoto: '/fixtures/products/bird_cage.jpg',
           existence: false,
           sales: false,
@@ -265,8 +832,8 @@ export class SeedService {
           productPrice: 1800,
           productDescription:
             'Мощный фильтр для чистой и прозрачной воды в аквариуме.',
-          brandId: 4,
-          categoryId: 3,
+          brandId: happyCat.id,
+          categoryId: vitamins.id,
           productPhoto: '/fixtures/products/aquarium_filter.jpg',
           existence: false,
           sales: false,
@@ -276,14 +843,947 @@ export class SeedService {
           productPrice: 900,
           productDescription:
             'Удобная кормушка для сена для кроликов и мелких грызунов.',
-          brandId: 5,
-          categoryId: 3,
+          brandId: happyDog.id,
+          categoryId: beds.id,
+          productPhoto: '/fixtures/products/rabbit_feeder.jpg',
+          existence: false,
+          sales: false,
+        },
+        {
+          productName: 'Кормушка для сена для драконов',
+          productPrice: 500,
+          productDescription:
+            'Удобная кормушка для сена для кроликов и мелких грызунов.',
+          brandId: purinaProPlan.id,
+          categoryId: collars.id,
+          productPhoto: '/fixtures/products/rabbit_feeder.jpg',
+          existence: false,
+          sales: false,
+        },
+        {
+          productName: 'Лакомства для драконов',
+          productPrice: 500,
+          productDescription:
+            'Удобная кормушка для сена для кроликов и мелких грызунов.',
+          brandId: purinaProPlan.id,
+          categoryId: treats.id,
+          productPhoto: '/fixtures/products/rabbit_feeder.jpg',
+          existence: false,
+          sales: false,
+        },
+        {
+          productName: 'Игрушка для драконов',
+          productPrice: 500,
+          productDescription:
+            'Удобная игрушка для сена для кроликов и мелких грызунов.',
+          brandId: purinaProPlan.id,
+          categoryId: toys.id,
+          productPhoto: '/fixtures/products/rabbit_feeder.jpg',
+          existence: false,
+          sales: false,
+        },
+        {
+          productName: 'Сена для драконов',
+          productPrice: 500,
+          productDescription:
+            'Удобная кормушка для сена для кроликов и мелких грызунов.',
+          brandId: purinaProPlan.id,
+          categoryId: hay.id,
           productPhoto: '/fixtures/products/rabbit_feeder.jpg',
           existence: false,
           sales: false,
         },
       ],
     });
+
+    await Promise.all([
+      this.prisma.order.create({
+        data: {
+          userId: miranaClient.id,
+          status: 'Confirmed',
+          address: 'г. Бишкек, ул. Ленина 123',
+          guestPhone: miranaClient.phone,
+          guestEmail: miranaClient.email,
+          guestName: miranaClient.firstName,
+          guestLastName: miranaClient.secondName,
+          paymentMethod: 'ByCard',
+          deliveryMethod: 'Delivery',
+          orderComment: 'Позвонить перед доставкой',
+          useBonus: true,
+          bonusUsed: 100,
+          items: {
+            create: [
+              {
+                quantity: 2,
+                orderAmount: 2400,
+                productId: 1,
+              },
+              {
+                quantity: 1,
+                orderAmount: 2500,
+                productId: 2,
+              },
+            ],
+          },
+        },
+      }),
+
+      this.prisma.order.create({
+        data: {
+          userId: ilonClient.id,
+          status: 'Pending',
+          address: 'г. Ош, ул. Гагарина 99',
+          guestPhone: ilonClient.phone,
+          guestEmail: ilonClient.email,
+          guestName: ilonClient.firstName,
+          guestLastName: ilonClient.secondName,
+          paymentMethod: 'ByCash',
+          deliveryMethod: 'PickUp',
+          items: {
+            create: [
+              {
+                quantity: 3,
+                orderAmount: 1500,
+                productId: 3,
+              },
+            ],
+          },
+        },
+      }),
+
+      this.prisma.order.create({
+        data: {
+          userId: michaelClient.id,
+          status: 'Delivered',
+          address: 'г. Кара-Балта, ул. Муратова 17',
+          guestPhone: michaelClient.phone,
+          guestEmail: michaelClient.email,
+          guestName: michaelClient.firstName,
+          guestLastName: michaelClient.secondName,
+          paymentMethod: 'ByCard',
+          deliveryMethod: 'Delivery',
+          orderComment: 'Пожалуйста, не забудьте пакет.',
+          items: {
+            create: [
+              {
+                quantity: 1,
+                orderAmount: 4500,
+                productId: 4,
+              },
+            ],
+          },
+        },
+      }),
+
+      this.prisma.order.create({
+        data: {
+          userId: cristianoClient.id,
+          status: 'Shipped',
+          address: 'г. Бишкек, ул. Футбольная 7',
+          guestPhone: cristianoClient.phone,
+          guestEmail: cristianoClient.email,
+          guestName: cristianoClient.firstName,
+          guestLastName: cristianoClient.secondName,
+          paymentMethod: 'ByCash',
+          deliveryMethod: 'Delivery',
+          useBonus: true,
+          bonusUsed: 50,
+          items: {
+            create: [
+              {
+                quantity: 1,
+                orderAmount: 500,
+                productId: 5,
+              },
+              {
+                quantity: 2,
+                orderAmount: 1000,
+                productId: 6,
+              },
+            ],
+          },
+        },
+      }),
+
+      this.prisma.order.create({
+        data: {
+          userId: miranaClient.id,
+          status: 'Confirmed',
+          address: 'г. Бишкек, ул. Ленина 123',
+          guestPhone: miranaClient.phone,
+          guestEmail: miranaClient.email,
+          guestName: miranaClient.firstName,
+          guestLastName: miranaClient.secondName,
+          paymentMethod: 'ByCard',
+          deliveryMethod: 'Delivery',
+          orderComment: 'Позвонить перед доставкой',
+          useBonus: true,
+          bonusUsed: 100,
+          items: {
+            create: [
+              {
+                quantity: 2,
+                orderAmount: 2400,
+                productId: 1,
+              },
+              {
+                quantity: 1,
+                orderAmount: 2500,
+                productId: 2,
+              },
+            ],
+          },
+        },
+      }),
+
+      this.prisma.order.create({
+        data: {
+          userId: ilonClient.id,
+          status: 'Pending',
+          address: 'г. Ош, ул. Гагарина 99',
+          guestPhone: ilonClient.phone,
+          guestEmail: ilonClient.email,
+          guestName: ilonClient.firstName,
+          guestLastName: ilonClient.secondName,
+          paymentMethod: 'ByCash',
+          deliveryMethod: 'PickUp',
+          items: {
+            create: [
+              {
+                quantity: 3,
+                orderAmount: 1500,
+                productId: 3,
+              },
+            ],
+          },
+        },
+      }),
+
+      this.prisma.order.create({
+        data: {
+          userId: michaelClient.id,
+          status: 'Delivered',
+          address: 'г. Кара-Балта, ул. Муратова 17',
+          guestPhone: michaelClient.phone,
+          guestEmail: michaelClient.email,
+          guestName: michaelClient.firstName,
+          guestLastName: michaelClient.secondName,
+          paymentMethod: 'ByCard',
+          deliveryMethod: 'Delivery',
+          orderComment: 'Пожалуйста, не забудьте пакет.',
+          items: {
+            create: [
+              {
+                quantity: 1,
+                orderAmount: 4500,
+                productId: 4,
+              },
+            ],
+          },
+        },
+      }),
+
+      // Заказ от cristianoClient
+      this.prisma.order.create({
+        data: {
+          userId: cristianoClient.id,
+          status: 'Shipped',
+          address: 'г. Бишкек, ул. Футбольная 7',
+          guestPhone: cristianoClient.phone,
+          guestEmail: cristianoClient.email,
+          guestName: cristianoClient.firstName,
+          guestLastName: cristianoClient.secondName,
+          paymentMethod: 'ByCash',
+          deliveryMethod: 'Delivery',
+          useBonus: true,
+          bonusUsed: 50,
+          items: {
+            create: [
+              {
+                quantity: 1,
+                orderAmount: 500,
+                productId: 5,
+              },
+              {
+                quantity: 2,
+                orderAmount: 1000,
+                productId: 6,
+              },
+            ],
+          },
+        },
+      }),
+
+      this.prisma.order.create({
+        data: {
+          userId: miranaClient.id,
+          status: 'Confirmed',
+          address: 'г. Бишкек, ул. Ленина 123',
+          guestPhone: miranaClient.phone,
+          guestEmail: miranaClient.email,
+          guestName: miranaClient.firstName,
+          guestLastName: miranaClient.secondName,
+          paymentMethod: 'ByCard',
+          deliveryMethod: 'Delivery',
+          orderComment: 'Позвонить перед доставкой',
+          useBonus: true,
+          bonusUsed: 100,
+          items: {
+            create: [
+              {
+                quantity: 2,
+                orderAmount: 2400,
+                productId: 1,
+              },
+              {
+                quantity: 1,
+                orderAmount: 2500,
+                productId: 2,
+              },
+            ],
+          },
+        },
+      }),
+
+      this.prisma.order.create({
+        data: {
+          userId: ilonClient.id,
+          status: 'Pending',
+          address: 'г. Ош, ул. Гагарина 99',
+          guestPhone: ilonClient.phone,
+          guestEmail: ilonClient.email,
+          guestName: ilonClient.firstName,
+          guestLastName: ilonClient.secondName,
+          paymentMethod: 'ByCash',
+          deliveryMethod: 'PickUp',
+          items: {
+            create: [
+              {
+                quantity: 3,
+                orderAmount: 1500,
+                productId: 3,
+              },
+            ],
+          },
+        },
+      }),
+
+      this.prisma.order.create({
+        data: {
+          userId: michaelClient.id,
+          status: 'Delivered',
+          address: 'г. Кара-Балта, ул. Муратова 17',
+          guestPhone: michaelClient.phone,
+          guestEmail: michaelClient.email,
+          guestName: michaelClient.firstName,
+          guestLastName: michaelClient.secondName,
+          paymentMethod: 'ByCard',
+          deliveryMethod: 'Delivery',
+          orderComment: 'Пожалуйста, не забудьте пакет.',
+          items: {
+            create: [
+              {
+                quantity: 1,
+                orderAmount: 4500,
+                productId: 4,
+              },
+            ],
+          },
+        },
+      }),
+
+      // Заказ от cristianoClient
+      this.prisma.order.create({
+        data: {
+          userId: cristianoClient.id,
+          status: 'Shipped',
+          address: 'г. Бишкек, ул. Футбольная 7',
+          guestPhone: cristianoClient.phone,
+          guestEmail: cristianoClient.email,
+          guestName: cristianoClient.firstName,
+          guestLastName: cristianoClient.secondName,
+          paymentMethod: 'ByCash',
+          deliveryMethod: 'Delivery',
+          useBonus: true,
+          bonusUsed: 50,
+          items: {
+            create: [
+              {
+                quantity: 1,
+                orderAmount: 500,
+                productId: 5,
+              },
+              {
+                quantity: 2,
+                orderAmount: 1000,
+                productId: 6,
+              },
+            ],
+          },
+        },
+      }),
+
+      this.prisma.order.create({
+        data: {
+          userId: miranaClient.id,
+          status: 'Confirmed',
+          address: 'г. Бишкек, ул. Ленина 123',
+          guestPhone: miranaClient.phone,
+          guestEmail: miranaClient.email,
+          guestName: miranaClient.firstName,
+          guestLastName: miranaClient.secondName,
+          paymentMethod: 'ByCard',
+          deliveryMethod: 'Delivery',
+          orderComment: 'Позвонить перед доставкой',
+          useBonus: true,
+          bonusUsed: 100,
+          items: {
+            create: [
+              {
+                quantity: 2,
+                orderAmount: 2400,
+                productId: 1,
+              },
+              {
+                quantity: 1,
+                orderAmount: 2500,
+                productId: 2,
+              },
+            ],
+          },
+        },
+      }),
+
+      this.prisma.order.create({
+        data: {
+          userId: ilonClient.id,
+          status: 'Pending',
+          address: 'г. Ош, ул. Гагарина 99',
+          guestPhone: ilonClient.phone,
+          guestEmail: ilonClient.email,
+          guestName: ilonClient.firstName,
+          guestLastName: ilonClient.secondName,
+          paymentMethod: 'ByCash',
+          deliveryMethod: 'PickUp',
+          items: {
+            create: [
+              {
+                quantity: 3,
+                orderAmount: 1500,
+                productId: 3,
+              },
+            ],
+          },
+        },
+      }),
+
+      this.prisma.order.create({
+        data: {
+          userId: michaelClient.id,
+          status: 'Delivered',
+          address: 'г. Кара-Балта, ул. Муратова 17',
+          guestPhone: michaelClient.phone,
+          guestEmail: michaelClient.email,
+          guestName: michaelClient.firstName,
+          guestLastName: michaelClient.secondName,
+          paymentMethod: 'ByCard',
+          deliveryMethod: 'Delivery',
+          orderComment: 'Пожалуйста, не забудьте пакет.',
+          items: {
+            create: [
+              {
+                quantity: 1,
+                orderAmount: 4500,
+                productId: 4,
+              },
+            ],
+          },
+        },
+      }),
+
+      // Заказ от cristianoClient
+      this.prisma.order.create({
+        data: {
+          userId: cristianoClient.id,
+          status: 'Shipped',
+          address: 'г. Бишкек, ул. Футбольная 7',
+          guestPhone: cristianoClient.phone,
+          guestEmail: cristianoClient.email,
+          guestName: cristianoClient.firstName,
+          guestLastName: cristianoClient.secondName,
+          paymentMethod: 'ByCash',
+          deliveryMethod: 'Delivery',
+          useBonus: true,
+          bonusUsed: 50,
+          items: {
+            create: [
+              {
+                quantity: 1,
+                orderAmount: 500,
+                productId: 5,
+              },
+              {
+                quantity: 2,
+                orderAmount: 1000,
+                productId: 6,
+              },
+            ],
+          },
+        },
+      }),
+
+      this.prisma.order.create({
+        data: {
+          userId: miranaClient.id,
+          status: 'Confirmed',
+          address: 'г. Бишкек, ул. Ленина 123',
+          guestPhone: miranaClient.phone,
+          guestEmail: miranaClient.email,
+          guestName: miranaClient.firstName,
+          guestLastName: miranaClient.secondName,
+          paymentMethod: 'ByCard',
+          deliveryMethod: 'Delivery',
+          orderComment: 'Позвонить перед доставкой',
+          useBonus: true,
+          bonusUsed: 100,
+          items: {
+            create: [
+              {
+                quantity: 2,
+                orderAmount: 2400,
+                productId: 1,
+              },
+              {
+                quantity: 1,
+                orderAmount: 2500,
+                productId: 2,
+              },
+            ],
+          },
+        },
+      }),
+
+      this.prisma.order.create({
+        data: {
+          userId: ilonClient.id,
+          status: 'Pending',
+          address: 'г. Ош, ул. Гагарина 99',
+          guestPhone: ilonClient.phone,
+          guestEmail: ilonClient.email,
+          guestName: ilonClient.firstName,
+          guestLastName: ilonClient.secondName,
+          paymentMethod: 'ByCash',
+          deliveryMethod: 'PickUp',
+          items: {
+            create: [
+              {
+                quantity: 3,
+                orderAmount: 1500,
+                productId: 3,
+              },
+            ],
+          },
+        },
+      }),
+
+      this.prisma.order.create({
+        data: {
+          userId: michaelClient.id,
+          status: 'Delivered',
+          address: 'г. Кара-Балта, ул. Муратова 17',
+          guestPhone: michaelClient.phone,
+          guestEmail: michaelClient.email,
+          guestName: michaelClient.firstName,
+          guestLastName: michaelClient.secondName,
+          paymentMethod: 'ByCard',
+          deliveryMethod: 'Delivery',
+          orderComment: 'Пожалуйста, не забудьте пакет.',
+          items: {
+            create: [
+              {
+                quantity: 1,
+                orderAmount: 4500,
+                productId: 4,
+              },
+            ],
+          },
+        },
+      }),
+
+      // Заказ от cristianoClient
+      this.prisma.order.create({
+        data: {
+          userId: cristianoClient.id,
+          status: 'Shipped',
+          address: 'г. Бишкек, ул. Футбольная 7',
+          guestPhone: cristianoClient.phone,
+          guestEmail: cristianoClient.email,
+          guestName: cristianoClient.firstName,
+          guestLastName: cristianoClient.secondName,
+          paymentMethod: 'ByCash',
+          deliveryMethod: 'Delivery',
+          useBonus: true,
+          bonusUsed: 50,
+          items: {
+            create: [
+              {
+                quantity: 1,
+                orderAmount: 500,
+                productId: 5,
+              },
+              {
+                quantity: 2,
+                orderAmount: 1000,
+                productId: 6,
+              },
+            ],
+          },
+        },
+      }),
+
+      this.prisma.order.create({
+        data: {
+          userId: miranaClient.id,
+          status: 'Confirmed',
+          address: 'г. Бишкек, ул. Ленина 123',
+          guestPhone: miranaClient.phone,
+          guestEmail: miranaClient.email,
+          guestName: miranaClient.firstName,
+          guestLastName: miranaClient.secondName,
+          paymentMethod: 'ByCard',
+          deliveryMethod: 'Delivery',
+          orderComment: 'Позвонить перед доставкой',
+          useBonus: true,
+          bonusUsed: 100,
+          items: {
+            create: [
+              {
+                quantity: 2,
+                orderAmount: 2400,
+                productId: 1,
+              },
+              {
+                quantity: 1,
+                orderAmount: 2500,
+                productId: 2,
+              },
+            ],
+          },
+        },
+      }),
+
+      this.prisma.order.create({
+        data: {
+          userId: ilonClient.id,
+          status: 'Pending',
+          address: 'г. Ош, ул. Гагарина 99',
+          guestPhone: ilonClient.phone,
+          guestEmail: ilonClient.email,
+          guestName: ilonClient.firstName,
+          guestLastName: ilonClient.secondName,
+          paymentMethod: 'ByCash',
+          deliveryMethod: 'PickUp',
+          items: {
+            create: [
+              {
+                quantity: 3,
+                orderAmount: 1500,
+                productId: 3,
+              },
+            ],
+          },
+        },
+      }),
+
+      this.prisma.order.create({
+        data: {
+          userId: michaelClient.id,
+          status: 'Delivered',
+          address: 'г. Кара-Балта, ул. Муратова 17',
+          guestPhone: michaelClient.phone,
+          guestEmail: michaelClient.email,
+          guestName: michaelClient.firstName,
+          guestLastName: michaelClient.secondName,
+          paymentMethod: 'ByCard',
+          deliveryMethod: 'Delivery',
+          orderComment: 'Пожалуйста, не забудьте пакет.',
+          items: {
+            create: [
+              {
+                quantity: 1,
+                orderAmount: 4500,
+                productId: 4,
+              },
+            ],
+          },
+        },
+      }),
+
+      // Заказ от cristianoClient
+      this.prisma.order.create({
+        data: {
+          userId: cristianoClient.id,
+          status: 'Shipped',
+          address: 'г. Бишкек, ул. Футбольная 7',
+          guestPhone: cristianoClient.phone,
+          guestEmail: cristianoClient.email,
+          guestName: cristianoClient.firstName,
+          guestLastName: cristianoClient.secondName,
+          paymentMethod: 'ByCash',
+          deliveryMethod: 'Delivery',
+          useBonus: true,
+          bonusUsed: 50,
+          items: {
+            create: [
+              {
+                quantity: 1,
+                orderAmount: 500,
+                productId: 5,
+              },
+              {
+                quantity: 2,
+                orderAmount: 1000,
+                productId: 6,
+              },
+            ],
+          },
+        },
+      }),
+
+      this.prisma.order.create({
+        data: {
+          userId: miranaClient.id,
+          status: 'Confirmed',
+          address: 'г. Бишкек, ул. Ленина 123',
+          guestPhone: miranaClient.phone,
+          guestEmail: miranaClient.email,
+          guestName: miranaClient.firstName,
+          guestLastName: miranaClient.secondName,
+          paymentMethod: 'ByCard',
+          deliveryMethod: 'Delivery',
+          orderComment: 'Позвонить перед доставкой',
+          useBonus: true,
+          bonusUsed: 100,
+          items: {
+            create: [
+              {
+                quantity: 2,
+                orderAmount: 2400,
+                productId: 1,
+              },
+              {
+                quantity: 1,
+                orderAmount: 2500,
+                productId: 2,
+              },
+            ],
+          },
+        },
+      }),
+
+      this.prisma.order.create({
+        data: {
+          userId: ilonClient.id,
+          status: 'Pending',
+          address: 'г. Ош, ул. Гагарина 99',
+          guestPhone: ilonClient.phone,
+          guestEmail: ilonClient.email,
+          guestName: ilonClient.firstName,
+          guestLastName: ilonClient.secondName,
+          paymentMethod: 'ByCash',
+          deliveryMethod: 'PickUp',
+          items: {
+            create: [
+              {
+                quantity: 3,
+                orderAmount: 1500,
+                productId: 3,
+              },
+            ],
+          },
+        },
+      }),
+
+      this.prisma.order.create({
+        data: {
+          userId: michaelClient.id,
+          status: 'Delivered',
+          address: 'г. Кара-Балта, ул. Муратова 17',
+          guestPhone: michaelClient.phone,
+          guestEmail: michaelClient.email,
+          guestName: michaelClient.firstName,
+          guestLastName: michaelClient.secondName,
+          paymentMethod: 'ByCard',
+          deliveryMethod: 'Delivery',
+          orderComment: 'Пожалуйста, не забудьте пакет.',
+          items: {
+            create: [
+              {
+                quantity: 1,
+                orderAmount: 4500,
+                productId: 4,
+              },
+            ],
+          },
+        },
+      }),
+
+      // Заказ от cristianoClient
+      this.prisma.order.create({
+        data: {
+          userId: cristianoClient.id,
+          status: 'Shipped',
+          address: 'г. Бишкек, ул. Футбольная 7',
+          guestPhone: cristianoClient.phone,
+          guestEmail: cristianoClient.email,
+          guestName: cristianoClient.firstName,
+          guestLastName: cristianoClient.secondName,
+          paymentMethod: 'ByCash',
+          deliveryMethod: 'Delivery',
+          useBonus: true,
+          bonusUsed: 50,
+          items: {
+            create: [
+              {
+                quantity: 1,
+                orderAmount: 500,
+                productId: 5,
+              },
+              {
+                quantity: 2,
+                orderAmount: 1000,
+                productId: 6,
+              },
+            ],
+          },
+        },
+      }),
+
+      this.prisma.order.create({
+        data: {
+          userId: miranaClient.id,
+          status: 'Confirmed',
+          address: 'г. Бишкек, ул. Ленина 123',
+          guestPhone: miranaClient.phone,
+          guestEmail: miranaClient.email,
+          guestName: miranaClient.firstName,
+          guestLastName: miranaClient.secondName,
+          paymentMethod: 'ByCard',
+          deliveryMethod: 'Delivery',
+          orderComment: 'Позвонить перед доставкой',
+          useBonus: true,
+          bonusUsed: 100,
+          items: {
+            create: [
+              {
+                quantity: 2,
+                orderAmount: 2400,
+                productId: 1,
+              },
+              {
+                quantity: 1,
+                orderAmount: 2500,
+                productId: 2,
+              },
+            ],
+          },
+        },
+      }),
+
+      this.prisma.order.create({
+        data: {
+          userId: ilonClient.id,
+          status: 'Pending',
+          address: 'г. Ош, ул. Гагарина 99',
+          guestPhone: ilonClient.phone,
+          guestEmail: ilonClient.email,
+          guestName: ilonClient.firstName,
+          guestLastName: ilonClient.secondName,
+          paymentMethod: 'ByCash',
+          deliveryMethod: 'PickUp',
+          items: {
+            create: [
+              {
+                quantity: 3,
+                orderAmount: 1500,
+                productId: 3,
+              },
+            ],
+          },
+        },
+      }),
+
+      this.prisma.order.create({
+        data: {
+          userId: michaelClient.id,
+          status: 'Delivered',
+          address: 'г. Кара-Балта, ул. Муратова 17',
+          guestPhone: michaelClient.phone,
+          guestEmail: michaelClient.email,
+          guestName: michaelClient.firstName,
+          guestLastName: michaelClient.secondName,
+          paymentMethod: 'ByCard',
+          deliveryMethod: 'Delivery',
+          orderComment: 'Пожалуйста, не забудьте пакет.',
+          items: {
+            create: [
+              {
+                quantity: 1,
+                orderAmount: 4500,
+                productId: 4,
+              },
+            ],
+          },
+        },
+      }),
+
+      // Заказ от cristianoClient
+      this.prisma.order.create({
+        data: {
+          userId: cristianoClient.id,
+          status: 'Shipped',
+          address: 'г. Бишкек, ул. Футбольная 7',
+          guestPhone: cristianoClient.phone,
+          guestEmail: cristianoClient.email,
+          guestName: cristianoClient.firstName,
+          guestLastName: cristianoClient.secondName,
+          paymentMethod: 'ByCash',
+          deliveryMethod: 'Delivery',
+          useBonus: true,
+          bonusUsed: 50,
+          items: {
+            create: [
+              {
+                quantity: 1,
+                orderAmount: 500,
+                productId: 5,
+              },
+              {
+                quantity: 2,
+                orderAmount: 1000,
+                productId: 6,
+              },
+            ],
+          },
+        },
+      }),
+    ]);
+
+    await Promise.all([
+      this.prisma.statistic.create({
+        data: {
+          date: new Date(),
+          pickUpStatistic: 423,
+          deliveryStatistic: 324,
+          paymentByCard: 4563,
+          paymentByCash: 7566,
+          bonusUsage: 1232,
+          canceledOrderCount: 422,
+          totalOrders: 131414,
+        },
+      }),
+    ]);
+
     await this.prisma.companyPages.createMany({
       data: {
         text:

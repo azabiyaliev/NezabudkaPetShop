@@ -1,10 +1,9 @@
-import { Box } from "@mui/joy";
-import { useAppDispatch, useAppSelector } from "../../app/hooks.ts";
-import Carts from "../../components/Domain/CustomCart/Basket/Carts/Carts.tsx";
-import { Button, Container } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import image from "../../assets/image_transparent.png";
-import Typography from "@mui/joy/Typography";
+import { Box } from '@mui/joy';
+import { useAppDispatch, useAppSelector } from '../../app/hooks.ts';
+import Carts from '../../components/Domain/CustomCart/Basket/Carts/Carts.tsx';
+import { Container } from '@mui/material';
+import image from '../../assets/image_transparent.png';
+import Typography from '@mui/joy/Typography';
 import OrderForm from '../Order/OrderForm.tsx';
 import { cartFromSlice, clearCart, setToLocalStorage } from '../../store/cart/cartSlice.ts';
 import { selectUser } from '../../store/users/usersSlice.ts';
@@ -16,7 +15,6 @@ import { userRoleClient } from '../../globalConstants.ts';
 const CartPage = () => {
   const user = useAppSelector(selectUser);
   const cart = useAppSelector(cartFromSlice);
-  const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -97,29 +95,6 @@ const CartPage = () => {
           >
             Начните делать покупки и порадуйте своего питомца!
           </Typography>
-          <Button
-            onClick={() => navigate("/all-products")}
-            type="button"
-            sx={{
-              backgroundColor: "#237803",
-              borderRadius: "50px",
-              fontFamily: "Nunito, sans-serif",
-              color: "white",
-              fontWeight: 600,
-              marginTop: "30px",
-              "&:hover": {
-                backgroundColor: "#154902",
-              },
-            }}
-          >
-            <span
-              style={{
-                padding: "10px 30px",
-              }}
-            >
-              Вернуться в магазин
-            </span>
-          </Button>
         </Box>
       )}
     </Container>

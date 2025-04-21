@@ -65,14 +65,15 @@ model Brand {
 }
 
 model SiteEdition {
-  id          Int    @id @default(autoincrement())
-  instagram   String
-  whatsapp    String
-  schedule    String
-  address     String
-  email       String
-  phone       String
-  linkAddress String
+  id            Int    @id @default(autoincrement())
+  instagram     String
+  whatsapp      String
+  schedule      String
+  address       String
+  email         String
+  phone         String
+  linkAddress   String
+  mapGoogleLink String
 
   @@map("editionSite")
 }
@@ -93,6 +94,7 @@ model Category {
   parent        Category?  @relation("CategorySubcategories", fields: [parentId], references: [id])
   subcategories Category[] @relation("CategorySubcategories")
   products      Products[]
+  icon          String?
 
   @@map("categories")
 }
@@ -177,7 +179,7 @@ model OrderItem {
 model Statistic {
   id Int @id @default(autoincrement())
 
-  date               DateTime
+  date               DateTime @default(now())
   totalOrders        Int      @default(0) @map("totalOrders")
   pickUpStatistic    Int      @default(0) @map("pickup_stats")
   deliveryStatistic  Int      @default(0) @map("delivery_stats")

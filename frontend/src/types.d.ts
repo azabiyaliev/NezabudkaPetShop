@@ -96,6 +96,7 @@ export interface EditSiteMutation {
   email: string;
   phone: string;
   linkAddress: string;
+  mapGoogleLink: string;
 }
 
 export interface EditSite {
@@ -107,6 +108,7 @@ export interface EditSite {
   email: string;
   phone: string;
   linkAddress: string;
+  mapGoogleLink: string;
 }
 
 export interface PhotoCarousel {
@@ -128,6 +130,7 @@ export interface ICategories {
   parentId?: number | null;
   subcategories?: Subcategory[];
   parent: { id:number, title: string };
+  icon?: File | null;
 }
 
 export interface CategoryMutation {
@@ -140,6 +143,7 @@ export interface Subcategory {
   title: string;
   parentId: string | number | null;
   subcategories?: Subcategory[];
+  icon?: File | null;
 }
 
 export interface ProductRequest {
@@ -154,7 +158,7 @@ export interface ProductRequest {
   productManufacturer?: string | null;
   existence?: boolean;
   sales?: boolean;
-  brandId: string;
+  brandId?: string;
   categoryId: string;
   subcategoryId?: string;
   id?: number;
