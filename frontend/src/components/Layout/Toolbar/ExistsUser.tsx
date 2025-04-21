@@ -6,10 +6,8 @@ import { selectUser } from '../../../store/users/usersSlice.ts';
 import { addErrorFromSlice, clearError, } from '../../../store/brands/brandsSlice.ts';
 import PermIdentityOutlinedIcon from '@mui/icons-material/PermIdentityOutlined';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
-// import EditNoteOutlinedIcon from "@mui/icons-material/EditNoteOutlined";
 import CreditScoreOutlinedIcon from '@mui/icons-material/CreditScoreOutlined';
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
-// import SettingsSuggestOutlinedIcon from "@mui/icons-material/SettingsSuggestOutlined";
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import FavoriteOutlinedIcon from '@mui/icons-material/FavoriteOutlined';
@@ -158,26 +156,12 @@ const ExistsUser = () => {
                     <AdminPanelSettingsOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
                     <ListItemText primary="Администраторы" className="text-black" />
                   </ListItem>
-                  {/*<ListItem component={NavLink} to={`/admin-create`} onClick={toggleDrawer(false)}>*/}
-                  {/*  <ListItemText primary="Создать администратора" className="text-black"/>*/}
-                  {/*</ListItem>*/}
                   <ListItem component={NavLink} to={'/private/order_stats'} onClick={toggleDrawer(false)}>
                     <AutoGraphOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
                     <ListItemText primary="Статистика заказов" className="text-black"/>
                   </ListItem>
                 </>
               )}
-              {/*<ListItem*/}
-              {/*  component={NavLink}*/}
-              {/*  to={`/private/users/${user.id}`}*/}
-              {/*  onClick={toggleDrawer(false)}*/}
-              {/*>*/}
-              {/*  <EditNoteOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />*/}
-              {/*  <ListItemText*/}
-              {/*    primary="Редактирование личного кабинета"*/}
-              {/*    className="text-black"*/}
-              {/*  />*/}
-              {/*</ListItem>*/}
               <ListItem
                 component={NavLink}
                 to="/private/client_orders"
@@ -194,17 +178,6 @@ const ExistsUser = () => {
                 <GroupOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
                 <ListItemText primary="Клиенты" className="text-black" />
               </ListItem>
-              {/*<ListItem*/}
-              {/*  component={NavLink}*/}
-              {/*  to={`/edition_site`}*/}
-              {/*  onClick={toggleDrawer(false)}*/}
-              {/*>*/}
-              {/*  <SettingsSuggestOutlinedIcon style={{ color: "#45624E",  marginRight: "10px" }} />*/}
-              {/*  <ListItemText*/}
-              {/*    primary="Редактирование инофрмации о магаизине 'Незабудка'"*/}
-              {/*    className="text-black"*/}
-              {/*  />*/}
-              {/*</ListItem>*/}
               <ListItem
                 component={NavLink}
                 to="/private/brands"
