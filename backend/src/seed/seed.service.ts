@@ -414,7 +414,7 @@ export class SeedService {
       Pedigree,
       SkogsFRO,
       Qushy,
-      Мнямс,
+      Mnyams,
       Brit,
       Jarvi,
       ANIMAL_ISLAND,
@@ -433,7 +433,6 @@ export class SeedService {
     const [dogs, cats, rodents, birds, fishes, reptiles, others] = category;
 
     const subCategory = await Promise.all([
-        //собаки
       this.prisma.category.create({
         data: {
           title: 'Сухой корм',
@@ -483,7 +482,6 @@ export class SeedService {
           icon: '/fixtures/categoryIcons/6icon.png',
         },
       }),
-      //кошки
       this.prisma.category.create({
         data: {
           title: 'Сухие корма',
@@ -533,7 +531,6 @@ export class SeedService {
           icon: '/fixtures/categoryIcons/yarn-ball.png',
         },
       }),
-      //другие
       this.prisma.category.create({
         data: {
           title: 'Пищевые смеси',
@@ -590,7 +587,6 @@ export class SeedService {
           icon: '/fixtures/categoryIcons/8icon.png',
         },
       }),
-      //рыбы
       this.prisma.category.create({
         data: {
           title: 'Корма для рыб',
@@ -626,7 +622,6 @@ export class SeedService {
           icon: '/fixtures/categoryIcons/fish-bowl.png',
         },
       }),
-      //рептилии
       this.prisma.category.create({
         data: {
           title: 'Корма для рептилий',
@@ -662,7 +657,6 @@ export class SeedService {
           icon: '/fixtures/categoryIcons/terrarium.png',
         },
       }),
-        // грызуны
       this.prisma.category.create({
         data: {
           title: 'Корма для грызунов',
@@ -698,7 +692,6 @@ export class SeedService {
           icon: '/fixtures/categoryIcons/8icon.png',
         },
       }),
-        //птицы
       this.prisma.category.create({
         data: {
           title: 'Корм для птиц',
@@ -706,195 +699,1279 @@ export class SeedService {
           icon: '/fixtures/categoryIcons/4icon.png',
         },
       }),
-     this.prisma.category.create({
-      data: {
-        title: 'Клетки и вольеры',
-        parentId: birds.id,
-        icon: '/fixtures/categoryIcons/pet-cage.png',
-      },
-    }),
+      this.prisma.category.create({
+        data: {
+          title: 'Клетки и вольеры',
+          parentId: birds.id,
+          icon: '/fixtures/categoryIcons/pet-cage.png',
+        },
+      }),
 
-     this.prisma.category.create({
-      data: {
-        title: 'Игрушки для птиц',
-        parentId: birds.id,
-        icon: '/fixtures/categoryIcons/9icon.png',
-      },
-    }),
+      this.prisma.category.create({
+        data: {
+          title: 'Игрушки для птиц',
+          parentId: birds.id,
+          icon: '/fixtures/categoryIcons/9icon.png',
+        },
+      }),
 
-     this.prisma.category.create({
-      data: {
-        title: 'Витамины и добавки',
-        parentId: birds.id,
-        icon: '/fixtures/categoryIcons/2icon.png',
-      },
-    }),
+      this.prisma.category.create({
+        data: {
+          title: 'Витамины и добавки',
+          parentId: birds.id,
+          icon: '/fixtures/categoryIcons/2icon.png',
+        },
+      }),
 
-     this.prisma.category.create({
-      data: {
-        title: 'Поилки и кормушки',
-        parentId: birds.id,
-        icon: '/fixtures/categoryIcons/pet-feeder.png',
-      },
-    }),
-  ]);
+      this.prisma.category.create({
+        data: {
+          title: 'Поилки и кормушки',
+          parentId: birds.id,
+          icon: '/fixtures/categoryIcons/pet-feeder.png',
+        },
+      }),
+    ]);
 
     const [
       dryDogFood,
       wetDogFood,
+      dogShampoosAndGels,
+      dogClothing,
+      dogBedsAndCushions,
+      puppyFood,
+      dogCarriers,
       dryCatFood,
       wetCatFood,
-      ammunition,
-      vetPharmacy,
-      vitamins,
-      beds,
-      collars,
-      treats,
-      toys,
-      hay,
+      catShampoos,
+      catClothing,
+      groomingAndCare,
+      catToys,
+      scratchingPosts,
+      foodMixes,
+      bowlsAndDrinkers,
+      sticksAndSupplements,
+      nestsAndHides,
+      mineralSupplements,
+      waterHeaters,
+      wetAndDryFeedMixes,
+      salineSolutionsAndAdditives,
+      fishFood,
+      aquariumsAndAccessories,
+      aquariumFilters,
+      aquariumLighting,
+      aquariumDecor,
+      reptileFood,
+      terrariums,
+      terrariumHeaters,
+      terrariumDecor,
+      terrariumThermometers,
+      rodentFood,
+      rodentCages,
+      rodentToys,
+      rodentBedding,
+      rodentTreats,
+
+      birdFood,
+      birdCagesAndAviaries,
+      birdToys,
+      birdVitamins,
+      birdFeedersAndDrinkers,
     ] = subCategory;
 
-    await this.prisma.products.createMany({
-      data: [
-        {
-          productName: 'Сухой корм для собак',
-          productPrice: 1200,
-          productDescription: 'Качественный сухой корм для взрослых собак.',
-          brandId: avz.id,
+    await Promise.all([
+      this.prisma.products.create({
+        data: {
+          productName: 'Про Полнорационный – Сухой корм для собак',
+          productPrice: 1000,
+          productDescription:
+            'Сухой корм для собак. Вкусно и полезно — одобрено питомцами.',
+          brandId: purinaProPlan.id,
           categoryId: dryDogFood.id,
-          productPhoto: '/fixtures/products/dog_food.jpg',
+          productPhoto: '/fixtures/products/dog-food.webp',
           existence: true,
           sales: false,
+          productWeight: 10,
+          productManufacturer: 'Испания',
+          productAge: 'Взрослый',
         },
-        {
-          productName: 'Сухой корм для кошек',
-          productPrice: 1200,
-          productDescription: 'Качественный сухой корм для кошек.',
-          brandId: bayer.id,
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Про Полнорационный – Сухой корм для собак',
+          productPrice: 600,
+          productDescription:
+            'Сухой корм для собак. Вкусно и полезно — одобрено питомцами.',
+          brandId: purinaProPlan.id,
+          categoryId: dryDogFood.id,
+          productPhoto: '/fixtures/products/dog-food.webp',
+          existence: true,
+          sales: false,
+          productWeight: 5,
+          productManufacturer: 'Испания',
+          productAge: 'Взрослый',
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Зоо Полнорационный – Влажный корм для собак',
+          productPrice: 800,
+          productDescription:
+            'Влажный корм для собак. Сбалансированная формула для лучшего самочувствия.',
+          brandId: purinaProPlan.id,
           categoryId: wetDogFood.id,
-          productPhoto: '/fixtures/products/dog_food.jpg',
+          productPhoto: '/fixtures/products/dog-food.webp',
+          existence: true,
+          sales: false,
+          productWeight: 5,
+          productManufacturer: 'Испания',
+          productAge: 'Взрослый',
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Зоо Полнорационный – Влажный корм для собак',
+          productPrice: 650,
+          productDescription:
+            'Влажный корм для собак. Сбалансированная формула для лучшего самочувствия.',
+          brandId: avz.id,
+          categoryId: wetDogFood.id,
+          productPhoto: '/fixtures/products/dog-food.webp',
+          existence: true,
+          sales: false,
+          productWeight: 5,
+          productManufacturer: 'Испания',
+          productAge: 'Взрослый',
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Зоо Универсальный – Шампуни и гели для собак',
+          productPrice: 2300,
+          productDescription:
+            'Шампуни и гели для собак. Сбалансированная формула для лучшего самочувствия.',
+          brandId: avz.id,
+          categoryId: dogShampoosAndGels.id,
+          productPhoto: '/fixtures/products/dog-food.webp',
+          existence: true,
+          sales: false,
+          productWeight: 5,
+          productManufacturer: 'Испания',
+          productAge: 'Взрослый',
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Зоо Универсальный – Шампуни и гели для собак',
+          productPrice: 1500,
+          productDescription:
+            'Шампуни и гели для собак. Сбалансированная формула для лучшего самочувствия.',
+          brandId: avz.id,
+          categoryId: dogShampoosAndGels.id,
+          productPhoto: '/fixtures/products/dog-food.webp',
+          existence: true,
+          sales: false,
+          productWeight: 5,
+          productManufacturer: 'Испания',
+          productAge: 'Взрослый',
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Люкс Стандарт – Одежда для собак',
+          productPrice: 1400,
+          productDescription:
+            'Одежда для собак. Прочная и надежная конструкция.',
+          brandId: avz.id,
+          categoryId: dogClothing.id,
+          productPhoto: '/fixtures/products/dog-food.webp',
+          existence: true,
+          sales: false,
+          productWeight: 5,
+          productManufacturer: 'Испания',
+          productAge: 'Взрослый',
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Люкс Стандарт – Одежда для собак',
+          productPrice: 1200,
+          productDescription:
+            'Одежда для собак. Прочная и надежная конструкция.',
+          brandId: bayer.id,
+          categoryId: dogClothing.id,
+          productPhoto: '/fixtures/products/dog-food.webp',
+          existence: true,
+          sales: false,
+          productWeight: 5,
+          productManufacturer: 'Испания',
+          productAge: 'Взрослый',
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Эко Повседневный – Лежаки и подушки для собак',
+          productPrice: 950,
+          productDescription:
+            'Лежаки и подушки для собак. Подходит для чувствительных питомцев.',
+          brandId: bayer.id,
+          categoryId: dogBedsAndCushions.id,
+          productPhoto: '/fixtures/products/dog-food.webp',
+          existence: true,
+          sales: false,
+          productWeight: 5,
+          productManufacturer: 'Испания',
+          productAge: 'Взрослый',
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Эко Повседневный – Лежаки и подушки для собак',
+          productPrice: 1100,
+          productDescription:
+            'Лежаки и подушки для собак. Подходит для чувствительных питомцев.',
+          brandId: bayer.id,
+          categoryId: dogBedsAndCushions.id,
+          productPhoto: '/fixtures/products/dog-food.webp',
+          existence: true,
+          sales: false,
+          productWeight: 5,
+          productManufacturer: 'Испания',
+          productAge: 'Взрослый',
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Био Стандарт – Питание для щенков',
+          productPrice: 1100,
+          productDescription:
+            'Питание для щенков. Содержит все необходимые элементы для здоровья питомца.',
+          brandId: catchHow.id,
+          categoryId: puppyFood.id,
+          productPhoto: '/fixtures/products/dog-food.webp',
+          existence: true,
+          sales: false,
+          productWeight: 5,
+          productManufacturer: 'Испания',
+          productAge: 'Взрослый',
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Био Стандарт – Питание для щенков',
+          productPrice: 1100,
+          productDescription:
+            'Питание для щенков. Содержит все необходимые элементы для здоровья питомца.',
+          brandId: catchHow.id,
+          categoryId: puppyFood.id,
+          productPhoto: '/fixtures/products/dog-food.webp',
+          existence: true,
+          sales: false,
+          productWeight: 5,
+          productManufacturer: 'Испания',
+          productAge: 'Взрослый',
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Люкс Стандарт – Переноски для собак',
+          productPrice: 1100,
+          productDescription:
+            'Переноски для собак. Прост в применении и эффективен.',
+          brandId: dogShow.id,
+          categoryId: foodMixes.id,
+          productPhoto: '/fixtures/products/treats.webp',
           existence: true,
           sales: false,
         },
-        {
-          productName: 'Щебень для собак',
-          productPrice: 1200,
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Люкс Стандарт – Переноски для собак',
+          productPrice: 1100,
           productDescription:
-            'Щебень для создания ландшафтных решений для собак.',
-          brandId: catchHow.id,
-          categoryId: dryCatFood.id,
-          productPhoto: '/fixtures/products/dog_food.jpg',
-          existence: false,
-          sales: false,
-        },
-        {
-          productName: 'Игрушка для собак',
-          productPrice: 2500,
-          productDescription: 'Прочная когтеточка для развлечения вашей кошки.',
+            'Переноски для собак. Прост в применении и эффективен.',
           brandId: dogShow.id,
-          categoryId: wetCatFood.id,
-          productPhoto: '/fixtures/products/cat_scratcher.jpg',
-          existence: false,
+          categoryId: dogCarriers.id,
+          productPhoto: '/fixtures/products/treats.webp',
+          existence: true,
           sales: false,
         },
-        {
-          productName: 'Когтеточка для кошек',
-          productPrice: 2500,
-          productDescription: 'Прочная когтеточка для развлечения вашей кошки.',
-          brandId: flexi.id,
-          categoryId: ammunition.id,
-          productPhoto: '/fixtures/products/cat_scratcher.jpg',
-          existence: false,
-          sales: false,
-        },
-        {
-          productName: 'Ошейник',
-          productPrice: 2500,
-          productDescription: 'Прочная когтеточка для развлечения вашей кошки.',
-          brandId: friskies.id,
-          categoryId: vetPharmacy.id,
-          productPhoto: '/fixtures/products/cat_scratcher.jpg',
-          existence: false,
-          sales: false,
-        },
-        {
-          productName: 'Клетка для птиц',
-          productPrice: 4500,
-          productDescription: 'Просторная и удобная клетка для мелких птиц.',
-          brandId: gourmet.id,
-          categoryId: vetPharmacy.id,
-          productPhoto: '/fixtures/products/bird_cage.jpg',
-          existence: false,
-          sales: false,
-        },
-        {
-          productName: 'Фильтр для аквариума',
-          productPrice: 1800,
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Люкс Стандарт – Переноски для собак',
+          productPrice: 1100,
           productDescription:
-            'Мощный фильтр для чистой и прозрачной воды в аквариуме.',
-          brandId: happyCat.id,
-          categoryId: vitamins.id,
-          productPhoto: '/fixtures/products/aquarium_filter.jpg',
-          existence: false,
+            'Переноски для собак. Прост в применении и эффективен.',
+          brandId: flexi.id,
+          categoryId: dogCarriers.id,
+          productPhoto: '/fixtures/products/treats.webp',
+          existence: true,
           sales: false,
         },
-        {
-          productName: 'Кормушка для сена для кроликов',
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Про Стандарт – Сухой корм для кошек',
+          productPrice: 1100,
+          productDescription:
+            'Сухой корм для кошек. Подходит для чувствительных питомцев.',
+          brandId: flexi.id,
+          categoryId: dryCatFood.id,
+          productPhoto: '/fixtures/products/treats.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Про Стандарт – Сухой корм для кошек',
+          productPrice: 1100,
+          productDescription:
+            'Сухой корм для кошек. Подходит для чувствительных питомцев.',
+          brandId: friskies.id,
+          categoryId: dryCatFood.id,
+          productPhoto: '/fixtures/products/treats.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Люкс Стандарт – Влажный корм для кошек',
+          productPrice: 1100,
+          productDescription:
+            'Влажный корм для кошек. Разработан с учетом потребностей животных.',
+          brandId: friskies.id,
+          categoryId: wetCatFood.id,
+          productPhoto: '/fixtures/products/treats.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Люкс Стандарт – Влажный корм для кошек',
+          productPrice: 1100,
+          productDescription:
+            'Влажный корм для кошек. Разработан с учетом потребностей животных.',
+          brandId: gourmet.id,
+          categoryId: wetCatFood.id,
+          productPhoto: '/fixtures/products/cat-food.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Комфорт Стандарт – Шампуни для кошек',
+          productPrice: 1100,
+          productDescription:
+            'Шампуни для кошек. Идеально подходит для повседневного использования.',
+          brandId: gourmet.id,
+          categoryId: catShampoos.id,
+          productPhoto: '/fixtures/products/cat-food.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Комфорт Стандарт – Шампуни для кошек',
+          productPrice: 1100,
+          productDescription:
+            'Шампуни для кошек. Идеально подходит для повседневного использования.',
+          brandId: happyCat.id,
+          categoryId: catShampoos.id,
+          productPhoto: '/fixtures/products/cat-food.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Комфорт Гипоаллергенный – Одежда для кошек',
+          productPrice: 1100,
+          productDescription:
+            'Одежда для кошек. Прочная и надежная конструкция.',
+          brandId: happyCat.id,
+          categoryId: catClothing.id,
+          productPhoto: '/fixtures/products/cat-food.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Комфорт Гипоаллергенный – Одежда для кошек',
+          productPrice: 1100,
+          productDescription:
+            'Одежда для кошек. Прочная и надежная конструкция.',
+          brandId: happyDog.id,
+          categoryId: catClothing.id,
+          productPhoto: '/fixtures/products/cat-food.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Натур Гипоаллергенный – Средства груминга и ухода',
+          productPrice: 1100,
+          productDescription:
+            'Средства груминга и ухода. Разработан с учетом потребностей животных.',
+          brandId: happyDog.id,
+          categoryId: groomingAndCare.id,
+          productPhoto: '/fixtures/products/cat-food.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Натур Гипоаллергенный – Средства груминга и ухода',
+          productPrice: 1100,
+          productDescription:
+            'Средства груминга и ухода. Разработан с учетом потребностей животных.',
+          brandId: ROYAL_CANIN.id,
+          categoryId: groomingAndCare.id,
+          productPhoto: '/fixtures/products/cat-food.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Натур Полнорационный – Игрушки для кошек',
+          productPrice: 1100,
+          productDescription:
+            'Игрушки для кошек. Подходит для чувствительных питомцев.',
+          brandId: ROYAL_CANIN.id,
+          categoryId: catToys.id,
+          productPhoto: '/fixtures/products/vitamins.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Натур Полнорационный – Игрушки для кошек',
+          productPrice: 1100,
+          productDescription:
+            'Игрушки для кошек. Подходит для чувствительных питомцев.',
+          brandId: WOLF_OF_WILDERNESS.id,
+          categoryId: catToys.id,
+          productPhoto: '/fixtures/products/vitamins.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Ультра Полнорационный – Когтеточки',
+          productPrice: 1100,
+          productDescription:
+            'Когтеточки. Помогает поддерживать активность и энергию.',
+          brandId: WOLF_OF_WILDERNESS.id,
+          categoryId: scratchingPosts.id,
+          productPhoto: '/fixtures/products/vitamins.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Ультра Полнорационный – Когтеточки',
+          productPrice: 1100,
+          productDescription:
+            'Когтеточки. Помогает поддерживать активность и энергию.',
+          brandId: James_Wellbeloved.id,
+          categoryId: scratchingPosts.id,
+          productPhoto: '/fixtures/products/vitamins.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Про Повседневный – Пищевые смеси',
+          productPrice: 1100,
+          productDescription: 'Пищевые смеси. Прочная и надежная конструкция.',
+          brandId: James_Wellbeloved.id,
+          categoryId: foodMixes.id,
+          productPhoto: '/fixtures/products/vitamins.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Про Повседневный – Пищевые смеси',
+          productPrice: 1100,
+          productDescription: 'Пищевые смеси. Прочная и надежная конструкция.',
+          brandId: hills.id,
+          categoryId: foodMixes.id,
+          productPhoto: '/fixtures/products/vitamins.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Про Универсальный – Миски и поилки',
+          productPrice: 1100,
+          productDescription:
+            'Миски и поилки. Помогает поддерживать активность и энергию.',
+          brandId: hills.id,
+          categoryId: bowlsAndDrinkers.id,
+          productPhoto: '/fixtures/products/vitamins.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Про Универсальный – Миски и поилки',
+          productPrice: 1100,
+          productDescription:
+            'Миски и поилки. Помогает поддерживать активность и энергию.',
+          brandId: ArdenGrange.id,
+          categoryId: bowlsAndDrinkers.id,
+          productPhoto: '/fixtures/products/Dog_Toys.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Комфорт Гипоаллергенный – Палочки и витаминные добавки',
+          productPrice: 1100,
+          productDescription:
+            'Палочки и витаминные добавки. Содержит все необходимые элементы для здоровья питомца.',
+          brandId: ArdenGrange.id,
+          categoryId: sticksAndSupplements.id,
+          productPhoto: '/fixtures/products/Dog_Toys.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Комфорт Гипоаллергенный – Палочки и витаминные добавки',
+          productPrice: 1100,
+          productDescription:
+            'Палочки и витаминные добавки. Содержит все необходимые элементы для здоровья питомца.',
+          brandId: Applaws.id,
+          categoryId: nestsAndHides.id,
+          productPhoto: '/fixtures/products/Dog_Toys.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Ультра Стандарт – Гнезда и укрытия',
+          productPrice: 1100,
+          productDescription:
+            'Гнезда и укрытия. Вкусно и полезно — одобрено питомцами.',
+          brandId: Applaws.id,
+          categoryId: nestsAndHides.id,
+          productPhoto: '/fixtures/products/Dog_Toys.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Комфорт Гипоаллергенный – Минеральные добавки',
+          productPrice: 1100,
+          productDescription:
+            'Минеральные добавки. Вкусно и полезно — одобрено питомцами.',
+          brandId: Burns.id,
+          categoryId: mineralSupplements.id,
+          productPhoto: '/fixtures/products/Dog_Toys.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Комфорт Гипоаллергенный – Минеральные добавки',
+          productPrice: 1100,
+          productDescription:
+            'Минеральные добавки. Вкусно и полезно — одобрено питомцами.',
+          brandId: Burns.id,
+          categoryId: mineralSupplements.id,
+          productPhoto: '/fixtures/products/Dog_Toys.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Комфорт Универсальный – Обогреватели для воды',
+          productPrice: 1100,
+          productDescription:
+            'Обогреватели для воды. Разработан с учетом потребностей животных.',
+          brandId: Whiskas.id,
+          categoryId: waterHeaters.id,
+          productPhoto: '/fixtures/products/treats.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Комфорт Универсальный – Обогреватели для воды',
+          productPrice: 1100,
+          productDescription:
+            'Обогреватели для воды. Разработан с учетом потребностей животных.',
+          brandId: Whiskas.id,
+          categoryId: waterHeaters.id,
+          productPhoto: '/fixtures/products/treats.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName:
+            'Зоо Универсальный – Влажные и сухие смеси для кормления',
+          productPrice: 1100,
+          productDescription:
+            'Влажные и сухие смеси. Идеально подходит для повседневного использования.',
+          brandId: CFL.id,
+          categoryId: wetAndDryFeedMixes.id,
+          productPhoto: '/fixtures/products/treats.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName:
+            'Зоо Универсальный – Влажные и сухие смеси для кормления',
+          productPrice: 1100,
+          productDescription:
+            'Влажные и сухие смеси. Идеально подходит для повседневного использования.',
+          brandId: CFL.id,
+          categoryId: wetAndDryFeedMixes.id,
+          productPhoto: '/fixtures/products/treats.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Комфорт Гипоаллергенный – Солевые растворы и добавки',
+          productPrice: 1100,
+          productDescription:
+            'Солевые растворы и добавки. Прочная и надежная конструкция.',
+          brandId: Cosma.id,
+          categoryId: salineSolutionsAndAdditives.id,
+          productPhoto: '/fixtures/products/treats.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Комфорт Гипоаллергенный – Солевые растворы и добавки',
+          productPrice: 1100,
+          productDescription:
+            'Солевые растворы и добавки. Прочная и надежная конструкция.',
+          brandId: Cosma.id,
+          categoryId: salineSolutionsAndAdditives.id,
+          productPhoto: '/fixtures/products/treats.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Натур Полнорационный – Корм для рыб',
+          productPrice: 1100,
+          productDescription: 'Корм для рыб. Прост в применении и эффективен.',
+          brandId: purizon.id,
+          categoryId: fishFood.id,
+          productPhoto: '/fixtures/products/treats.webp',
+          existence: true,
+          sales: true,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Натур Полнорационный – Корм для рыб',
+          productPrice: 1100,
+          productDescription: 'Корм для рыб. Прост в применении и эффективен.',
+          brandId: purizon.id,
+          categoryId: fishFood.id,
+          productPhoto: '/fixtures/products/car_scratcher.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Комфорт Премиум – Аквариумы и аксессуары',
+          productPrice: 1100,
+          productDescription:
+            'Аквариумы и аксессуары. Прост в применении и эффективен.',
+          brandId: RosiesFarm.id,
+          categoryId: aquariumsAndAccessories.id,
+          productPhoto: '/fixtures/products/car_scratcher.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Комфорт Премиум – Аквариумы и аксессуары',
+          productPrice: 1100,
+          productDescription:
+            'Аквариумы и аксессуары. Прост в применении и эффективен.',
+          brandId: RosiesFarm.id,
+          categoryId: aquariumsAndAccessories.id,
+          productPhoto: '/fixtures/products/car_scratcher.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Натур Стандарт – Фильтры для аквариумов',
+          productPrice: 1100,
+          productDescription:
+            'Фильтры для аквариумов. Удобен в использовании дома и в поездке.',
+          brandId: Tigerino.id,
+          categoryId: aquariumFilters.id,
+          productPhoto: '/fixtures/products/car_scratcher.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Натур Стандарт – Фильтры для аквариумов',
+          productPrice: 1100,
+          productDescription:
+            'Фильтры для аквариумов. Удобен в использовании дома и в поездке.',
+          brandId: Tigerino.id,
+          categoryId: aquariumFilters.id,
+          productPhoto: '/fixtures/products/car_scratcher.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Люкс Гипоаллергенный – Освещение для аквариумов',
+          productPrice: 1100,
+          productDescription:
+            'Освещение для аквариумов. Прочная и надежная конструкция.',
+          brandId: Pedigree.id,
+          categoryId: aquariumLighting.id,
+          productPhoto: '/fixtures/products/car_scratcher.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Люкс Гипоаллергенный – Освещение для аквариумов',
+          productPrice: 1100,
+          productDescription:
+            'Освещение для аквариумов. Прочная и надежная конструкция.',
+          brandId: Pedigree.id,
+          categoryId: aquariumLighting.id,
+          productPhoto: '/fixtures/products/car_scratcher.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Люкс Премиум – Декорации для аквариумов',
+          productPrice: 1100,
+          productDescription:
+            'Декорации для аквариумов. Вкусно и полезно — одобрено питомцами.',
+          brandId: SkogsFRO.id,
+          categoryId: aquariumDecor.id,
+          productPhoto: '/fixtures/products/collars.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Люкс Премиум – Декорации для аквариумов',
+          productPrice: 1100,
+          productDescription:
+            'Декорации для аквариумов. Вкусно и полезно — одобрено питомцами.',
+          brandId: SkogsFRO.id,
+          categoryId: aquariumDecor.id,
+          productPhoto: '/fixtures/products/collars.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Зоо Премиум – Корм для рептилий',
+          productPrice: 1100,
+          productDescription:
+            'Корм для рептилий. Идеально подходит для повседневного использования.',
+          brandId: Qushy.id,
+          categoryId: reptileFood.id,
+          productPhoto: '/fixtures/products/collars.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Зоо Премиум – Корм для рептилий',
+          productPrice: 1100,
+          productDescription:
+            'Корм для рептилий. Идеально подходит для повседневного использования.',
+          brandId: Qushy.id,
+          categoryId: reptileFood.id,
+          productPhoto: '/fixtures/products/collars.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Люкс Стандарт – Террариумы',
+          productPrice: 1100,
+          productDescription: 'Террариумы. Прост в применении и эффективен.',
+          brandId: Mnyams.id,
+          categoryId: terrariums.id,
+          productPhoto: '/fixtures/products/collars.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Люкс Стандарт – Террариумы',
+          productPrice: 1100,
+          productDescription: 'Террариумы. Прост в применении и эффективен.',
+          brandId: Mnyams.id,
+          categoryId: terrariums.id,
+          productPhoto: '/fixtures/products/collars.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Макси Гипоаллергенный – Обогреватели для террариумов',
+          productPrice: 1100,
+          productDescription:
+            'Обогреватели. Сбалансированная формула для лучшего самочувствия.',
+          brandId: Brit.id,
+          categoryId: terrariumHeaters.id,
+          productPhoto: '/fixtures/products/collars.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Макси Гипоаллергенный – Обогреватели для террариумов',
+          productPrice: 1100,
+          productDescription:
+            'Обогреватели. Сбалансированная формула для лучшего самочувствия.',
+          brandId: Brit.id,
+          categoryId: terrariumHeaters.id,
+          productPhoto: '/fixtures/products/aquarium_filter.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Мини Полнорационный – Декорации для террариумов',
+          productPrice: 1100,
+          productDescription:
+            'Декорации. Сбалансированная формула для лучшего самочувствия.',
+          brandId: Jarvi.id,
+          categoryId: terrariumDecor.id,
+          productPhoto: '/fixtures/products/aquarium_filter.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Мини Полнорационный – Декорации для террариумов',
+          productPrice: 1100,
+          productDescription:
+            'Декорации. Сбалансированная формула для лучшего самочувствия.',
+          brandId: Jarvi.id,
+          categoryId: terrariumDecor.id,
+          productPhoto: '/fixtures/products/aquarium_filter.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Мини Гипоаллергенный – Термометры и гигрометры',
+          productPrice: 1100,
+          productDescription:
+            'Термометры. Подходит для чувствительных питомцев.',
+          brandId: Jarvi.id,
+          categoryId: terrariumThermometers.id,
+          productPhoto: '/fixtures/products/aquarium_filter.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Мини Гипоаллергенный – Термометры и гигрометры',
+          productPrice: 1100,
+          productDescription:
+            'Термометры. Подходит для чувствительных питомцев.',
+          brandId: Jarvi.id,
+          categoryId: terrariumThermometers.id,
+          productPhoto: '/fixtures/products/aquarium_filter.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Про Полнорационный – Корм для грызунов',
+          productPrice: 1100,
+          productDescription:
+            'Корм для грызунов. Подходит для чувствительных питомцев.',
+          brandId: Jarvi.id,
+          categoryId: rodentFood.id,
+          productPhoto: '/fixtures/products/aquarium_filter.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Про Полнорационный – Корм для грызунов',
+          productPrice: 1100,
+          productDescription:
+            'Корм для грызунов. Подходит для чувствительных питомцев.',
+          brandId: ANIMAL_ISLAND.id,
+          categoryId: rodentFood.id,
+          productPhoto: '/fixtures/products/aquarium_filter.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Макси Стандарт – Клетки для грызунов',
+          productPrice: 1100,
+          productDescription:
+            'Клетки для грызунов. Удобен в использовании дома и в поездке.',
+          brandId: ANIMAL_ISLAND.id,
+          categoryId: rodentCages.id,
+          productPhoto: '/fixtures/products/aquarium_filter.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Макси Стандарт – Клетки для грызунов',
+          productPrice: 1100,
+          productDescription:
+            'Клетки для грызунов. Удобен в использовании дома и в поездке.',
+          brandId: ANIMAL_ISLAND.id,
+          categoryId: rodentCages.id,
+          productPhoto: '/fixtures/products/aquarium_filter.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Про Гипоаллергенный – Игрушки для грызунов',
+          productPrice: 1100,
+          productDescription: 'Игрушки. Подходит для чувствительных питомцев.',
+          brandId: ANIMAL_ISLAND.id,
+          categoryId: rodentToys.id,
+          productPhoto: '/fixtures/products/rabbit_feeder.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Про Гипоаллергенный – Игрушки для грызунов',
+          productPrice: 1100,
+          productDescription: 'Игрушки. Подходит для чувствительных питомцев.',
+          brandId: ANIMAL_ISLAND.id,
+          categoryId: rodentToys.id,
+          productPhoto: '/fixtures/products/rabbit_feeder.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Эко Универсальный – Наполнитель для клеток',
+          productPrice: 1100,
+          productDescription: 'Наполнитель. Прост в применении и эффективен.',
+          brandId: Pedigree.id,
+          categoryId: rodentBedding.id,
+          productPhoto: '/fixtures/products/rabbit_feeder.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Эко Универсальный – Наполнитель для клеток',
+          productPrice: 1100,
+          productDescription: 'Наполнитель. Прост в применении и эффективен.',
+          brandId: Pedigree.id,
+          categoryId: rodentBedding.id,
+          productPhoto: '/fixtures/products/rabbit_feeder.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Зоо Повседневный – Лакомства для грызунов',
+          productPrice: 1100,
+          productDescription:
+            'Лакомства. Разработан с учетом потребностей животных.',
+          brandId: Pedigree.id,
+          categoryId: rodentTreats.id,
+          productPhoto: '/fixtures/products/rabbit_feeder.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Зоо Повседневный – Лакомства для грызунов',
+          productPrice: 1100,
+          productDescription:
+            'Лакомства. Разработан с учетом потребностей животных.',
+          brandId: Pedigree.id,
+          categoryId: rodentTreats.id,
+          productPhoto: '/fixtures/products/rabbit_feeder.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Натур Премиум – Корм для птиц',
+          productPrice: 1100,
+          productDescription: 'Корм для птиц. Прост в применении и эффективен.',
+          brandId: Burns.id,
+          categoryId: birdFood.id,
+          productPhoto: '/fixtures/products/rabbit_feeder.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Натур Премиум – Корм для птиц',
+          productPrice: 1100,
+          productDescription: 'Корм для птиц. Прост в применении и эффективен.',
+          brandId: Burns.id,
+          categoryId: birdFood.id,
+          productPhoto: '/fixtures/products/rabbit_feeder.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Эко Полнорационный – Клетки и вольеры',
+          productPrice: 1100,
+          productDescription:
+            'Клетки. Идеально подходит для повседневного использования.',
+          brandId: Burns.id,
+          categoryId: birdCagesAndAviaries.id,
+          productPhoto: '/fixtures/products/rabbit_feeder.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Эко Полнорационный – Клетки и вольеры',
+          productPrice: 1100,
+          productDescription:
+            'Клетки. Идеально подходит для повседневного использования.',
+          brandId: Burns.id,
+          categoryId: birdToys.id,
+          productPhoto: '/fixtures/products/hay.webp',
+          existence: true,
+          sales: false,
+          productWeight: 10,
+          productManufacturer: 'Германия',
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Макси Универсальный – Игрушки для птиц',
+          productPrice: 500,
+          productDescription:
+            'Игрушки. Удобен в использовании дома и в поездке.',
+          brandId: Burns.id,
+          categoryId: birdToys.id,
+          productPhoto: '/fixtures/products/hay.webp',
+          existence: true,
+          sales: false,
+          productWeight: 3.5,
+          productManufacturer: 'Германия',
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Макси Универсальный – Игрушки для птиц',
+          productPrice: 800,
+          productDescription:
+            'Игрушки. Удобен в использовании дома и в поездке.',
+          brandId: Burns.id,
+          categoryId: birdVitamins.id,
+          productPhoto: '/fixtures/products/hay.webp',
+          existence: true,
+          sales: false,
+          productWeight: 6,
+          productManufacturer: 'Германия',
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Люкс Повседневный – Витамины и добавки для птиц',
           productPrice: 900,
           productDescription:
-            'Удобная кормушка для сена для кроликов и мелких грызунов.',
-          brandId: happyDog.id,
-          categoryId: beds.id,
-          productPhoto: '/fixtures/products/rabbit_feeder.jpg',
-          existence: false,
+            'Витамины. Идеально подходит для повседневного использования.',
+          brandId: James_Wellbeloved.id,
+          categoryId: birdVitamins.id,
+          productPhoto: '/fixtures/products/hay.webp',
+          existence: true,
           sales: false,
+          productWeight: 6.5,
+          productManufacturer: 'Германия',
         },
-        {
-          productName: 'Кормушка для сена для драконов',
-          productPrice: 500,
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Про Гипоаллергенный – Поилки и кормушки',
+          productPrice: 1000,
           productDescription:
-            'Удобная кормушка для сена для кроликов и мелких грызунов.',
-          brandId: purinaProPlan.id,
-          categoryId: collars.id,
-          productPhoto: '/fixtures/products/rabbit_feeder.jpg',
-          existence: false,
+            'Поилки и кормушки. Прочная и надежная конструкция.',
+          brandId: James_Wellbeloved.id,
+          categoryId: foodMixes.id,
+          productPhoto: '/fixtures/products/hay.webp',
+          existence: true,
           sales: false,
+          productWeight: 8,
+          productManufacturer: 'Германия',
         },
-        {
-          productName: 'Лакомства для драконов',
-          productPrice: 500,
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Про Гипоаллергенный – Поилки и кормушки',
+          productPrice: 400,
           productDescription:
-            'Удобная кормушка для сена для кроликов и мелких грызунов.',
-          brandId: purinaProPlan.id,
-          categoryId: treats.id,
-          productPhoto: '/fixtures/products/rabbit_feeder.jpg',
-          existence: false,
+            'Поилки и кормушки. Прочная и надежная конструкция.',
+          brandId: James_Wellbeloved.id,
+          categoryId: foodMixes.id,
+          productPhoto: '/fixtures/products/hay.webp',
+          existence: true,
           sales: false,
+          productWeight: 4,
+          productManufacturer: 'Германия',
         },
-        {
-          productName: 'Игрушка для драконов',
-          productPrice: 500,
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Сено для лошади',
+          productPrice: 350,
           productDescription:
-            'Удобная игрушка для сена для кроликов и мелких грызунов.',
-          brandId: purinaProPlan.id,
-          categoryId: toys.id,
-          productPhoto: '/fixtures/products/rabbit_feeder.jpg',
-          existence: false,
+            'Описание для продукта 1. Полезный и качественный товар для домашних животных.',
+          brandId: James_Wellbeloved.id,
+          categoryId: foodMixes.id,
+          productPhoto: '/fixtures/products/hay.webp',
+          existence: true,
           sales: false,
+          productWeight: 3.35,
+          productManufacturer: 'Германия',
         },
-        {
-          productName: 'Сена для драконов',
-          productPrice: 500,
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Сено для лошади',
+          productPrice: 2100,
           productDescription:
-            'Удобная кормушка для сена для кроликов и мелких грызунов.',
-          brandId: purinaProPlan.id,
-          categoryId: hay.id,
-          productPhoto: '/fixtures/products/rabbit_feeder.jpg',
-          existence: false,
+            'Описание для продукта 1. Полезный и качественный товар для домашних животных.',
+          brandId: James_Wellbeloved.id,
+          categoryId: birdFeedersAndDrinkers.id,
+          productPhoto: '/fixtures/products/hay.webp',
+          existence: true,
           sales: false,
+          productWeight: 17,
+          productManufacturer: 'Германия',
         },
-      ],
-    });
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Сено для лошади',
+          productPrice: 3500,
+          productDescription:
+            'Описание для продукта 1. Полезный и качественный товар для домашних животных.',
+          brandId: James_Wellbeloved.id,
+          categoryId: birdFeedersAndDrinkers.id,
+          productPhoto: '/fixtures/products/hay.webp',
+          existence: true,
+          sales: false,
+          productWeight: 20,
+          productManufacturer: 'Германия',
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Сено для лошади',
+          productPrice: 1500,
+          productDescription:
+            'Описание для продукта 1. Полезный и качественный товар для домашних животных.',
+          brandId: James_Wellbeloved.id,
+          categoryId: scratchingPosts.id,
+          productPhoto: '/fixtures/products/hay.webp',
+          existence: true,
+          sales: false,
+          productWeight: 10,
+          productManufacturer: 'Германия',
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Сено для лошади',
+          productPrice: 2100,
+          productDescription:
+            'Описание для продукта 1. Полезный и качественный товар для домашних животных.',
+          brandId: ROYAL_CANIN.id,
+          categoryId: scratchingPosts.id,
+          productPhoto: '/fixtures/products/hay.webp',
+          existence: true,
+          sales: false,
+          productWeight: 12,
+          productManufacturer: 'Германия',
+        },
+      }),
+    ]);
 
     await Promise.all([
       this.prisma.order.create({
