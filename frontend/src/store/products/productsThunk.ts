@@ -66,8 +66,10 @@ export const editProduct = createAsyncThunk<
       value !== "" &&
       !(typeof value === "boolean" && !value)
     ) {
-      if (value instanceof File) {
-        formData.append(key, value, value.name);
+      if (key === "productPhoto") {
+        if (value instanceof File) {
+          formData.append('productPhoto', value, value.name);
+        }
       } else if (typeof value === "boolean") {
         formData.append(key, value ? "true" : "false");
       } else {

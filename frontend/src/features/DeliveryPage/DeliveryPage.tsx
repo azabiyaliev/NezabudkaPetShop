@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks.ts';
 import { useEffect } from 'react';
 import { selectDelivery } from '../../store/deliveryPage/deliveryPageSlice.ts';
 import { fetchDeliveryPage } from '../../store/deliveryPage/deliveryPageThunk.ts';
+import '../../components/TextEditor/styles.css'
 
 const DeliveryPage = () => {
   const delivery = useAppSelector(selectDelivery);
@@ -47,10 +48,12 @@ const DeliveryPage = () => {
             {/* Текстовая часть */}
             <Box sx={{ flex: 1 }}>
               <div
+                className="quill-content"
                 dangerouslySetInnerHTML={{ __html: delivery?.text || '<p>Информация пока не добавлена.</p>' }}
                 style={{ lineHeight: 1.6, fontSize: '16px', color: '#333', marginBottom: '16px' }}
               />
               <div
+                className="quill-content"
                 dangerouslySetInnerHTML={{ __html: delivery?.price || '' }}
                 style={{ lineHeight: 1.6, fontSize: '16px', color: '#333' }}
               />

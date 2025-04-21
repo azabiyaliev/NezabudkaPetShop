@@ -5,3 +5,8 @@
   display: block;
   margin: 10px auto;
 }
+.quill-content img {
+  max-width: 300px;
+  height: auto;
+  border-radius: 4px;
+}

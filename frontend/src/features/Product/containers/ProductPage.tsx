@@ -7,6 +7,7 @@ import { useParams } from "react-router-dom";
 import { selectProduct } from "../../../store/products/productsSlice.ts";
 import { apiUrl } from "../../../globalConstants.ts";
 import HistoryProduct from '../../../components/Domain/HistoryProduct/HistoryProduct.tsx';
+import '../../../components/TextEditor/styles.css'
 
 const ProductPage = () => {
   const dispatch = useAppDispatch();
@@ -78,6 +79,10 @@ const ProductPage = () => {
         </Box>
       </Box>
     </Box>
+      <Box sx={{flex: 1, textAlign: "center"}}>
+        <Typography sx={{m: 2 }}>ОПИСАНИЕ</Typography>
+        <div className="quill-content" dangerouslySetInnerHTML={{ __html: product?.productDescription || '' }} />
+      </Box>
       <Box sx={{mt: 5}}>
         <HistoryProduct/>
       </Box>

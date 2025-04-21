@@ -111,6 +111,7 @@ const DeliveryPageForm = () => {
               flexDirection: 'column',
               alignItems: 'center',
               width: '100%',
+              gap: 4,
             }}
           >
             <Typography

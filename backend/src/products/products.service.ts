@@ -199,6 +199,7 @@ export class ProductsService {
         productFeedClass: true,
         productWeight: true,
         productAge: true,
+        productPhoto: true,
         brandId: true,
         categoryId: true,
         productPrice: true,
