@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { selectDelivery } from '../../store/deliveryPage/deliveryPageSlice.ts';
 import { fetchDeliveryPage } from '../../store/deliveryPage/deliveryPageThunk.ts';
+import '../../components/TextEditor/styles.css'
 
 const DeliveryPage = () => {
   const delivery = useAppSelector(selectDelivery);
@@ -70,8 +71,8 @@ const DeliveryPage = () => {
                     </Box>
                   )}
                   <Box sx={{ flex: 1 }}>
-                    <div dangerouslySetInnerHTML={{ __html: delivery?.text || '' }} />
-                    <div dangerouslySetInnerHTML={{ __html: delivery?.price || '' }} />
+                    <div className="quill-content" dangerouslySetInnerHTML={{ __html: delivery?.text || '' }} />
+                    <div className="quill-content" dangerouslySetInnerHTML={{ __html: delivery?.price || '' }} />
                   </Box>
 
                   <Box sx={{ width: "480px", height: "480px", flexShrink: 0 }}>

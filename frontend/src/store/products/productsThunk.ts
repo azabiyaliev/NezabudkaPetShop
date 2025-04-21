@@ -53,9 +53,11 @@ export const editProduct = createAsyncThunk<
 
   keys.forEach((key) => {
     const value = product[key];
-    if (value !== undefined) {
-      if (value instanceof File) {
-        formData.append(key, value, value.name);
+    if (value !== undefined && value !== null) {
+      if (key === "productPhoto") {
+        if (value instanceof File) {
+          formData.append("productPhoto", value, value.name);
+        }
       } else {
         formData.append(key, String(value));
       }
