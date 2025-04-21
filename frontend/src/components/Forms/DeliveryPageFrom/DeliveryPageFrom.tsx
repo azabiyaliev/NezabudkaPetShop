@@ -131,7 +131,7 @@ const DeliveryPageForm = () => {
               variant="subtitle1"
               sx={{ mt: 3, mb: 1, alignSelf: 'flex-start', fontWeight: 500 }}
             >
-              Введите информацию об зонах доставки :
+              Введите информацию о зонах доставки :
             </Typography>
 
             <TextEditor
