@@ -32,6 +32,7 @@ const ContactPage = () => {
             display: "flex",
             gap: 4,
             justifyContent: "space-between",
+              backgroundColor: '#fafafa',
           }}
         >
           <Box sx={{ flex: 1 }}>

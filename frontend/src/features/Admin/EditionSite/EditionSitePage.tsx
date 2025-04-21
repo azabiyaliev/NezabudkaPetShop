@@ -1,5 +1,4 @@
 import AdminBar from "../AdminProfile/AdminBar.tsx";
-
 import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
 import { useEffect } from "react";
 import { fetchSite } from "../../../store/editionSite/editionSiteThunk.ts";
@@ -22,16 +21,12 @@ const EditionSitePage = () => {
       });
   }, [dispatch]);
   return (
-    <div>
-      <div>
-        <div className="d-flex ">
-          <div className="col-3 mt-5 ">
-            <AdminBar />
-          </div>
-          <div className="col-9">
-            <EditSiteForm />
-          </div>
-        </div>
+    <div className="d-flex ">
+      <div className="col-3 mt-5 ">
+        <AdminBar />
+      </div>
+      <div className="col-9">
+        <EditSiteForm />
       </div>
     </div>
   );

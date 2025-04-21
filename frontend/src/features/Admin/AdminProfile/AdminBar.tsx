@@ -5,8 +5,14 @@ import { ExpandLess, KeyboardArrowRight, ReorderOutlined, PlaylistAddOutlined, E
 import ModalWindowAddNewPhoto from '../../../components/UI/ModalWindow/ModalWindowAddNewPhoto.tsx';
 import { useAppSelector, usePermission } from '../../../app/hooks.ts';
 import { selectUser } from '../../../store/users/usersSlice.ts';
+import { selectCompany } from '../../../store/companyPage/compantPageSlice.ts';
+import { selectDelivery } from '../../../store/deliveryPage/deliveryPageSlice.ts';
+import { selectBonusProgram } from '../../../store/bonusProgramPage/bonusProgramPageSlice.ts';
 
 const AdminBar = () => {
+  const company = useAppSelector(selectCompany);
+  const delivery = useAppSelector(selectDelivery);
+  const bonusProgram = useAppSelector(selectBonusProgram);
   const user = useAppSelector(selectUser);
   const [openCategories, setOpenCategories] = useState(false);
   const [openCarousel, setOpenCarousel] = useState(false);
@@ -14,11 +20,13 @@ const AdminBar = () => {
   const [openProducts, setOpenProducts] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const can = usePermission(user);
+  const [openPagesEdit, setOpenPagesEdit ] = useState(false);
 
   const handleCategoriesClick = () => setOpenCategories(!openCategories);
   const handleCarouselClick = () => setOpenCarousel(!openCarousel);
   const handleBrandsClick = () => setOpenBrands(!openBrands);
   const handleProductsClick = () => setOpenProducts(!openProducts);
+  const handelOpenPagesEdit = () => setOpenPagesEdit(!openPagesEdit);
 
   return (
     <>
@@ -41,10 +49,37 @@ const AdminBar = () => {
             </ListItem>
             <ListItem component={NavLink} to="/edition_site">
               <ListItemText
-                primary="Редактирование сайта"
+                primary="Редактирование информации о магазине 'Незабудка'"
                 className="text-black"
               />
             </ListItem>
+
+            <ListItemButton onClick={handelOpenPagesEdit}>
+              <ListItemText primary="Управление контентом"/>
+              {openPagesEdit ? <ExpandLess/> : <KeyboardArrowRight/>}
+            </ListItemButton>
+            {openPagesEdit && (
+              <List component="div" disablePadding>
+                <ListItemButton sx={{pl: 3}} component={NavLink} to={`/my_company/${company?.id}`}>
+                  <ListItemIcon>
+                    <EditNote/>
+                  </ListItemIcon>
+                  <ListItemText primary='Редактирование страницы "О компании"' />
+                </ListItemButton>
+                <ListItemButton sx={{pl: 3}} component={NavLink} to={`/delivery/${delivery?.id}`}>
+                  <ListItemIcon>
+                    <EditNote/>
+                  </ListItemIcon>
+                  <ListItemText primary='Редактирование страницы "Доставка и оплата"' />
+                </ListItemButton>
+                <ListItemButton sx={{pl: 3}} component={NavLink} to={`/bonus_program/${bonusProgram?.id}`}>
+                  <ListItemIcon>
+                    <EditNote/>
+                  </ListItemIcon>
+                  <ListItemText primary='Редактирование страницы "Бонсуная программа"' />
+                </ListItemButton>
+              </List>
+            )}
             <ListItem component={NavLink} to="/private/client_orders">
               <ListItemText primary="Заказы" className="text-black" />
             </ListItem>
@@ -93,6 +128,8 @@ const AdminBar = () => {
                 </ListItemButton>
               </List>
             )}
+
+
 
             <ListItemButton onClick={handleBrandsClick}>
               <ListItemText primary="Бренды"/>

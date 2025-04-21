@@ -10,6 +10,7 @@ import { Box } from '@mui/joy';
 import { Button, Typography } from '@mui/material';
 import TextEditor from '../../TextEditor/TextEditor.tsx';
 import TextField from '@mui/material/TextField';
+import AdminBar from '../../../features/Admin/AdminProfile/AdminBar.tsx';
 
 const initialState = {
   text: "",
@@ -81,65 +82,90 @@ const DeliveryPageForm = () => {
   };
 
   return (
-    <div>
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          mt: 4,
-        }}
-      >
-        <Typography variant="h5" sx={{ mb: 3 }}>
-          Редактировать страницу "Доставка и оплата"
-        </Typography>
+    <div className="d-flex">
+      <div className="col-3 mt-5">
+        <AdminBar />
+      </div>
 
-        <Box
-          component="form"
-          noValidate
-          onSubmit={submitHandler}
-          sx={{
-            width: '800px',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
-          <TextEditor
-            value={form.text}
-            onChange={onChangeEditorText}
-            error={!form.text}
-            helperText={!form.text ? 'Поле обязательно для заполнения' : undefined}
-          />
-          <TextEditor
-            value={form.price}
-            onChange={onChangeEditorPrice}
-            error={!form.price}
-            helperText={!form.price ? 'Поле обязательно для заполнения' : undefined}
-          />
-          <TextField
-            label="Ссылка на карту"
-            value={form.map}
-            onChange={handleMapChange}
-            fullWidth
-            required
-            error={!!mapError}
-            helperText={mapError || ''}
-            sx={{ mt: 2 }}
-          />
-
-          <Button
-            variant="contained"
-            type="submit"
-            sx={{ mt: 3, alignSelf: 'center', backgroundColor: 'darkgreen' }}
-            disabled={!!mapError}
+      <div className="col-9 mt-5" style={{ display: 'flex', justifyContent: 'center' }}>
+        <Box sx={{ width: '100%', maxWidth: '800px' }}>
+          <Typography
+            variant="h4"
+            sx={{
+              textAlign: 'center',
+              mt: 4,
+              mb: 3,
+              fontWeight: 'bold',
+              color: 'black',
+            }}
           >
-            Сохранить
-          </Button>
+            Редактирование страницы «Доставка и оплата»
+          </Typography>
+
+          <Box
+            component="form"
+            noValidate
+            onSubmit={submitHandler}
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              width: '100%',
+            }}
+          >
+            <Typography
+              variant="subtitle1"
+              sx={{ mb: 1, alignSelf: 'flex-start', fontWeight: 500 }}
+            >
+              Введите информацию о доставке:
+            </Typography>
+
+            <TextEditor
+              value={form.text}
+              onChange={onChangeEditorText}
+              error={!form.text}
+              helperText={!form.text ? 'Поле обязательно для заполнения' : undefined}
+            />
+
+            <Typography
+              variant="subtitle1"
+              sx={{ mt: 3, mb: 1, alignSelf: 'flex-start', fontWeight: 500 }}
+            >
+              Введите информацию об зонах доставки :
+            </Typography>
+
+            <TextEditor
+              value={form.price}
+              onChange={onChangeEditorPrice}
+              error={!form.price}
+              helperText={!form.price ? 'Поле обязательно для заполнения' : undefined}
+            />
+
+            <TextField
+              label="Ссылка на карту"
+              value={form.map}
+              onChange={handleMapChange}
+              fullWidth
+              required
+              error={!!mapError}
+              helperText={mapError || ''}
+              sx={{ mt: 2 }}
+            />
+
+            <Button
+              variant="contained"
+              type="submit"
+              sx={{ mt: 3, alignSelf: 'center', backgroundColor: 'darkgreen' }}
+              disabled={!!mapError}
+            >
+              Сохранить
+            </Button>
+          </Box>
         </Box>
-      </Box>
+      </div>
     </div>
   );
+
 };
 
 export default DeliveryPageForm;
