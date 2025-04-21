@@ -18,15 +18,12 @@ const ClientEditProfile = () => {
   }, [dispatch, id, user]);
 
   return (
-    <div>
-      <h2 className="text-uppercase text-center mt-5">Мои данные</h2>
-      <div className="d-flex ">
-        <div className="col-3 mt-5 ">
-          {user && user.role === "client" && <ClientBar />}
-        </div>
-        <div className="col-9">
-          <UserFormEdition />
-        </div>
+    <div className="d-flex ">
+      <div className="col-3 mt-5 ">
+        {user && user.role === "client" && <ClientBar/>}
+      </div>
+      <div className="col-9">
+        <UserFormEdition/>
       </div>
     </div>
   );
