@@ -186,6 +186,8 @@ const ManageCategories = () => {
     await dispatch(fetchCategoriesThunk());
   };
 
+  console.log(categories)
+
   return (
     <>
       <Box sx={{ display: "flex", flexDirection: "column" }}>
@@ -295,7 +297,7 @@ const ManageCategories = () => {
           }}
         >
           <Box sx={{ bgcolor: "white", p: 4, borderRadius: 2 }}>
-            {selectedCategory && <EditCategory category={selectedCategory} onClose={handleClose}/>}
+            {selectedCategory && <EditCategory category={selectedCategory} onClose={handleClose} subcategoryId={selectedCategory?.id}/>}
           </Box>
         </Modal>
 

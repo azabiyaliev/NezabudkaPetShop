@@ -13,4 +13,6 @@ export class SubcategoryDto {
   subcategories?: SubcategoryDto[];
   @IsOptional()
   icon?: string | null;
+  @IsOptional()
+  image?: string | null;
 }

@@ -4,10 +4,12 @@ import { CategoryMutation } from "../../../types";
 import { selectUser } from '../../../store/users/usersSlice.ts';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
 import {
+  addIconToCategoryThunk,
   fetchCategoriesThunk,
   updateCategoryThunk
 } from '../../../store/categories/categoriesThunk.ts';
 import { toast } from 'react-toastify';
+import FileInputCategory from '../../FileInput/FileInputCategory.tsx';
 
 
 interface EditCategoryProps {
@@ -16,17 +18,19 @@ interface EditCategoryProps {
     title: string;
   };
   onClose: () => void;
+  subcategoryId: number;
 }
 
 const WARNING_SELECT_CATEGORY = "Не оставляйте поля пустыми!!";
 const SUCCESSFUL_CATEGORY_UPDATE = "Категория успешно обновлена!";
 
-const EditCategory: React.FC<EditCategoryProps> = ({ category, onClose }) => {
+const EditCategory: React.FC<EditCategoryProps> = ({ category, onClose, subcategoryId }) => {
   const [editedCategory, setEditedCategory] = useState<CategoryMutation>({
     title: category.title,
   });
   const user = useAppSelector(selectUser);
   const dispatch = useAppDispatch();
+  const [icon, setIcon] = useState<File | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,6 +49,10 @@ const EditCategory: React.FC<EditCategoryProps> = ({ category, onClose }) => {
       token: user.token,
     }));
 
+    if (icon) {
+      dispatch(addIconToCategoryThunk({ id: subcategoryId, iconFile: icon }))
+    }
+
     toast.success(SUCCESSFUL_CATEGORY_UPDATE, { position: 'top-center' });
 
     await dispatch(fetchCategoriesThunk());
@@ -61,6 +69,14 @@ const EditCategory: React.FC<EditCategoryProps> = ({ category, onClose }) => {
   }, []);
 
 
+  const fileEventChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { files } = e.target;
+    if (files && files[0]) {
+      setIcon(files[0]);
+    }
+  };
+
+
   return (
     <Box
       component="form"
@@ -69,7 +85,6 @@ const EditCategory: React.FC<EditCategoryProps> = ({ category, onClose }) => {
         display: "flex",
         flexDirection: "column",
         gap: 2,
-        maxWidth: 400,
         mx: "auto",
       }}
     >
@@ -86,6 +101,23 @@ const EditCategory: React.FC<EditCategoryProps> = ({ category, onClose }) => {
         value={editedCategory.title}
         onChange={inputChangeHandler}
       />
+
+      <Box sx={{ display: 'flex' , justifyContent: 'space-between', gap: '20px'}}>
+        <Box>
+          <Typography textAlign="left">
+            Иконка категории
+          </Typography>
+
+          <FileInputCategory name="icon" label="Выберите иконку" onGetFile={fileEventChangeHandler}/>
+        </Box>
+        <Box>
+          <Typography textAlign="left">
+            Изображение категории
+          </Typography>
+
+          <FileInputCategory label="Выберите изображение"/>
+        </Box>
+      </Box>
 
       <Button type="submit" variant="contained" sx={{ bgcolor: "#237803", color: "white" }}>
         Сохранить изменения
