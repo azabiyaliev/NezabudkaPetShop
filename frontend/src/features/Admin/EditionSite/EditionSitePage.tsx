@@ -22,7 +22,7 @@ const EditionSitePage = () => {
   }, [dispatch]);
   return (
     <div className="d-flex ">
-      <div className="col-3 mt-5 ">
+      <div className="col-3 ">
         <AdminBar />
       </div>
       <div className="col-9">

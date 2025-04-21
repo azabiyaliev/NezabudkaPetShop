@@ -1,25 +1,25 @@
-import { Route, Routes } from "react-router-dom";
-import RegisterUser from "./components/Forms/UserFrom/RegisterUser.tsx";
-import LoginUser from "./components/Forms/UserFrom/LoginUser.tsx";
-import AdminProfile from "./features/Admin/AdminProfile/AdminProfile.tsx";
-import NewBrandPage from "./features/Admin/Brand/NewBrandPage.tsx";
-import HomePage from "./features/Home/HomePage.tsx";
-import ProtectedRoute from "./components/UI/ProtectedRoute/ProtectedRoute.tsx";
+import { Route, Routes } from 'react-router-dom';
+import RegisterUser from './components/Forms/UserFrom/RegisterUser.tsx';
+import LoginUser from './components/Forms/UserFrom/LoginUser.tsx';
+import AdminProfile from './features/Admin/AdminProfile/AdminProfile.tsx';
+import NewBrandPage from './features/Admin/Brand/NewBrandPage.tsx';
+import HomePage from './features/Home/HomePage.tsx';
+import ProtectedRoute from './components/UI/ProtectedRoute/ProtectedRoute.tsx';
 import { useAppDispatch, useAppSelector, usePermission } from './app/hooks.ts';
 import { meCheck, selectUser, setMeChecked } from './store/users/usersSlice.ts';
-import Layout from "./components/Layout/Layout/Layout.tsx";
-import EditBrandPage from "./features/Admin/Brand/EditBrandPage.tsx";
-import BrandsPage from "./features/Admin/Brand/BrandsPage.tsx";
-import EditionSitePage from "./features/Admin/EditionSite/EditionSitePage.tsx";
-import NewProduct from "./features/Admin/Product/containers/NewProduct.tsx";
-import AdminEditProfile from "./features/Admin/AdminProfile/AdminEditProfile.tsx";
-import ClientProfile from "./features/Client/container/ClientProfile/ClientProfile.tsx";
-import ClientEditProfile from "./features/Client/container/ClientProfile/ClientEditProfile.tsx";
-import ProductPage from "./features/Product/containers/ProductPage.tsx";
-import ProductsPage from "./features/Admin/Product/containers/ProductsPage.tsx";
-import EditProduct from "./features/Admin/Product/containers/EditProduct.tsx";
-import AllProductsCardsPage from "./features/Product/containers/AllProductsCardsPage.tsx";
-import CartPage from "./features/Cart/CartPage.tsx";
+import Layout from './components/Layout/Layout/Layout.tsx';
+import EditBrandPage from './features/Admin/Brand/EditBrandPage.tsx';
+import BrandsPage from './features/Admin/Brand/BrandsPage.tsx';
+import EditionSitePage from './features/Admin/EditionSite/EditionSitePage.tsx';
+import NewProduct from './features/Admin/Product/containers/NewProduct.tsx';
+import AdminEditProfile from './features/Admin/AdminProfile/AdminEditProfile.tsx';
+import ClientProfile from './features/Client/container/ClientProfile/ClientProfile.tsx';
+import ClientEditProfile from './features/Client/container/ClientProfile/ClientEditProfile.tsx';
+import ProductPage from './features/Product/containers/ProductPage.tsx';
+import ProductsPage from './features/Admin/Product/containers/ProductsPage.tsx';
+import EditProduct from './features/Admin/Product/containers/EditProduct.tsx';
+import AllProductsCardsPage from './features/Product/containers/AllProductsCardsPage.tsx';
+import CartPage from './features/Cart/CartPage.tsx';
 import DragAndDropPhoto from './components/Forms/PhotoCarouselForm/DragAndDropPhoto.tsx';
 import Photo from './components/Forms/PhotoCarouselForm/Photo.tsx';
 import AdminForm from './components/Forms/AdminForm/AdminForm.tsx';
@@ -42,6 +42,7 @@ import { fetchMe } from './store/users/usersThunk.ts';
 import ContactPage from './features/ContactPage/ContactPage.tsx';
 import AllOrders from './features/Admin/AdminOrderPage/AllOrders.tsx';
 import MyOrders from './features/Order/MyOrders.tsx';
+import AddAdmin from './features/Admin/AddAdmin/AddAdmin.tsx';
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -191,7 +192,7 @@ const App = () => {
           <Route path="/all-products/:id" element={<AllProductsCardsPage />} />
           <Route path="/admin-create" element={
             <ProtectedRoute isAllowed={user && can(["superAdmin"])}>
-              <AdminForm/>
+              <AddAdmin/>
             </ProtectedRoute>
           }/>
           <Route path="/admin-edit/:id" element={

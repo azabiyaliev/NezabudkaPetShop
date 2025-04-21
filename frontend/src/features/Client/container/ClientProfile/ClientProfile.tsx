@@ -19,12 +19,12 @@ const ClientProfile = () => {
 
   return (
     <div>
-      <h2 className="text-uppercase text-center mt-5">Личный кабинет</h2>
       <div className="d-flex ">
         <div className="col-3 mt-5 ">
           <ClientBar />
         </div>
         <div className="col-9">
+          <h2 className="text-uppercase text-center mt-5">Личный кабинет</h2>
           <Box
             sx={{
               display: "flex",
@@ -42,13 +42,13 @@ const ClientProfile = () => {
                 borderRadius: 2,
                 boxShadow: 3,
                 width: "200px",
-                marginRight:8
+                marginRight: 8
               }}
             >
-              <Typography variant="h6" sx={{ fontWeight: "bold", color: "black" }}>
+              <Typography variant="h6" sx={{fontWeight: "bold", color: "black"}}>
                 Ваши бонусы:
               </Typography>
-              <Typography variant="h5" sx={{ fontWeight: "bold", color: "#FF5722", marginTop: 1 }}>
+              <Typography variant="h5" sx={{fontWeight: "bold", color: "#FF5722", marginTop: 1}}>
                 {user?.bonus}
               </Typography>
             </Paper>

@@ -118,7 +118,7 @@ const EditSiteForm = () => {
 
   return (
     <Container component="main">
-      <Box sx={{ marginTop: 3, display: "flex", flexDirection: "column", alignItems: "center", padding: 4, position: "relative" }}>
+      <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", padding: 4, position: "relative" }}>
         <Typography
           level="h2"
           component="h1"

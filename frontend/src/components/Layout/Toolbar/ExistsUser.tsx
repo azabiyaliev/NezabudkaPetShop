@@ -1,24 +1,25 @@
 import { useState } from 'react';
 import { Box, Button, Divider, Drawer, List, ListItem, ListItemText, Typography, } from '@mui/material';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
-import { selectUser } from "../../../store/users/usersSlice.ts";
-import { usePermission} from '../../../app/hooks.ts';
-import {
-  addErrorFromSlice,
-  clearError,
-} from "../../../store/brands/brandsSlice.ts";
-import PermIdentityOutlinedIcon from "@mui/icons-material/PermIdentityOutlined";
-import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
-import EditNoteOutlinedIcon from "@mui/icons-material/EditNoteOutlined";
-import CreditScoreOutlinedIcon from "@mui/icons-material/CreditScoreOutlined";
-import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined";
-import SettingsSuggestOutlinedIcon from "@mui/icons-material/SettingsSuggestOutlined";
-import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
-import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
-import FavoriteOutlinedIcon from "@mui/icons-material/FavoriteOutlined";
-import LocalMallOutlinedIcon from "@mui/icons-material/LocalMallOutlined";
+import { useAppDispatch, useAppSelector, usePermission } from '../../../app/hooks.ts';
+import { selectUser } from '../../../store/users/usersSlice.ts';
+import { addErrorFromSlice, clearError, } from '../../../store/brands/brandsSlice.ts';
+import PermIdentityOutlinedIcon from '@mui/icons-material/PermIdentityOutlined';
+import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
+// import EditNoteOutlinedIcon from "@mui/icons-material/EditNoteOutlined";
+import CreditScoreOutlinedIcon from '@mui/icons-material/CreditScoreOutlined';
+import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
+// import SettingsSuggestOutlinedIcon from "@mui/icons-material/SettingsSuggestOutlined";
+import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
+import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
+import FavoriteOutlinedIcon from '@mui/icons-material/FavoriteOutlined';
+import LocalMallOutlinedIcon from '@mui/icons-material/LocalMallOutlined';
+import BallotOutlinedIcon from '@mui/icons-material/BallotOutlined';
+import ListAltOutlinedIcon from '@mui/icons-material/ListAltOutlined';
+import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
+import AutoGraphOutlinedIcon from '@mui/icons-material/AutoGraphOutlined';
 import { logout } from '../../../store/users/usersThunk.ts';
+import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
 
 const ExistsUser = () => {
   const addError = useAppSelector(addErrorFromSlice);
@@ -148,36 +149,41 @@ const ExistsUser = () => {
                 to={`/private_account`}
                 onClick={toggleDrawer(false)}
               >
-                <HomeOutlinedIcon style={{ color: "#45624E" }} />
+                <HomeOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
                 <ListItemText primary="Личный кабинет" className="text-black" />
               </ListItem>
               {can(["superAdmin"]) && (
                 <>
                   <ListItem component={NavLink} to={`/admin-table`} onClick={toggleDrawer(false)}>
+                    <AdminPanelSettingsOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
                     <ListItemText primary="Администраторы" className="text-black" />
                   </ListItem>
-                  <ListItem component={NavLink} to={`/admin-create`} onClick={toggleDrawer(false)}>
-                    <ListItemText primary="Создать администратора" className="text-black"/>
+                  {/*<ListItem component={NavLink} to={`/admin-create`} onClick={toggleDrawer(false)}>*/}
+                  {/*  <ListItemText primary="Создать администратора" className="text-black"/>*/}
+                  {/*</ListItem>*/}
+                  <ListItem component={NavLink} to={'/private/order_stats'} onClick={toggleDrawer(false)}>
+                    <AutoGraphOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
+                    <ListItemText primary="Статистика заказов" className="text-black"/>
                   </ListItem>
                 </>
               )}
-              <ListItem
-                component={NavLink}
-                to={`/private/users/${user.id}`}
-                onClick={toggleDrawer(false)}
-              >
-                <EditNoteOutlinedIcon style={{ color: "#45624E" }} />
-                <ListItemText
-                  primary="Редактировать профиль"
-                  className="text-black"
-                />
-              </ListItem>
+              {/*<ListItem*/}
+              {/*  component={NavLink}*/}
+              {/*  to={`/private/users/${user.id}`}*/}
+              {/*  onClick={toggleDrawer(false)}*/}
+              {/*>*/}
+              {/*  <EditNoteOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />*/}
+              {/*  <ListItemText*/}
+              {/*    primary="Редактирование личного кабинета"*/}
+              {/*    className="text-black"*/}
+              {/*  />*/}
+              {/*</ListItem>*/}
               <ListItem
                 component={NavLink}
                 to="/private/client_orders"
                 onClick={toggleDrawer(false)}
               >
-                <CreditScoreOutlinedIcon style={{ color: "#45624E" }} />
+                <CreditScoreOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
                 <ListItemText primary="Заказы" className="text-black" />
               </ListItem>
               <ListItem
@@ -185,40 +191,43 @@ const ExistsUser = () => {
                 to="/private/clients"
                 onClick={toggleDrawer(false)}
               >
-                <GroupOutlinedIcon style={{ color: "#45624E" }} />
+                <GroupOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
                 <ListItemText primary="Клиенты" className="text-black" />
               </ListItem>
-              <ListItem
-                component={NavLink}
-                to={`/edition_site`}
-                onClick={toggleDrawer(false)}
-              >
-                <SettingsSuggestOutlinedIcon style={{ color: "#45624E" }} />
-                <ListItemText
-                  primary="Редактирование инофрмации о магаизине 'Незабудка'"
-                  className="text-black"
-                />
-              </ListItem>
+              {/*<ListItem*/}
+              {/*  component={NavLink}*/}
+              {/*  to={`/edition_site`}*/}
+              {/*  onClick={toggleDrawer(false)}*/}
+              {/*>*/}
+              {/*  <SettingsSuggestOutlinedIcon style={{ color: "#45624E",  marginRight: "10px" }} />*/}
+              {/*  <ListItemText*/}
+              {/*    primary="Редактирование инофрмации о магаизине 'Незабудка'"*/}
+              {/*    className="text-black"*/}
+              {/*  />*/}
+              {/*</ListItem>*/}
               <ListItem
                 component={NavLink}
                 to="/private/brands"
                 onClick={() => toggleBrand(false)}
               >
+                <BallotOutlinedIcon style={{ color: "#45624E",  marginRight: "10px" }}/>
                 <ListItemText primary="Бренды" className="text-black" />
               </ListItem>
               <ListItem
                 component={NavLink}
-                to="/private/all_products"
+                to="/private/products"
                 onClick={toggleDrawer(false)}
               >
+                <ListAltOutlinedIcon style={{ color: "#45624E",  marginRight: "10px" }}/>
                 <ListItemText primary="Товары" className="text-black" />
               </ListItem>
               <ListItem
                 component={NavLink}
-                to="/private/all_categories"
+                to="/private/manage_categories"
                 onClick={toggleDrawer(false)}
               >
-                <ListItemText primary="Все категории" className="text-black" />
+                <CategoryOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }}/>
+                <ListItemText primary="Категории" className="text-black" />
               </ListItem>
             </List>
           )}
@@ -230,7 +239,7 @@ const ExistsUser = () => {
                 to={`/my_account/users/account/${user?.id}`}
                 onClick={toggleDrawer(false)}
               >
-                <HomeOutlinedIcon style={{ color: "#45624E" }} />
+                <HomeOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
                 <ListItemText primary="Личный кабинет" className="text-black" />
               </ListItem>
               <ListItem
@@ -238,7 +247,7 @@ const ExistsUser = () => {
                 to="/my_orders"
                 onClick={toggleDrawer(false)}
               >
-                <LocalMallOutlinedIcon style={{ color: "#45624E" }} />
+                <LocalMallOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
                 <ListItemText primary="Мои Заказы" className="text-black" />
               </ListItem>
               <ListItem
@@ -246,22 +255,22 @@ const ExistsUser = () => {
                 to="/my_cart"
                 onClick={toggleDrawer(false)}
               >
-                <ShoppingCartOutlinedIcon style={{ color: "#45624E" }} />
+                <ShoppingCartOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
                 <ListItemText primary="Корзина" className="text-black" />
               </ListItem>
               <ListItem
                 component={NavLink}
-                to="/my_whishlist"
+                to="favorite-products"
                 onClick={toggleDrawer(false)}
               >
-                <FavoriteOutlinedIcon style={{ color: "#45624E" }} />
+                <FavoriteOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
                 <ListItemText primary="Избранные" className="text-black" />
               </ListItem>
             </List>
           )}
           <Divider />
           <ListItem onClick={userLogout} style={{ marginTop: "30px" }}>
-            <LogoutOutlinedIcon style={{ color: "#45624E" }} />
+            <LogoutOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
             <ListItemText primary="Выйти" className="text-black" />
           </ListItem>
         </Box>
