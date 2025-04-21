@@ -51,6 +51,33 @@ export class CategoryController {
     throw new BadRequestException('Файл не был загружен');
   }
 
+  @Patch(':id/image')
+  @UseInterceptors(
+    FileInterceptor('image', {
+      storage: diskStorage({
+        destination: './public/category_image',
+        filename: (_req, file, callback) => {
+          const imageFormat = extname(file.originalname);
+          const fileName = `${crypto.randomUUID()}${imageFormat}`;
+          callback(null, fileName);
+        },
+      }),
+    }),
+  )
+  async addImageToCategory(
+    @Param('id', ParseIntPipe) id: number,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    if (file && file.filename) {
+      const filePath = '/category_image/' + file.filename;
+
+      await this.categoryService.addImageToCategory(id, filePath);
+
+      return { success: true, image: filePath };
+    }
+    throw new BadRequestException('Файл не был загружен');
+  }
+
   @Post()
   async createCategory(@Body() categoryDto: CategoryDto) {
     return this.categoryService.createCategory(categoryDto);

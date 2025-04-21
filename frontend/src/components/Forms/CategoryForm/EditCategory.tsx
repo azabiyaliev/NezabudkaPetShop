@@ -4,7 +4,7 @@ import { CategoryMutation } from "../../../types";
 import { selectUser } from '../../../store/users/usersSlice.ts';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
 import {
-  addIconToCategoryThunk,
+  addIconToCategoryThunk, addImageToCategoryThunk,
   fetchCategoriesThunk,
   updateCategoryThunk
 } from '../../../store/categories/categoriesThunk.ts';
@@ -31,6 +31,7 @@ const EditCategory: React.FC<EditCategoryProps> = ({ category, onClose, subcateg
   const user = useAppSelector(selectUser);
   const dispatch = useAppDispatch();
   const [icon, setIcon] = useState<File | null>(null);
+  const [image, setImage] = useState<File | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,13 +50,26 @@ const EditCategory: React.FC<EditCategoryProps> = ({ category, onClose, subcateg
       token: user.token,
     }));
 
-    if (icon) {
-      dispatch(addIconToCategoryThunk({ id: subcategoryId, iconFile: icon }))
+    setEditedCategory((prevState) => ({
+      ...prevState,
+      title: editedCategory.title,
+    }));
+
+
+    if (icon || image) {
+      if (icon) {
+        await dispatch(addIconToCategoryThunk({ id: subcategoryId, iconFile: icon }));
+      }
+
+      if (image) {
+        await dispatch(addImageToCategoryThunk({ id: subcategoryId, imageFile: image }));
+      }
     }
+
+    await dispatch(fetchCategoriesThunk());
 
     toast.success(SUCCESSFUL_CATEGORY_UPDATE, { position: 'top-center' });
 
-    await dispatch(fetchCategoriesThunk());
     onClose();
   };
 
@@ -70,9 +84,14 @@ const EditCategory: React.FC<EditCategoryProps> = ({ category, onClose, subcateg
 
 
   const fileEventChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { files } = e.target;
+    const { files, name } = e.target;
+
     if (files && files[0]) {
-      setIcon(files[0]);
+      if (name === "icon") {
+        setIcon(files[0]);
+      } else if (name === "image") {
+        setImage(files[0]);
+      }
     }
   };
 
@@ -115,7 +134,7 @@ const EditCategory: React.FC<EditCategoryProps> = ({ category, onClose, subcateg
             Изображение категории
           </Typography>
 
-          <FileInputCategory label="Выберите изображение"/>
+          <FileInputCategory name="image" label="Выберите изображение" onGetFile={fileEventChangeHandler}/>
         </Box>
       </Box>
 

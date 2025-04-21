@@ -175,6 +175,19 @@ export class CategoryService {
     return { message: 'Иконка добавлена успешно', icon: filename };
   }
 
+  async addImageToCategory(id: number, filename: string) {
+    await this.validateCategory(id);
+
+    await this.prisma.category.update({
+      where: { id },
+      data: {
+        image: filename,
+      },
+    });
+
+    return { message: 'Изображение добавлена успешно', image: filename };
+  }
+
   async deleteCategory(id: number) {
     await this.validateCategory(id);
 
