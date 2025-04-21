@@ -93,7 +93,7 @@ const ColumnChart: React.FC<Props> = ({stats}) => {
         d.category === 'Тип получения' ? 'Доставка' :
           d.category === 'Способ оплаты' ? 'Карта' :
             d.category === 'Использование бонусов' ? 'Бонусы' :
-              d.category === 'Статус заказа' ? 'Всего' : ''
+              d.category === 'Статус заказа' ? 'Отменено' : ''
     })));
 
     const series2 = chart.series.push(
@@ -114,7 +114,7 @@ const ColumnChart: React.FC<Props> = ({stats}) => {
       name:
         d.category === 'Тип получения' ? 'Самовывоз' :
           d.category === 'Способ оплаты' ? 'Наличные' :
-            d.category === 'Статус заказа' ? 'Отменено' : ''
+            d.category === 'Статус заказа' ? 'Всего' : ''
     })));
 
     [series1, series2].forEach(series => {
