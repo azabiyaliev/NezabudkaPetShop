@@ -38,7 +38,6 @@ const ManageCategories = () => {
   const user = useAppSelector(selectUser);
 
   const [open, setOpen] = useState(false);
-  // const [openSubModal, setOpenSubModal] = useState(false);
   const [openAddSubModal, setOpenAddSubModal] = useState(false);
 
   const [parentCategoryId, setParentCategoryId] = useState<number | null>(null);
@@ -47,8 +46,9 @@ const ManageCategories = () => {
   const [selectedCategory, setSelectedCategory] = useState<{
     id: number;
     title: string;
+    icon?: string;
+    image?: string;
   } | null>(null);
-
 
   useEffect(() => {
     dispatch(fetchCategoriesThunk());

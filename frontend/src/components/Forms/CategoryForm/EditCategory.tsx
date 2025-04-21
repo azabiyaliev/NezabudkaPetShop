@@ -1,5 +1,5 @@
 import { TextField, Button, Box, Typography } from '@mui/material';
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from 'react';
 import { CategoryMutation } from "../../../types";
 import { selectUser } from '../../../store/users/usersSlice.ts';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
@@ -11,11 +11,12 @@ import {
 import { toast } from 'react-toastify';
 import FileInputCategory from '../../FileInput/FileInputCategory.tsx';
 
-
 interface EditCategoryProps {
   category: {
     id: number;
     title: string;
+    icon?: string;
+    image?: string;
   };
   onClose: () => void;
   subcategoryId: number;
@@ -32,6 +33,18 @@ const EditCategory: React.FC<EditCategoryProps> = ({ category, onClose, subcateg
   const dispatch = useAppDispatch();
   const [icon, setIcon] = useState<File | null>(null);
   const [image, setImage] = useState<File | null>(null);
+
+  const [iconPreview, setIconPreview] = useState<string | null>(category.icon || null);
+  const [imagePreview, setImagePreview] = useState<string | null>(category.image || null);
+
+  useEffect(() => {
+    if (category.icon) {
+      setIconPreview(category.icon);
+    }
+    if (category.image) {
+      setImagePreview(category.image);
+    }
+  }, [category]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -87,14 +100,16 @@ const EditCategory: React.FC<EditCategoryProps> = ({ category, onClose, subcateg
     const { files, name } = e.target;
 
     if (files && files[0]) {
+      const file = files[0];
       if (name === "icon") {
-        setIcon(files[0]);
+        setIcon(file);
+        setIconPreview(URL.createObjectURL(file));
       } else if (name === "image") {
-        setImage(files[0]);
+        setImage(file);
+        setImagePreview(URL.createObjectURL(file));
       }
     }
   };
-
 
   return (
     <Box
@@ -121,24 +136,51 @@ const EditCategory: React.FC<EditCategoryProps> = ({ category, onClose, subcateg
         onChange={inputChangeHandler}
       />
 
-      <Box sx={{ display: 'flex' , justifyContent: 'space-between', gap: '20px'}}>
-        <Box>
-          <Typography textAlign="left">
-            Иконка категории
-          </Typography>
+      <Box
+        sx={{ display: "flex", justifyContent: "space-between", gap: "20px" }}
+      >
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          {iconPreview && (
+            <img
+              width="40"
+              height="40"
+              src={iconPreview}
+              alt="icon preview"
+              style={{ objectFit: 'cover' }}
+            />
+          )}
 
-          <FileInputCategory name="icon" label="Выберите иконку" onGetFile={fileEventChangeHandler}/>
+          <FileInputCategory
+            name="icon"
+            label="Выберите иконку"
+            onGetFile={fileEventChangeHandler}
+          />
         </Box>
-        <Box>
-          <Typography textAlign="left">
-            Изображение категории
-          </Typography>
 
-          <FileInputCategory name="image" label="Выберите изображение" onGetFile={fileEventChangeHandler}/>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          {imagePreview && (
+            <img
+              width="40"
+              height="40"
+              src={imagePreview}
+              alt="image preview"
+              style={{ objectFit: 'cover' }}
+            />
+          )}
+
+          <FileInputCategory
+            name="image"
+            label="Выберите изображение"
+            onGetFile={fileEventChangeHandler}
+          />
         </Box>
       </Box>
 
-      <Button type="submit" variant="contained" sx={{ bgcolor: "#237803", color: "white" }}>
+      <Button
+        type="submit"
+        variant="contained"
+        sx={{ bgcolor: "#237803", color: "white" }}
+      >
         Сохранить изменения
       </Button>
     </Box>
