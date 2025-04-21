@@ -1,10 +1,11 @@
-import { useEffect } from 'react';
-import { useAppDispatch, useAppSelector } from '../../../app/hooks';
-import { getStatistics } from '../../../store/orders/ordersThunk';
-import ColumnChart from '../../../components/UI/ColumnChart/ColumnChart.tsx';
-import { DataGrid, gridClasses, GridToolbar } from '@mui/x-data-grid';
-import { Box, Paper } from '@mui/material';
-import Typography from '@mui/material/Typography';
+import { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "../../../app/hooks";
+import { getStatistics } from "../../../store/orders/ordersThunk";
+import ColumnChart from "../../../components/UI/ColumnChart/ColumnChart.tsx";
+import { DataGrid, gridClasses, GridToolbar } from "@mui/x-data-grid";
+import { Box, CircularProgress, Paper, Stack } from '@mui/material';
+import Typography from "@mui/material/Typography";
+import AdminBar from '../AdminProfile/AdminBar.tsx';
 
 const OrderStats = () => {
   const dispatch = useAppDispatch();
@@ -21,87 +22,160 @@ const OrderStats = () => {
   }, [dispatch]);
 
   if (!orders) {
-    return <div>Загрузка...</div>;
+    return <CircularProgress />;
   }
 
   const percentageCount = (a: number, b: number) => {
-    if (b === 0) return '0';
+    if (b === 0) return "0";
     return ((a / b) * 100).toFixed(1);
   };
 
-  const totalOrderTypes = orders.deliveryStatistic + orders.pickUpStatistic + orders.canceledOrderCount;
+  const totalOrderTypes =
+    orders.deliveryStatistic +
+    orders.pickUpStatistic +
+    orders.canceledOrderCount;
   const totalPayments = orders.paymentByCard + orders.paymentByCash;
   const totalBonuses = orders.bonusUsage;
 
   const rows = [
-    {id: 1, name: "Доставка", count: orders.deliveryStatistic, percentage: `${percentageCount(orders.deliveryStatistic, totalOrderTypes)}%`},
-    {id: 2, name: "Самовывоз", count: orders.pickUpStatistic, percentage: `${percentageCount(orders.pickUpStatistic, totalOrderTypes)}%`},
-    {id: 3, name: "Оплата картой", count: orders.paymentByCard, percentage: `${percentageCount(orders.paymentByCard, totalPayments)}%`},
-    {id: 4, name: "Оплата наличными", count: orders.paymentByCash, percentage: `${percentageCount(orders.paymentByCash, totalPayments)}%`},
-    {id: 5, name: "Пользование бонусами", count: orders.bonusUsage, percentage: `${percentageCount(orders.bonusUsage, totalBonuses)}%`},
-    {id: 6, name: "Общее кол-во заказов", count: orders.totalOrders, percentage: `100%`},
-    {id: 7, name: "Отмененные заказы", count: orders.canceledOrderCount, percentage: `${percentageCount(orders.canceledOrderCount, totalOrderTypes)}%`},
+    {
+      id: 1,
+      name: "Доставка",
+      count: orders.deliveryStatistic,
+      percentage: `${percentageCount(orders.deliveryStatistic, totalOrderTypes)}%`,
+    },
+    {
+      id: 2,
+      name: "Самовывоз",
+      count: orders.pickUpStatistic,
+      percentage: `${percentageCount(orders.pickUpStatistic, totalOrderTypes)}%`,
+    },
+    {
+      id: 3,
+      name: "Оплата картой",
+      count: orders.paymentByCard,
+      percentage: `${percentageCount(orders.paymentByCard, totalPayments)}%`,
+    },
+    {
+      id: 4,
+      name: "Оплата наличными",
+      count: orders.paymentByCash,
+      percentage: `${percentageCount(orders.paymentByCash, totalPayments)}%`,
+    },
+    {
+      id: 5,
+      name: "Пользование бонусами",
+      count: orders.bonusUsage,
+      percentage: `${percentageCount(orders.bonusUsage, totalBonuses)}%`,
+    },
+    {
+      id: 6,
+      name: "Общее кол-во заказов",
+      count: orders.totalOrders,
+      percentage: `100%`,
+    },
+    {
+      id: 7,
+      name: "Отмененные заказы",
+      count: orders.canceledOrderCount,
+      percentage: `${percentageCount(orders.canceledOrderCount, totalOrderTypes)}%`,
+    },
   ];
 
   const columns = [
-    { field: 'name', headerName: 'Название', flex: 1 },
-    { field: 'count', headerName: 'Количество', flex: 1 },
-    { field: 'percentage', headerName: 'Проценты', flex: 1 },
+    { field: "name", headerName: "Название", flex: 1 },
+    { field: "count", headerName: "Количество", flex: 1 },
+    { field: "percentage", headerName: "Проценты", flex: 1 },
   ];
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Typography
-        variant="h4"
-        component="h1"
-        sx={{
-          mb: 4,
-          fontWeight: 600,
-        }}
-      >
-        Статистика заказов
-      </Typography>
-
-      <Paper
-        elevation={3}
-        sx={{
-          mb: 4,
-          p: 2,
-          borderRadius: '12px',
-        }}
-      >
-        <ColumnChart stats={orders} />
-      </Paper>
-
-      <Paper
-        elevation={3}
-        sx={{
-          borderRadius: '12px',
-          overflow: 'hidden',
-        }}
-      >
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          autoHeight
-          slots={{
-            toolbar: GridToolbar,
-          }}
+    <Stack
+      direction={{
+        xs: 'column',
+        sm: 'row'
+    }}
+      spacing={{
+        xs: 1,
+        sm: 2,
+        md: 4 }}
+      className='mt-5'>
+      <Box>
+        <AdminBar/>
+      </Box>
+      <Box sx={{
+        p: 3,
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 4,
+        minHeight: '100vh'
+      }}>
+        <Typography
+          variant="h4"
+          component="h1"
           sx={{
-            [`& .${gridClasses.cell}`]: {
-              py: 2,
-            },
-            [`& .bold-cell`]: {
-              fontWeight: 500,
-            },
-            '& .MuiDataGrid-toolbarContainer': {
-              p: 2,
-              pb: 0,
-            },
+            mb: 2,
+            fontWeight: 600,
           }}
-        />
-      </Paper>
-    </Box>
+        >
+          Статистика заказов
+        </Typography>
+
+        <Paper
+          elevation={3}
+          sx={{
+            p: 2,
+            borderRadius: "12px",
+            flex: 1,
+            minHeight: '400px',
+            display: 'flex',
+            flexDirection: 'column'
+          }}
+        >
+          <Box sx={{ flex: 1, minHeight: 0 }}>
+            <ColumnChart stats={orders} />
+          </Box>
+        </Paper>
+
+        <Paper
+          elevation={3}
+          sx={{
+            borderRadius: "12px",
+            overflow: "hidden",
+            flex: 1,
+            minHeight: '400px',
+            display: 'flex',
+            flexDirection: 'column'
+          }}
+        >
+          <Box sx={{ flex: 1, minHeight: 0 }}>
+            <DataGrid
+              rows={rows}
+              columns={columns}
+              slots={{
+                toolbar: GridToolbar,
+              }}
+              sx={{
+                [`& .${gridClasses.cell}`]: {
+                  py: 2,
+                },
+                [`& .bold-cell`]: {
+                  fontWeight: 500,
+                },
+                "& .MuiDataGrid-toolbarContainer": {
+                  p: 2,
+                  pb: 0,
+                },
+                height: '100%',
+                '& .MuiDataGrid-virtualScroller': {
+                  minHeight: '300px'
+                }
+              }}
+            />
+          </Box>
+        </Paper>
+      </Box>
+    </Stack>
   );
 };
 
