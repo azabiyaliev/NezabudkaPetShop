@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from "react";
 import Quill from "quill";
 import "quill/dist/quill.snow.css";
 import { Box, Paper, Typography } from "@mui/material";
+import './styles.css'
 
 interface Props {
   value: string;

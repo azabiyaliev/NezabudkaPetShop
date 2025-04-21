@@ -91,9 +91,13 @@ export class ProductsController {
   async updateProductItem(
     @Param('productId') productId: string,
     @Body() createProductDto: CreateProductsDto,
+    @UploadedFile() file: Express.Multer.File,
   ) {
     if (!createProductDto) {
       throw new BadRequestException('Необходимо передать данные продукта');
+    }
+    if (file) {
+      createProductDto.productPhoto = '/productImg/' + file.filename;
     }
     return await this.productsService.changeProductInfo(
       Number(productId),

@@ -9,6 +9,8 @@ export class CreateProductsDto {
   @IsNotEmpty()
   @IsString()
   productName!: string;
+
+  @IsString()
   productPhoto!: string;
 
   @IsNotEmpty()

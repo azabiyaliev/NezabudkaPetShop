@@ -24,6 +24,8 @@ import FormControl from "@mui/material/FormControl";
 import FileInput from "../../../../components/FileInput/FileInput.tsx";
 import { addProductLoading } from "../../../../store/products/productsSlice.ts";
 import TextEditor from '../../../../components/TextEditor/TextEditor.tsx';
+import { apiUrl } from '../../../../globalConstants.ts';
+import CloseIcon from '@mui/icons-material/Close';
 
 
 interface Props {
@@ -241,13 +243,18 @@ const ProductForm: React.FC<Props> = ({
 
   const fileEventChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, files } = e.target;
+    const value = files && files[0] ? files[0] : null;
 
-    if (files) {
-      setForm((prevState) => ({
-        ...prevState,
-        [name]: files[0] || null,
-      }));
-    }
+    setForm((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+  const deletePhoto = () => {
+    setForm({
+      ...form,
+      productPhoto: null,
+    });
   };
 
   const toggleAdvancedFields = () => {
@@ -449,7 +456,30 @@ const ProductForm: React.FC<Props> = ({
               name="productPhoto"
               label="Выберите изображение"
               onGetFile={fileEventChangeHandler}
+              initialValue={form.productPhoto !== null ? form.productPhoto : ""}
             />
+            {form.productPhoto && (
+              <Box sx={{
+                display: "flex",
+              }}>
+                <img
+                  style={{
+                    width: "200px",
+                    height: "200px",
+                    textIndent: "-9999px",
+                    display: "block",
+                    objectFit: "contain",
+                  }}
+                  src={
+                    form.productPhoto instanceof File
+                      ? URL.createObjectURL(form.productPhoto)
+                      : apiUrl + form.productPhoto
+                  }
+                  alt={form.productName}
+                />
+                <CloseIcon onClick={() => deletePhoto()}/>
+              </Box>
+            )}
           </Grid>
           <Grid size={{ xs: 12 }}>
             <Button
