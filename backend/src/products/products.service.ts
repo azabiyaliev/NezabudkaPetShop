@@ -65,6 +65,13 @@ export class ProductsService {
     return products;
   }
 
+  async getPromotionalProducts() {
+    const products = await this.prismaService.products.findMany({
+      where: { sales: true },
+    });
+    return products || [];
+  }
+
   //FOR ADMIN
   async addProduct(createProductsDto: CreateProductsDto) {
     const {

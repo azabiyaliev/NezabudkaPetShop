@@ -14,6 +14,8 @@ import { selectUser } from '../../store/users/usersSlice.ts';
 import { addItem, createCart, deleteItemsCart, fetchCart } from '../../store/cart/cartThunk.ts';
 import { ICartBack, ICartItem } from '../../types';
 import { userRoleClient } from '../../globalConstants.ts';
+import { selectPromotionalProducts } from '../../store/products/productsSlice.ts';
+import { getPromotionalProducts } from '../../store/products/productsThunk.ts';
 
 const HomePage = () => {
   const [openCart, setOpenCart] = useState<boolean>(false);
@@ -22,6 +24,7 @@ const HomePage = () => {
   const brands = useAppSelector(brandsFromSlice);
   const user = useAppSelector(selectUser);
   const cart = useAppSelector(cartFromSlice);
+  const productsFromAPI = useAppSelector(selectPromotionalProducts);
   const createCartError = useAppSelector(cartErrorFromSlice);
   const dispatch = useAppDispatch();
 
@@ -61,6 +64,7 @@ const HomePage = () => {
   useEffect(() => {
     const fetchData = async () => {
       await dispatch(getBrands()).unwrap();
+      await dispatch(getPromotionalProducts()).unwrap();
 
       if (user && (user.role === userRoleClient)) {
         await dispatch(createCart()).unwrap();
@@ -103,6 +107,8 @@ const HomePage = () => {
       dispatch(setToLocalStorage(cart));
     }
   }, [dispatch, cart, user]);
+
+  console.log(productsFromAPI);
 
   return (
     <Container>

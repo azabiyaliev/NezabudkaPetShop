@@ -1397,6 +1397,8 @@ export class SeedService {
           productPhoto: '/fixtures/products/treats.webp',
           existence: true,
           sales: true,
+          endDateSales: '2025-05-10T00:00:00.000Z',
+          startDateSales: '2025-05-03T00:00:00.000Z',
         },
       }),
       this.prisma.products.create({
@@ -1408,7 +1410,9 @@ export class SeedService {
           categoryId: fishFood.id,
           productPhoto: '/fixtures/products/car_scratcher.webp',
           existence: true,
-          sales: false,
+          sales: true,
+          endDateSales: '2025-05-10T00:00:00.000Z',
+          startDateSales: '2025-05-03T00:00:00.000Z',
         },
       }),
       this.prisma.products.create({
@@ -1421,7 +1425,9 @@ export class SeedService {
           categoryId: aquariumsAndAccessories.id,
           productPhoto: '/fixtures/products/car_scratcher.webp',
           existence: true,
-          sales: false,
+          sales: true,
+          endDateSales: '2025-05-10T00:00:00.000Z',
+          startDateSales: '2025-05-03T00:00:00.000Z',
         },
       }),
       this.prisma.products.create({
@@ -1434,7 +1440,9 @@ export class SeedService {
           categoryId: aquariumsAndAccessories.id,
           productPhoto: '/fixtures/products/car_scratcher.webp',
           existence: true,
-          sales: false,
+          sales: true,
+          endDateSales: '2025-05-10T00:00:00.000Z',
+          startDateSales: '2025-05-03T00:00:00.000Z',
         },
       }),
       this.prisma.products.create({
@@ -1447,7 +1455,9 @@ export class SeedService {
           categoryId: aquariumFilters.id,
           productPhoto: '/fixtures/products/car_scratcher.webp',
           existence: true,
-          sales: false,
+          sales: true,
+          endDateSales: '2025-05-10T00:00:00.000Z',
+          startDateSales: '2025-05-03T00:00:00.000Z',
         },
       }),
       this.prisma.products.create({
@@ -1460,7 +1470,9 @@ export class SeedService {
           categoryId: aquariumFilters.id,
           productPhoto: '/fixtures/products/car_scratcher.webp',
           existence: true,
-          sales: false,
+          sales: true,
+          endDateSales: '2025-05-10T00:00:00.000Z',
+          startDateSales: '2025-05-03T00:00:00.000Z',
         },
       }),
       this.prisma.products.create({
