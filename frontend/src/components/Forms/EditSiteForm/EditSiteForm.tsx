@@ -124,7 +124,7 @@ const EditSiteForm = () => {
           component="h1"
           sx={{ textAlign: "center", margin: "10px 0" }}
         >
-          Редактирование сайта
+          Редактирование информации о магазине 'Незабудка'
         </Typography>
         <Box component="form" noValidate onSubmit={submitHandler} sx={{ mt: 3, display: "flex", flexDirection: "column", alignItems: "center", }} width="70%">
           <TextField

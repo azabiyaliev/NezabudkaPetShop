@@ -195,7 +195,7 @@ const ExistsUser = () => {
               >
                 <SettingsSuggestOutlinedIcon style={{ color: "#45624E" }} />
                 <ListItemText
-                  primary="Редактирование сайта"
+                  primary="Редактирование инофрмации о магаизине 'Незабудка'"
                   className="text-black"
                 />
               </ListItem>

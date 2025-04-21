@@ -9,6 +9,7 @@ import { fetchCompanyPage, updateCompanyPage } from '../../../store/companyPage/
 import { toast } from 'react-toastify';
 import { enqueueSnackbar } from 'notistack';
 import { Box } from '@mui/joy';
+import AdminBar from '../../../features/Admin/AdminProfile/AdminBar.tsx';
 
 const initialState = {
   text: ""
@@ -53,18 +54,24 @@ const CompanyPageFrom = () => {
     }
   };
 
-    return (
-      <div>
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            mt: 4,
-          }}
-        >
-          <Typography variant="h5" sx={{ mb: 3 }}>
-            Редактировать страницу "О компании"
+  return (
+    <div className="d-flex ">
+      <div className="col-3 mt-5 ">
+        <AdminBar />
+      </div>
+      <div className="col-9 mt-5" style={{ display: 'flex', justifyContent: 'center' }}>
+        <Box sx={{ width: '100%', maxWidth: '800px' }}>
+          <Typography
+            variant="h4"
+            sx={{
+              textAlign: "center",
+              mt: 4,
+              mb: 3,
+              fontWeight: "bold",
+              color: "black",
+            }}
+          >
+            Редактирование страницы «О компании»
           </Typography>
 
           <Box
@@ -72,12 +79,19 @@ const CompanyPageFrom = () => {
             noValidate
             onSubmit={submitHandler}
             sx={{
-              width: '800px',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
+              width: '100%',
             }}
           >
+            <Typography
+              variant="subtitle1"
+              sx={{ mb: 1, alignSelf: 'flex-start', fontWeight: 500, ml:3}}
+            >
+              Введите информацию о компании:
+            </Typography>
+
             <TextEditor
               value={form.text}
               onChange={onChangeEditor}
@@ -94,6 +108,8 @@ const CompanyPageFrom = () => {
           </Box>
         </Box>
       </div>
+
+    </div>
   );
 };
 
