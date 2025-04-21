@@ -131,6 +131,7 @@ export interface ICategories {
   subcategories?: Subcategory[];
   parent: { id:number, title: string };
   icon?: File | null;
+  image?: File | null;
 }
 
 export interface CategoryMutation {
@@ -144,6 +145,7 @@ export interface Subcategory {
   parentId: string | number | null;
   subcategories?: Subcategory[];
   icon?: File | null;
+  image?: File | null;
 }
 
 export interface ProductRequest {

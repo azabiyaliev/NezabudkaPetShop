@@ -95,6 +95,7 @@ model Category {
   subcategories Category[] @relation("CategorySubcategories")
   products      Products[]
   icon          String?
+  image         String?
 
   @@map("categories")
 }

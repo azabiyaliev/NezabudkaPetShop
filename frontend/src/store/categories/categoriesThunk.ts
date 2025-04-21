@@ -43,7 +43,31 @@ export const addIconToCategoryThunk = createAsyncThunk<
   }
 );
 
+export const addImageToCategoryThunk = createAsyncThunk<
+  { image: string },
+  { id: number; imageFile: File; },
+  { rejectValue: GlobalError }
+>(
+  "category/addImageToCategoryThunk",
+  async ({ id, imageFile }, { rejectWithValue }) => {
+    const formData = new FormData();
+    formData.append("image", imageFile);
 
+    try {
+      const response = await axiosApi.patch(
+        `/category/${id}/image`,
+        formData,
+      );
+
+      return response.data;
+    } catch (error) {
+      if (isAxiosError(error) && error.response) {
+        return rejectWithValue(error.response.data);
+      }
+      throw error;
+    }
+  }
+);
 
 export const addNewCategory = createAsyncThunk<
   void,
