@@ -300,7 +300,7 @@ export class SeedService {
       this.prisma.brand.create({
         data: {
           title: 'Cosma',
-          logo: '/fixtures/Brands/Cosma.webp',
+          logo: '/fixtures/Brands/Cosma.png',
           description:
             'Каждый ответственный владелец кошки ценит качественное питание в миске своего питомца. Корм для кошек Cosma — это вкусный премиальный рацион, приготовленный из 100% натуральных ингредиентов с высоким содержанием чистого мяса или рыбы. Он не содержит консервантов, искусственных красителей или усилителей вкуса. Корм Cosma предлагает наилучшую питательную ценность и разработан для самых взыскательных домашних кошек и их утончённых вкусов. Cosma — это именно то, что ваша кошка заслуживает каждый день: чистое мясо и настоящая забота!',
         },
@@ -421,10 +421,14 @@ export class SeedService {
     const category = await Promise.all([
       this.prisma.category.create({ data: { title: 'Собаки' } }),
       this.prisma.category.create({ data: { title: 'Кошки' } }),
+      this.prisma.category.create({ data: { title: 'Грызуны' } }),
+      this.prisma.category.create({ data: { title: 'Птицы' } }),
+      this.prisma.category.create({ data: { title: 'Рыбки' } }),
+      this.prisma.category.create({ data: { title: 'Рептилии' } }),
       this.prisma.category.create({ data: { title: 'Другие питомцы' } }),
     ]);
 
-    const [dogs, cats, others] = category;
+    const [dogs, cats, rodents, birds, fishes, reptiles, others] = category;
 
     const subCategory = await Promise.all([
       this.prisma.category.create({

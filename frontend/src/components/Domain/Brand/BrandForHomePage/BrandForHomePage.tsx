@@ -16,26 +16,29 @@ interface Props {
 const BrandForHomePage:React.FC<Props> = ({brands}) => {
   const navigate = useNavigate();
   return (
-    <Box sx={{
-      width: "100%",
-      maxWidth: "1200px",
-      margin: "0 auto",
-      padding: "20px 0",
-      "& .swiper-pagination-bullet": {
-        backgroundColor: '#888',
-        width: '10px',
-        height: '10px',
-      },
-      "& .swiper-pagination-bullet-active": {
-        backgroundColor: '#237803',
-      },
-      "& .swiper-pagination": {
-        marginTop: '20px',
-      },
-      "& .swiper-button-next, & .swiper-button-prev": {
-        display: 'none',
-      },
-    }}>
+    <Box
+      sx={{
+        width: "100%",
+        maxWidth: "1200px",
+        margin: "0 auto",
+        padding: "20px 0",
+        "& .swiper-pagination-bullet": {
+          backgroundColor: '#888',
+          width: '10px',
+          height: '10px',
+        },
+        "& .swiper-pagination-bullet-active": {
+          backgroundColor: '#237803',
+        },
+        "& .swiper-pagination": {
+          marginTop: '20px',
+          textAlign: 'center',
+        },
+        "& .swiper-button-next, & .swiper-button-prev": {
+          display: 'none',
+        },
+      }}
+    >
       <Swiper
         modules={[Navigation, Pagination, Autoplay]}
         spaceBetween={10}
@@ -52,22 +55,22 @@ const BrandForHomePage:React.FC<Props> = ({brands}) => {
         navigation
         pagination={{
           clickable: true,
+          dynamicBullets: true,
         }}
         autoplay={{ delay: 3000 }}
-        style={{
-          paddingBottom: "40px",
-        }}
+        style={{ paddingBottom: "40px" }}
       >
         {brands.map((brand, index) => (
           <SwiperSlide
             onClick={() => navigate(`/brand/${brand.id}`)}
             key={index}
             style={{
-            textAlign: 'center',
-            cursor: 'pointer',
-            display: brand.logo ? 'block' : 'none',
-          }}>
-            {brand.logo !== null && (
+              textAlign: 'center',
+              cursor: 'pointer',
+              display: brand.logo ? 'block' : 'none',
+            }}
+          >
+            {brand.logo && (
               <img
                 src={`${apiUrl + brand.logo}`}
                 alt={brand.title}
