@@ -173,8 +173,6 @@ const ManageCategories = () => {
     await dispatch(fetchCategoriesThunk());
   };
 
-  console.log(categories)
-
   return (
     <>
       <Box sx={{ display: "flex", flexDirection: "column" }}>
