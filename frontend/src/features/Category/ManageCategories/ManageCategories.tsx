@@ -19,7 +19,6 @@ import { toast } from 'react-toastify';
 import AddIcon from '@mui/icons-material/Add';
 import Tooltip from '@mui/material/Tooltip';
 import EditCategory from '../../../components/Forms/CategoryForm/EditCategory.tsx';
-import EditSubcategory from '../../../components/Forms/CategoryForm/EditSubcategory.tsx';
 import SubcategoryForm from '../../../components/Forms/SubcategoryForm/SubcategoryForm.tsx';
 import ArrowDropDownOutlinedIcon from '@mui/icons-material/ArrowDropDownOutlined';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -39,7 +38,7 @@ const ManageCategories = () => {
   const user = useAppSelector(selectUser);
 
   const [open, setOpen] = useState(false);
-  const [openSubModal, setOpenSubModal] = useState(false);
+  // const [openSubModal, setOpenSubModal] = useState(false);
   const [openAddSubModal, setOpenAddSubModal] = useState(false);
 
   const [parentCategoryId, setParentCategoryId] = useState<number | null>(null);
@@ -48,11 +47,6 @@ const ManageCategories = () => {
   const [selectedCategory, setSelectedCategory] = useState<{
     id: number;
     title: string;
-  } | null>(null);
-  const [selectedSubCategory, setSelectedSubCategory] = useState<{
-    id: number;
-    title: string;
-    parentId: number;
   } | null>(null);
 
 
@@ -72,13 +66,6 @@ const ManageCategories = () => {
     setOpen(false);
     setSelectedCategory(null);
   };
-
-  const handleSubEditClose = () => {
-    setOpenSubModal(false);
-    setSelectedSubCategory(null);
-    dispatch(fetchCategoriesThunk());
-  };
-
 
   const onDelete = async (id: string) => {
     try {
@@ -298,22 +285,6 @@ const ManageCategories = () => {
         >
           <Box sx={{ bgcolor: "white", p: 4, borderRadius: 2 }}>
             {selectedCategory && <EditCategory category={selectedCategory} onClose={handleClose} subcategoryId={selectedCategory?.id}/>}
-          </Box>
-        </Modal>
-
-        <Modal
-          open={openSubModal}
-          onClose={handleSubEditClose}
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Box sx={{ bgcolor: "white", p: 4, borderRadius: 2 }}>
-            {selectedSubCategory && (
-              <EditSubcategory subcategory={selectedSubCategory} onClose={handleSubEditClose}/>
-            )}
           </Box>
         </Modal>
 
