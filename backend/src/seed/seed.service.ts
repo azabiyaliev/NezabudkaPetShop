@@ -421,10 +421,14 @@ export class SeedService {
     const category = await Promise.all([
       this.prisma.category.create({ data: { title: 'Собаки' } }),
       this.prisma.category.create({ data: { title: 'Кошки' } }),
+      this.prisma.category.create({ data: { title: 'Грызуны' } }),
+      this.prisma.category.create({ data: { title: 'Птицы' } }),
+      this.prisma.category.create({ data: { title: 'Рыбки' } }),
+      this.prisma.category.create({ data: { title: 'Рептилии' } }),
       this.prisma.category.create({ data: { title: 'Другие питомцы' } }),
     ]);
 
-    const [dogs, cats, others] = category;
+    const [dogs, cats, rodents, birds, fishes, reptiles, others] = category;
 
     const subCategory = await Promise.all([
       this.prisma.category.create({
