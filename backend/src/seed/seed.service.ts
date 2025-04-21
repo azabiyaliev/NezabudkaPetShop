@@ -13,7 +13,9 @@ export class SeedService {
     await this.prisma.favorite.deleteMany({});
     await this.prisma.passwordReset.deleteMany();
     await this.prisma.user.deleteMany({});
+    await this.prisma.order.deleteMany({});
     await this.prisma.orderItem.deleteMany({});
+    await this.prisma.statistic.deleteMany({});
     await this.prisma.products.deleteMany({});
     await this.prisma.siteEdition.deleteMany({});
     await this.prisma.photoByCarousel.deleteMany({});
@@ -893,6 +895,894 @@ export class SeedService {
         },
       ],
     });
+
+    await Promise.all([
+      this.prisma.order.create({
+        data: {
+          userId: miranaClient.id,
+          status: 'Confirmed',
+          address: 'г. Бишкек, ул. Ленина 123',
+          guestPhone: miranaClient.phone,
+          guestEmail: miranaClient.email,
+          guestName: miranaClient.firstName,
+          guestLastName: miranaClient.secondName,
+          paymentMethod: 'ByCard',
+          deliveryMethod: 'Delivery',
+          orderComment: 'Позвонить перед доставкой',
+          useBonus: true,
+          bonusUsed: 100,
+          items: {
+            create: [
+              {
+                quantity: 2,
+                orderAmount: 2400,
+                productId: 1,
+              },
+              {
+                quantity: 1,
+                orderAmount: 2500,
+                productId: 2,
+              },
+            ],
+          },
+        },
+      }),
+
+      this.prisma.order.create({
+        data: {
+          userId: ilonClient.id,
+          status: 'Pending',
+          address: 'г. Ош, ул. Гагарина 99',
+          guestPhone: ilonClient.phone,
+          guestEmail: ilonClient.email,
+          guestName: ilonClient.firstName,
+          guestLastName: ilonClient.secondName,
+          paymentMethod: 'ByCash',
+          deliveryMethod: 'PickUp',
+          items: {
+            create: [
+              {
+                quantity: 3,
+                orderAmount: 1500,
+                productId: 3,
+              },
+            ],
+          },
+        },
+      }),
+
+      this.prisma.order.create({
+        data: {
+          userId: michaelClient.id,
+          status: 'Delivered',
+          address: 'г. Кара-Балта, ул. Муратова 17',
+          guestPhone: michaelClient.phone,
+          guestEmail: michaelClient.email,
+          guestName: michaelClient.firstName,
+          guestLastName: michaelClient.secondName,
+          paymentMethod: 'ByCard',
+          deliveryMethod: 'Delivery',
+          orderComment: 'Пожалуйста, не забудьте пакет.',
+          items: {
+            create: [
+              {
+                quantity: 1,
+                orderAmount: 4500,
+                productId: 4,
+              },
+            ],
+          },
+        },
+      }),
+
+      this.prisma.order.create({
+        data: {
+          userId: cristianoClient.id,
+          status: 'Shipped',
+          address: 'г. Бишкек, ул. Футбольная 7',
+          guestPhone: cristianoClient.phone,
+          guestEmail: cristianoClient.email,
+          guestName: cristianoClient.firstName,
+          guestLastName: cristianoClient.secondName,
+          paymentMethod: 'ByCash',
+          deliveryMethod: 'Delivery',
+          useBonus: true,
+          bonusUsed: 50,
+          items: {
+            create: [
+              {
+                quantity: 1,
+                orderAmount: 500,
+                productId: 5,
+              },
+              {
+                quantity: 2,
+                orderAmount: 1000,
+                productId: 6,
+              },
+            ],
+          },
+        },
+      }),
+
+      this.prisma.order.create({
+        data: {
+          userId: miranaClient.id,
+          status: 'Confirmed',
+          address: 'г. Бишкек, ул. Ленина 123',
+          guestPhone: miranaClient.phone,
+          guestEmail: miranaClient.email,
+          guestName: miranaClient.firstName,
+          guestLastName: miranaClient.secondName,
+          paymentMethod: 'ByCard',
+          deliveryMethod: 'Delivery',
+          orderComment: 'Позвонить перед доставкой',
+          useBonus: true,
+          bonusUsed: 100,
+          items: {
+            create: [
+              {
+                quantity: 2,
+                orderAmount: 2400,
+                productId: 1,
+              },
+              {
+                quantity: 1,
+                orderAmount: 2500,
+                productId: 2,
+              },
+            ],
+          },
+        },
+      }),
+
+      this.prisma.order.create({
+        data: {
+          userId: ilonClient.id,
+          status: 'Pending',
+          address: 'г. Ош, ул. Гагарина 99',
+          guestPhone: ilonClient.phone,
+          guestEmail: ilonClient.email,
+          guestName: ilonClient.firstName,
+          guestLastName: ilonClient.secondName,
+          paymentMethod: 'ByCash',
+          deliveryMethod: 'PickUp',
+          items: {
+            create: [
+              {
+                quantity: 3,
+                orderAmount: 1500,
+                productId: 3,
+              },
+            ],
+          },
+        },
+      }),
+
+      this.prisma.order.create({
+        data: {
+          userId: michaelClient.id,
+          status: 'Delivered',
+          address: 'г. Кара-Балта, ул. Муратова 17',
+          guestPhone: michaelClient.phone,
+          guestEmail: michaelClient.email,
+          guestName: michaelClient.firstName,
+          guestLastName: michaelClient.secondName,
+          paymentMethod: 'ByCard',
+          deliveryMethod: 'Delivery',
+          orderComment: 'Пожалуйста, не забудьте пакет.',
+          items: {
+            create: [
+              {
+                quantity: 1,
+                orderAmount: 4500,
+                productId: 4,
+              },
+            ],
+          },
+        },
+      }),
+
+      // Заказ от cristianoClient
+      this.prisma.order.create({
+        data: {
+          userId: cristianoClient.id,
+          status: 'Shipped',
+          address: 'г. Бишкек, ул. Футбольная 7',
+          guestPhone: cristianoClient.phone,
+          guestEmail: cristianoClient.email,
+          guestName: cristianoClient.firstName,
+          guestLastName: cristianoClient.secondName,
+          paymentMethod: 'ByCash',
+          deliveryMethod: 'Delivery',
+          useBonus: true,
+          bonusUsed: 50,
+          items: {
+            create: [
+              {
+                quantity: 1,
+                orderAmount: 500,
+                productId: 5,
+              },
+              {
+                quantity: 2,
+                orderAmount: 1000,
+                productId: 6,
+              },
+            ],
+          },
+        },
+      }),
+
+      this.prisma.order.create({
+        data: {
+          userId: miranaClient.id,
+          status: 'Confirmed',
+          address: 'г. Бишкек, ул. Ленина 123',
+          guestPhone: miranaClient.phone,
+          guestEmail: miranaClient.email,
+          guestName: miranaClient.firstName,
+          guestLastName: miranaClient.secondName,
+          paymentMethod: 'ByCard',
+          deliveryMethod: 'Delivery',
+          orderComment: 'Позвонить перед доставкой',
+          useBonus: true,
+          bonusUsed: 100,
+          items: {
+            create: [
+              {
+                quantity: 2,
+                orderAmount: 2400,
+                productId: 1,
+              },
+              {
+                quantity: 1,
+                orderAmount: 2500,
+                productId: 2,
+              },
+            ],
+          },
+        },
+      }),
+
+      this.prisma.order.create({
+        data: {
+          userId: ilonClient.id,
+          status: 'Pending',
+          address: 'г. Ош, ул. Гагарина 99',
+          guestPhone: ilonClient.phone,
+          guestEmail: ilonClient.email,
+          guestName: ilonClient.firstName,
+          guestLastName: ilonClient.secondName,
+          paymentMethod: 'ByCash',
+          deliveryMethod: 'PickUp',
+          items: {
+            create: [
+              {
+                quantity: 3,
+                orderAmount: 1500,
+                productId: 3,
+              },
+            ],
+          },
+        },
+      }),
+
+      this.prisma.order.create({
+        data: {
+          userId: michaelClient.id,
+          status: 'Delivered',
+          address: 'г. Кара-Балта, ул. Муратова 17',
+          guestPhone: michaelClient.phone,
+          guestEmail: michaelClient.email,
+          guestName: michaelClient.firstName,
+          guestLastName: michaelClient.secondName,
+          paymentMethod: 'ByCard',
+          deliveryMethod: 'Delivery',
+          orderComment: 'Пожалуйста, не забудьте пакет.',
+          items: {
+            create: [
+              {
+                quantity: 1,
+                orderAmount: 4500,
+                productId: 4,
+              },
+            ],
+          },
+        },
+      }),
+
+      // Заказ от cristianoClient
+      this.prisma.order.create({
+        data: {
+          userId: cristianoClient.id,
+          status: 'Shipped',
+          address: 'г. Бишкек, ул. Футбольная 7',
+          guestPhone: cristianoClient.phone,
+          guestEmail: cristianoClient.email,
+          guestName: cristianoClient.firstName,
+          guestLastName: cristianoClient.secondName,
+          paymentMethod: 'ByCash',
+          deliveryMethod: 'Delivery',
+          useBonus: true,
+          bonusUsed: 50,
+          items: {
+            create: [
+              {
+                quantity: 1,
+                orderAmount: 500,
+                productId: 5,
+              },
+              {
+                quantity: 2,
+                orderAmount: 1000,
+                productId: 6,
+              },
+            ],
+          },
+        },
+      }),
+
+      this.prisma.order.create({
+        data: {
+          userId: miranaClient.id,
+          status: 'Confirmed',
+          address: 'г. Бишкек, ул. Ленина 123',
+          guestPhone: miranaClient.phone,
+          guestEmail: miranaClient.email,
+          guestName: miranaClient.firstName,
+          guestLastName: miranaClient.secondName,
+          paymentMethod: 'ByCard',
+          deliveryMethod: 'Delivery',
+          orderComment: 'Позвонить перед доставкой',
+          useBonus: true,
+          bonusUsed: 100,
+          items: {
+            create: [
+              {
+                quantity: 2,
+                orderAmount: 2400,
+                productId: 1,
+              },
+              {
+                quantity: 1,
+                orderAmount: 2500,
+                productId: 2,
+              },
+            ],
+          },
+        },
+      }),
+
+      this.prisma.order.create({
+        data: {
+          userId: ilonClient.id,
+          status: 'Pending',
+          address: 'г. Ош, ул. Гагарина 99',
+          guestPhone: ilonClient.phone,
+          guestEmail: ilonClient.email,
+          guestName: ilonClient.firstName,
+          guestLastName: ilonClient.secondName,
+          paymentMethod: 'ByCash',
+          deliveryMethod: 'PickUp',
+          items: {
+            create: [
+              {
+                quantity: 3,
+                orderAmount: 1500,
+                productId: 3,
+              },
+            ],
+          },
+        },
+      }),
+
+      this.prisma.order.create({
+        data: {
+          userId: michaelClient.id,
+          status: 'Delivered',
+          address: 'г. Кара-Балта, ул. Муратова 17',
+          guestPhone: michaelClient.phone,
+          guestEmail: michaelClient.email,
+          guestName: michaelClient.firstName,
+          guestLastName: michaelClient.secondName,
+          paymentMethod: 'ByCard',
+          deliveryMethod: 'Delivery',
+          orderComment: 'Пожалуйста, не забудьте пакет.',
+          items: {
+            create: [
+              {
+                quantity: 1,
+                orderAmount: 4500,
+                productId: 4,
+              },
+            ],
+          },
+        },
+      }),
+
+      // Заказ от cristianoClient
+      this.prisma.order.create({
+        data: {
+          userId: cristianoClient.id,
+          status: 'Shipped',
+          address: 'г. Бишкек, ул. Футбольная 7',
+          guestPhone: cristianoClient.phone,
+          guestEmail: cristianoClient.email,
+          guestName: cristianoClient.firstName,
+          guestLastName: cristianoClient.secondName,
+          paymentMethod: 'ByCash',
+          deliveryMethod: 'Delivery',
+          useBonus: true,
+          bonusUsed: 50,
+          items: {
+            create: [
+              {
+                quantity: 1,
+                orderAmount: 500,
+                productId: 5,
+              },
+              {
+                quantity: 2,
+                orderAmount: 1000,
+                productId: 6,
+              },
+            ],
+          },
+        },
+      }),
+
+      this.prisma.order.create({
+        data: {
+          userId: miranaClient.id,
+          status: 'Confirmed',
+          address: 'г. Бишкек, ул. Ленина 123',
+          guestPhone: miranaClient.phone,
+          guestEmail: miranaClient.email,
+          guestName: miranaClient.firstName,
+          guestLastName: miranaClient.secondName,
+          paymentMethod: 'ByCard',
+          deliveryMethod: 'Delivery',
+          orderComment: 'Позвонить перед доставкой',
+          useBonus: true,
+          bonusUsed: 100,
+          items: {
+            create: [
+              {
+                quantity: 2,
+                orderAmount: 2400,
+                productId: 1,
+              },
+              {
+                quantity: 1,
+                orderAmount: 2500,
+                productId: 2,
+              },
+            ],
+          },
+        },
+      }),
+
+      this.prisma.order.create({
+        data: {
+          userId: ilonClient.id,
+          status: 'Pending',
+          address: 'г. Ош, ул. Гагарина 99',
+          guestPhone: ilonClient.phone,
+          guestEmail: ilonClient.email,
+          guestName: ilonClient.firstName,
+          guestLastName: ilonClient.secondName,
+          paymentMethod: 'ByCash',
+          deliveryMethod: 'PickUp',
+          items: {
+            create: [
+              {
+                quantity: 3,
+                orderAmount: 1500,
+                productId: 3,
+              },
+            ],
+          },
+        },
+      }),
+
+      this.prisma.order.create({
+        data: {
+          userId: michaelClient.id,
+          status: 'Delivered',
+          address: 'г. Кара-Балта, ул. Муратова 17',
+          guestPhone: michaelClient.phone,
+          guestEmail: michaelClient.email,
+          guestName: michaelClient.firstName,
+          guestLastName: michaelClient.secondName,
+          paymentMethod: 'ByCard',
+          deliveryMethod: 'Delivery',
+          orderComment: 'Пожалуйста, не забудьте пакет.',
+          items: {
+            create: [
+              {
+                quantity: 1,
+                orderAmount: 4500,
+                productId: 4,
+              },
+            ],
+          },
+        },
+      }),
+
+      // Заказ от cristianoClient
+      this.prisma.order.create({
+        data: {
+          userId: cristianoClient.id,
+          status: 'Shipped',
+          address: 'г. Бишкек, ул. Футбольная 7',
+          guestPhone: cristianoClient.phone,
+          guestEmail: cristianoClient.email,
+          guestName: cristianoClient.firstName,
+          guestLastName: cristianoClient.secondName,
+          paymentMethod: 'ByCash',
+          deliveryMethod: 'Delivery',
+          useBonus: true,
+          bonusUsed: 50,
+          items: {
+            create: [
+              {
+                quantity: 1,
+                orderAmount: 500,
+                productId: 5,
+              },
+              {
+                quantity: 2,
+                orderAmount: 1000,
+                productId: 6,
+              },
+            ],
+          },
+        },
+      }),
+
+      this.prisma.order.create({
+        data: {
+          userId: miranaClient.id,
+          status: 'Confirmed',
+          address: 'г. Бишкек, ул. Ленина 123',
+          guestPhone: miranaClient.phone,
+          guestEmail: miranaClient.email,
+          guestName: miranaClient.firstName,
+          guestLastName: miranaClient.secondName,
+          paymentMethod: 'ByCard',
+          deliveryMethod: 'Delivery',
+          orderComment: 'Позвонить перед доставкой',
+          useBonus: true,
+          bonusUsed: 100,
+          items: {
+            create: [
+              {
+                quantity: 2,
+                orderAmount: 2400,
+                productId: 1,
+              },
+              {
+                quantity: 1,
+                orderAmount: 2500,
+                productId: 2,
+              },
+            ],
+          },
+        },
+      }),
+
+      this.prisma.order.create({
+        data: {
+          userId: ilonClient.id,
+          status: 'Pending',
+          address: 'г. Ош, ул. Гагарина 99',
+          guestPhone: ilonClient.phone,
+          guestEmail: ilonClient.email,
+          guestName: ilonClient.firstName,
+          guestLastName: ilonClient.secondName,
+          paymentMethod: 'ByCash',
+          deliveryMethod: 'PickUp',
+          items: {
+            create: [
+              {
+                quantity: 3,
+                orderAmount: 1500,
+                productId: 3,
+              },
+            ],
+          },
+        },
+      }),
+
+      this.prisma.order.create({
+        data: {
+          userId: michaelClient.id,
+          status: 'Delivered',
+          address: 'г. Кара-Балта, ул. Муратова 17',
+          guestPhone: michaelClient.phone,
+          guestEmail: michaelClient.email,
+          guestName: michaelClient.firstName,
+          guestLastName: michaelClient.secondName,
+          paymentMethod: 'ByCard',
+          deliveryMethod: 'Delivery',
+          orderComment: 'Пожалуйста, не забудьте пакет.',
+          items: {
+            create: [
+              {
+                quantity: 1,
+                orderAmount: 4500,
+                productId: 4,
+              },
+            ],
+          },
+        },
+      }),
+
+      // Заказ от cristianoClient
+      this.prisma.order.create({
+        data: {
+          userId: cristianoClient.id,
+          status: 'Shipped',
+          address: 'г. Бишкек, ул. Футбольная 7',
+          guestPhone: cristianoClient.phone,
+          guestEmail: cristianoClient.email,
+          guestName: cristianoClient.firstName,
+          guestLastName: cristianoClient.secondName,
+          paymentMethod: 'ByCash',
+          deliveryMethod: 'Delivery',
+          useBonus: true,
+          bonusUsed: 50,
+          items: {
+            create: [
+              {
+                quantity: 1,
+                orderAmount: 500,
+                productId: 5,
+              },
+              {
+                quantity: 2,
+                orderAmount: 1000,
+                productId: 6,
+              },
+            ],
+          },
+        },
+      }),
+
+      this.prisma.order.create({
+        data: {
+          userId: miranaClient.id,
+          status: 'Confirmed',
+          address: 'г. Бишкек, ул. Ленина 123',
+          guestPhone: miranaClient.phone,
+          guestEmail: miranaClient.email,
+          guestName: miranaClient.firstName,
+          guestLastName: miranaClient.secondName,
+          paymentMethod: 'ByCard',
+          deliveryMethod: 'Delivery',
+          orderComment: 'Позвонить перед доставкой',
+          useBonus: true,
+          bonusUsed: 100,
+          items: {
+            create: [
+              {
+                quantity: 2,
+                orderAmount: 2400,
+                productId: 1,
+              },
+              {
+                quantity: 1,
+                orderAmount: 2500,
+                productId: 2,
+              },
+            ],
+          },
+        },
+      }),
+
+      this.prisma.order.create({
+        data: {
+          userId: ilonClient.id,
+          status: 'Pending',
+          address: 'г. Ош, ул. Гагарина 99',
+          guestPhone: ilonClient.phone,
+          guestEmail: ilonClient.email,
+          guestName: ilonClient.firstName,
+          guestLastName: ilonClient.secondName,
+          paymentMethod: 'ByCash',
+          deliveryMethod: 'PickUp',
+          items: {
+            create: [
+              {
+                quantity: 3,
+                orderAmount: 1500,
+                productId: 3,
+              },
+            ],
+          },
+        },
+      }),
+
+      this.prisma.order.create({
+        data: {
+          userId: michaelClient.id,
+          status: 'Delivered',
+          address: 'г. Кара-Балта, ул. Муратова 17',
+          guestPhone: michaelClient.phone,
+          guestEmail: michaelClient.email,
+          guestName: michaelClient.firstName,
+          guestLastName: michaelClient.secondName,
+          paymentMethod: 'ByCard',
+          deliveryMethod: 'Delivery',
+          orderComment: 'Пожалуйста, не забудьте пакет.',
+          items: {
+            create: [
+              {
+                quantity: 1,
+                orderAmount: 4500,
+                productId: 4,
+              },
+            ],
+          },
+        },
+      }),
+
+      // Заказ от cristianoClient
+      this.prisma.order.create({
+        data: {
+          userId: cristianoClient.id,
+          status: 'Shipped',
+          address: 'г. Бишкек, ул. Футбольная 7',
+          guestPhone: cristianoClient.phone,
+          guestEmail: cristianoClient.email,
+          guestName: cristianoClient.firstName,
+          guestLastName: cristianoClient.secondName,
+          paymentMethod: 'ByCash',
+          deliveryMethod: 'Delivery',
+          useBonus: true,
+          bonusUsed: 50,
+          items: {
+            create: [
+              {
+                quantity: 1,
+                orderAmount: 500,
+                productId: 5,
+              },
+              {
+                quantity: 2,
+                orderAmount: 1000,
+                productId: 6,
+              },
+            ],
+          },
+        },
+      }),
+
+      this.prisma.order.create({
+        data: {
+          userId: miranaClient.id,
+          status: 'Confirmed',
+          address: 'г. Бишкек, ул. Ленина 123',
+          guestPhone: miranaClient.phone,
+          guestEmail: miranaClient.email,
+          guestName: miranaClient.firstName,
+          guestLastName: miranaClient.secondName,
+          paymentMethod: 'ByCard',
+          deliveryMethod: 'Delivery',
+          orderComment: 'Позвонить перед доставкой',
+          useBonus: true,
+          bonusUsed: 100,
+          items: {
+            create: [
+              {
+                quantity: 2,
+                orderAmount: 2400,
+                productId: 1,
+              },
+              {
+                quantity: 1,
+                orderAmount: 2500,
+                productId: 2,
+              },
+            ],
+          },
+        },
+      }),
+
+      this.prisma.order.create({
+        data: {
+          userId: ilonClient.id,
+          status: 'Pending',
+          address: 'г. Ош, ул. Гагарина 99',
+          guestPhone: ilonClient.phone,
+          guestEmail: ilonClient.email,
+          guestName: ilonClient.firstName,
+          guestLastName: ilonClient.secondName,
+          paymentMethod: 'ByCash',
+          deliveryMethod: 'PickUp',
+          items: {
+            create: [
+              {
+                quantity: 3,
+                orderAmount: 1500,
+                productId: 3,
+              },
+            ],
+          },
+        },
+      }),
+
+      this.prisma.order.create({
+        data: {
+          userId: michaelClient.id,
+          status: 'Delivered',
+          address: 'г. Кара-Балта, ул. Муратова 17',
+          guestPhone: michaelClient.phone,
+          guestEmail: michaelClient.email,
+          guestName: michaelClient.firstName,
+          guestLastName: michaelClient.secondName,
+          paymentMethod: 'ByCard',
+          deliveryMethod: 'Delivery',
+          orderComment: 'Пожалуйста, не забудьте пакет.',
+          items: {
+            create: [
+              {
+                quantity: 1,
+                orderAmount: 4500,
+                productId: 4,
+              },
+            ],
+          },
+        },
+      }),
+
+      // Заказ от cristianoClient
+      this.prisma.order.create({
+        data: {
+          userId: cristianoClient.id,
+          status: 'Shipped',
+          address: 'г. Бишкек, ул. Футбольная 7',
+          guestPhone: cristianoClient.phone,
+          guestEmail: cristianoClient.email,
+          guestName: cristianoClient.firstName,
+          guestLastName: cristianoClient.secondName,
+          paymentMethod: 'ByCash',
+          deliveryMethod: 'Delivery',
+          useBonus: true,
+          bonusUsed: 50,
+          items: {
+            create: [
+              {
+                quantity: 1,
+                orderAmount: 500,
+                productId: 5,
+              },
+              {
+                quantity: 2,
+                orderAmount: 1000,
+                productId: 6,
+              },
+            ],
+          },
+        },
+      }),
+    ]);
+
+    await Promise.all([
+      this.prisma.statistic.create({
+        data: {
+          date: new Date(),
+          pickUpStatistic: 423,
+          deliveryStatistic: 324,
+          paymentByCard: 4563,
+          paymentByCash: 7566,
+          bonusUsage: 1232,
+          canceledOrderCount: 422,
+          totalOrders: 131414,
+        },
+      }),
+    ]);
 
     await this.prisma.companyPages.createMany({
       data: {
