@@ -431,6 +431,7 @@ export class SeedService {
     const [dogs, cats, rodents, birds, fishes, reptiles, others] = category;
 
     const subCategory = await Promise.all([
+        //собаки
       this.prisma.category.create({
         data: {
           title: 'Сухой корм',
@@ -447,6 +448,42 @@ export class SeedService {
       }),
       this.prisma.category.create({
         data: {
+          title: 'Шампуни и гели',
+          parentId: dogs.id,
+          icon: '/fixtures/categoryIcons/5icon.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Одежда для собак',
+          parentId: dogs.id,
+          icon: '/fixtures/categoryIcons/icon10.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Лежаки и подушки',
+          parentId: dogs.id,
+          icon: '/fixtures/categoryIcons/6icon.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Питание для щенков',
+          parentId: dogs.id,
+          icon: '/fixtures/categoryIcons/3icon.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Переноски',
+          parentId: dogs.id,
+          icon: '/fixtures/categoryIcons/6icon.png',
+        },
+      }),
+      //кошки
+      this.prisma.category.create({
+        data: {
           title: 'Сухие корма',
           parentId: cats.id,
           icon: '/fixtures/categoryIcons/3icon.png',
@@ -461,61 +498,244 @@ export class SeedService {
       }),
       this.prisma.category.create({
         data: {
-          title: 'Амуниция',
-          parentId: dogs.id,
+          title: 'Шампуни для кошек',
+          parentId: cats.id,
           icon: '/fixtures/categoryIcons/5icon.png',
         },
       }),
       this.prisma.category.create({
         data: {
-          title: 'Ветеринарная аптека',
+          title: 'Одежда для кошек',
           parentId: cats.id,
-          icon: '/fixtures/categoryIcons/2icon.png',
+          icon: '/fixtures/categoryIcons/icon10.png',
         },
       }),
       this.prisma.category.create({
         data: {
-          title: 'Витамины и добавки',
-          parentId: dogs.id,
-          icon: '/fixtures/categoryIcons/7icon.png',
+          title: 'Груминг и уход',
+          parentId: cats.id,
+          icon: '/fixtures/categoryIcons/5icon.png',
         },
       }),
       this.prisma.category.create({
         data: {
-          title: 'Домики и лежанки',
-          parentId: dogs.id,
+          title: 'Игрушки для кошек',
+          parentId: cats.id,
+          icon: '/fixtures/categoryIcons/9icon.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Когтеточки',
+          parentId: cats.id,
+          icon: '/fixtures/categoryIcons/yarn-ball.png',
+        },
+      }),
+      //другие
+      this.prisma.category.create({
+        data: {
+          title: 'Пищевые смеси',
+          parentId: others.id,
           icon: '/fixtures/categoryIcons/8icon.png',
         },
       }),
       this.prisma.category.create({
         data: {
-          title: 'Ошейники и шлейки',
-          parentId: cats.id,
-          icon: '/fixtures/categoryIcons/9icon.png',
-        },
-      }),
-      this.prisma.category.create({
-        data: {
-          title: 'Лакомства',
-          parentId: dogs.id,
-          icon: '/fixtures/categoryIcons/1icon.png',
-        },
-      }),
-      this.prisma.category.create({
-        data: {
-          title: 'Игрушки',
-          parentId: cats.id,
-          icon: '/fixtures/categoryIcons/9icon.png',
-        },
-      }),
-      this.prisma.category.create({
-        data: {
-          title: 'Сено',
+          title: 'Миски и поилки',
           parentId: others.id,
-          icon: '/fixtures/categoryIcons/1icon.png',
+          icon: '/fixtures/categoryIcons/dog-food.png',
         },
       }),
-    ]);
+      this.prisma.category.create({
+        data: {
+          title: 'Палочки и витаминные добавки',
+          parentId: others.id,
+          icon: '/fixtures/categoryIcons/8icon.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Гнезда и укрытия',
+          parentId: others.id,
+          icon: '/fixtures/categoryIcons/6icon.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Минеральные добавки ',
+          parentId: others.id,
+          icon: '/fixtures/categoryIcons/8icon.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Обогреватели для воды',
+          parentId: others.id,
+          icon: '/fixtures/categoryIcons/6icon.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Влажные и сухие смеси для кормления',
+          parentId: others.id,
+          icon: '/fixtures/categoryIcons/4icon.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Солевые растворы и добавки',
+          parentId: others.id,
+          icon: '/fixtures/categoryIcons/8icon.png',
+        },
+      }),
+      //рыбы
+      this.prisma.category.create({
+        data: {
+          title: 'Корма для рыб',
+          parentId: fishes.id,
+          icon: '/fixtures/categoryIcons/4icon.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Аквариумы и аксессуары',
+          parentId: fishes.id,
+          icon: '/fixtures/categoryIcons/fish-bowl.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Фильтры для аквариумов',
+          parentId: fishes.id,
+          icon: '/fixtures/categoryIcons/fish-bowl.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Освещение для аквариумов',
+          parentId: fishes.id,
+          icon: '/fixtures/categoryIcons/fish-bowl.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Декорации для аквариумов',
+          parentId: fishes.id,
+          icon: '/fixtures/categoryIcons/fish-bowl.png',
+        },
+      }),
+      //рептилии
+      this.prisma.category.create({
+        data: {
+          title: 'Корма для рептилий',
+          parentId: reptiles.id,
+          icon: '/fixtures/categoryIcons/4icon.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Террариумы',
+          parentId: reptiles.id,
+          icon: '/fixtures/categoryIcons/terrarium.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Обогреватели для террариумов',
+          parentId: reptiles.id,
+          icon: '/fixtures/categoryIcons/terrarium.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Декорации для террариумов',
+          parentId: reptiles.id,
+          icon: '/fixtures/categoryIcons/terrarium.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Термометры и гигрометры для террариумов',
+          parentId: reptiles.id,
+          icon: '/fixtures/categoryIcons/terrarium.png',
+        },
+      }),
+        // грызуны
+      this.prisma.category.create({
+        data: {
+          title: 'Корма для грызунов',
+          parentId: rodents.id,
+          icon: '/fixtures/categoryIcons/4icon.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Клетки для грызунов',
+          parentId: rodents.id,
+          icon: '/fixtures/categoryIcons/pet-cage.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Игрушки для грызунов',
+          parentId: rodents.id,
+          icon: '/fixtures/categoryIcons/9icon.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Наполнитель для клеток',
+          parentId: rodents.id,
+          icon: '/fixtures/categoryIcons/tray.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Лакомства для грызунов',
+          parentId: rodents.id,
+          icon: '/fixtures/categoryIcons/8icon.png',
+        },
+      }),
+        //птицы
+      this.prisma.category.create({
+        data: {
+          title: 'Корм для птиц',
+          parentId: birds.id,
+          icon: '/fixtures/categoryIcons/4icon.png',
+        },
+      }),
+     this.prisma.category.create({
+      data: {
+        title: 'Клетки и вольеры',
+        parentId: birds.id,
+        icon: '/fixtures/categoryIcons/pet-cage.png',
+      },
+    }),
+
+     this.prisma.category.create({
+      data: {
+        title: 'Игрушки для птиц',
+        parentId: birds.id,
+        icon: '/fixtures/categoryIcons/9icon.png',
+      },
+    }),
+
+     this.prisma.category.create({
+      data: {
+        title: 'Витамины и добавки',
+        parentId: birds.id,
+        icon: '/fixtures/categoryIcons/2icon.png',
+      },
+    }),
+
+     this.prisma.category.create({
+      data: {
+        title: 'Поилки и кормушки',
+        parentId: birds.id,
+        icon: '/fixtures/categoryIcons/pet-feeder.png',
+      },
+    }),
+  ]);
 
     const [
       dryDogFood,
