@@ -28,7 +28,7 @@ const CatygoryFooter = () => {
             }}
           >
             <NavLink
-              to={`/category/${cat.id}`}
+              to={`/all-products/${cat.id}`}
               style={{
                 color: "white",
                 textDecoration: "none",
