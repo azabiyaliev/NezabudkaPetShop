@@ -149,9 +149,6 @@ const OneProductCard: React.FC<Props> = ({ product }) => {
             )}
           </Button>
         </Typography>
-        <Typography variant="body2" color="textSecondary">
-          💎 {product.productPrice.toLocaleString()} бонусов
-        </Typography>
         <Button
           onClick={() => addProductToCart(product)}
           variant="contained"
