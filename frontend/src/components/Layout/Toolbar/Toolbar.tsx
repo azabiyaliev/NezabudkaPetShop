@@ -1,4 +1,4 @@
-import { Badge, Box, Button, Container, Toolbar, } from '@mui/material';
+import { Badge, Box, Button, Container, InputBase, Toolbar, } from '@mui/material';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector, usePermission } from '../../../app/hooks.ts';
 import ExistsUser from './ExistsUser.tsx';
@@ -25,6 +25,7 @@ import CategoryNavMenu from '../../Domain/CategoryNavMenu.tsx';
 import { cartFromSlice, getFromLocalStorage } from '../../../store/cart/cartSlice.ts';
 import { userRoleAdmin, userRoleSuperAdmin } from '../../../globalConstants.ts';
 import ReactHtmlParser from 'html-react-parser';
+import IconButton from '@mui/joy/IconButton';
 
 const MainToolbar = () => {
   const [openCart, setOpenCart] = useState<boolean>(false);
@@ -178,7 +179,7 @@ const MainToolbar = () => {
           backgroundPosition: "center",
         }}
       >
-        <Container style={{ padding: "0px" }}>
+        <Container maxWidth="xl" style={{ padding: "0px" }}>
           <Box
             sx={{
               position: "static",
@@ -261,103 +262,7 @@ const MainToolbar = () => {
                   </div>
                 </NavLink>
               </div>
-              <Box sx={{ position: 'relative', width: '100%', maxWidth: 400, "@media (max-width: 800px)": { display: "none" } }}>
-                <Box sx={{
-                  position: "relative",
-                  display: "flex",
-                  alignItems: "center",
-                  width: "100%",
-                  maxWidth: "400px",
-                }}>
-                  <input
-                    style={{
-                      width: "100%",
-                      padding: "12px 40px 12px 16px",
-                      fontSize: "16px",
-                      color: "#333",
-                      backgroundColor: "white",
-                      border: "2px solid rgb(195, 190, 182)",
-                      borderRadius: "30px",
-                      outline: "none",
-                      transition: "all 0.3s ease-in-out",
-                      boxShadow: "0 4px 10px rgba(91, 113, 51, 0.3)"
-                    }}
-                    placeholder="Поиск товара"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    onFocus={(e) => {
-                      e.target.style.borderColor = "#d4d9c5";
-                      e.target.style.boxShadow = "0 0 8px rgba(91, 113, 51, 0.5)";
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.borderColor = "#475726";
-                      e.target.style.boxShadow = "0 4px 10px rgba(91, 113, 51, 0.3)";
-                    }}
-                  />
-                  <button
-                    style={{
-                      position: "absolute",
-                      right: "10px",
-                      background: "transparent",
-                      border: "none",
-                      cursor: "pointer",
-                      color: "#8EA58C",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center"
-                    }}
-                  >
-                    <SearchIcon />
-                  </button>
-                </Box>
 
-                {search && (
-                  <Box
-                    sx={{
-                      position: "absolute",
-                      top: "100%",
-                      left: 0,
-                      width: "100%",
-                      maxHeight: 300,
-                      overflowY: "auto",
-                      backgroundColor: "white",
-                      boxShadow: 3,
-                      zIndex: 1000,
-                      marginTop: 1,
-                      borderRadius: 1,
-                    }}
-                  >
-                    {products.length > 0 ? (
-                      products.map((product) => (
-                        <NavLink
-                          className="text-decoration-none text-black"
-                          to={
-                            user &&
-                            (user.role === userRoleAdmin ||
-                              user.role === userRoleSuperAdmin)
-                              ? `/private/edit_product/${product.id}`
-                              : `/product/${product.id}`
-                          }
-                          onClick={() => setSearch("")}
-                        >
-                          <div
-                            key={product.id}
-                            style={{
-                              padding: "10px",
-                              borderBottom: "1px solid #ddd",
-                            }}
-                          >
-                            <h3>{product.productName}</h3>
-                            <p>{ReactHtmlParser(product.productDescription)}</p>
-                          </div>
-                        </NavLink>
-                      ))
-                    ) : (
-                      <div style={{ padding: "10px" }}>Товаров не найдено</div>
-                    )}
-                  </Box>
-                )}
-              </Box>
               {user && can(["admin", "superAdmin"]) && (
                 <Box
                   sx={{
@@ -412,7 +317,153 @@ const MainToolbar = () => {
                 </Box>
               )}
 
+              <Box sx={{display: "flex", alignItems: "center", gap: "27px"}}>
+                <NavLink
+                  to="/catalog"
+                  style={{
+                    fontSize: "20px",
+                    textDecoration: "none",
+                    color: "white",
+                    fontWeight: "bold",
+                  }}
+                >
+                  Каталог
+                </NavLink>
+                <NavLink
+                  to="/contacts"
+                  style={{
+                    fontSize: "20px",
+                    textDecoration: "none",
+                    color: "white",
+                    fontWeight: "bold",
+                  }}
+                >Контакты</NavLink>
+                <NavLink
+                  to="/delivery"
+                  style={{
+                    fontSize: "20px",
+                    textDecoration: "none",
+                    color: "white",
+                    fontWeight: "bold",
+                  }}
+                >Доставка и оплата</NavLink>
+              </Box>
+
               <Box sx={{display: "flex", alignItems: "center", gap: "10px"}}>
+                <Box sx={{ display: "flex", justifyContent: "flex-end",position: 'relative', width: '100%', maxWidth: 400, "@media (max-width: 800px)": { display: "none" } }}>
+                  <Box
+                    component="form"
+                    sx={{
+                      position: "relative",
+                      width: "50px",
+                      height: "50px",
+                      paddingRight: "50px",
+                      transition: "all 0.5s",
+                      borderRadius: "25px",
+                      backgroundColor: "white",
+                      overflow: "hidden",
+                      boxSizing: "border-box",
+                      zIndex: 10,
+                      '&:focus-within': {
+                        width: "300px",
+                        cursor: "pointer",
+                        '& .MuiInputBase-root': {
+                          display: "block",
+                        },
+                        '& .MuiIconButton-root': {
+                          backgroundColor: "#FDE910",
+                          color: "#333",
+                        },
+                      },
+                    }}
+                  >
+                    <InputBase
+                      sx={{
+                        position: "absolute",
+                        top: 10,
+                        left: 0,
+                        width: "100%",
+                        height: "42.5px",
+                        lineHeight: "30px",
+                        outline: 0,
+                        border: 0,
+                        display: "none",
+                        fontSize: "1em",
+                        borderRadius: "20px",
+                        padding: "0 20px",
+                        transition: "all 0.3s ease-in-out",
+                        color: "#333",
+                        backgroundColor: "white",
+                        flexGrow: 1,
+                      }}
+                      placeholder="Поиск товара"
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                    />
+                    <IconButton
+                      sx={{
+                        boxSizing: "border-box",
+                        width: "42.5px",
+                        height: "42.5px",
+                        position: "absolute",
+                        top: 5,
+                        right: 3,
+                        borderRadius: "50%",
+                        color: "#054500",
+                        transition: "all 0.5s",
+                      }}
+                    >
+                      <SearchIcon />
+                    </IconButton>
+                  </Box>
+
+                  {search && (
+                    <Box
+                      sx={{
+                        position: "absolute",
+                        top: "100%",
+                        left: 0,
+                        width: "100%",
+                        maxHeight: 300,
+                        overflowY: "auto",
+                        backgroundColor: "white",
+                        boxShadow: 3,
+                        zIndex: 1000,
+                        marginTop: 1,
+                        borderRadius: 1,
+                      }}
+                    >
+                      {products.length > 0 ? (
+                        products.map((product) => (
+                          <NavLink
+                            className="text-decoration-none text-black"
+                            to={
+                              user &&
+                              (user.role === userRoleAdmin ||
+                                user.role === userRoleSuperAdmin)
+                                ? `/private/edit_product/${product.id}`
+                                : `/product/${product.id}`
+                            }
+                            onClick={() => setSearch("")}
+                          >
+                            <div
+                              key={product.id}
+                              style={{
+                                padding: "10px",
+                                borderBottom: "1px solid #ddd",
+                              }}
+                            >
+                              <h3>{product.productName}</h3>
+                              <p>{ReactHtmlParser(product.productDescription)}</p>
+                            </div>
+                          </NavLink>
+                        ))
+                      ) : (
+                        <div style={{ padding: "10px" }}>Товаров не найдено</div>
+                      )}
+                    </Box>
+                  )}
+                </Box>
                 {(user && can(["client"])) || !user ? (
                   <Box
                     sx={{
