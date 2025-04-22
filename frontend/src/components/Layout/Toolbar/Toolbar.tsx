@@ -3,7 +3,8 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector, usePermission } from '../../../app/hooks.ts';
 import ExistsUser from './ExistsUser.tsx';
 import UnknownUser from './UnknownUser.tsx';
-import logo_transparent from '../../../assets/logo_transparent.png';
+import logo from "../../../assets/logo-nezabudka.png";
+import backImage from "../../../assets/фон.png";
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import Typography from '@mui/material/Typography';
@@ -78,9 +79,10 @@ const MainToolbar = () => {
     return acc;
   }, 0);
 
+
   return (
     <div>
-      <CategoryNavMenu openMenu={openCategoryMenu} closeMenu={closeMenu}/>
+      <CategoryNavMenu openMenu={openCategoryMenu} closeMenu={closeMenu} />
       <CustomCart openCart={openCart} closeCart={closeCart} />
       <Box
         sx={{
@@ -88,86 +90,94 @@ const MainToolbar = () => {
         }}
       >
         {(!user || (user.role !== "admin" && user.role !== "superAdmin")) && (
-        <Container>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              gap: "30px",
-              marginTop: "5px",
-            }}
-          >
+          <Container>
             <Box
               sx={{
                 display: "flex",
+                justifyContent: "space-between",
                 alignItems: "center",
-                gap: "10px",
+                gap: "30px",
+                marginTop: "5px",
               }}
             >
-              <a
-                href={site?.linkAddress || "/"}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  color: "black",
-                  textDecoration: "none",
+              <Box
+                sx={{
                   display: "flex",
                   alignItems: "center",
-                  paddingRight: "10px",
+                  gap: "10px",
+                }}
+              >
+                <a
+                  href={site?.linkAddress || "/"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    color: "black",
+                    textDecoration: "none",
+                    display: "flex",
+                    alignItems: "center",
+                    paddingRight: "10px",
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      color: "black",
+                      fontSize: 16,
+                      "@media (max-width: 800px)": { fontSize: 13 },
+                    }}
+                  >
+                    {site?.address}
+                  </Typography>
+                </a>
+              </Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                  cursor: "pointer",
                 }}
               >
                 <Typography
                   sx={{
-                    color: "black",
-                    fontSize: 16,
+                    borderRight: "1px solid black",
+                    paddingRight: "10px",
                     "@media (max-width: 800px)": { fontSize: 13 },
+                    "@media (max-width: 560px)": {
+                      borderRight: "none",
+                      paddingRight: "0px",
+                    },
                   }}
                 >
-                  {site?.address}
+                  <a
+                    href={`tel:${site?.phone}`}
+                    style={{ textDecoration: "none", color: "black" }}
+                  >
+                    {site?.phone}
+                  </a>
                 </Typography>
-              </a>
-            </Box>
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                gap: "10px",
-                cursor: "pointer",
-              }}
-            >
-              <Typography
-                sx={{
-                  borderRight: "1px solid black",
-                  paddingRight: "10px",
-                  "@media (max-width: 800px)": { fontSize: 13 },
-                  "@media (max-width: 560px)": {borderRight:"none", paddingRight: "0px", },
-                }}
-              >
-                <a
-                  href={`tel:${site?.phone}`}
-                  style={{ textDecoration: "none", color: "black" }}
-                >
-                  {site?.phone}
-                </a>
-              </Typography>
 
-              <Typography
-                sx={{
-                  "@media (max-width: 800px)": { fontSize: 13 },
-                  "@media (max-width: 560px)": {display:"none" },
-                }}
-              >
-                ({site && site.schedule})
-              </Typography>
+                <Typography
+                  sx={{
+                    "@media (max-width: 800px)": { fontSize: 13 },
+                    "@media (max-width: 560px)": { display: "none" },
+                  }}
+                >
+                  ({site && site.schedule})
+                </Typography>
+              </Box>
             </Box>
-          </Box>
-        </Container>
+          </Container>
         )}
       </Box>
-      <div  style={{
-        backgroundColor: user?.role === "superAdmin" ? "#FE5D26" : "#8EA58C",
-      }}>
+      <div
+        style={{
+          backgroundColor: user?.role === "superAdmin" ? "#FE5D26" : "#75AF4C",
+          backgroundImage: `url("${backImage}")`,
+          backgroundSize: "15%",
+          backgroundPosition: "center",
+        }}
+      >
         <Container style={{ padding: "0px" }}>
           <Box
             sx={{
@@ -192,11 +202,11 @@ const MainToolbar = () => {
                 },
               }}
             >
-              <div style={{display: "flex",alignItems: "center"}}>
+              <div style={{ display: "flex", alignItems: "center" }}>
                 <Box
                   onClick={() => setOpenCategoryMenu(true)}
                   sx={{
-                    display:"none",
+                    display: "none",
                     "@media (max-width: 900px)": {
                       paddingTop: "7px",
                       paddingBottom: "7px",
@@ -208,13 +218,10 @@ const MainToolbar = () => {
                       transition: "background 0.3s ease",
                       position: "relative",
                       marginRight: "20px",
-                    }
+                    },
                   }}
                 >
                   <MenuIcon sx={{ color: "white" }} />
-                  {
-                    // категориешки
-                  }
                 </Box>
                 <NavLink
                   to="/"
@@ -222,7 +229,7 @@ const MainToolbar = () => {
                 >
                   <Box
                     component="img"
-                    src={logo_transparent}
+                    src={logo}
                     alt="Nezabudka"
                     sx={{
                       height: "65px",
@@ -307,13 +314,13 @@ const MainToolbar = () => {
                 {search && (
                   <Box
                     sx={{
-                      position: 'absolute',
-                      top: '100%',
+                      position: "absolute",
+                      top: "100%",
                       left: 0,
-                      width: '100%',
+                      width: "100%",
                       maxHeight: 300,
-                      overflowY: 'auto',
-                      backgroundColor: 'white',
+                      overflowY: "auto",
+                      backgroundColor: "white",
                       boxShadow: 3,
                       zIndex: 1000,
                       marginTop: 1,
@@ -323,18 +330,30 @@ const MainToolbar = () => {
                     {products.length > 0 ? (
                       products.map((product) => (
                         <NavLink
-                          className='text-decoration-none text-black'
-                          to={user && (user.role === userRoleAdmin || user.role === userRoleSuperAdmin) ? `/private/edit_product/${product.id}` : `/product/${product.id}`}
-                          onClick={() => setSearch('')}
+                          className="text-decoration-none text-black"
+                          to={
+                            user &&
+                            (user.role === userRoleAdmin ||
+                              user.role === userRoleSuperAdmin)
+                              ? `/private/edit_product/${product.id}`
+                              : `/product/${product.id}`
+                          }
+                          onClick={() => setSearch("")}
                         >
-                          <div key={product.id} style={{ padding: '10px', borderBottom: '1px solid #ddd' }}>
+                          <div
+                            key={product.id}
+                            style={{
+                              padding: "10px",
+                              borderBottom: "1px solid #ddd",
+                            }}
+                          >
                             <h3>{product.productName}</h3>
                             <p>{ReactHtmlParser(product.productDescription)}</p>
                           </div>
                         </NavLink>
                       ))
                     ) : (
-                      <div style={{ padding: '10px' }}>Товаров не найдено</div>
+                      <div style={{ padding: "10px" }}>Товаров не найдено</div>
                     )}
                   </Box>
                 )}
@@ -342,7 +361,7 @@ const MainToolbar = () => {
               {user && can(["admin", "superAdmin"]) && (
                 <Box
                   sx={{
-                    display:"none",
+                    display: "none",
                     "@media (max-width: 1100px)": {
                       backgroundColor: "#FDE910",
                       borderRadius: "10px",
@@ -357,7 +376,7 @@ const MainToolbar = () => {
                       borderRadius: "50%",
                     },
                     "@media (max-width: 400px)": {
-                      display:"none"
+                      display: "none",
                     },
                   }}
                 >
@@ -392,107 +411,80 @@ const MainToolbar = () => {
                   </NavLink>
                 </Box>
               )}
-              {user ? (can(["client"]) && (
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <Box sx={{ display: "flex", gap: "15px" }}>
+              {(user && can(["client"])) || !user ? (
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Box sx={{ display: "flex", gap: "15px" }}>
+                    <Box
+                      onClick={() => setOpenCart(true)}
+                      sx={{
+                        backgroundColor: "#FDE910",
+                        padding: { xs: "5px", sm: "10px", md: "7px 20px" },
+                        borderRadius: { xs: "50%", md: "10px" },
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        cursor: "pointer",
+                        transition: "background 0.3s ease",
+                        position: "relative",
+                      }}
+                    >
+                      <ShoppingCartIcon sx={{ color: "rgb(52, 51, 50)", marginRight: user ? 0 : "10px", marginTop: user ? 0 : "3px" }} />
+                      <Badge
+                        badgeContent={sum}
+                        overlap="circular"
+                        color="warning"
+                        sx={{
+                          position: user ? "absolute" : "static",
+                          top: user ? "10px" : undefined,
+                          right: user ? "17px" : undefined,
+                          backgroundColor: user ? "olive" : undefined,
+                        }}
+                      />
+                    </Box>
+
+                    <NavLink to="/favorite-products" style={{ textDecoration: "none" }}>
                       <Box
-                        onClick={() => setOpenCart(true)}
                         sx={{
                           backgroundColor: "#FDE910",
-                          paddingTop: "7px",
-                          paddingBottom: "7px",
-                          paddingRight: "20px",
-                          paddingLeft: "20px",
+                          padding: "10px 20px",
                           borderRadius: "10px",
-                          display: "flex",
+                          display: { xs: "none", md: "flex" },
                           alignItems: "center",
                           justifyContent: "center",
                           cursor: "pointer",
                           transition: "background 0.3s ease",
-                          position: "relative",
-                          "@media (max-width: 800px)": {
-                            borderRadius: "50%",
-                            paddingTop: "10px",
-                            paddingBottom: "10px",
-                            paddingRight: "10px",
-                            paddingLeft: "10px",
-                          },
-                          "@media (max-width: 400px)": {
-                            borderRadius: "50%",
-                            paddingTop: "5px",
-                            paddingBottom: "5px",
-                            paddingRight: "5px",
-                            paddingLeft: "5px",
-                          },
                         }}
                       >
-                        <ShoppingCartIcon sx={{ color: "rgb(52, 51, 50)" }} />
-                        <Badge
-                          badgeContent={sum}
-                          overlap="circular"
-                          color="warning"
-                          sx={{
-                            position: "absolute",
-                            top: "10px",
-                            right: "17px",
-                            backgroundColor: "olive",
-                          }}
-                        />
+                        <FavoriteIcon sx={{ color: "rgb(52, 51, 50)" }} />
                       </Box>
+                    </NavLink>
+                  </Box>
 
-                      <NavLink
-                        to="/favorite-products"
-                        style={{ textDecoration: "none" }}
-                      >
-                        <Box
-                          sx={{
-                            backgroundColor: "#FDE910",
-                            paddingTop: "10px",
-                            paddingBottom: "10px",
-                            paddingRight: "20px",
-                            paddingLeft: "20px",
-                            borderRadius: "10px",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            cursor: "pointer",
-                            transition: "background 0.3s ease",
-                            "@media (max-width: 1100px)": { display: "none" }
-                          }}
-                        >
-                          <FavoriteIcon sx={{ color: "rgb(52, 51, 50)" }} />
-                        </Box>
-                      </NavLink>
-                    </Box>
-                    <Box
-                      sx={{
-                        position: "fixed",
-                        bottom: 0,
-                        left: 0,
-                        width: "100%",
-                        backgroundColor: "#fff",
-                        boxShadow: "0px -2px 5px #8EA58C",
-                        padding: "20px 0",
-                        display: "none",
-                        justifyContent: "space-around",
-                        alignItems: "center",
-                        zIndex: 1000,
-                        "@media (max-width: 1100px)": {
-                          display: "flex",
-                        },
-                      }}
+                  <Box
+                    sx={{
+                      position: "fixed",
+                      bottom: 0,
+                      left: 0,
+                      width: "100%",
+                      backgroundColor: "#fff",
+                      boxShadow: "0px -2px 5px #8EA58C",
+                      padding: "20px 0",
+                      display: { xs: "flex", md: "none" },
+                      justifyContent: "space-around",
+                      alignItems: "center",
+                      zIndex: 1000,
+                    }}
+                  >
+                    <NavLink
+                      to="/my_orders"
+                      style={{ textDecoration: "none", marginTop: "5px" }}
                     >
-                      <NavLink to="/my_orders" style={{ textDecoration: "none", marginTop:"5px" }}>
-                        <Badge
-                          badgeContent={sum}
-                          overlap="circular"
-                          color="warning"
-                        >
+                      <Badge badgeContent={sum} overlap="circular" color="warning">
                         <Button
                           sx={{
                             color: "black",
@@ -504,32 +496,24 @@ const MainToolbar = () => {
                           }}
                         >
                           <LocalMallOutlinedIcon
-                            sx={{
-                              width: "27px",
-                              height: "27px",
-                              color: "black",
-                            }}
+                            sx={{ width: "27px", height: "27px", color: "black" }}
                           />
                         </Button>
                       </Badge>
-                        <Typography
-                          sx={{
-                            color: "black",
-                            fontSize: "14px",
-                            textTransform: "uppercase",
-                            marginTop: "7px",
-                          }}
-                        >
-                          Заказы
-                        </Typography>
-                      </NavLink>
+                      <Typography
+                        sx={{
+                          color: "black",
+                          fontSize: "14px",
+                          textTransform: "uppercase",
+                          marginTop: "7px",
+                        }}
+                      >
+                        Заказы
+                      </Typography>
+                    </NavLink>
 
-                      <NavLink to="/favorite-products" style={{ textDecoration: "none" }}>
-                        <Badge
-                          badgeContent={sum}
-                          overlap="circular"
-                          color="warning"
-                        >
+                    <NavLink to="/favorite-products" style={{ textDecoration: "none" }}>
+                      <Badge badgeContent={sum} overlap="circular" color="warning">
                         <Button
                           sx={{
                             color: "black",
@@ -545,170 +529,10 @@ const MainToolbar = () => {
                               width: "27px",
                               height: "27px",
                               color: "black",
-                              marginLeft:"20px",
+                              marginLeft: "20px",
                             }}
                           />
                         </Button>
-                      </Badge>
-                        <Typography
-                          sx={{
-                            color: "black",
-                            fontSize: "14px",
-                            textTransform: "uppercase",
-                            marginTop: "7px",
-                            textAlign: "center",
-                          }}
-                        >
-                          Избранные
-                        </Typography>
-                      </NavLink>
-
-                      {user ? <ExistsUser /> : <UnknownUser />}
-                    </Box>
-                  </Box>
-                )
-              ) : (
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <Box sx={{ display: "flex", gap: "15px" }}>
-                    <Box
-                      onClick={() => setOpenCart(true)}
-                      sx={{
-                        backgroundColor: "#FDE910",
-                        paddingTop: "7px",
-                        paddingBottom: "7px",
-                        paddingRight: "20px",
-                        paddingLeft: "20px",
-                        borderRadius: "10px",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        cursor: "pointer",
-                        transition: "background 0.3s ease",
-                      }}
-                    >
-                      <Badge
-                        badgeContent={sum}
-                        overlap="circular"
-                        color="warning"
-                      >
-                        <ShoppingCartIcon
-                          sx={{
-                            color: "rgb(52, 51, 50)",
-                            marginRight: "10px",
-                            marginTop: "3px",
-                          }}
-                        />
-                      </Badge>
-                    </Box>
-
-                    <NavLink
-                      to="/favorite-products"
-                      style={{ textDecoration: "none" }}
-                    >
-                      <Box
-                        sx={{
-                          backgroundColor: "#FDE910",
-                          paddingTop: "10px",
-                          paddingBottom: "10px",
-                          paddingRight: "20px",
-                          paddingLeft: "20px",
-                          borderRadius: "10px",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          cursor: "pointer",
-                          transition: "background 0.3s ease",
-                        }}
-                      >
-                        <FavoriteIcon sx={{ color: "rgb(52, 51, 50)" }} />
-                      </Box>
-                    </NavLink>
-                  </Box>
-                  <Box
-                    sx={{
-                      position: "fixed",
-                      bottom: 0,
-                      left: 0,
-                      width: "100%",
-                      backgroundColor: "#fff",
-                      boxShadow: "0px -2px 5px #8EA58C",
-                      padding: "20px 0",
-                      display: "none",
-                      justifyContent: "space-around",
-                      alignItems: "center",
-                      zIndex: 1000,
-                      "@media (max-width: 1100px)": {
-                        display: "flex",
-                      },
-                    }}
-                  >
-                    <NavLink to="/my_orders" style={{ textDecoration: "none", marginTop:"5px" }}>
-                      <Badge
-                        badgeContent={sum}
-                        overlap="circular"
-                        color="warning"
-                      >
-                      <Button
-                        sx={{
-                          color: "black",
-                          display: "flex",
-                          flexDirection: "row",
-                          alignItems: "center",
-                          padding: 0,
-                          gap: "8px",
-                        }}
-                      >
-                        <LocalMallOutlinedIcon
-                          sx={{
-                            width: "27px",
-                            height: "27px",
-                            color: "black",
-                          }}
-                        />
-                      </Button>
-                      </Badge>
-                      <Typography
-                        sx={{
-                          color: "black",
-                          fontSize: "14px",
-                          textTransform: "uppercase",
-                          marginTop: "7px",
-                        }}
-                      >
-                        Заказы
-                      </Typography>
-                    </NavLink>
-
-                    <NavLink to="/favorite-products" style={{ textDecoration: "none" }}>
-                      <Badge
-                        badgeContent={sum}
-                        overlap="circular"
-                        color="warning"
-                      >
-                      <Button
-                        sx={{
-                          color: "black",
-                          display: "flex",
-                          flexDirection: "column",
-                          alignItems: "center",
-                          padding: 0,
-                          gap: "8px",
-                        }}
-                      >
-                        <FavoriteIcon
-                          sx={{
-                            width: "30px",
-                            height: "27px",
-                            color: "black",
-                            marginLeft:"20px",
-                          }}
-                        />
-                      </Button>
                       </Badge>
                       <Typography
                         sx={{
@@ -722,11 +546,11 @@ const MainToolbar = () => {
                         Избранные
                       </Typography>
                     </NavLink>
+
                     {user ? <ExistsUser /> : <UnknownUser />}
                   </Box>
                 </Box>
-
-              )}
+              ) : null}
 
               {user && can(["admin", "superAdmin"]) && (
                 <Box
@@ -747,7 +571,10 @@ const MainToolbar = () => {
                     },
                   }}
                 >
-                  <NavLink to="/private/client_orders" style={{ textDecoration: "none", marginTop:"5px" }}>
+                  <NavLink
+                    to="/private/client_orders"
+                    style={{ textDecoration: "none", marginTop: "5px" }}
+                  >
                     <Badge
                       badgeContent={sum}
                       overlap="circular"
@@ -784,7 +611,10 @@ const MainToolbar = () => {
                     </Typography>
                   </NavLink>
 
-                  <NavLink to="/private/clients" style={{ textDecoration: "none" }}>
+                  <NavLink
+                    to="/private/clients"
+                    style={{ textDecoration: "none" }}
+                  >
                     <Badge
                       badgeContent={sum}
                       overlap="circular"
@@ -805,8 +635,7 @@ const MainToolbar = () => {
                             width: "30px",
                             height: "30px",
                             color: "black",
-                            marginTop:"5px"
-
+                            marginTop: "5px",
                           }}
                         />
                       </Button>
@@ -826,46 +655,49 @@ const MainToolbar = () => {
                   {user ? <ExistsUser /> : <UnknownUser />}
                 </Box>
               )}
-              <Box sx={{  "@media (max-width: 1100px)": { display: "none" }}}>
+              <Box sx={{ "@media (max-width: 1100px)": { display: "none" } }}>
                 {user ? <ExistsUser /> : <UnknownUser />}
               </Box>
             </Toolbar>
             <Box
               sx={{
                 "@media (max-width: 800px)": {
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  paddingBottom: 3 }
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  paddingBottom: 3,
+                },
               }}
             >
-              <Box sx={{
-                display:"none",
-                "@media (max-width: 800px)": {
-                  display:"flex",
-                  position: 'relative',
-                  width: '100%',
-                  maxWidth: 400,
-                  marginTop:"-10px",
-                  marginBottom:"-10px"
-                },
-                "@media (max-width: 600px)": {
-                  display:"flex",
-                  position: 'relative',
-                  width: '100%',
-                  maxWidth: 400,
-                  marginTop:"0px",
-                  marginBottom:"-10px"
-                },
-                "@media (max-width: 400px)": {
-                  display:"flex",
-                  position: 'relative',
-                  width: '100%',
-                  maxWidth: 350,
-                  marginTop:"0px",
-                  marginBottom:"-10px"
-                }
-              }}>
+              <Box
+                sx={{
+                  display: "none",
+                  "@media (max-width: 800px)": {
+                    display: "flex",
+                    position: "relative",
+                    width: "100%",
+                    maxWidth: 400,
+                    marginTop: "-10px",
+                    marginBottom: "-10px",
+                  },
+                  "@media (max-width: 600px)": {
+                    display: "flex",
+                    position: "relative",
+                    width: "100%",
+                    maxWidth: 400,
+                    marginTop: "0px",
+                    marginBottom: "-10px",
+                  },
+                  "@media (max-width: 400px)": {
+                    display: "flex",
+                    position: "relative",
+                    width: "100%",
+                    maxWidth: 350,
+                    marginTop: "0px",
+                    marginBottom: "-10px",
+                  },
+                }}
+              >
                 <Box
                   sx={{
                     position: "relative",
@@ -893,11 +725,13 @@ const MainToolbar = () => {
                     onChange={(e) => setSearch(e.target.value)}
                     onFocus={(e) => {
                       e.target.style.borderColor = "#d4d9c5";
-                      e.target.style.boxShadow = "0 0 8px rgba(91, 113, 51, 0.5)";
+                      e.target.style.boxShadow =
+                        "0 0 8px rgba(91, 113, 51, 0.5)";
                     }}
                     onBlur={(e) => {
                       e.target.style.borderColor = "#475726";
-                      e.target.style.boxShadow = "0 4px 10px rgba(91, 113, 51, 0.3)";
+                      e.target.style.boxShadow =
+                        "0 4px 10px rgba(91, 113, 51, 0.3)";
                     }}
                   />
                   <button
@@ -910,7 +744,7 @@ const MainToolbar = () => {
                       color: "#8EA58C",
                       display: "flex",
                       alignItems: "center",
-                      justifyContent: "center"
+                      justifyContent: "center",
                     }}
                   >
                     <SearchIcon />
@@ -920,13 +754,13 @@ const MainToolbar = () => {
                 {search && (
                   <Box
                     sx={{
-                      position: 'absolute',
-                      top: '100%',
+                      position: "absolute",
+                      top: "100%",
                       left: 0,
-                      width: '100%',
+                      width: "100%",
                       maxHeight: 300,
-                      overflowY: 'auto',
-                      backgroundColor: 'white',
+                      overflowY: "auto",
+                      backgroundColor: "white",
                       boxShadow: 3,
                       zIndex: 1000,
                       marginTop: 1,
@@ -935,15 +769,25 @@ const MainToolbar = () => {
                   >
                     {products.length > 0 ? (
                       products.map((product) => (
-                        <NavLink className='text-decoration-none text-black' to={`/product/${product.id}`} onClick={() => setSearch('')}>
-                          <div key={product.id} style={{ padding: '10px', borderBottom: '1px solid #ddd' }}>
+                        <NavLink
+                          className="text-decoration-none text-black"
+                          to={`/product/${product.id}`}
+                          onClick={() => setSearch("")}
+                        >
+                          <div
+                            key={product.id}
+                            style={{
+                              padding: "10px",
+                              borderBottom: "1px solid #ddd",
+                            }}
+                          >
                             <h3>{product.productName}</h3>
                             <p>{product.productDescription}</p>
                           </div>
                         </NavLink>
                       ))
                     ) : (
-                      <div style={{ padding: '10px' }}>Товаров не найдено</div>
+                      <div style={{ padding: "10px" }}>Товаров не найдено</div>
                     )}
                   </Box>
                 )}
