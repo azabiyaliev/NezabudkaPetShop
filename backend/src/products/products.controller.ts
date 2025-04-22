@@ -34,6 +34,11 @@ export class ProductsController {
     return await this.productsService.getAllProducts(searchKeyword, brand);
   }
 
+  @Get('promotional')
+  async getPromotionalProducts() {
+    return await this.productsService.getPromotionalProducts();
+  }
+
   //GET ONE BY ID
   @Get(':id')
   async getOneProduct(@Param('id') id: string) {
