@@ -90,7 +90,11 @@ const cartSlice = createSlice({
       }
     },
     setToLocalStorage: (_state, { payload: cart }) => {
-      localStorage.setItem("cart", JSON.stringify(cart));
+      if (cart && typeof cart === "object") {
+        localStorage.setItem("cart", JSON.stringify(cart));
+      } else {
+        localStorage.removeItem("cart");
+      }
     },
     deleteProductInCart: (state, { payload: productId }) => {
       if (state.cart) {
