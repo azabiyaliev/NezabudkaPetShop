@@ -1,5 +1,5 @@
 import { Badge, Box, Button, Container, InputBase, Toolbar, } from '@mui/material';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector, usePermission } from '../../../app/hooks.ts';
 import ExistsUser from './ExistsUser.tsx';
 import UnknownUser from './UnknownUser.tsx';
@@ -26,6 +26,9 @@ import { cartFromSlice, getFromLocalStorage } from '../../../store/cart/cartSlic
 import { userRoleAdmin, userRoleSuperAdmin } from '../../../globalConstants.ts';
 import ReactHtmlParser from 'html-react-parser';
 import IconButton from '@mui/joy/IconButton';
+import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
+import { fetchUserIdBonus } from '../../../store/users/usersThunk.ts';
+import Tooltip from '@mui/joy/Tooltip';
 
 const MainToolbar = () => {
   const [openCart, setOpenCart] = useState<boolean>(false);
@@ -39,6 +42,13 @@ const MainToolbar = () => {
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState<string>('');
   const can = usePermission(user);
+  const { id } = useParams<{ id: string }>();
+
+  useEffect(() => {
+    if (id) {
+      dispatch(fetchUserIdBonus(id)).unwrap();
+    }
+  }, [dispatch, id]);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -516,6 +526,27 @@ const MainToolbar = () => {
                           <FavoriteIcon sx={{ color: "rgb(52, 51, 50)" }} />
                         </Box>
                       </NavLink>
+
+                      <Tooltip title="Мои бонусы">
+                        <NavLink to={`/my_account/users/account/${user?.id}`} style={{ textDecoration: "none" }}>
+                          <Box
+                            sx={{
+                              backgroundColor: "#FDE910",
+                              padding: "10px 20px",
+                              borderRadius: "10px",
+                              display: { xs: "none", md: "flex" },
+                              alignItems: "center",
+                              justifyContent: "center",
+                              cursor: "pointer",
+                              transition: "background 0.3s ease",
+                              color: "#333"
+                            }}
+                          >
+                            <CurrencyExchangeIcon sx={{ color: "rgb(52, 51, 50)" , marginRight: user?.bonus ? "10px" : 0}} />
+                            {user?.bonus}
+                          </Box>
+                        </NavLink>
+                      </Tooltip>
                     </Box>
 
                     <Box
@@ -533,7 +564,6 @@ const MainToolbar = () => {
                         zIndex: 1000,
                       }}
                     >
-                      {user ? <ExistsUser /> : <UnknownUser />}
 
                       <NavLink
                         to="/my_orders"
