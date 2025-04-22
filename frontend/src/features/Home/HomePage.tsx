@@ -14,6 +14,9 @@ import { selectUser } from '../../store/users/usersSlice.ts';
 import { addItem, createCart, deleteItemsCart, fetchCart } from '../../store/cart/cartThunk.ts';
 import { ICartBack, ICartItem } from '../../types';
 import { userRoleClient } from '../../globalConstants.ts';
+import { selectPromotionalProducts } from '../../store/products/productsSlice.ts';
+import { getPromotionalProducts } from '../../store/products/productsThunk.ts';
+import PromotionalProducts from '../Product/components/PromotionalProducts/PromotionalProducts.tsx';
 
 const HomePage = () => {
   const [openCart, setOpenCart] = useState<boolean>(false);
@@ -22,13 +25,14 @@ const HomePage = () => {
   const brands = useAppSelector(brandsFromSlice);
   const user = useAppSelector(selectUser);
   const cart = useAppSelector(cartFromSlice);
+  const promotionalProducts = useAppSelector(selectPromotionalProducts);
   const createCartError = useAppSelector(cartErrorFromSlice);
   const dispatch = useAppDispatch();
 
   const mergeCarts = (cart: ICartBack, localCart: ICartBack): ICartItem[] => {
     const mergedCart: ICartItem[] = [...cart.products];
 
-    if (localCart !== null) {
+    if (localCart && Array.isArray(localCart.products)) {
       localCart.products.forEach((localProduct) => {
         const existingItemIndex = mergedCart.findIndex(
           (item) => item.productId === localProduct.productId
@@ -38,10 +42,9 @@ const HomePage = () => {
           mergedCart.push(localProduct);
         }
       });
-      return mergedCart;
-    } else {
-      return cart.products;
     }
+
+    return mergedCart;
   };
 
   useEffect(() => {
@@ -49,11 +52,22 @@ const HomePage = () => {
       const cartFromLS = localStorage.getItem("cart");
 
       if (cartFromLS !== null) {
-        const localCart = JSON.parse(cartFromLS);
-        setProducts([]);
-        const allUserProducts = mergeCarts(cart, localCart);
-        setProducts(allUserProducts);
-        localStorage.removeItem("cart");
+        try {
+          const parsed = JSON.parse(cartFromLS);
+
+          if (parsed && Array.isArray(parsed.products)) {
+            setProducts([]);
+            const allUserProducts = mergeCarts(cart, parsed);
+            setProducts(allUserProducts);
+            localStorage.removeItem("cart");
+          } else {
+            console.warn("Некорректный формат localCart, удаляем...");
+            localStorage.removeItem("cart");
+          }
+        } catch (e) {
+          console.warn("Ошибка парсинга cart из localStorage:", e);
+          localStorage.removeItem("cart");
+        }
       }
     }
   }, [user, cart, dispatch]);
@@ -61,6 +75,7 @@ const HomePage = () => {
   useEffect(() => {
     const fetchData = async () => {
       await dispatch(getBrands()).unwrap();
+      await dispatch(getPromotionalProducts()).unwrap();
 
       if (user && (user.role === userRoleClient)) {
         await dispatch(createCart()).unwrap();
@@ -104,6 +119,8 @@ const HomePage = () => {
     }
   }, [dispatch, cart, user]);
 
+  console.log(promotionalProducts);
+
   return (
     <Container>
       <CustomCart openCart={openCart} closeCart={closeCart}/>
@@ -146,6 +163,22 @@ const HomePage = () => {
           Купите для своего питомца
         </Typography>
         <CategoryCard/>
+      </Box>
+
+      <Box>
+        <Typography
+          sx={{
+            fontSize: "40px",
+            mb: 0.5,
+            color: "rgba(250, 143, 1, 1)",
+            textAlign: "center",
+          }}
+        >
+          Акции
+        </Typography>
+        {promotionalProducts.length > 0 && (
+          <PromotionalProducts products={promotionalProducts}/>
+        )}
       </Box>
 
       {brands.length > 0 && (

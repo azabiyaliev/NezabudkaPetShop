@@ -1,6 +1,13 @@
 import { ProductRequest, ProductResponse } from "../../types";
 import { PayloadAction } from "@reduxjs/toolkit";
-import { editProduct, getOneProduct, getProducts, getProductsByBrand, getProductsByCategory } from './productsThunk.ts';
+import {
+  editProduct,
+  getOneProduct,
+  getProducts,
+  getProductsByBrand,
+  getProductsByCategory,
+  getPromotionalProducts
+} from './productsThunk.ts';
 import { SubcategoryWithBrand } from "../../types";
 import { createSlice } from "@reduxjs/toolkit";
 import { addProduct, getAllProductsByCategory } from "./productsThunk.ts";
@@ -11,6 +18,7 @@ interface ProductsState {
   categoryProducts: ProductResponse[];
   product: ProductRequest | null;
   brands: SubcategoryWithBrand[];
+  promotionalProducts: ProductResponse[];
   loading: boolean;
   error: boolean;
 }
@@ -19,6 +27,7 @@ const initialState: ProductsState = {
   brands: [],
   categoryProducts: [],
   products: [],
+  promotionalProducts: [],
   product: null,
   loading: false,
   error: false,
@@ -27,6 +36,7 @@ const initialState: ProductsState = {
 export const addProductLoading = (state: RootState) => state.products.loading;
 export const selectProductsByCategory = (state: RootState) => state.products.categoryProducts;
 export const selectProducts = (state: RootState) => state.products.products;
+export const selectPromotionalProducts = (state: RootState) => state.products.promotionalProducts;
 export const selectProduct = (state: RootState) => state.products.product;
 
 const productsSlice = createSlice({
@@ -109,6 +119,16 @@ const productsSlice = createSlice({
       .addCase(getProductsByCategory.rejected, (state) => {
         state.loading = false;
       })
+      .addCase(getPromotionalProducts.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getPromotionalProducts.fulfilled, (state, {payload: products}) => {
+        state.loading = false;
+        state.promotionalProducts = products;
+      })
+      .addCase(getPromotionalProducts.rejected, (state) => {
+        state.loading = false;
+      });
   },
 });
 

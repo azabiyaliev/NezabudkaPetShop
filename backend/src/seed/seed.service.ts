@@ -1239,7 +1239,9 @@ export class SeedService {
           categoryId: bowlsAndDrinkers.id,
           productPhoto: '/fixtures/products/Dog_Toys.webp',
           existence: true,
-          sales: false,
+          sales: true,
+          endDateSales: new Date('2025-05-10T00:00:00.000Z'),
+          startDateSales: new Date('2025-05-03T00:00:00.000Z'),
         },
       }),
       this.prisma.products.create({
@@ -1265,7 +1267,9 @@ export class SeedService {
           categoryId: nestsAndHides.id,
           productPhoto: '/fixtures/products/Dog_Toys.webp',
           existence: true,
-          sales: false,
+          sales: true,
+          endDateSales: new Date('2025-05-10T00:00:00.000Z'),
+          startDateSales: new Date('2025-05-03T00:00:00.000Z'),
         },
       }),
       this.prisma.products.create({
@@ -1317,7 +1321,9 @@ export class SeedService {
           categoryId: waterHeaters.id,
           productPhoto: '/fixtures/products/treats.webp',
           existence: true,
-          sales: false,
+          sales: true,
+          endDateSales: new Date('2025-05-10T00:00:00.000Z'),
+          startDateSales: new Date('2025-05-03T00:00:00.000Z'),
         },
       }),
       this.prisma.products.create({
@@ -1358,7 +1364,9 @@ export class SeedService {
           categoryId: wetAndDryFeedMixes.id,
           productPhoto: '/fixtures/products/treats.webp',
           existence: true,
-          sales: false,
+          sales: true,
+          endDateSales: new Date('2025-05-10T00:00:00.000Z'),
+          startDateSales: new Date('2025-05-03T00:00:00.000Z'),
         },
       }),
       this.prisma.products.create({
@@ -1395,72 +1403,87 @@ export class SeedService {
           brandId: purizon.id,
           categoryId: fishFood.id,
           productPhoto: '/fixtures/products/treats.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Натур Полнорационный – Корм для рыб',
+          productPrice: 1100,
+          productDescription: 'Корм для рыб. Прост в применении и эффективен.',
+          brandId: purizon.id,
+          categoryId: fishFood.id,
+          productPhoto: '/fixtures/products/cat_scratcher.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Комфорт Премиум – Аквариумы и аксессуары',
+          productPrice: 1100,
+          productDescription:
+            'Аквариумы и аксессуары. Прост в применении и эффективен.',
+          brandId: RosiesFarm.id,
+          categoryId: aquariumsAndAccessories.id,
+          productPhoto: '/fixtures/products/cat_scratcher.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Комфорт Премиум – Аквариумы и аксессуары',
+          productPrice: 1100,
+          productDescription:
+            'Аквариумы и аксессуары. Прост в применении и эффективен.',
+          brandId: RosiesFarm.id,
+          categoryId: aquariumsAndAccessories.id,
+          productPhoto: '/fixtures/products/cat_scratcher.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Натур Стандарт – Фильтры для аквариумов',
+          productPrice: 1100,
+          productDescription:
+            'Фильтры для аквариумов. Удобен в использовании дома и в поездке.',
+          brandId: Tigerino.id,
+          categoryId: aquariumFilters.id,
+          productPhoto: '/fixtures/products/cat_scratcher.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Натур Стандарт – Фильтры для аквариумов',
+          productPrice: 1100,
+          productDescription:
+            'Фильтры для аквариумов. Удобен в использовании дома и в поездке.',
+          brandId: Tigerino.id,
+          categoryId: aquariumFilters.id,
+          productPhoto: '/fixtures/products/cat_scratcher.webp',
+          existence: true,
+          sales: false,
+        },
+      }),
+      this.prisma.products.create({
+        data: {
+          productName: 'Люкс Гипоаллергенный – Освещение для аквариумов',
+          productPrice: 1100,
+          productDescription:
+            'Освещение для аквариумов. Прочная и надежная конструкция.',
+          brandId: Pedigree.id,
+          categoryId: aquariumLighting.id,
+          productPhoto: '/fixtures/products/cat_scratcher.webp',
           existence: true,
           sales: true,
-        },
-      }),
-      this.prisma.products.create({
-        data: {
-          productName: 'Натур Полнорационный – Корм для рыб',
-          productPrice: 1100,
-          productDescription: 'Корм для рыб. Прост в применении и эффективен.',
-          brandId: purizon.id,
-          categoryId: fishFood.id,
-          productPhoto: '/fixtures/products/car_scratcher.webp',
-          existence: true,
-          sales: false,
-        },
-      }),
-      this.prisma.products.create({
-        data: {
-          productName: 'Комфорт Премиум – Аквариумы и аксессуары',
-          productPrice: 1100,
-          productDescription:
-            'Аквариумы и аксессуары. Прост в применении и эффективен.',
-          brandId: RosiesFarm.id,
-          categoryId: aquariumsAndAccessories.id,
-          productPhoto: '/fixtures/products/car_scratcher.webp',
-          existence: true,
-          sales: false,
-        },
-      }),
-      this.prisma.products.create({
-        data: {
-          productName: 'Комфорт Премиум – Аквариумы и аксессуары',
-          productPrice: 1100,
-          productDescription:
-            'Аквариумы и аксессуары. Прост в применении и эффективен.',
-          brandId: RosiesFarm.id,
-          categoryId: aquariumsAndAccessories.id,
-          productPhoto: '/fixtures/products/car_scratcher.webp',
-          existence: true,
-          sales: false,
-        },
-      }),
-      this.prisma.products.create({
-        data: {
-          productName: 'Натур Стандарт – Фильтры для аквариумов',
-          productPrice: 1100,
-          productDescription:
-            'Фильтры для аквариумов. Удобен в использовании дома и в поездке.',
-          brandId: Tigerino.id,
-          categoryId: aquariumFilters.id,
-          productPhoto: '/fixtures/products/car_scratcher.webp',
-          existence: true,
-          sales: false,
-        },
-      }),
-      this.prisma.products.create({
-        data: {
-          productName: 'Натур Стандарт – Фильтры для аквариумов',
-          productPrice: 1100,
-          productDescription:
-            'Фильтры для аквариумов. Удобен в использовании дома и в поездке.',
-          brandId: Tigerino.id,
-          categoryId: aquariumFilters.id,
-          productPhoto: '/fixtures/products/car_scratcher.webp',
-          existence: true,
-          sales: false,
+          endDateSales: new Date('2025-05-10T00:00:00.000Z'),
+          startDateSales: new Date('2025-05-03T00:00:00.000Z'),
         },
       }),
       this.prisma.products.create({
@@ -1471,20 +1494,7 @@ export class SeedService {
             'Освещение для аквариумов. Прочная и надежная конструкция.',
           brandId: Pedigree.id,
           categoryId: aquariumLighting.id,
-          productPhoto: '/fixtures/products/car_scratcher.webp',
-          existence: true,
-          sales: false,
-        },
-      }),
-      this.prisma.products.create({
-        data: {
-          productName: 'Люкс Гипоаллергенный – Освещение для аквариумов',
-          productPrice: 1100,
-          productDescription:
-            'Освещение для аквариумов. Прочная и надежная конструкция.',
-          brandId: Pedigree.id,
-          categoryId: aquariumLighting.id,
-          productPhoto: '/fixtures/products/car_scratcher.webp',
+          productPhoto: '/fixtures/products/cat_scratcher.webp',
           existence: true,
           sales: false,
         },
@@ -1499,7 +1509,9 @@ export class SeedService {
           categoryId: aquariumDecor.id,
           productPhoto: '/fixtures/products/collars.webp',
           existence: true,
-          sales: false,
+          sales: true,
+          endDateSales: new Date('2025-05-10T00:00:00.000Z'),
+          startDateSales: new Date('2025-05-03T00:00:00.000Z'),
         },
       }),
       this.prisma.products.create({
