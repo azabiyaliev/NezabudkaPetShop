@@ -10,6 +10,7 @@ import dogImg from '../../../assets/category-animals/10.png';
 import birdImg from '../../../assets/category-animals/3.png';
 import fishImg from '../../../assets/category-animals/4.png';
 import bunnyImg from '../../../assets/category-animals/6.png';
+import { useNavigate } from 'react-router-dom';
 
 const titleToImage: Record<string, string> = {
   'Собаки': dogImg,
@@ -29,6 +30,7 @@ const titleToColor: Record<string, string> = {
 
 const CategoryCard = () => {
   const categories = useAppSelector(selectCategories);
+  const navigate = useNavigate();
 
   const filteredCategories = categories.filter(
     (category) => category.title !== 'Другие питомцы'
@@ -43,7 +45,9 @@ const CategoryCard = () => {
         if (!image) return null;
 
         return (
-          <div key={category.id}>
+          <div
+            key={category.id}
+            onClick={() => navigate(`/all-products/${category.id}`)}>
             <Card
               sx={{
                 width: 200,
