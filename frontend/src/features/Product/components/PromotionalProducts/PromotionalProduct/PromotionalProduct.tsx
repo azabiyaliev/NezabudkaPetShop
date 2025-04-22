@@ -4,6 +4,7 @@ import React from 'react';
 import { Box, styled } from '@mui/joy';
 import { apiUrl } from '../../../../../globalConstants.ts';
 import dayjs from 'dayjs';
+import { useNavigate } from 'react-router-dom';
 
 
 interface Props {
@@ -27,6 +28,7 @@ const DiscountBadge = styled("div")({
 });
 
 const PromotionalProduct:React.FC<Props> = ({product}) => {
+  const navigate = useNavigate();
   return (
     <>
       <Card
@@ -43,6 +45,7 @@ const PromotionalProduct:React.FC<Props> = ({product}) => {
           p: 1,
           backgroundColor: '#fff',
         }}
+        onClick={() => navigate(`/product/${product.id}`)}
       >
         <Box sx={{ display: "flex", height: 120 }}>
           <Box
