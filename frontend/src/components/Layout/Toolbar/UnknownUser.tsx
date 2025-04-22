@@ -41,9 +41,12 @@ const UnknownUser = () => {
           aria-expanded={open ? "true" : undefined}
           onClick={handleClick}
           sx={{
+            color: "black",
             display: "flex",
             flexDirection: "column",
-            color: "black",
+            alignItems: "center",
+            padding: 0,
+            gap: "4px",
             "@media (min-width: 1100px)": {
               flexDirection: "row",
               gap: "8px",
@@ -52,19 +55,22 @@ const UnknownUser = () => {
         >
           <AccountCircleIcon
             sx={{
-              color: "white",
-              width: "35px",
-              height: "35px",
-              "@media (max-width: 1100px)": { color: "black" },
+              color: "#343332",
+              width: "30px",
+              height: "30px",
+              "@media (max-width: 1100px)": { color: "#343332" },
             }}
           />
           <Typography
             sx={{
-              fontSize: "18px",
-              textTransform: "lowercase",
-              color: "white",
+              color: "#343332",
+              fontSize: "16px",
+              fontWeight: "500",
+              textTransform: "uppercase",
               "@media (max-width: 1100px)": {
                 color: "black",
+                fontSize: "14px",
+                marginTop: "-10px",
                 marginLeft: 0,
               },
             }}

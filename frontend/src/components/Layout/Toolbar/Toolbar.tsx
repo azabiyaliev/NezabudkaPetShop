@@ -411,146 +411,162 @@ const MainToolbar = () => {
                   </NavLink>
                 </Box>
               )}
-              {(user && can(["client"])) || !user ? (
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <Box sx={{ display: "flex", gap: "15px" }}>
-                    <Box
-                      onClick={() => setOpenCart(true)}
-                      sx={{
-                        backgroundColor: "#FDE910",
-                        padding: { xs: "5px", sm: "10px", md: "7px 20px" },
-                        borderRadius: { xs: "50%", md: "10px" },
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        cursor: "pointer",
-                        transition: "background 0.3s ease",
-                        position: "relative",
-                      }}
-                    >
-                      <ShoppingCartIcon sx={{ color: "rgb(52, 51, 50)", marginRight: user ? 0 : "10px", marginTop: user ? 0 : "3px" }} />
-                      <Badge
-                        badgeContent={sum}
-                        overlap="circular"
-                        color="warning"
-                        sx={{
-                          position: user ? "absolute" : "static",
-                          top: user ? "10px" : undefined,
-                          right: user ? "17px" : undefined,
-                          backgroundColor: user ? "olive" : undefined,
-                        }}
-                      />
-                    </Box>
 
-                    <NavLink to="/favorite-products" style={{ textDecoration: "none" }}>
+              <Box sx={{display: "flex", alignItems: "center", gap: "10px"}}>
+                {(user && can(["client"])) || !user ? (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <Box sx={{ display: "flex", gap: "15px" }}>
                       <Box
+                        onClick={() => setOpenCart(true)}
                         sx={{
                           backgroundColor: "#FDE910",
-                          padding: "10px 20px",
-                          borderRadius: "10px",
-                          display: { xs: "none", md: "flex" },
+                          padding: { xs: "5px", sm: "10px", md: "7px 20px" },
+                          borderRadius: { xs: "50%", md: "10px" },
+                          display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
                           cursor: "pointer",
                           transition: "background 0.3s ease",
+                          position: "relative",
                         }}
                       >
-                        <FavoriteIcon sx={{ color: "rgb(52, 51, 50)" }} />
+                        <ShoppingCartIcon sx={{ color: "rgb(52, 51, 50)"}} />
+                        <Badge
+                          badgeContent={sum}
+                          overlap="circular"
+                          color="warning"
+                          sx={{
+                            position: user ? "absolute" : "static",
+                            top: user ? "10px" : undefined,
+                            right: user ? "17px" : undefined,
+                            backgroundColor: user ? "olive" : undefined,
+                          }}
+                        />
                       </Box>
-                    </NavLink>
-                  </Box>
 
-                  <Box
-                    sx={{
-                      position: "fixed",
-                      bottom: 0,
-                      left: 0,
-                      width: "100%",
-                      backgroundColor: "#fff",
-                      boxShadow: "0px -2px 5px #8EA58C",
-                      padding: "20px 0",
-                      display: { xs: "flex", md: "none" },
-                      justifyContent: "space-around",
-                      alignItems: "center",
-                      zIndex: 1000,
-                    }}
-                  >
-                    <NavLink
-                      to="/my_orders"
-                      style={{ textDecoration: "none", marginTop: "5px" }}
+                      <NavLink to="/favorite-products" style={{ textDecoration: "none" }}>
+                        <Box
+                          sx={{
+                            backgroundColor: "#FDE910",
+                            padding: "10px 20px",
+                            borderRadius: "10px",
+                            display: { xs: "none", md: "flex" },
+                            alignItems: "center",
+                            justifyContent: "center",
+                            cursor: "pointer",
+                            transition: "background 0.3s ease",
+                          }}
+                        >
+                          <FavoriteIcon sx={{ color: "rgb(52, 51, 50)" }} />
+                        </Box>
+                      </NavLink>
+                    </Box>
+
+                    <Box
+                      sx={{
+                        position: "fixed",
+                        bottom: 0,
+                        left: 0,
+                        width: "100%",
+                        backgroundColor: "#fff",
+                        boxShadow: "0px -2px 5px #8EA58C",
+                        padding: "20px 0",
+                        display: { xs: "flex", md: "none" },
+                        justifyContent: "space-around",
+                        alignItems: "center",
+                        zIndex: 1000,
+                      }}
                     >
-                      <Badge badgeContent={sum} overlap="circular" color="warning">
-                        <Button
-                          sx={{
-                            color: "black",
-                            display: "flex",
-                            flexDirection: "row",
-                            alignItems: "center",
-                            padding: 0,
-                            gap: "8px",
-                          }}
-                        >
-                          <LocalMallOutlinedIcon
-                            sx={{ width: "27px", height: "27px", color: "black" }}
-                          />
-                        </Button>
-                      </Badge>
-                      <Typography
-                        sx={{
-                          color: "black",
-                          fontSize: "14px",
-                          textTransform: "uppercase",
-                          marginTop: "7px",
-                        }}
-                      >
-                        Заказы
-                      </Typography>
-                    </NavLink>
+                      {user ? <ExistsUser /> : <UnknownUser />}
 
-                    <NavLink to="/favorite-products" style={{ textDecoration: "none" }}>
-                      <Badge badgeContent={sum} overlap="circular" color="warning">
-                        <Button
-                          sx={{
-                            color: "black",
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
-                            padding: 0,
-                            gap: "8px",
-                          }}
-                        >
-                          <FavoriteIcon
+                      <NavLink
+                        to="/my_orders"
+                        style={{ textDecoration: "none", marginTop: "5px" }}
+                      >
+                        <Badge badgeContent={sum} overlap="circular" color="warning">
+                          <Button
                             sx={{
-                              width: "27px",
-                              height: "27px",
                               color: "black",
-                              marginLeft: "20px",
+                              display: "flex",
+                              flexDirection: "row",
+                              alignItems: "center",
+                              padding: 0,
+                              gap: "8px",
                             }}
-                          />
-                        </Button>
-                      </Badge>
-                      <Typography
-                        sx={{
-                          color: "black",
-                          fontSize: "14px",
-                          textTransform: "uppercase",
-                          marginTop: "7px",
-                          textAlign: "center",
-                        }}
-                      >
-                        Избранные
-                      </Typography>
-                    </NavLink>
+                          >
+                            <LocalMallOutlinedIcon
+                              sx={{ width: "27px", height: "27px", color: "black" }}
+                            />
+                          </Button>
+                        </Badge>
+                        <Typography
+                          sx={{
+                            color: "black",
+                            fontSize: "14px",
+                            textTransform: "uppercase",
+                            marginTop: "7px",
+                          }}
+                        >
+                          Заказы
+                        </Typography>
+                      </NavLink>
 
-                    {user ? <ExistsUser /> : <UnknownUser />}
+                      <NavLink to="/favorite-products" style={{ textDecoration: "none" }}>
+                        <Badge badgeContent={sum} overlap="circular" color="warning">
+                          <Button
+                            sx={{
+                              color: "black",
+                              display: "flex",
+                              flexDirection: "column",
+                              alignItems: "center",
+                              padding: 0,
+                              gap: "8px",
+                            }}
+                          >
+                            <FavoriteIcon
+                              sx={{
+                                width: "27px",
+                                height: "27px",
+                                color: "black",
+                                marginLeft: "20px",
+                              }}
+                            />
+                          </Button>
+                        </Badge>
+                        <Typography
+                          sx={{
+                            color: "black",
+                            fontSize: "14px",
+                            textTransform: "uppercase",
+                            marginTop: "7px",
+                            textAlign: "center",
+                          }}
+                        >
+                          Избранные
+                        </Typography>
+                      </NavLink>
+                    </Box>
                   </Box>
+                ) : null}
+
+                <Box
+                  sx={{
+                    display: { xs: "none", md: "flex" },
+                    backgroundColor: "#FDE910",
+                    padding: "7px 20px",
+                    borderRadius: "10px",
+                    alignItems: "center",
+                  }}
+                >
+                  {user ? <ExistsUser /> : <UnknownUser />}
                 </Box>
-              ) : null}
+
+              </Box>
 
               {user && can(["admin", "superAdmin"]) && (
                 <Box
@@ -655,9 +671,6 @@ const MainToolbar = () => {
                   {user ? <ExistsUser /> : <UnknownUser />}
                 </Box>
               )}
-              <Box sx={{ "@media (max-width: 1100px)": { display: "none" } }}>
-                {user ? <ExistsUser /> : <UnknownUser />}
-              </Box>
             </Toolbar>
             <Box
               sx={{

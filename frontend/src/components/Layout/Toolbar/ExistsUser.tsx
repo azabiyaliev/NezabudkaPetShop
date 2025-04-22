@@ -75,14 +75,14 @@ const ExistsUser = () => {
             sx={{
               width: "30px",
               height: "30px",
-              color: "white",
-              "@media (max-width: 1100px)": { color: "black" },
+              color: "#343332",
+              "@media (max-width: 1100px)": { color: "#343332" },
             }}
           />
           {user && (
             <Typography
               sx={{
-                color: "white",
+                color: "#343332",
                 fontSize: "16px",
                 fontWeight: "500",
                 textTransform: "uppercase",
