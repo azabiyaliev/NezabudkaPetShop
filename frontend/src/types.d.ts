@@ -42,6 +42,7 @@ export interface AdminRefactor {
   firstName: string;
   secondName: string;
   email: string;
+  phone: string;
 }
 
 export interface RegisterResponse {
