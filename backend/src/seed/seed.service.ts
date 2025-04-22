@@ -778,7 +778,7 @@ export class SeedService {
       birdFeedersAndDrinkers,
     ] = subCategory;
 
-    await Promise.all([
+    const products = await Promise.all([
       this.prisma.products.create({
         data: {
           productName: 'Про Полнорационный – Сухой корм для собак',
@@ -1985,6 +1985,9 @@ export class SeedService {
       }),
     ]);
 
+    const [firstProd, secondProd, thirdProd, fourthProd, fifthProd, sixthProd] =
+      products;
+
     await Promise.all([
       this.prisma.order.create({
         data: {
@@ -2005,12 +2008,12 @@ export class SeedService {
               {
                 quantity: 2,
                 orderAmount: 2400,
-                productId: 1,
+                productId: firstProd.id,
               },
               {
                 quantity: 1,
                 orderAmount: 2500,
-                productId: 2,
+                productId: secondProd.id,
               },
             ],
           },
@@ -2033,7 +2036,7 @@ export class SeedService {
               {
                 quantity: 3,
                 orderAmount: 1500,
-                productId: 3,
+                productId: thirdProd.id,
               },
             ],
           },
@@ -2057,7 +2060,7 @@ export class SeedService {
               {
                 quantity: 1,
                 orderAmount: 4500,
-                productId: 4,
+                productId: fourthProd.id,
               },
             ],
           },
@@ -2082,12 +2085,12 @@ export class SeedService {
               {
                 quantity: 1,
                 orderAmount: 500,
-                productId: 5,
+                productId: fifthProd.id,
               },
               {
                 quantity: 2,
                 orderAmount: 1000,
-                productId: 6,
+                productId: sixthProd.id,
               },
             ],
           },
@@ -2113,12 +2116,12 @@ export class SeedService {
               {
                 quantity: 2,
                 orderAmount: 2400,
-                productId: 1,
+                productId: firstProd.id,
               },
               {
                 quantity: 1,
                 orderAmount: 2500,
-                productId: 2,
+                productId: secondProd.id,
               },
             ],
           },
@@ -2141,7 +2144,7 @@ export class SeedService {
               {
                 quantity: 3,
                 orderAmount: 1500,
-                productId: 3,
+                productId: thirdProd.id,
               },
             ],
           },
@@ -2165,7 +2168,7 @@ export class SeedService {
               {
                 quantity: 1,
                 orderAmount: 4500,
-                productId: 4,
+                productId: fourthProd.id,
               },
             ],
           },
@@ -2191,12 +2194,12 @@ export class SeedService {
               {
                 quantity: 1,
                 orderAmount: 500,
-                productId: 5,
+                productId: fifthProd.id,
               },
               {
                 quantity: 2,
                 orderAmount: 1000,
-                productId: 6,
+                productId: sixthProd.id,
               },
             ],
           },
@@ -2222,12 +2225,12 @@ export class SeedService {
               {
                 quantity: 2,
                 orderAmount: 2400,
-                productId: 1,
+                productId: firstProd.id,
               },
               {
                 quantity: 1,
                 orderAmount: 2500,
-                productId: 2,
+                productId: secondProd.id,
               },
             ],
           },
@@ -2250,7 +2253,7 @@ export class SeedService {
               {
                 quantity: 3,
                 orderAmount: 1500,
-                productId: 3,
+                productId: thirdProd.id,
               },
             ],
           },
@@ -2274,7 +2277,7 @@ export class SeedService {
               {
                 quantity: 1,
                 orderAmount: 4500,
-                productId: 4,
+                productId: fourthProd.id,
               },
             ],
           },
@@ -2300,12 +2303,12 @@ export class SeedService {
               {
                 quantity: 1,
                 orderAmount: 500,
-                productId: 5,
+                productId: fifthProd.id,
               },
               {
                 quantity: 2,
                 orderAmount: 1000,
-                productId: 6,
+                productId: sixthProd.id,
               },
             ],
           },
@@ -2331,12 +2334,12 @@ export class SeedService {
               {
                 quantity: 2,
                 orderAmount: 2400,
-                productId: 1,
+                productId: firstProd.id,
               },
               {
                 quantity: 1,
                 orderAmount: 2500,
-                productId: 2,
+                productId: secondProd.id,
               },
             ],
           },
@@ -2359,7 +2362,7 @@ export class SeedService {
               {
                 quantity: 3,
                 orderAmount: 1500,
-                productId: 3,
+                productId: thirdProd.id,
               },
             ],
           },
@@ -2383,7 +2386,7 @@ export class SeedService {
               {
                 quantity: 1,
                 orderAmount: 4500,
-                productId: 4,
+                productId: fourthProd.id,
               },
             ],
           },
@@ -2409,12 +2412,12 @@ export class SeedService {
               {
                 quantity: 1,
                 orderAmount: 500,
-                productId: 5,
+                productId: fifthProd.id,
               },
               {
                 quantity: 2,
                 orderAmount: 1000,
-                productId: 6,
+                productId: sixthProd.id,
               },
             ],
           },
@@ -2440,12 +2443,12 @@ export class SeedService {
               {
                 quantity: 2,
                 orderAmount: 2400,
-                productId: 1,
+                productId: firstProd.id,
               },
               {
                 quantity: 1,
                 orderAmount: 2500,
-                productId: 2,
+                productId: secondProd.id,
               },
             ],
           },
@@ -2468,7 +2471,7 @@ export class SeedService {
               {
                 quantity: 3,
                 orderAmount: 1500,
-                productId: 3,
+                productId: thirdProd.id,
               },
             ],
           },
@@ -2492,7 +2495,7 @@ export class SeedService {
               {
                 quantity: 1,
                 orderAmount: 4500,
-                productId: 4,
+                productId: fourthProd.id,
               },
             ],
           },
@@ -2518,12 +2521,12 @@ export class SeedService {
               {
                 quantity: 1,
                 orderAmount: 500,
-                productId: 5,
+                productId: fifthProd.id,
               },
               {
                 quantity: 2,
                 orderAmount: 1000,
-                productId: 6,
+                productId: sixthProd.id,
               },
             ],
           },
@@ -2549,12 +2552,12 @@ export class SeedService {
               {
                 quantity: 2,
                 orderAmount: 2400,
-                productId: 1,
+                productId: firstProd.id,
               },
               {
                 quantity: 1,
                 orderAmount: 2500,
-                productId: 2,
+                productId: secondProd.id,
               },
             ],
           },
@@ -2577,7 +2580,7 @@ export class SeedService {
               {
                 quantity: 3,
                 orderAmount: 1500,
-                productId: 3,
+                productId: thirdProd.id,
               },
             ],
           },
@@ -2601,7 +2604,7 @@ export class SeedService {
               {
                 quantity: 1,
                 orderAmount: 4500,
-                productId: 4,
+                productId: fourthProd.id,
               },
             ],
           },
@@ -2627,12 +2630,12 @@ export class SeedService {
               {
                 quantity: 1,
                 orderAmount: 500,
-                productId: 5,
+                productId: fifthProd.id,
               },
               {
                 quantity: 2,
                 orderAmount: 1000,
-                productId: 6,
+                productId: sixthProd.id,
               },
             ],
           },
@@ -2658,12 +2661,12 @@ export class SeedService {
               {
                 quantity: 2,
                 orderAmount: 2400,
-                productId: 1,
+                productId: firstProd.id,
               },
               {
                 quantity: 1,
                 orderAmount: 2500,
-                productId: 2,
+                productId: secondProd.id,
               },
             ],
           },
@@ -2686,7 +2689,7 @@ export class SeedService {
               {
                 quantity: 3,
                 orderAmount: 1500,
-                productId: 3,
+                productId: thirdProd.id,
               },
             ],
           },
@@ -2710,7 +2713,7 @@ export class SeedService {
               {
                 quantity: 1,
                 orderAmount: 4500,
-                productId: 4,
+                productId: fourthProd.id,
               },
             ],
           },
@@ -2736,12 +2739,12 @@ export class SeedService {
               {
                 quantity: 1,
                 orderAmount: 500,
-                productId: 5,
+                productId: fifthProd.id,
               },
               {
                 quantity: 2,
                 orderAmount: 1000,
-                productId: 6,
+                productId: sixthProd.id,
               },
             ],
           },
@@ -2767,12 +2770,12 @@ export class SeedService {
               {
                 quantity: 2,
                 orderAmount: 2400,
-                productId: 1,
+                productId: firstProd.id,
               },
               {
                 quantity: 1,
                 orderAmount: 2500,
-                productId: 2,
+                productId: secondProd.id,
               },
             ],
           },
@@ -2795,7 +2798,7 @@ export class SeedService {
               {
                 quantity: 3,
                 orderAmount: 1500,
-                productId: 3,
+                productId: thirdProd.id,
               },
             ],
           },
@@ -2819,7 +2822,7 @@ export class SeedService {
               {
                 quantity: 1,
                 orderAmount: 4500,
-                productId: 4,
+                productId: fourthProd.id,
               },
             ],
           },
@@ -2845,12 +2848,12 @@ export class SeedService {
               {
                 quantity: 1,
                 orderAmount: 500,
-                productId: 5,
+                productId: fifthProd.id,
               },
               {
                 quantity: 2,
                 orderAmount: 1000,
-                productId: 6,
+                productId: sixthProd.id,
               },
             ],
           },
