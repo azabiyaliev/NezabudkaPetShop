@@ -119,7 +119,6 @@ const HomePage = () => {
     }
   }, [dispatch, cart, user]);
 
-  console.log(promotionalProducts);
 
   return (
     <Container>
