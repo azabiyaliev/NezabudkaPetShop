@@ -19,7 +19,7 @@ interface UserState {
   loginLoading: boolean;
   loginError: ValidationError | null;
   editLoading: boolean;
-  editError: GlobalError | null;
+  editError: ValidationError | null;
   passwordCodeLoading: boolean;
   passwordCodeError: GlobalError | null;
   passwordCodeMessage: string | null;
@@ -56,6 +56,7 @@ export const selectLoginLoading = (state: RootState) =>
   state.users.loginLoading;
 export const selectLoginError = (state: RootState) => state.users.loginError;
 export const meCheck = (state: RootState) => state.users.meChecked;
+export const errorUpdate = (state: RootState) => state.users.editError
 
 export const userSlice = createSlice({
   name: "users",
@@ -141,11 +142,10 @@ export const userSlice = createSlice({
       .addCase(updateUser.fulfilled, (state, action) => {
         state.editLoading = false;
         state.user = action.payload;
-        state.editError = null;
       })
-      .addCase(updateUser.rejected, (state) => {
+      .addCase(updateUser.rejected, (state,{ payload: error }) => {
         state.editLoading = false;
-        state.editError = null;
+        state.editError = error as ValidationError;
       })
       .addCase(sendPasswordCode.pending, (state) => {
         state.passwordCodeLoading = true;

@@ -5,7 +5,6 @@ import {
   AdminRefactor,
   ChangePasswordPayload,
   ChangePasswordResponse, ErrorMutation,
-  GlobalError,
   LogInMutation,
   RegisterMutation,
   RegisterResponse,
@@ -101,7 +100,7 @@ export const updateUser = createAsyncThunk<
   { id: number; data: Partial<User> },
   {
     state: RootState;
-    ejectValue: GlobalError;
+    ejectValue: ValidationError;
   }
 >("users/updateUser", async ({ id, data }, { getState, rejectWithValue }) => {
   const state = getState();
@@ -120,11 +119,11 @@ export const updateUser = createAsyncThunk<
       const { status, data } = error.response;
 
       if (status === 404 && data.error) {
-        return rejectWithValue(data as GlobalError);
+        return rejectWithValue(data as ValidationError);
       }
 
       if (status === 401 && data.error) {
-        return rejectWithValue(data as GlobalError);
+        return rejectWithValue(data as ValidationError);
       }
     }
     throw error;

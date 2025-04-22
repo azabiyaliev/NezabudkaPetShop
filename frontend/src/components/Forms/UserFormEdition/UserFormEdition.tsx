@@ -8,14 +8,17 @@ import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
 import React, { useEffect, useState } from "react";
 import { AdminRefactor } from "../../../types";
 import { fetchUserById, updateUser } from "../../../store/users/usersThunk.ts";
-import { selectUser } from "../../../store/users/usersSlice.ts";
+import { errorUpdate, selectUser } from '../../../store/users/usersSlice.ts';
 import ModalWindowPasswordChange from "../../UI/ModalWindow/ModalWindowPasswordChange.tsx";
 import LockResetIcon from "@mui/icons-material/LockReset";
+import { regPhone } from "../../../globalConstants.ts";
+import { regEmail } from '../EditSiteForm/EditSiteForm.tsx';
 
 const initialState = {
   firstName: "",
   secondName: "",
   email: "",
+  phone:"",
 };
 
 const UserFormEdition = () => {
@@ -25,6 +28,11 @@ const UserFormEdition = () => {
   const [form, setForm] = useState<AdminRefactor>(initialState);
   const user = useAppSelector(selectUser);
   const [open, setOpen] = useState(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [secondName, setSecondName] = useState("");
+  const errorEdit = useAppSelector(errorUpdate)
 
   useEffect(() => {
     if (!user) {
@@ -41,6 +49,7 @@ const UserFormEdition = () => {
             firstName: user.firstName || "",
             secondName: user.secondName || "",
             email: user.email || "",
+            phone: user.phone || "",
           }),
         );
     }
@@ -49,6 +58,30 @@ const UserFormEdition = () => {
   const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setForm((prevState) => ({ ...prevState, [name]: value }));
+
+    if (name === "phone") {
+      if (value.trim() === "") {
+        setPhone("");
+      } else {
+        setPhone(
+          regPhone.test(value) ? "" : "Неправильный формат телефона",
+        );
+      }
+    }
+
+    if (name === "email") {
+      setEmail(regEmail.test(value) ? "" : "Неправильный формат email");
+    }
+
+    if (name === "firstName") setName("");
+    if (name === "secondName") setSecondName("");
+
+    if (name === "firstName" && value.trim() === "") {
+      setName("Поле имени не может быть пустым");
+    }
+    if (name === "secondName" && value.trim() === "") {
+      setSecondName("Поле для фамилии не может быть пустым");
+    }
   };
 
   const submitHandler = async (e: React.FormEvent) => {
@@ -103,6 +136,15 @@ const UserFormEdition = () => {
     setOpen(true);
   };
 
+  const getFieldError = (fieldName: string) => errorEdit?.errors?.[fieldName] || "";
+
+  const isButtonFormInvalid =
+    Object.values(form).some(value => typeof value === "string" && value.trim() === "") ||
+    Boolean(phone) ||
+    Boolean(email) ||
+    Boolean(name) ||
+    Boolean(secondName)
+
   return (
     <div>
       <Container component="main" maxWidth="lg" sx={{ position: "relative" }}>
@@ -153,6 +195,8 @@ const UserFormEdition = () => {
                     borderRadius: "7px",
                     mb: 5,
                   }}
+                  error={!!getFieldError("firstName") || Boolean(name)}
+                  helperText={getFieldError("firstName") || name}
                 />
               </div>
               <div className="col-md-6">
@@ -169,6 +213,8 @@ const UserFormEdition = () => {
                     backgroundColor: "white",
                     borderRadius: "7px",
                   }}
+                  error={!!getFieldError("secondName") || Boolean(secondName)}
+                  helperText={getFieldError("secondName") || secondName}
                 />
               </div>
             </div>
@@ -188,6 +234,30 @@ const UserFormEdition = () => {
                     backgroundColor: "white",
                     borderRadius: "7px",
                   }}
+                  error={!!getFieldError("email") || Boolean(email)}
+                  helperText={getFieldError("email") || email}
+                />
+              </div>
+            </div>
+
+            <div className="row">
+              <div className="col-12">
+                <TextField
+                  fullWidth
+                  name="phone"
+                  label="Номер телефона"
+                  type="phone"
+                  id="phone"
+                  value={form.phone}
+                  onChange={inputChangeHandler}
+                  variant="outlined"
+                  sx={{
+                    backgroundColor: "white",
+                    borderRadius: "7px",
+                    mt:3,
+                  }}
+                  error={!!getFieldError("phone") || Boolean(phone)}
+                  helperText={getFieldError("phone") || phone}
                 />
               </div>
             </div>
@@ -195,6 +265,7 @@ const UserFormEdition = () => {
             {user && user.role === "admin" && (
               <Button
                 type="submit"
+                disabled={isButtonFormInvalid}
                 variant="contained"
                 sx={{
                   mt: 3,
@@ -210,6 +281,7 @@ const UserFormEdition = () => {
             {user && user.role === "client" && (
               <Button
                 type="submit"
+                disabled={isButtonFormInvalid}
                 variant="contained"
                 sx={{
                   mt: 3,
