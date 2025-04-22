@@ -28,7 +28,7 @@ const HomePage = () => {
   const mergeCarts = (cart: ICartBack, localCart: ICartBack): ICartItem[] => {
     const mergedCart: ICartItem[] = [...cart.products];
 
-    if (localCart !== null) {
+    if (localCart && Array.isArray(localCart.products)) {
       localCart.products.forEach((localProduct) => {
         const existingItemIndex = mergedCart.findIndex(
           (item) => item.productId === localProduct.productId
@@ -38,10 +38,9 @@ const HomePage = () => {
           mergedCart.push(localProduct);
         }
       });
-      return mergedCart;
-    } else {
-      return cart.products;
     }
+
+    return mergedCart;
   };
 
   useEffect(() => {
@@ -49,11 +48,22 @@ const HomePage = () => {
       const cartFromLS = localStorage.getItem("cart");
 
       if (cartFromLS !== null) {
-        const localCart = JSON.parse(cartFromLS);
-        setProducts([]);
-        const allUserProducts = mergeCarts(cart, localCart);
-        setProducts(allUserProducts);
-        localStorage.removeItem("cart");
+        try {
+          const parsed = JSON.parse(cartFromLS);
+
+          if (parsed && Array.isArray(parsed.products)) {
+            setProducts([]);
+            const allUserProducts = mergeCarts(cart, parsed);
+            setProducts(allUserProducts);
+            localStorage.removeItem("cart");
+          } else {
+            console.warn("Некорректный формат localCart, удаляем...");
+            localStorage.removeItem("cart");
+          }
+        } catch (e) {
+          console.warn("Ошибка парсинга cart из localStorage:", e);
+          localStorage.removeItem("cart");
+        }
       }
     }
   }, [user, cart, dispatch]);
