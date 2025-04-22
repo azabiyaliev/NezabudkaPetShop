@@ -5,7 +5,6 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
 import PromotionalProduct from './PromotionalProduct/PromotionalProduct.tsx';
 
-
 interface Props {
   products: ProductResponse[];
 }
@@ -81,7 +80,9 @@ const PromotionalProducts:React.FC<Props> = ({products}) => {
               <Box sx={{
                 display: 'flex',
                 justifyContent: 'center',
-                margin: '0 auto'
+                margin: '0 auto',
+                alignItems: 'stretch',
+                height: '100%',
               }}>
                 <PromotionalProduct product={product} />
               </Box>
