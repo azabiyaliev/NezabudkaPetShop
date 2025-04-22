@@ -16,6 +16,7 @@ import { ICartBack, ICartItem } from '../../types';
 import { userRoleClient } from '../../globalConstants.ts';
 import { selectPromotionalProducts } from '../../store/products/productsSlice.ts';
 import { getPromotionalProducts } from '../../store/products/productsThunk.ts';
+import PromotionalProducts from '../Product/components/PromotionalProducts/PromotionalProducts.tsx';
 
 const HomePage = () => {
   const [openCart, setOpenCart] = useState<boolean>(false);
@@ -24,7 +25,7 @@ const HomePage = () => {
   const brands = useAppSelector(brandsFromSlice);
   const user = useAppSelector(selectUser);
   const cart = useAppSelector(cartFromSlice);
-  const productsFromAPI = useAppSelector(selectPromotionalProducts);
+  const promotionalProducts = useAppSelector(selectPromotionalProducts);
   const createCartError = useAppSelector(cartErrorFromSlice);
   const dispatch = useAppDispatch();
 
@@ -108,7 +109,7 @@ const HomePage = () => {
     }
   }, [dispatch, cart, user]);
 
-  console.log(productsFromAPI);
+  console.log(promotionalProducts);
 
   return (
     <Container>
@@ -152,6 +153,22 @@ const HomePage = () => {
           Купите для своего питомца
         </Typography>
         <CategoryCard/>
+      </Box>
+
+      <Box>
+        <Typography
+          sx={{
+            fontSize: "40px",
+            mb: 0.5,
+            color: "rgba(250, 143, 1, 1)",
+            textAlign: "center",
+          }}
+        >
+          Акции
+        </Typography>
+        {promotionalProducts.length > 0 && (
+          <PromotionalProducts products={promotionalProducts}/>
+        )}
       </Box>
 
       {brands.length > 0 && (

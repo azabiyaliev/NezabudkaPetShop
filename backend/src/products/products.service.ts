@@ -68,6 +68,7 @@ export class ProductsService {
   async getPromotionalProducts() {
     const products = await this.prismaService.products.findMany({
       where: { sales: true },
+      include: { brand: true, category: true },
     });
     return products || [];
   }
