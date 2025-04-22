@@ -15,6 +15,7 @@ import { RootState } from "../../app/store.ts";
 
 interface ProductsState {
   products: ProductResponse[];
+  categoryProducts: ProductResponse[];
   product: ProductRequest | null;
   brands: SubcategoryWithBrand[];
   promotionalProducts: ProductResponse[];
@@ -24,6 +25,7 @@ interface ProductsState {
 
 const initialState: ProductsState = {
   brands: [],
+  categoryProducts: [],
   products: [],
   promotionalProducts: [],
   product: null,
@@ -32,6 +34,7 @@ const initialState: ProductsState = {
 };
 
 export const addProductLoading = (state: RootState) => state.products.loading;
+export const selectProductsByCategory = (state: RootState) => state.products.categoryProducts;
 export const selectProducts = (state: RootState) => state.products.products;
 export const selectPromotionalProducts = (state: RootState) => state.products.promotionalProducts;
 export const selectProduct = (state: RootState) => state.products.product;
@@ -111,7 +114,7 @@ const productsSlice = createSlice({
       .addCase(getProductsByCategory.fulfilled, (state, action: PayloadAction<ProductResponse[]>) => {
         state.products = [];
         state.loading = false;
-        state.products = action.payload;
+        state.categoryProducts = action.payload;
       })
       .addCase(getProductsByCategory.rejected, (state) => {
         state.loading = false;

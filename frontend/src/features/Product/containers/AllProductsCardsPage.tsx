@@ -1,24 +1,26 @@
 import { Box, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
-import { getProducts, getProductsByCategory, } from '../../../store/products/productsThunk.ts';
-import { selectProducts } from '../../../store/products/productsSlice.ts';
+import { getProductsByCategory, } from '../../../store/products/productsThunk.ts';
+import { selectProductsByCategory } from '../../../store/products/productsSlice.ts';
 import OneProductCard from '../components/OneProductCard.tsx';
 import { getFavoriteProducts } from '../../../store/favoriteProducts/favoriteProductsThunks.ts';
 import { selectUser } from '../../../store/users/usersSlice.ts';
 import { useNavigate, useParams } from 'react-router-dom';
-import { fetchCategoriesThunk, fetchSubcategories, } from '../../../store/categories/categoriesThunk.ts';
-import { selectAllSubcategories, selectCategories, } from '../../../store/categories/categoriesSlice.ts';
+import {
+  fetchCategoriesThunk,
+  fetchOneCategoryThunk,
+} from '../../../store/categories/categoriesThunk.ts';
+import { selectCategories, } from '../../../store/categories/categoriesSlice.ts';
 import { clearCart } from '../../../store/cart/cartSlice.ts';
 import { fetchCart } from '../../../store/cart/cartThunk.ts';
 
 const AllProductsCardsPage = () => {
   const dispatch = useAppDispatch();
-  const products = useAppSelector(selectProducts);
+  const products = useAppSelector(selectProductsByCategory);
   const [columns, setColumns] = useState(4);
   const user = useAppSelector(selectUser);
   const { id } = useParams();
-  const subcategories = useAppSelector(selectAllSubcategories);
   const categories = useAppSelector(selectCategories);
   const navigate = useNavigate();
   const selectedId = Number(id);
@@ -29,18 +31,7 @@ const AllProductsCardsPage = () => {
     category.subcategories?.some((sub) => sub.id === selectedId),
   );
 
-  useEffect(() => {
-    if (!id || !categories.length) return;
-    if (id) {
-      const numId = Number(id);
-      dispatch(getProductsByCategory(numId));
-      const parent = categories.find((category) =>
-        category.subcategories?.some((sub) => sub.id === numId),
-      );
-      if (parent) dispatch(fetchSubcategories(Number(parent.id))).unwrap();
-    } else dispatch(getProducts(""));
-    if (user) dispatch(getFavoriteProducts());
-  }, [dispatch, user, id, categories]);
+  const subcategories = selectedCategory?.subcategories || parentCategory?.subcategories;
 
   useEffect(() => {
     dispatch(fetchCategoriesThunk()).unwrap();
@@ -50,6 +41,19 @@ const AllProductsCardsPage = () => {
       dispatch(fetchCart()).unwrap();
     }
   }, [dispatch, user]);
+
+  useEffect(() => {
+    if (!id || !categories.length) return;
+    if (id) {
+      const numId = Number(id);
+      dispatch(getProductsByCategory(numId));
+      const parent = categories.find((category) =>
+        category.subcategories?.some((sub) => sub.id === numId),
+      );
+      if (parent) dispatch(fetchOneCategoryThunk(String(parent.id))).unwrap();
+    }
+    if (user) dispatch(getFavoriteProducts());
+  }, [dispatch, user, id, categories]);
 
   return (
     <Box sx={{ maxWidth: "1350px", margin: "0 auto", padding: 4 }}>
@@ -111,7 +115,7 @@ const AllProductsCardsPage = () => {
             </Box>
           </Box>
         )}
-        {subcategories.map((subcategory) => {
+        {subcategories && subcategories.map((subcategory) => {
           const isSelected = selectedId === subcategory.id;
           return (
             <Box
