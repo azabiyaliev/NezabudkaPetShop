@@ -182,6 +182,7 @@ export interface ProductRequest {
   category?: ICategories;
   startDateSales?: Date | null | string;
   endDateSales?: Date | null | string;
+  brand: IBrand;
 }
 
 export interface ICartBack {
