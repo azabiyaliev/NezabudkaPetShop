@@ -6,11 +6,11 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { Divider, IconButton, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import { ruRU } from '@mui/x-data-grid/locales';
-import { apiUrl } from '../../../../globalConstants.ts';
+import { apiUrl, userRoleAdmin, userRoleSuperAdmin } from '../../../../globalConstants.ts';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../../../../app/hooks.ts';
+import { useAppDispatch, useAppSelector, usePermission } from '../../../../app/hooks.ts';
 import { selectUser } from '../../../../store/users/usersSlice.ts';
 import {
   deleteProduct,
@@ -28,9 +28,10 @@ const Products: React.FC<Props> = ({products}) => {
   const user = useAppSelector(selectUser);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const can = usePermission(user);
 
-  const productDelete = async (id: number) => {
-    if (user && user.role === 'admin') {
+    const productDelete = async (id: number) => {
+    if (user && can([userRoleAdmin, userRoleSuperAdmin])) {
       await dispatch(
         deleteProduct({productId: id, token: user.token}),
       ).unwrap();
