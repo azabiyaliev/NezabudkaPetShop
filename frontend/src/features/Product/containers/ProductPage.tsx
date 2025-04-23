@@ -6,7 +6,7 @@ import { getOneProduct } from "../../../store/products/productsThunk.ts";
 import { useParams } from "react-router-dom";
 import { selectProduct } from "../../../store/products/productsSlice.ts";
 import { apiUrl } from "../../../globalConstants.ts";
-import HistoryProduct from '../../../components/Domain/HistoryProduct/HistoryProduct.tsx';
+import HistoryProducts from '../../../components/Domain/HistoryProducts/HistoryProducts.tsx';
 import '../../../components/TextEditor/styles.css'
 
 const ProductPage = () => {
@@ -84,7 +84,7 @@ const ProductPage = () => {
         <div className="quill-content" dangerouslySetInnerHTML={{ __html: product?.productDescription || '' }} />
       </Box>
       <Box sx={{mt: 5}}>
-        <HistoryProduct/>
+        <HistoryProducts/>
       </Box>
     </div>
   );
