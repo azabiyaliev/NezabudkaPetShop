@@ -29,7 +29,7 @@ const UnknownUser = () => {
           display: "flex",
           alignItems: "center",
           gap: 2,
-          "@media (min-width: 1100px)": {
+          "@media (min-width: 900px)": {
             flexDirection: "row",
           },
         }}
@@ -47,7 +47,7 @@ const UnknownUser = () => {
             alignItems: "center",
             padding: 0,
             gap: "4px",
-            "@media (min-width: 1100px)": {
+            "@media (min-width: 900px)": {
               flexDirection: "row",
               gap: "8px",
             },
@@ -70,7 +70,6 @@ const UnknownUser = () => {
               "@media (max-width: 1100px)": {
                 color: "black",
                 fontSize: "14px",
-                marginTop: "-10px",
                 marginLeft: 0,
               },
             }}

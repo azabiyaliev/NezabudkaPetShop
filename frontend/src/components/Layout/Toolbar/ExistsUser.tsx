@@ -51,7 +51,7 @@ const ExistsUser = () => {
           flexDirection: "column",
           alignItems: "center",
           gap: 2,
-          "@media (min-width: 1100px)": {
+          "@media (max-width: 900px)": {
             flexDirection: "row",
           },
         }}
@@ -64,7 +64,7 @@ const ExistsUser = () => {
             flexDirection: "column",
             alignItems: "center",
             padding: 0,
-            "@media (min-width: 1100px)": {
+            "@media (min-width: 900px)": {
               flexDirection: "row",
               gap: "8px",
             },
@@ -88,7 +88,6 @@ const ExistsUser = () => {
                 "@media (max-width: 1100px)": {
                   color: "black",
                   fontSize: "14px",
-                  marginTop: "7px",
                   marginLeft: 0,
                 },
               }}
