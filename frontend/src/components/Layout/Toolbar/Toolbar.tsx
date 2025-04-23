@@ -6,7 +6,7 @@ import {
   InputBase,
   Toolbar,
 } from "@mui/material";
-import { NavLink, useNavigate, useParams } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import {
   useAppDispatch,
   useAppSelector,
@@ -57,13 +57,12 @@ const MainToolbar = () => {
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState<string>("");
   const can = usePermission(user);
-  const { id } = useParams<{ id: string }>();
 
   useEffect(() => {
-    if (id) {
-      dispatch(fetchUserIdBonus(id)).unwrap();
+    if (user?.id) {
+      dispatch(fetchUserIdBonus(String(user.id))).unwrap();
     }
-  }, [dispatch, id]);
+  }, [dispatch, user?.id]);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -105,8 +104,6 @@ const MainToolbar = () => {
       acc = acc + i;
       return acc;
     }, 0);
-
-  console.log(user);
 
   return (
     <div>
