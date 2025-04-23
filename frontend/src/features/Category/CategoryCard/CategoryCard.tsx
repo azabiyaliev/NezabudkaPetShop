@@ -7,11 +7,13 @@ import { useNavigate } from 'react-router-dom';
 import { apiUrl } from '../../../globalConstants.ts';
 import theme from '../../../globalStyles/globalTheme.ts';
 
+
 const CategoryCard = () => {
   const categories = useAppSelector(selectCategories);
   const navigate = useNavigate();
 
   const filteredCategories = categories.filter(category => category.image !== null);
+
 
   return (
     <div className="d-flex flex-wrap gap-4 justify-content-center">
