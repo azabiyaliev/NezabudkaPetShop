@@ -974,6 +974,11 @@ const MainToolbar = () => {
                       zIndex: 1000,
                       marginTop: 1,
                       borderRadius: 1,
+                      "@media (max-width: 1430px)": {
+                        top: "32%",
+                        left: 12,
+                        width: "98%",
+                      },
                     }}
                   >
                     {products.length > 0 ? (
