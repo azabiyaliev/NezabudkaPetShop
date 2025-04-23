@@ -1,6 +1,6 @@
 import { Box, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
+import { useAppDispatch, useAppSelector, usePermission } from '../../../app/hooks.ts';
 import { getProductsByCategory, } from '../../../store/products/productsThunk.ts';
 import { selectProductsByCategory } from '../../../store/products/productsSlice.ts';
 import OneProductCard from '../components/OneProductCard.tsx';
@@ -14,12 +14,14 @@ import {
 import { selectCategories, } from '../../../store/categories/categoriesSlice.ts';
 import { clearCart } from '../../../store/cart/cartSlice.ts';
 import { fetchCart } from '../../../store/cart/cartThunk.ts';
+import { userRoleClient } from '../../../globalConstants.ts';
 
 const AllProductsCardsPage = () => {
   const dispatch = useAppDispatch();
   const products = useAppSelector(selectProductsByCategory);
   const [columns, setColumns] = useState(4);
   const user = useAppSelector(selectUser);
+  const can = usePermission(user);
   const { id } = useParams();
   const categories = useAppSelector(selectCategories);
   const navigate = useNavigate();
@@ -36,11 +38,11 @@ const AllProductsCardsPage = () => {
   useEffect(() => {
     dispatch(fetchCategoriesThunk()).unwrap();
 
-    if (user) {
+    if (user && can([userRoleClient])) {
       dispatch(clearCart());
       dispatch(fetchCart()).unwrap();
     }
-  }, [dispatch, user]);
+  }, [dispatch, user, can]);
 
   useEffect(() => {
     if (!id || !categories.length) return;
