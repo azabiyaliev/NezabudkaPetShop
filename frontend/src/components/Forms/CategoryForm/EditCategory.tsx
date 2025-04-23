@@ -8,13 +8,14 @@ import {
 } from '../../../store/categories/categoriesThunk.ts';
 import { toast } from 'react-toastify';
 import FileInputCategory from '../../FileInput/FileInputCategory.tsx';
+import FileInputForBrand from '../../Domain/Brand/FileInputForBrand/FileInputForBrand.tsx';
 
 interface EditCategoryProps {
   category: {
     id: number;
     title: string;
-    icon?: string;  // Строка или URL для иконки
-    image?: string; // Строка или URL для изображения
+    icon?: string;
+    image?: string;
   };
   onClose: () => void;
 }
@@ -22,8 +23,8 @@ interface EditCategoryProps {
 const EditCategory: React.FC<EditCategoryProps> = ({ category, onClose }) => {
   const [editedCategory, setEditedCategory] = useState<{
     title: string;
-    icon: File | string | null;  // icon может быть строкой, файлом или null
-    image: File | string | null; // image может быть строкой, файлом или null
+    icon: File | string | null;
+    image: File | string | null;
   }>({
     title: category.title,
     icon: category.icon || null,
@@ -40,15 +41,8 @@ const EditCategory: React.FC<EditCategoryProps> = ({ category, onClose }) => {
   const [imagePreview, setImagePreview] = useState<string | null>(category.image || null);
 
   useEffect(() => {
-    setEditedCategory({
-      title: category.title,
-      icon: category.icon || null,
-      image: category.image || null
-    });
-
-    if (category.icon) setIconPreview(category.icon);  // Для предпросмотра иконки
-    if (category.image) setImagePreview(category.image); // Для предпросмотра изображения
-  }, [category]);
+    dispatch(fetchCategoriesThunk())
+  }, [dispatch]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,8 +59,8 @@ const EditCategory: React.FC<EditCategoryProps> = ({ category, onClose }) => {
         id: String(category.id),
         category: {
           title: editedCategory.title,
-          icon: editedCategory.icon,
-          image: editedCategory.image
+          icon: editedCategory.icon instanceof File ? editedCategory.icon : undefined,
+          image: editedCategory.image instanceof File ? editedCategory.image : undefined,
         },
         token: user.token,
       }));
@@ -89,19 +83,21 @@ const EditCategory: React.FC<EditCategoryProps> = ({ category, onClose }) => {
     }));
   }, []);
 
-  // Обрабатываем изменения файлов
-  const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, files } = e.target;
-    if (files && files[0]) {
-      const file = files[0];
-      setEditedCategory(prev => ({
-        ...prev,
-        [name]: file,
-      }));
+  const fileInputChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, files } = event.target;
+    if (!files || files.length === 0) return;
 
-      const previewURL = URL.createObjectURL(file);
-      if (name === 'icon') setIconPreview(previewURL);
-      if (name === 'image') setImagePreview(previewURL);
+    const file = files[0];
+
+    setEditedCategory((prevState) => ({
+      ...prevState,
+      [name]: file,
+    }));
+
+    if (name === 'icon') {
+      setIconPreview(URL.createObjectURL(file));
+    } else if (name === 'image') {
+      setImagePreview(URL.createObjectURL(file));
     }
   };
 
@@ -125,11 +121,11 @@ const EditCategory: React.FC<EditCategoryProps> = ({ category, onClose }) => {
             <img src={iconPreview} alt="icon preview" width="40" height="40" style={{ objectFit: 'cover' }} />
           )}
           <FileInputCategory
-            id="icon"
             name="icon"
             label="Выберите иконку"
-            onGetFile={onFileChange}
-            file={editedCategory.icon instanceof File ? editedCategory.icon : null}  // Отправляем только File для компонента
+            onGetFile={fileInputChangeHandler}
+            file={editedCategory.icon !== null ? editedCategory.icon : ""}
+            id="icon"
             inputRef={iconInputRef}
           />
         </Box>
@@ -139,11 +135,11 @@ const EditCategory: React.FC<EditCategoryProps> = ({ category, onClose }) => {
             <img src={imagePreview} alt="image preview" width="40" height="40" style={{ objectFit: 'cover' }} />
           )}
           <FileInputCategory
-            id="image"
             name="image"
             label="Выберите изображение"
-            onGetFile={onFileChange}
-            file={editedCategory.image instanceof File ? editedCategory.image : null}  // Отправляем только File для компонента
+            onGetFile={fileInputChangeHandler}
+            file={editedCategory.image !== null ? editedCategory.image : ""}
+            id="image"
             inputRef={imageInputRef}
           />
         </Box>

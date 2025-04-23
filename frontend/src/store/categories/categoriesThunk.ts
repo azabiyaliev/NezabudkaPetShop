@@ -2,9 +2,9 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
   CategoryMutation,
   GlobalError,
-  ICategories,
+  ICategories, ICategoriesMutation,
   Subcategory,
-} from "../../types";
+} from '../../types';
 import axiosApi from "../../axiosApi.ts";
 import { isAxiosError } from "axios";
 
@@ -157,29 +157,20 @@ export const updateCategoryThunk = createAsyncThunk<
       const formData = new FormData();
       formData.append("title", category.title);
 
-      if (category.parentId !== undefined && category.parentId !== null) {
-        formData.append("parentId", String(category.parentId));
-      }
-
-      if (category.subcategories) {
-        formData.append("subcategories", JSON.stringify(category.subcategories));
-      }
-
-      if (category.icon) {
+      if (category.icon instanceof File) {
         formData.append("icon", category.icon);
       }
 
-      if (category.image) {
+      if (category.image instanceof File) {
         formData.append("image", category.image);
       }
 
-      const response = await axiosApi.put(`/category/${id}`, formData, {
+      await axiosApi.put(`/category/${id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`,
         },
       });
-      return response.data;
     } catch (error) {
       if (isAxiosError(error) && error.response) {
         const { status, data } = error.response;
@@ -223,14 +214,12 @@ export const updateSubcategoryThunk = createAsyncThunk<
 
 
 export const fetchOneCategoryThunk = createAsyncThunk<
-  ICategories | null,
+  ICategoriesMutation | null,
   string,
   { rejectValue: GlobalError }
->("category/fetchOneCategory", async (query, { rejectWithValue }) => {
+>("category/fetchOneCategory", async (id, { rejectWithValue }) => {
   try {
-    const response = await axiosApi.get<ICategories>(`/category`, {
-      params: { search: query },
-    });
+    const response = await axiosApi.get<ICategoriesMutation>(`/category/${id}`,);
     return response.data;
   } catch (error) {
     if (isAxiosError(error) && error.response) {

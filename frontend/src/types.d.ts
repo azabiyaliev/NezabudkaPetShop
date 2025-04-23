@@ -143,6 +143,17 @@ export interface CategoryMutation {
   image?: File | null;
 }
 
+
+export interface ICategoriesMutation {
+  id: number;
+  title: string;
+  parentId: number | null;
+  subcategories: Subcategory[];
+  parent: { id:number, title: string };
+  icon: string | null;
+  image: string | null;
+}
+
 export interface Subcategory {
   id: number;
   title: string;
