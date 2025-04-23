@@ -64,7 +64,6 @@ const ExistsUser = () => {
             flexDirection: "column",
             alignItems: "center",
             padding: 0,
-            gap: "4px",
             "@media (min-width: 1100px)": {
               flexDirection: "row",
               gap: "8px",
@@ -89,7 +88,7 @@ const ExistsUser = () => {
                 "@media (max-width: 1100px)": {
                   color: "black",
                   fontSize: "14px",
-                  marginTop: "-10px",
+                  marginTop: "7px",
                   marginLeft: 0,
                 },
               }}

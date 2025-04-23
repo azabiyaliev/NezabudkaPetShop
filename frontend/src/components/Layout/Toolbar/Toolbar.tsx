@@ -91,6 +91,8 @@ const MainToolbar = () => {
   }, 0);
 
 
+  console.log(user)
+
   return (
     <div>
       <CategoryNavMenu openMenu={openCategoryMenu} closeMenu={closeMenu} />
@@ -631,6 +633,8 @@ const MainToolbar = () => {
                           Избранные
                         </Typography>
                       </NavLink>
+
+                      {user ? <ExistsUser /> : <UnknownUser />}
                     </Box>
                   </Box>
                 ) : null}
@@ -646,7 +650,6 @@ const MainToolbar = () => {
                 >
                   {user ? <ExistsUser /> : <UnknownUser />}
                 </Box>
-
               </Box>
 
               {user && can(["admin", "superAdmin"]) && (
