@@ -3,7 +3,6 @@ import {
   CategoryMutation,
   GlobalError,
   ICategories, ICategoriesMutation,
-  Subcategory,
 } from '../../types';
 import axiosApi from "../../axiosApi.ts";
 import { isAxiosError } from "axios";

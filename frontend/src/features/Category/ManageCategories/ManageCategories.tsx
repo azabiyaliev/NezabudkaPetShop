@@ -42,19 +42,11 @@ const ManageCategories = () => {
 
   console.log(oneCategory);
 
-  const [open, setOpen] = useState(false);
   const [openAddSubModal, setOpenAddSubModal] = useState(false);
   const [openCategoryModal, setOpenCategoryModal] = useState(false);
 
   const [parentCategoryId, setParentCategoryId] = useState<number | null>(null);
   const [treeData, setTreeData] = useState<NodeModel[]>([]);
-
-  const [selectedCategory, setSelectedCategory] = useState<{
-    id: number;
-    title: string;
-    icon?: string;
-    image?: string;
-  } | null>(null);
 
   const [fetchedCategory, setFetchedCategory] = useState<ICategories | null>(null);
 
@@ -63,20 +55,16 @@ const ManageCategories = () => {
   }, [dispatch]);
 
   const handleOpenCategory = (id: string) => {
+
     dispatch(fetchOneCategoryThunk(id))
       .unwrap()
       .then((category) => {
-        setFetchedCategory(category);
+        setFetchedCategory(category as ICategories);
         setOpenCategoryModal(true);
       })
       .catch(() => {
         toast.error("Ошибка при получении категории", { position: 'top-center' });
       });
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-    setSelectedCategory(null);
   };
 
   const onDelete = async (id: string) => {
@@ -288,19 +276,22 @@ const ManageCategories = () => {
           sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
         >
           <Box sx={{ bgcolor: "white", p: 4, borderRadius: 2, width: 500 }}>
-            {oneCategory && (
+            {fetchedCategory && (
               <EditCategory
                 category={{
-                  id: oneCategory.id,
-                  title: oneCategory.title,
-                  icon: oneCategory.icon || undefined,
-                  image: oneCategory.image || undefined,
+                  id: fetchedCategory.id,
+                  title: fetchedCategory.title,
+                  icon: fetchedCategory.icon as string | undefined,
+                  image: fetchedCategory.image as string | undefined,
                 }}
                 onClose={() => {
                   setOpenCategoryModal(false);
                   setFetchedCategory(null);
                 }}
               />
+            )}
+            {!fetchedCategory && openCategoryModal && (
+              <Typography>Загрузка данных категории...</Typography>
             )}
           </Box>
         </Modal>
