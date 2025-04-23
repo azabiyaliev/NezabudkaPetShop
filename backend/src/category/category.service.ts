@@ -120,10 +120,8 @@ export class CategoryService {
   }
 
   async updateCategory(
-    id: number,
-    categoryDto: CategoryDto,
-    icon: string | null,
-    image: string | null,
+      id: number,
+      categoryDto: CategoryDto,
   ) {
     await this.validateCategory(id);
 
@@ -134,8 +132,8 @@ export class CategoryService {
         ...(categoryDto.parentId !== undefined && {
           parentId: categoryDto.parentId,
         }),
-        icon,
-        image,
+        icon: categoryDto.icon,
+        image: categoryDto.image,
       },
     });
 

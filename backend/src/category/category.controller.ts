@@ -83,16 +83,33 @@ export class CategoryController {
       @Body() categoryDto: CategoryDto,
       @UploadedFiles() files: Express.Multer.File[],
   ) {
-    const icon = files.find((f) => f.fieldname === 'icon');
-    const image = files.find((f) => f.fieldname === 'image');
+    const existingCategory = await this.categoryService.getOneCategory(id);
+    const oldIcon = existingCategory?.icon;
+    const oldImage = existingCategory?.image;
 
-    categoryDto.icon = icon ? `/category/${icon.filename}` : null;
-    categoryDto.image = image ? `/category/${image.filename}` : null;
+    let newIcon: string | null = oldIcon ?? null;
+    let newImage: string | null = oldImage ?? null;
+
+    const iconFile = files.find((f) => f.fieldname === 'icon');
+    const imageFile = files.find((f) => f.fieldname === 'image');
+
+    if (iconFile) {
+      newIcon = `/category/${iconFile.filename}`;
+    } else if (categoryDto.icon === null || categoryDto.icon === '') { // Проверяем на null ИЛИ пустую строку
+      newIcon = null;
+      // Вам может понадобиться удалить старый файл oldIcon, если он существует
+    }
+
+    if (imageFile) {
+      newImage = `/category/${imageFile.filename}`;
+    } else if (categoryDto.image === null || categoryDto.image === '') { // Проверяем на null ИЛИ пустую строку
+      newImage = null;
+      // Вам может понадобиться удалить старый файл oldImage, если он существует
+    }
+
     return this.categoryService.updateCategory(
         id,
-        categoryDto,
-        categoryDto.icon,
-        categoryDto.image,
+        { ...categoryDto, icon: newIcon, image: newImage },
     );
   }
 

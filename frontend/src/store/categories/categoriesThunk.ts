@@ -159,15 +159,18 @@ export const updateCategoryThunk = createAsyncThunk<
 
       if (category.icon instanceof File) {
         formData.append("icon", category.icon);
+      } else if (category.icon === null) {
+        formData.append("icon", '');
       }
 
       if (category.image instanceof File) {
         formData.append("image", category.image);
+      } else if (category.image === null) {
+        formData.append("image", '');
       }
 
       await axiosApi.put(`/category/${id}`, formData, {
         headers: {
-          "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`,
         },
       });

@@ -139,8 +139,8 @@ export interface CategoryMutation {
   title: string;
   subcategories?: Subcategory[];
   parentId?: number | null;
-  icon?: File | null;
-  image?: File | null;
+  icon?: File | null | string;
+  image?: File | null | string;
 }
 
 
