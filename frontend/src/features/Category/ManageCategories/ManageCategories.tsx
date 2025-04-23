@@ -15,7 +15,7 @@ import ArrowDropDownOutlinedIcon from '@mui/icons-material/ArrowDropDownOutlined
 import { DndProvider, getBackendOptions, MultiBackend, NodeModel, Tree } from '@minoru/react-dnd-treeview';
 
 import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
-import { selectCategories, selectOneCategory } from '../../../store/categories/categoriesSlice.ts';
+import { selectCategories } from '../../../store/categories/categoriesSlice.ts';
 import {
   deleteCategory,
   fetchCategoriesThunk,
@@ -38,10 +38,6 @@ const ManageCategories = () => {
   const categories = useAppSelector(selectCategories);
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
-  const oneCategory = useAppSelector(selectOneCategory);
-
-  console.log(oneCategory);
-
   const [openAddSubModal, setOpenAddSubModal] = useState(false);
   const [openCategoryModal, setOpenCategoryModal] = useState(false);
 
