@@ -1,9 +1,11 @@
-import { TextField, Button, Box, Typography, Grid, Paper } from "@mui/material";
+import { TextField, Button, Box, Typography, Grid, Paper, IconButton } from "@mui/material";
 import React, { useCallback, useRef, useState } from "react";
 import { CategoryMutation } from '../../../types';
 import { toast } from "react-toastify";
 import AddIcon from '@mui/icons-material/Add';
 import FileInputCategory from '../../FileInput/FileInputCategory.tsx';
+import { apiUrl } from '../../../globalConstants.ts';
+import CloseIcon from '@mui/icons-material/Close';
 
 export interface Props {
   onSubmit: (category: CategoryMutation) => void;
@@ -38,7 +40,6 @@ const CategoryForm: React.FC<Props> = ({ onSubmit }) => {
 
   const inputChangeHandler = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-
     setCategory((prevState) => ({
       ...prevState,
       [name]: value,
@@ -53,6 +54,22 @@ const CategoryForm: React.FC<Props> = ({ onSubmit }) => {
         [name]: files[0],
       }));
     }
+  };
+
+  const deleteIconHandler = () => {
+    setCategory((prevState) => ({
+      ...prevState,
+      icon: null,
+    }));
+    if (iconInputRef.current) iconInputRef.current.value = '';
+  };
+
+  const deleteImageHandler = () => {
+    setCategory((prevState) => ({
+      ...prevState,
+      image: null,
+    }));
+    if (imageInputRef.current) imageInputRef.current.value = '';
   };
 
   return (
@@ -75,6 +92,7 @@ const CategoryForm: React.FC<Props> = ({ onSubmit }) => {
             />
           </Grid>
 
+          {/* ICON */}
           <Grid item xs={12} sm={6}>
             <FileInputCategory
               id="icon"
@@ -84,8 +102,31 @@ const CategoryForm: React.FC<Props> = ({ onSubmit }) => {
               file={category.icon || null}
               inputRef={iconInputRef}
             />
+            {category.icon && (
+              <Box sx={{ mt: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
+                <img
+                  style={{
+                    width: "50px",
+                    height: "50px",
+                    objectFit: "contain",
+                    border: "1px solid #ddd",
+                    borderRadius: 4,
+                  }}
+                  src={
+                    category.icon instanceof File
+                      ? URL.createObjectURL(category.icon)
+                      : apiUrl + category.icon
+                  }
+                  alt="Иконка превью"
+                />
+                <IconButton onClick={deleteIconHandler} size="small" color="error">
+                  <CloseIcon />
+                </IconButton>
+              </Box>
+            )}
           </Grid>
 
+          {/* IMAGE */}
           <Grid item xs={12} sm={6}>
             <FileInputCategory
               id="image"
@@ -95,6 +136,28 @@ const CategoryForm: React.FC<Props> = ({ onSubmit }) => {
               file={category.image || null}
               inputRef={imageInputRef}
             />
+            {category.image && (
+              <Box sx={{ mt: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
+                <img
+                  style={{
+                    width: "50px",
+                    height: "50px",
+                    objectFit: "contain",
+                    border: "1px solid #ddd",
+                    borderRadius: 4,
+                  }}
+                  src={
+                    category.image instanceof File
+                      ? URL.createObjectURL(category.image)
+                      : apiUrl + category.image
+                  }
+                  alt="Превью изображения"
+                />
+                <IconButton onClick={deleteImageHandler} size="small" color="error">
+                  <CloseIcon />
+                </IconButton>
+              </Box>
+            )}
           </Grid>
 
           <Grid item xs={12} textAlign="right">
