@@ -1,18 +1,20 @@
+// ПАЛИТРА ЦВЕТОВ
 export const COLORS = {
-  primary: '#216A12',
-  contrastText: '#FFFFFF',
-  secondary: '#408E2F',
-  success: '#28a745',
-  yellow: '#FFC000',
-  error: '#840003',
-  warning: '#C50005',
+  primary: '#216A12', //ОСНОВНОЙ
+  contrastText: '#FFFFFF', //КОНТРАСТНЫЙ ТЕКСТ ДЛЯ ЦВЕТНЫХ ФОНОВ
+  secondary: '#408E2F', //ВТОРИЧНЫЙ
+  success: '#28a745', //УСПЕШНАЯ ОПЕРАЦИЯ
+  yellow: '#FFC000', //ЖЕЛТЫЕ ТОНА
+  error: '#840003', //ОШИБКА
+  warning: '#C50005', //ПРЕДУПРЖДЕНИЕ
   info: '#17a2b8',
-  text: '#212529',
+  text: '#212529', //ДЕФОЛТНЫЙ ТЕКСТ
   background: '#f8f9fa',
   white: '#ffffff',
   black: '#000000',
 }
 
+//ОТСТУПЫ
 export const SPACING = {
   xs: '10px',
   sm: '20px',
@@ -22,6 +24,7 @@ export const SPACING = {
   xxl: '50px',
 }
 
+// РАЗМЕР/ЖИРНОСТЬ ТЕКСТА
 export const FONTS = {
   size: {
     xs: '12px',
@@ -38,6 +41,7 @@ export const FONTS = {
   }
 }
 
+// АДАПТИВКА
 export const MEDIA_REQ = {
   mobile: {
     sm: '320px',
