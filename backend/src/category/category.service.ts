@@ -23,7 +23,11 @@ export class CategoryService {
     return category;
   }
 
-  async createCategory(categoryDto: CategoryDto) {
+  async createCategory(
+    categoryDto: CategoryDto,
+    icon: string | null,
+    image: string | null,
+  ) {
     const { title, parentId } = categoryDto;
 
     if (title.trim() === '') {
@@ -36,30 +40,34 @@ export class CategoryService {
       await this.validateCategory(parentId);
     }
 
-    await this.prisma.category.create({
-      data: { title, parentId: parentId ?? null },
+    const category = await this.prisma.category.create({
+      data: {
+        title,
+        parentId: parentId ?? null,
+        icon: icon ?? null,
+        image: image ?? null,
+      },
     });
 
-    return { message: 'Категория успешно создана' };
+    return { message: 'Категория успешно создана', category };
   }
 
   async createSubcategory(
     categoryId: number,
     subCategoryDtos: SubcategoryDto[],
   ) {
-    categoryId = parseInt(categoryId.toString());
     await this.validateCategory(categoryId);
 
-    for (const { title } of subCategoryDtos) {
+    for (const { title, icon, image } of subCategoryDtos) {
       if (!title.trim()) {
         throw new BadRequestException('Название подкатегории отсутствует');
       }
 
-      const existingSubcategory = await this.prisma.category.findFirst({
+      const existing = await this.prisma.category.findFirst({
         where: { title, parentId: categoryId },
       });
 
-      if (existingSubcategory) {
+      if (existing) {
         throw new ConflictException(`Подкатегория "${title}" уже существует`);
       }
 
@@ -67,6 +75,8 @@ export class CategoryService {
         data: {
           title,
           parentId: categoryId,
+          icon: icon ?? null,
+          image: image ?? null,
         },
       });
     }
@@ -119,6 +129,8 @@ export class CategoryService {
         ...(categoryDto.parentId !== undefined && {
           parentId: categoryDto.parentId,
         }),
+        icon: categoryDto.icon,
+        image: categoryDto.image,
       },
     });
 
@@ -160,32 +172,6 @@ export class CategoryService {
     });
 
     return { message: 'Родительская категория подкатегории успешно обновлена' };
-  }
-
-  async addIconToCategory(id: number, filename: string) {
-    await this.validateCategory(id);
-
-    await this.prisma.category.update({
-      where: { id },
-      data: {
-        icon: filename,
-      },
-    });
-
-    return { message: 'Иконка добавлена успешно', icon: filename };
-  }
-
-  async addImageToCategory(id: number, filename: string) {
-    await this.validateCategory(id);
-
-    await this.prisma.category.update({
-      where: { id },
-      data: {
-        image: filename,
-      },
-    });
-
-    return { message: 'Изображение добавлена успешно', image: filename };
   }
 
   async deleteCategory(id: number) {

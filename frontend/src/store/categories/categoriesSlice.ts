@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store.ts';
-import { ICategories, Subcategory } from '../../types';
+import { ICategories, ICategoriesMutation, Subcategory } from '../../types';
 import {
   addNewCategory, addNewSubcategory,
   deleteCategory,
@@ -11,7 +11,7 @@ import {
 
 export interface categoriesState {
   Categories: ICategories[];
-  oneCategory: ICategories | null;
+  oneCategory: ICategoriesMutation | null;
   fetchCategories: boolean;
   SubCategories: Subcategory[];
   createSubcategoryLoading: boolean;
@@ -37,7 +37,7 @@ const initialState: categoriesState = {
 
 export const selectCategories = (state: RootState) => state.categories.Categories;
 export const selectAllSubcategories = (state: RootState) => state.categories.SubCategories;
-
+export const selectOneCategory = (state: RootState) => state.categories.oneCategory;
 const categoriesSlice = createSlice({
   name: 'categories',
   initialState,

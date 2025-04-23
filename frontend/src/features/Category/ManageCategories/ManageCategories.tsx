@@ -2,69 +2,65 @@ import { useCallback, useEffect, useState } from 'react';
 import {
   Box,
   IconButton,
-  ListItemText, Modal,
+  ListItemText,
+  Modal,
   Typography,
+  Tooltip,
+  ListItemButton,
 } from '@mui/material';
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import AddIcon from '@mui/icons-material/Add';
+import ArrowDropDownOutlinedIcon from '@mui/icons-material/ArrowDropDownOutlined';
+import { DndProvider, getBackendOptions, MultiBackend, NodeModel, Tree } from '@minoru/react-dnd-treeview';
+
 import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
-import { selectCategories } from "../../../store/categories/categoriesSlice.ts";
+import { selectCategories } from '../../../store/categories/categoriesSlice.ts';
 import {
   deleteCategory,
-  fetchCategoriesThunk, updateSubcategoryParentThunk,
-} from '../../../store/categories/categoriesThunk.ts';
-
-import NewCategory from "../NewCategory/NewCategory.tsx";
-import { toast } from 'react-toastify';
-import AddIcon from '@mui/icons-material/Add';
-import Tooltip from '@mui/material/Tooltip';
-import EditCategory from '../../../components/Forms/CategoryForm/EditCategory.tsx';
-import SubcategoryForm from '../../../components/Forms/SubcategoryForm/SubcategoryForm.tsx';
-import ArrowDropDownOutlinedIcon from '@mui/icons-material/ArrowDropDownOutlined';
-import ListItemButton from '@mui/material/ListItemButton';
-import { ICategories, Subcategory } from '../../../types';
-import { DndProvider, getBackendOptions, MultiBackend, NodeModel, Tree } from '@minoru/react-dnd-treeview';
-import './ManageCategories.css'
+  fetchCategoriesThunk,
+  fetchOneCategoryThunk,
+  updateSubcategoryParentThunk,
+} from "../../../store/categories/categoriesThunk.ts";
 import { selectUser } from '../../../store/users/usersSlice.ts';
+import { ICategories, Subcategory } from '../../../types';
+import NewCategory from "../NewCategory/NewCategory.tsx";
+import SubcategoryForm from '../../../components/Forms/SubcategoryForm/SubcategoryForm.tsx';
+import { toast } from 'react-toastify';
+import './ManageCategories.css';
+import EditCategory from '../../../components/Forms/CategoryForm/EditCategory.tsx';
 
 const SUCCESSFUL_CATEGORY_DELETE = "Удаление прошло успешно!";
 const ERROR_CATEGORY_DELETE = "Ошибка при удалении подкатегории!";
 const WARNING_CATEGORY_DELETE = "Категория не пуста или используется в данный момент, не стоит удалять!";
 
-
 const ManageCategories = () => {
   const categories = useAppSelector(selectCategories);
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
-
-  const [open, setOpen] = useState(false);
   const [openAddSubModal, setOpenAddSubModal] = useState(false);
+  const [openCategoryModal, setOpenCategoryModal] = useState(false);
 
   const [parentCategoryId, setParentCategoryId] = useState<number | null>(null);
   const [treeData, setTreeData] = useState<NodeModel[]>([]);
 
-  const [selectedCategory, setSelectedCategory] = useState<{
-    id: number;
-    title: string;
-    icon?: string;
-    image?: string;
-  } | null>(null);
+  const [fetchedCategory, setFetchedCategory] = useState<ICategories | null>(null);
 
   useEffect(() => {
     dispatch(fetchCategoriesThunk());
   }, [dispatch]);
 
+  const handleOpenCategory = (id: string) => {
 
-  const handleOpen = (category: { id: number; title: string; }) => {
-    setSelectedCategory({
-      ...category,
-    });
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-    setSelectedCategory(null);
+    dispatch(fetchOneCategoryThunk(id))
+      .unwrap()
+      .then((category) => {
+        setFetchedCategory(category as ICategories);
+        setOpenCategoryModal(true);
+      })
+      .catch(() => {
+        toast.error("Ошибка при получении категории", { position: 'top-center' });
+      });
   };
 
   const onDelete = async (id: string) => {
@@ -78,10 +74,7 @@ const ManageCategories = () => {
         categoryToDelete.subcategories &&
         categoryToDelete.subcategories.length > 0
       ) {
-        toast.warning(
-          WARNING_CATEGORY_DELETE,
-          { position: "top-center" },
-        );
+        toast.warning(WARNING_CATEGORY_DELETE, { position: "top-center" });
         return;
       }
 
@@ -191,8 +184,7 @@ const ManageCategories = () => {
           textAlign="left"
         >
           Перетащите категорию (подкатегорию), чтобы изменить её порядок или
-          положение в иерархии. Для создания подкатегории, перетащите категорию
-          в подсвеченную область другой категории.
+          положение в иерархии.
         </Typography>
 
         <Box>
@@ -234,33 +226,20 @@ const ManageCategories = () => {
                         />
                       </ListItemButton>
 
-                      <Tooltip title="Редактировать категорию">
-                        <IconButton
-                          onClick={() =>
-                            handleOpen({
-                              id: category.id,
-                              title: category.title,
-                            })
-                          }
-                        >
+                      <Tooltip title="Показать категорию">
+                        <IconButton onClick={() => handleOpenCategory(String(category.id))}>
                           <EditIcon fontSize="small" />
                         </IconButton>
                       </Tooltip>
 
                       <Tooltip title="Удалить категорию">
-                        <IconButton
-                          onClick={() => onDelete(String(category.id))}
-                          color="error"
-                        >
+                        <IconButton onClick={() => onDelete(String(category.id))} color="error">
                           <DeleteIcon fontSize="small" />
                         </IconButton>
                       </Tooltip>
 
                       <Tooltip title="Добавить подкатегорию">
-                        <IconButton
-                          onClick={() => handleAddSubcategory(category.id)}
-                          color="success"
-                        >
+                        <IconButton onClick={() => handleAddSubcategory(category.id)} color="success">
                           <AddIcon fontSize="small" />
                         </IconButton>
                       </Tooltip>
@@ -273,31 +252,42 @@ const ManageCategories = () => {
         </Box>
 
         <Modal
-          open={open}
-          onClose={handleClose}
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
+          open={openAddSubModal}
+          onClose={handleCloseAddSubcategory}
+          sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
         >
-          <Box sx={{ bgcolor: "white", p: 4, borderRadius: 2 }}>
-            {selectedCategory && <EditCategory category={selectedCategory} onClose={handleClose} subcategoryId={selectedCategory?.id}/>}
+          <Box sx={{ bgcolor: "white", p: 4, borderRadius: 2, width: 400 }}>
+            {parentCategoryId && (
+              <SubcategoryForm categoryId={parentCategoryId} onClose={handleCloseAddSubcategory} />
+            )}
           </Box>
         </Modal>
 
         <Modal
-          open={openAddSubModal}
-          onClose={handleCloseAddSubcategory}
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
+          open={openCategoryModal}
+          onClose={() => {
+            setOpenCategoryModal(false);
+            setFetchedCategory(null);
           }}
+          sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
         >
-          <Box sx={{ bgcolor: "white", p: 4, borderRadius: 2, width: 400 }}>
-            {parentCategoryId && (
-              <SubcategoryForm categoryId={parentCategoryId} onClose={handleCloseAddSubcategory}/>
+          <Box sx={{ bgcolor: "white", p: 4, borderRadius: 2, width: 500 }}>
+            {fetchedCategory && (
+              <EditCategory
+                category={{
+                  id: fetchedCategory.id,
+                  title: fetchedCategory.title,
+                  icon: fetchedCategory.icon as string | undefined,
+                  image: fetchedCategory.image as string | undefined,
+                }}
+                onClose={() => {
+                  setOpenCategoryModal(false);
+                  setFetchedCategory(null);
+                }}
+              />
+            )}
+            {!fetchedCategory && openCategoryModal && (
+              <Typography>Загрузка данных категории...</Typography>
             )}
           </Box>
         </Modal>
