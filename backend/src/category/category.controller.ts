@@ -24,20 +24,20 @@ export class CategoryController {
 
   @Post()
   @UseInterceptors(
-      AnyFilesInterceptor({
-        storage: diskStorage({
-          destination: './public/category',
-          filename: (_req, file, callback) => {
-            const imageFormat = extname(file.originalname);
-            const fileName = `${crypto.randomUUID()}${imageFormat}`;
-            callback(null, fileName);
-          },
-        }),
+    AnyFilesInterceptor({
+      storage: diskStorage({
+        destination: './public/category',
+        filename: (_req, file, callback) => {
+          const imageFormat = extname(file.originalname);
+          const fileName = `${crypto.randomUUID()}${imageFormat}`;
+          callback(null, fileName);
+        },
       }),
+    }),
   )
   async createCategory(
-      @Body() categoryDto: CategoryDto,
-      @UploadedFiles() files: Express.Multer.File[],
+    @Body() categoryDto: CategoryDto,
+    @UploadedFiles() files: Express.Multer.File[],
   ) {
     const icon = files.find((f) => f.fieldname === 'icon');
     const image = files.find((f) => f.fieldname === 'image');
@@ -46,9 +46,9 @@ export class CategoryController {
     categoryDto.image = image ? `/category/${image.filename}` : null;
 
     const savedCategory = await this.categoryService.createCategory(
-        categoryDto,
-        categoryDto.icon,
-        categoryDto.image,
+      categoryDto,
+      categoryDto.icon,
+      categoryDto.image,
     );
     return savedCategory;
   }
@@ -56,7 +56,6 @@ export class CategoryController {
   @Get()
   async getAllCategories() {
     const categories = await this.categoryService.getAllCategories();
-    console.log("Все категории:", categories);
     return categories;
   }
 
@@ -67,21 +66,21 @@ export class CategoryController {
 
   @Put(':id')
   @UseInterceptors(
-      AnyFilesInterceptor({
-        storage: diskStorage({
-          destination: './public/category',
-          filename: (_req, file, callback) => {
-            const imageFormat = extname(file.originalname);
-            const fileName = `${crypto.randomUUID()}${imageFormat}`;
-            callback(null, fileName);
-          },
-        }),
+    AnyFilesInterceptor({
+      storage: diskStorage({
+        destination: './public/category',
+        filename: (_req, file, callback) => {
+          const imageFormat = extname(file.originalname);
+          const fileName = `${crypto.randomUUID()}${imageFormat}`;
+          callback(null, fileName);
+        },
       }),
+    }),
   )
   async updateCategory(
-      @Param('id', ParseIntPipe) id: number,
-      @Body() categoryDto: CategoryDto,
-      @UploadedFiles() files: Express.Multer.File[],
+    @Param('id', ParseIntPipe) id: number,
+    @Body() categoryDto: CategoryDto,
+    @UploadedFiles() files: Express.Multer.File[],
   ) {
     const existingCategory = await this.categoryService.getOneCategory(id);
     const oldIcon = existingCategory?.icon;
@@ -95,22 +94,21 @@ export class CategoryController {
 
     if (iconFile) {
       newIcon = `/category/${iconFile.filename}`;
-    } else if (categoryDto.icon === null || categoryDto.icon === '') { // Проверяем на null ИЛИ пустую строку
+    } else if (categoryDto.icon === null || categoryDto.icon === '') {
       newIcon = null;
-      // Вам может понадобиться удалить старый файл oldIcon, если он существует
     }
 
     if (imageFile) {
       newImage = `/category/${imageFile.filename}`;
-    } else if (categoryDto.image === null || categoryDto.image === '') { // Проверяем на null ИЛИ пустую строку
+    } else if (categoryDto.image === null || categoryDto.image === '') {
       newImage = null;
-      // Вам может понадобиться удалить старый файл oldImage, если он существует
     }
 
-    return this.categoryService.updateCategory(
-        id,
-        { ...categoryDto, icon: newIcon, image: newImage },
-    );
+    return this.categoryService.updateCategory(id, {
+      ...categoryDto,
+      icon: newIcon,
+      image: newImage,
+    });
   }
 
   @Delete(':id')
@@ -125,29 +123,29 @@ export class CategoryController {
 
   @Post(':id/subcategories')
   @UseInterceptors(
-      AnyFilesInterceptor({
-        storage: diskStorage({
-          destination: './public/category',
-          filename: (_req, file, callback) => {
-            const imageFormat = extname(file.originalname);
-            const fileName = `${crypto.randomUUID()}${imageFormat}`;
-            callback(null, fileName);
-          },
-        }),
+    AnyFilesInterceptor({
+      storage: diskStorage({
+        destination: './public/category',
+        filename: (_req, file, callback) => {
+          const imageFormat = extname(file.originalname);
+          const fileName = `${crypto.randomUUID()}${imageFormat}`;
+          callback(null, fileName);
+        },
       }),
+    }),
   )
   async addSubcategory(
-      @Param('id', ParseIntPipe) id: number,
-      @Body() body: any,
-      @UploadedFiles() files: Express.Multer.File[],
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: any,
+    @UploadedFiles() files: Express.Multer.File[],
   ) {
     const subcategories: SubcategoryDto[] = [];
 
     let i = 0;
     while (body[`subcategories[${i}].title`]) {
       const title = (body as Record<string, string>)[
-          `subcategories[${i}].title`
-          ];
+        `subcategories[${i}].title`
+      ];
       const icon = files.find((f) => f.fieldname === `icon_${i}`);
       const image = files.find((f) => f.fieldname === `image_${i}`);
 
@@ -165,13 +163,13 @@ export class CategoryController {
 
   @Put(':id/parent')
   async updateSubcategoryParent(
-      @Param('id') id: string,
-      @Body() body: { parentId: number | null },
+    @Param('id') id: string,
+    @Body() body: { parentId: number | null },
   ) {
     const subcategoryId = parseInt(id);
     return this.categoryService.updateSubcategoryParent(
-        subcategoryId,
-        body.parentId,
+      subcategoryId,
+      body.parentId,
     );
   }
 }

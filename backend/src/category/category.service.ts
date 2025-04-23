@@ -119,10 +119,7 @@ export class CategoryService {
     });
   }
 
-  async updateCategory(
-      id: number,
-      categoryDto: CategoryDto,
-  ) {
+  async updateCategory(id: number, categoryDto: CategoryDto) {
     await this.validateCategory(id);
 
     await this.prisma.category.update({

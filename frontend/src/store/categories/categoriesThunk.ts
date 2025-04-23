@@ -20,74 +20,19 @@ export const fetchCategoriesThunk = createAsyncThunk<ICategories[], void>(
   },
 );
 
-export const addIconToCategoryThunk = createAsyncThunk<
-  { icon: string },
-  { id: number; iconFile: File; },
-  { rejectValue: GlobalError }
->(
-  "category/addIconToCategory",
-  async ({ id, iconFile }, { rejectWithValue }) => {
-    const formData = new FormData();
-    formData.append("icon", iconFile);
-
-    try {
-      const response = await axiosApi.patch(
-        `/category/${id}/icon`,
-        formData,
-      );
-
-      return response.data;
-    } catch (error) {
-      if (isAxiosError(error) && error.response) {
-        return rejectWithValue(error.response.data);
-      }
-      throw error;
-    }
-  }
-);
-
-export const addImageToCategoryThunk = createAsyncThunk<
-  { image: string },
-  { id: number; imageFile: File; },
-  { rejectValue: GlobalError }
->(
-  "category/addImageToCategoryThunk",
-  async ({ id, imageFile }, { rejectWithValue }) => {
-    const formData = new FormData();
-    formData.append("image", imageFile);
-
-    try {
-      const response = await axiosApi.patch(
-        `/category/${id}/image`,
-        formData,
-      );
-
-      return response.data;
-    } catch (error) {
-      if (isAxiosError(error) && error.response) {
-        return rejectWithValue(error.response.data);
-      }
-      throw error;
-    }
-  }
-);
-
 export const addNewCategory = createAsyncThunk<
   void,
   { category: CategoryMutation; token: string }
 >("category/addNewCategory", async ({ category, token }, { rejectWithValue }) => {
   const formData = new FormData();
 
-  // Добавляем все поля для категории
   formData.append("title", category.title);
   if (category.parentId) formData.append("parentId", category.parentId.toString());
 
-  // Добавляем файлы
   if (category.icon) formData.append("icon", category.icon);
   if (category.image) formData.append("image", category.image);
 
   try {
-    // Отправляем запрос с FormData
     await axiosApi.post("/category", formData, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -114,11 +59,9 @@ export const addNewSubcategory = createAsyncThunk<
   async ({ id, subcategories, token }, { rejectWithValue }) => {
     const formData = new FormData();
 
-    // Подготовим подкатегории
     subcategories.forEach((sub) => formData.append("subcategories[]", sub));
 
     try {
-      // Отправляем запрос с подкатегориями
       await axiosApi.post(
         `/category/${id}/subcategories`,
         formData,

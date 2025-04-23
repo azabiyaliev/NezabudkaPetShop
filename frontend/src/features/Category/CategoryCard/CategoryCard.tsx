@@ -11,9 +11,11 @@ const CategoryCard = () => {
   const categories = useAppSelector(selectCategories);
   const navigate = useNavigate();
 
+  const filteredCategories = categories.filter(category => category.image !== null);
+
   return (
     <div className="d-flex flex-wrap gap-4 justify-content-center">
-      {categories.map((category) => (
+      {filteredCategories.map((category) => (
         <div
           key={category.id}
           onClick={() => navigate(`/all-products/${category.id}`)}

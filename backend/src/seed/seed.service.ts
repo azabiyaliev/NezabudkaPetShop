@@ -421,13 +421,33 @@ export class SeedService {
     ] = brands;
 
     const category = await Promise.all([
-      this.prisma.category.create({ data: { title: 'Собаки', image: '/fixtures/categoryIcons/10.png'} }),
-      this.prisma.category.create({ data: { title: 'Кошки', image: '/fixtures/categoryIcons/7.png' } }),
-      this.prisma.category.create({ data: { title: 'Грызуны', image: '/fixtures/categoryIcons/6.png' } }),
-      this.prisma.category.create({ data: { title: 'Птицы', image: '/fixtures/categoryIcons/3.png' } }),
-      this.prisma.category.create({ data: { title: 'Рыбки',  image: '/fixtures/categoryIcons/4.png'}}),
-      this.prisma.category.create({ data: { title: 'Рептилии', image: '/fixtures/categoryIcons/lizard_transparent.png' } }),
-      this.prisma.category.create({ data: { title: 'Другие питомцы', image: '/fixtures/categoryIcons/1.png' } }),
+      this.prisma.category.create({
+        data: { title: 'Собаки', image: '/fixtures/categoryIcons/10.png' },
+      }),
+      this.prisma.category.create({
+        data: { title: 'Кошки', image: '/fixtures/categoryIcons/7.png' },
+      }),
+      this.prisma.category.create({
+        data: { title: 'Грызуны', image: '/fixtures/categoryIcons/6.png' },
+      }),
+      this.prisma.category.create({
+        data: { title: 'Птицы', image: '/fixtures/categoryIcons/3.png' },
+      }),
+      this.prisma.category.create({
+        data: { title: 'Рыбки', image: '/fixtures/categoryIcons/4.png' },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Рептилии',
+          image: '/fixtures/categoryIcons/lizard_transparent.png',
+        },
+      }),
+      this.prisma.category.create({
+        data: {
+          title: 'Другие питомцы',
+          image: '/fixtures/categoryIcons/1.png',
+        },
+      }),
     ]);
 
     const [dogs, cats, rodents, birds, fishes, reptiles, others] = category;
