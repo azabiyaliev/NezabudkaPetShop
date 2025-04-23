@@ -80,7 +80,7 @@ export class ProductsController {
 
   //UPDATE PRODUCT ONLY ADMIN
   @UseGuards(TokenAuthGuard, RolesGuard)
-  @Roles('admin')
+  @Roles('admin', 'superAdmin')
   @Put('update_product_item/:productId')
   @UseInterceptors(
     FileInterceptor('productPhoto', {
@@ -112,7 +112,7 @@ export class ProductsController {
 
   //DELETE PRODUCT ONLY ADMIN
   @UseGuards(TokenAuthGuard, RolesGuard)
-  @Roles('admin')
+  @Roles('admin', 'superAdmin')
   @Delete(':productId')
   async deleteProduct(@Param('productId') productId: string) {
     return await this.productsService.deleteProduct(Number(productId));
