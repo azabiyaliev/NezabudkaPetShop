@@ -16,8 +16,11 @@ const FileInputCategory: React.FC<Props> = ({ name, label, onGetFile, file, inpu
   const [fileName, setFileName] = useState("");
 
   useEffect(() => {
-    if (file) {
-      setFileName(file instanceof File ? file.name : file);
+    if (file instanceof File) {
+      setFileName(file.name);
+    } else if (typeof file === "string") {
+      const urlParts = file.split('/');
+      setFileName(urlParts[urlParts.length - 1]);
     } else {
       setFileName("");
     }
@@ -29,7 +32,6 @@ const FileInputCategory: React.FC<Props> = ({ name, label, onGetFile, file, inpu
     } else {
       setFileName("");
     }
-
     onGetFile(e);
   };
 
@@ -46,7 +48,7 @@ const FileInputCategory: React.FC<Props> = ({ name, label, onGetFile, file, inpu
         type="file"
         name={name}
         onChange={onFileChange}
-        ref={inputRef} // <-- используем ref, полученный из props
+        ref={inputRef}
       />
       <Grid container spacing={2} direction="row" alignItems="stretch">
         <Grid>

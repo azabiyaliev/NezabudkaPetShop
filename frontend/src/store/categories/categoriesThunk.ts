@@ -147,24 +147,44 @@ export const updateCategoryThunk = createAsyncThunk<
   void,
   {
     id: string;
-    category: { title: string; subcategories?: Subcategory[] };
+    category: CategoryMutation;
     token: string;
   }
 >(
   "category/updateCategory",
-  async ({ id, category }, { rejectWithValue }) => {
+  async ({ id, category, token }, { rejectWithValue }) => {
     try {
-      await axiosApi.put(`/category/${id}`, category, {
+      const formData = new FormData();
+      formData.append("title", category.title);
+
+      if (category.parentId !== undefined && category.parentId !== null) {
+        formData.append("parentId", String(category.parentId));
+      }
+
+      if (category.subcategories) {
+        formData.append("subcategories", JSON.stringify(category.subcategories));
+      }
+
+      if (category.icon) {
+        formData.append("icon", category.icon);
+      }
+
+      if (category.image) {
+        formData.append("image", category.image);
+      }
+
+      const response = await axiosApi.put(`/category/${id}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
       });
+      return response.data;
     } catch (error) {
       if (isAxiosError(error) && error.response) {
         const { status, data } = error.response;
 
-        if (status === 404 && data.error) {
-          return rejectWithValue(data as GlobalError);
-        }
-
-        if (status === 401 && data.error) {
+        if ((status === 404 || status === 401) && data.error) {
           return rejectWithValue(data as GlobalError);
         }
       }

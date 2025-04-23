@@ -30,9 +30,8 @@ const CategoryForm: React.FC<Props> = ({ onSubmit }) => {
     }
 
     onSubmit({ ...category });
-    setCategory(initialState); // Сброс state
+    setCategory(initialState);
 
-    // Очистка инпутов файлов через ref
     if (iconInputRef.current) iconInputRef.current.value = "";
     if (imageInputRef.current) imageInputRef.current.value = "";
   };
