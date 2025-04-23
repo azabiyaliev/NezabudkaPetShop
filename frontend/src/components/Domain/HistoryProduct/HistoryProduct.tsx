@@ -26,7 +26,7 @@ const HistoryProduct = () => {
   const cart = useAppSelector(cartFromSlice);
   const viewedProducts = useAppSelector((state) => state.history.history);
   const dispatch = useAppDispatch();
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams();
   const product = useAppSelector(selectProduct);
   const navigate = useNavigate();
 
@@ -35,15 +35,13 @@ const HistoryProduct = () => {
   }, [dispatch, id]);
 
   useEffect(() => {
-    if (product && product.id !== undefined) {
+    if (product && id) {
       dispatch(addProductToHistory({
-        productId: product.id,
+        productId: Number(id),
         product,
       }));
     }
-  }, [dispatch, product]);
-
-  console.log(viewedProducts);
+  }, [dispatch, product, id]);
 
   const toggleFavorite = (id: number) => {
     const newValue = !isFavorite;
@@ -87,7 +85,7 @@ const HistoryProduct = () => {
       }
     }
 
-    const isFirstTimeAdded = cart?.products.some((item) => item.product.id === product.id);
+    const isFirstTimeAdded = cart?.products.some((item) => item.product.id === Number(id));
 
     if (!isFirstTimeAdded) {
       enqueueSnackbar("Данный товар успешно добавлен в корзину!", { variant: "success" });
@@ -101,7 +99,12 @@ const HistoryProduct = () => {
   return (
     <div>
       <Box sx={{ p: 2 }}>
-        <Typography  gutterBottom sx={{mb:5}}>
+        <Typography level="h2" gutterBottom sx={{
+          mb:5,
+          "@media (max-width: 570px)": {
+            textAlign: 'center',
+          },
+        }}>
           История просмотров
         </Typography>
         <Box sx={{
@@ -109,6 +112,9 @@ const HistoryProduct = () => {
           flexWrap: 'wrap',
           gap: 3,
           justifyContent: 'flex-start',
+          "@media (max-width: 570px)": {
+            justifyContent: 'center',
+          },
         }}>
           {viewedProducts
             .filter((item): item is historyProduct => !!item.product && !!item.product.productName)
