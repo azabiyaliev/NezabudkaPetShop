@@ -11,9 +11,13 @@ import { isAxiosError } from "axios";
 export const fetchCategoriesThunk = createAsyncThunk<ICategories[], void>(
   "category/fetchCategoriesThunk",
   async () => {
-    const categoriesResponse = await axiosApi<ICategories[]>("/category");
-
-    return categoriesResponse.data || [];
+    try{
+      const categoriesResponse = await axiosApi.get<ICategories[]>("/category/");
+      return categoriesResponse.data || [];
+    }catch(error){
+      console.log(error);
+      throw error;
+    }
   },
 );
 
@@ -72,38 +76,72 @@ export const addImageToCategoryThunk = createAsyncThunk<
 export const addNewCategory = createAsyncThunk<
   void,
   { category: CategoryMutation; token: string }
->("category/addNewCategory", async ({ category }) => {
-  await axiosApi.post("/category", category);
+>("category/addNewCategory", async ({ category, token }, { rejectWithValue }) => {
+  const formData = new FormData();
+
+  // Добавляем все поля для категории
+  formData.append("title", category.title);
+  if (category.parentId) formData.append("parentId", category.parentId.toString());
+
+  // Добавляем файлы
+  if (category.icon) formData.append("icon", category.icon);
+  if (category.image) formData.append("image", category.image);
+
+  try {
+    // Отправляем запрос с FormData
+    await axiosApi.post("/category", formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  } catch (error) {
+    if (isAxiosError(error) && error.response) {
+      const { status, data } = error.response;
+      if (status === 404 || status === 401) {
+        return rejectWithValue(data as GlobalError);
+      }
+    }
+    throw error;
+  }
 });
+
 
 export const addNewSubcategory = createAsyncThunk<
   void,
   { id: number; subcategories: string[]; token: string }
 >(
   "category/addNewSubcategory",
-  async ({ id, subcategories }, { rejectWithValue }) => {
+  async ({ id, subcategories, token }, { rejectWithValue }) => {
+    const formData = new FormData();
+
+    // Подготовим подкатегории
+    subcategories.forEach((sub) => formData.append("subcategories[]", sub));
+
     try {
-      const subcategoryData = subcategories.map((sub) => ({ title: sub }));
+      // Отправляем запрос с подкатегориями
       await axiosApi.post(
         `/category/${id}/subcategories`,
-        { subcategories: subcategoryData },
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
     } catch (error) {
       if (isAxiosError(error) && error.response) {
         const { status, data } = error.response;
-
-        if (status === 404 && data.error) {
-          return rejectWithValue(data as GlobalError);
-        }
-
-        if (status === 401 && data.error) {
+        if (status === 404 || status === 401) {
           return rejectWithValue(data as GlobalError);
         }
       }
       throw error;
     }
-  },
+  }
 );
+
 
 export const updateCategoryThunk = createAsyncThunk<
   void,

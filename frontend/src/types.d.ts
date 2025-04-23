@@ -138,6 +138,9 @@ export interface ICategories {
 export interface CategoryMutation {
   title: string;
   subcategories?: Subcategory[];
+  parentId?: number | null;
+  icon?: File | null;
+  image?: File | null;
 }
 
 export interface Subcategory {
