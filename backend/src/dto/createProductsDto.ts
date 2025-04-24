@@ -5,8 +5,6 @@ import {
   IsNumberString,
   IsOptional,
   IsString,
-  Max,
-  Min,
 } from 'class-validator';
 import { Transform } from 'class-transformer';
 
@@ -70,8 +68,6 @@ export class CreateProductsDto {
   productFeedClass?: string;
 
   @IsOptional()
-  @Min(0, { message: 'Процент скидки не может быть меньше 0' })
-  @Max(100, { message: 'Процент скидки не может быть больше 100' })
   promoPercentage?: number;
 
   @IsOptional()
