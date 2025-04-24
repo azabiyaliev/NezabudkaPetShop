@@ -42,18 +42,22 @@ const AllProductsCardsPage = () => {
       dispatch(clearCart());
       dispatch(fetchCart()).unwrap();
     }
-  }, [dispatch, user, can]);
+  }, []);
 
   useEffect(() => {
     if (!id || !categories.length) return;
-    if (id) {
-      const numId = Number(id);
-      dispatch(getProductsByCategory(numId));
-      const parent = categories.find((category) =>
-        category.subcategories?.some((sub) => sub.id === numId),
-      );
-      if (parent) dispatch(fetchOneCategoryThunk(String(parent.id))).unwrap();
+
+    const numId = Number(id);
+    const parent = categories.find((category) =>
+      category.subcategories?.some((sub) => sub.id === numId),
+    );
+
+    dispatch(getProductsByCategory(numId));
+
+    if (parent && !categories.find((cat) => cat.id === parent.id && cat.subcategories?.length)) {
+      dispatch(fetchOneCategoryThunk(String(parent.id))).unwrap();
     }
+
     if (user) dispatch(getFavoriteProducts());
   }, [dispatch, user, id, categories]);
 

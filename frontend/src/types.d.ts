@@ -130,7 +130,7 @@ export interface ICategories {
   title: string;
   parentId?: number | null;
   subcategories?: Subcategory[];
-  parent: { id:number, title: string };
+  parent?: { id: number; title: string } | null;
   icon?: File | null;
   image?: File | null;
 }
@@ -182,6 +182,7 @@ export interface ProductRequest {
   category?: ICategories;
   startDateSales?: Date | null | string;
   endDateSales?: Date | null | string;
+  brand: IBrand;
 }
 
 export interface ICartBack {
