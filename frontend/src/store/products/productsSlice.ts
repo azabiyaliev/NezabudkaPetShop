@@ -4,6 +4,7 @@ import {
   addProduct,
   editProduct,
   getAllProductsByCategory,
+  getFilteredProducts,
   getOneProduct,
   getProducts,
   getProductsByBrand,
@@ -108,15 +109,16 @@ const productsSlice = createSlice({
         state.loading = false;
       })
       .addCase(getProductsByCategory.pending, (state) => {
-      state.loading = true;
-    })
-      .addCase(getProductsByCategory.fulfilled, (state, action: PayloadAction<ProductResponse[]>) => {
-        state.products = [];
-        state.loading = false;
+        state.loading = true;
+      })
+      .addCase(getProductsByCategory.fulfilled, (state, action) => {
         state.categoryProducts = action.payload;
+        state.loading = false;
+        state.error = false;
       })
       .addCase(getProductsByCategory.rejected, (state) => {
         state.loading = false;
+        state.error = true;
       })
       .addCase(getPromotionalProducts.pending, (state) => {
         state.loading = true;
@@ -127,6 +129,19 @@ const productsSlice = createSlice({
       })
       .addCase(getPromotionalProducts.rejected, (state) => {
         state.loading = false;
+      })
+      .addCase(getFilteredProducts.pending, (state) => {
+        state.loading = true;
+        state.error = false;
+      })
+      .addCase(getFilteredProducts.fulfilled, (state, action) => {
+        state.categoryProducts = action.payload;
+        state.loading = false;
+        state.error = false;
+      })
+      .addCase(getFilteredProducts.rejected, (state) => {
+        state.loading = false;
+        state.error = true;
       });
   },
 });
