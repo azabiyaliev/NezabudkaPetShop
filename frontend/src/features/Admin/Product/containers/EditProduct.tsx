@@ -1,4 +1,4 @@
-import { useAppDispatch, useAppSelector } from "../../../../app/hooks.ts";
+import { useAppDispatch, useAppSelector, usePermission } from '../../../../app/hooks.ts';
 import { useNavigate, useParams } from "react-router-dom";
 import {
   addProductLoading,
@@ -16,6 +16,7 @@ import Grid from "@mui/material/Grid2";
 import AdminBar from "../../AdminProfile/AdminBar.tsx";
 import ProductForm from "../components/ProductForm.tsx";
 import { useEffect } from "react";
+import { userRoleAdmin, userRoleSuperAdmin } from '../../../../globalConstants.ts';
 
 const EditProduct = () => {
   const dispatch = useAppDispatch();
@@ -24,6 +25,7 @@ const EditProduct = () => {
   const user = useAppSelector(selectUser);
   const product = useAppSelector(selectProduct);
   const { id } = useParams();
+  const can = usePermission(user);
 
   useEffect(() => {
     if (id) dispatch(getOneProductForEdit(Number(id))).unwrap();
@@ -31,7 +33,7 @@ const EditProduct = () => {
 
   const onSubmitForm = async (newProduct: ProductRequest) => {
     try {
-      if (user && user.role === "admin") {
+      if (user && can([userRoleAdmin, userRoleSuperAdmin])) {
         await dispatch(
           editProduct({ token: user.token, product: newProduct }),
         ).unwrap();

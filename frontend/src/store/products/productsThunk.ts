@@ -88,10 +88,10 @@ export const getProducts = createAsyncThunk<ProductResponse[], string>(
   },
 );
 
-export const getOneProduct = createAsyncThunk<ProductRequest, number>(
+export const getOneProduct = createAsyncThunk<ProductResponse, number>(
   "products/getOneProduct",
   async (productId) => {
-    const response = await axiosApi.get<ProductRequest>(
+    const response = await axiosApi.get<ProductResponse>(
       `/products/${productId}`,
     );
     return response.data || null;

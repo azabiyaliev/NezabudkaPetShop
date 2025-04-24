@@ -244,6 +244,8 @@ export class ProductsService {
       productManufacturer,
       productFeedClass,
       productWeight,
+      promoPercentage,
+      originalPrice,
     }: CreateProductsDto,
     file?: Express.Multer.File,
   ) {
@@ -260,6 +262,15 @@ export class ProductsService {
       throw new NotFoundException('Товар не найден');
     }
 
+    const original =
+      originalPrice !== undefined
+        ? Number(originalPrice)
+        : (productId.originalPrice ?? Number(productPrice));
+    let promoPrice = Number(promoPercentage);
+
+    promoPrice =
+      sales && promoPercentage ? original * (1 - promoPrice / 100) : original;
+
     const changedProduct = await this.prismaService.products.update({
       where: {
         id,
@@ -267,14 +278,15 @@ export class ProductsService {
       data: {
         productName,
         productDescription,
-        productPrice: Number(productPrice),
+        productPrice: promoPrice,
+        originalPrice: original,
         productPhoto: photo,
         brandId: Number(brandId),
         categoryId: Number(categoryId),
         existence: existence === 'true',
-        sales,
-        startDateSales,
-        endDateSales,
+        sales: sales ? sales : false,
+        startDateSales: sales ? startDateSales : null,
+        endDateSales: sales ? endDateSales : null,
         productWeight:
           productWeight === undefined || productWeight === null
             ? null
@@ -284,6 +296,7 @@ export class ProductsService {
         productManufacturer:
           productManufacturer === 'null' ? null : productManufacturer,
         productFeedClass: productFeedClass === 'null' ? null : productFeedClass,
+        promoPercentage: Number(promoPercentage),
       },
       select: {
         id: true,
@@ -304,6 +317,7 @@ export class ProductsService {
         productFeedClass: true,
         productWeight: true,
         productAge: true,
+        promoPercentage: true,
       },
     });
 

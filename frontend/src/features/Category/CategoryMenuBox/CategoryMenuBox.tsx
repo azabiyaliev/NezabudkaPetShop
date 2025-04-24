@@ -7,6 +7,7 @@ import { Subcategory } from '../../../types';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { useNavigate } from 'react-router-dom';
 import { apiUrl } from '../../../globalConstants.ts';
+import photo from '../../../assets/paw.png'
 
 const CategoryMenuBox = () => {
   const categories = useAppSelector(selectCategories);
@@ -61,7 +62,7 @@ const CategoryMenuBox = () => {
             <a href="#" className="nav-category-link">
               <img
                 alt={sub.title}
-                src={`${apiUrl}/${sub.icon}`}
+                src={sub.icon ? `${apiUrl}/${sub.icon}` : photo}
                 style={{ width: "30px", height: "30px" }}
               />
               {sub.title}

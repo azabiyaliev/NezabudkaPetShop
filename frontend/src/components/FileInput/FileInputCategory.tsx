@@ -1,18 +1,30 @@
 import Grid from "@mui/material/Grid2";
 import { Button, TextField } from "@mui/material";
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 
 interface Props {
   name: string;
   label: string;
   onGetFile: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  file: File | string | null;
+  id: string;
+  inputRef?: React.RefObject<HTMLInputElement | null>;
 }
 
-const FileInputCategory: React.FC<Props> = ({ name, label, onGetFile }) => {
-  const inputRef = useRef<HTMLInputElement>(null);
+const FileInputCategory: React.FC<Props> = ({ name, label, onGetFile, file, inputRef }) => {
   const [fileName, setFileName] = useState("");
 
+  useEffect(() => {
+    if (file instanceof File) {
+      setFileName(file.name);
+    } else if (typeof file === "string") {
+      const urlParts = file.split('/');
+      setFileName(urlParts[urlParts.length - 1]);
+    } else {
+      setFileName("");
+    }
+  }, [file]);
 
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -20,12 +32,11 @@ const FileInputCategory: React.FC<Props> = ({ name, label, onGetFile }) => {
     } else {
       setFileName("");
     }
-
     onGetFile(e);
   };
 
   const activateInput = () => {
-    if (inputRef.current) {
+    if (inputRef?.current) {
       inputRef.current.click();
     }
   };
@@ -33,7 +44,7 @@ const FileInputCategory: React.FC<Props> = ({ name, label, onGetFile }) => {
   return (
     <>
       <input
-        style={{ display: "none"}}
+        style={{ display: "none" }}
         type="file"
         name={name}
         onChange={onFileChange}
@@ -43,10 +54,10 @@ const FileInputCategory: React.FC<Props> = ({ name, label, onGetFile }) => {
         <Grid>
           <TextField
             label={label}
-            slotProps={{ input: { readOnly: true } }}
             value={fileName}
             onClick={activateInput}
-            sx={{ width: '100%', height: '100%' }}
+            fullWidth
+            inputProps={{ readOnly: true }}
           />
         </Grid>
         <Grid>
@@ -54,14 +65,12 @@ const FileInputCategory: React.FC<Props> = ({ name, label, onGetFile }) => {
             variant="contained"
             onClick={activateInput}
             sx={{
-              color: "white",
-              textTransform: "uppercase",
               background: "white",
-              height: '100%',
               border: "1px solid #237803",
+              borderRadius: "10px",
+              height: '100%',
               padding: "6px 12px",
               display: "flex",
-              borderRadius: "10px",
               alignItems: "center",
               justifyContent: "center",
             }}

@@ -1,4 +1,4 @@
-import { useAppDispatch, useAppSelector } from "../../../../app/hooks.ts";
+import { useAppDispatch, useAppSelector, usePermission } from '../../../../app/hooks.ts';
 import { useNavigate } from "react-router-dom";
 import { addProductLoading } from "../../../../store/products/productsSlice.ts";
 import { addProduct } from "../../../../store/products/productsThunk.ts";
@@ -9,16 +9,18 @@ import ProductForm from "../components/ProductForm.tsx";
 import { selectUser } from "../../../../store/users/usersSlice.ts";
 import Grid from "@mui/material/Grid2";
 import AdminBar from "../../AdminProfile/AdminBar.tsx";
+import { userRoleAdmin, userRoleSuperAdmin } from '../../../../globalConstants.ts';
 
 const NewProduct = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const loading = useAppSelector(addProductLoading);
   const user = useAppSelector(selectUser);
+  const can = usePermission(user);
 
   const onSubmitForm = async (product: ProductRequest) => {
     try {
-      if (user && user.role === "admin") {
+      if (user && can([userRoleAdmin, userRoleSuperAdmin])) {
         await dispatch(addProduct({ product, token: user.token })).unwrap();
         toast.success("Товар успешно добавлен!");
         navigate("/private/products");
