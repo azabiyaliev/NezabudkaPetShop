@@ -124,9 +124,21 @@ export class ProductsController {
   }
 
   @Get('productsByCategory/:id')
-  async getProductsByCategory(@Param('id') categoryId: string) {
-    return await this.productsService.getProductsByCategoryId(
-      Number(categoryId),
-    );
+  async getProductsByCategory(
+    @Param('id') id: string,
+    @Query() filters: any,
+  ) {
+    // Если есть параметры фильтрации, используем метод getFilteredProducts
+    if (Object.keys(filters).length > 0) {
+      return this.productsService.getFilteredProducts(parseInt(id), filters);
+    }
+    
+    // Иначе используем существующий метод
+    return this.productsService.getProductsByCategoryId(parseInt(id));
+  }
+
+  @Get('categories/:categoryId/filter-options')
+  async getCategoryFilterOptions(@Param('categoryId') categoryId: string) {
+    return this.productsService.getCategoryFilterOptions(parseInt(categoryId));
   }
 }

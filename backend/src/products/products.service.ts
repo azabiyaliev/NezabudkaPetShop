@@ -347,6 +347,64 @@ export class ProductsService {
     return { message: 'Товар был успешно удалён!' };
   }
 
+  async getCategoryFilterOptions(categoryId: number) {
+    // Получаем все товары из категории
+    const products = await this.prismaService.products.findMany({
+      where: {
+        OR: [
+          { categoryId },
+          {
+            category: {
+              parentId: categoryId
+            }
+          }
+        ]
+      },
+      include: {
+        brand: true,
+      }
+    });
+
+    if (!products || products.length === 0) {
+      return {
+        brands: [],
+        sizes: [],
+        ages: [],
+        weights: [],
+        foodClasses: [],
+        manufacturers: []
+      };
+    }
+
+    // Извлекаем уникальные значения для всех атрибутов
+    const brands = [...new Set(products
+      .filter(p => p.brand !== null && p.brand !== undefined)
+      .map(p => (p.brand as any).title))];
+    const sizes = [...new Set(products.filter(p => p.productSize).map(p => p.productSize))];
+    const ages = [...new Set(products.filter(p => p.productAge).map(p => p.productAge))];
+    const weights = [...new Set(products.filter(p => p.productWeight).map(p => p.productWeight))];
+    const foodClasses = [...new Set(products.filter(p => p.productFeedClass).map(p => p.productFeedClass))];
+    const manufacturers = [...new Set(products.filter(p => p.productManufacturer).map(p => p.productManufacturer))];
+
+    // Находим минимальную и максимальную цену
+    const prices = products.map(p => p.productPrice);
+    const minPrice = prices.length > 0 ? Math.min(...prices) : 0;
+    const maxPrice = prices.length > 0 ? Math.max(...prices) : 5000;
+
+    return {
+      brands,
+      sizes,
+      ages,
+      weights,
+      foodClasses,
+      manufacturers,
+      priceRange: {
+        min: minPrice,
+        max: maxPrice
+      }
+    };
+  }
+
   async getBrandsByCategoryId(id: number) {
     const subcategories = await this.prismaService.category.findMany({
       where: { parentId: id },
@@ -417,5 +475,116 @@ export class ProductsService {
     }
 
     return products;
+  }
+
+  async getFilteredProducts(categoryId: number, filters: any) {
+    const {
+      brands,
+      sizes,
+      ages,
+      weights,
+      foodClasses,
+      manufacturers,
+      minPrice,
+      maxPrice,
+      existence,
+      sales
+    } = filters;
+
+    // Строим условия WHERE для фильтрации
+    const whereConditions: any = {
+      OR: [
+        { categoryId },
+        {
+          category: {
+            parentId: categoryId
+          }
+        }
+      ]
+    };
+
+    // Фильтрация по бренду
+    if (brands) {
+      const brandValues = Array.isArray(brands) ? brands : [brands];
+      whereConditions.brand = {
+        title: {
+          in: brandValues
+        }
+      };
+    }
+
+    // Фильтрация по размеру
+    if (sizes) {
+      const sizeValues = Array.isArray(sizes) ? sizes : [sizes];
+      whereConditions.productSize = {
+        in: sizeValues
+      };
+    }
+
+    // Фильтрация по возрасту
+    if (ages) {
+      const ageValues = Array.isArray(ages) ? ages : [ages];
+      whereConditions.productAge = {
+        in: ageValues
+      };
+    }
+
+    // Фильтрация по весу
+    if (weights) {
+      const weightValues = Array.isArray(weights) ? weights.map(Number) : [Number(weights)];
+      whereConditions.productWeight = {
+        in: weightValues
+      };
+    }
+
+    // Фильтрация по классу корма
+    if (foodClasses) {
+      const foodClassValues = Array.isArray(foodClasses) ? foodClasses : [foodClasses];
+      whereConditions.productFeedClass = {
+        in: foodClassValues
+      };
+    }
+
+    // Фильтрация по производителю
+    if (manufacturers) {
+      const manufacturerValues = Array.isArray(manufacturers) ? manufacturers : [manufacturers];
+      whereConditions.productManufacturer = {
+        in: manufacturerValues
+      };
+    }
+
+    // Фильтрация по цене
+    if (minPrice || maxPrice) {
+      whereConditions.productPrice = {};
+      
+      if (minPrice) {
+        whereConditions.productPrice.gte = Number(minPrice);
+      }
+      
+      if (maxPrice) {
+        whereConditions.productPrice.lte = Number(maxPrice);
+      }
+    }
+
+    // Фильтрация по наличию
+    if (existence === 'true') {
+      whereConditions.existence = true;
+    }
+
+    // Фильтрация по акциям
+    if (sales === 'true') {
+      whereConditions.sales = true;
+    }
+
+    // Выполняем запрос с фильтрами
+    const filteredProducts = await this.prismaService.products.findMany({
+      where: whereConditions,
+      include: {
+        brand: true,
+        category: true
+      }
+    });
+
+    return filteredProducts;
   }
 }

@@ -151,3 +151,37 @@ export const getProductsByCategory = createAsyncThunk<ProductResponse[], number>
     return products.data || [];
   }
 )
+
+export const getFilteredProducts = createAsyncThunk<
+  ProductResponse[],
+  { categoryId: number; filters: Record<string, any> }
+>(
+  "products/getFilteredProducts",
+  async ({ categoryId, filters }) => {
+    // Конвертируем фильтры в параметры запроса
+    const params = new URLSearchParams();
+    
+    // Добавляем параметры фильтрации
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value !== null && value !== undefined) {
+        if (Array.isArray(value) && value.length > 0) {
+          // Для массивов добавляем каждый элемент с одинаковым ключом
+          value.forEach((item) => {
+            params.append(key, item.toString());
+          });
+        } else if (typeof value === 'boolean') {
+          params.append(key, value.toString());
+        } else if (typeof value === 'number' || typeof value === 'string') {
+          params.append(key, value.toString());
+        }
+      }
+    });
+    
+    // Выполняем запрос с параметрами фильтрации
+    const products = await axiosApi<ProductResponse[]>(
+      `products/productsByCategory/${categoryId}?${params.toString()}`
+    );
+    
+    return products.data || [];
+  }
+);
