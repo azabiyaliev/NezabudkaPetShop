@@ -2,13 +2,12 @@ import {
   Button,
   Card,
   CardContent,
-  CardMedia,
+  CardMedia, Divider, IconButton,
   Typography,
-} from "@mui/material";
+} from '@mui/material';
 import React, { useEffect, useState } from "react";
 import { ProductResponse } from "../../../types";
 import { apiUrl } from "../../../globalConstants.ts";
-import "../css/product.css";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
@@ -34,6 +33,8 @@ import {
 } from "../../../store/favoriteProducts/favoriteProductsThunks.ts";
 import { selectedFavorite } from "../../../store/favoriteProducts/favoriteProductsSlice.ts";
 import { Box } from "@mui/joy";
+import { motion, AnimatePresence } from "framer-motion";
+
 
 interface Props {
   product: ProductResponse;
@@ -48,6 +49,7 @@ const OneProductCard: React.FC<Props> = ({ product }) => {
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const isAddToCartDisabled = !product.existence;
   const cartItem = cart && cart.products.find((item) => item.productId === product.id);
+  const [showAddAnimation, setShowAddAnimation] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -83,6 +85,12 @@ const OneProductCard: React.FC<Props> = ({ product }) => {
   };
 
   const addProductToCart = async (product: ProductResponse) => {
+    setShowAddAnimation(true);
+
+    setTimeout(() => {
+      setShowAddAnimation(false);
+    }, 1000);
+
     if (user && cart) {
       await dispatch(
         addItem({
@@ -114,14 +122,25 @@ const OneProductCard: React.FC<Props> = ({ product }) => {
 
   return (
     <Card
-      className="product-card"
       sx={{
-        boxShadow: "none",
-        borderRadius: 0,
-        textAlign: "center",
+        maxWidth: 240,
+        width: "100%",
+        display: 'flex',
+        flexDirection: 'column',
+        boxShadow: 3,
+        borderRadius: 2,
         cursor: "pointer",
+        position: 'relative',
+        flex: '1 1 auto',
       }}
     >
+      <Button onClick={toggleFavorite} sx={{ position: 'absolute', top: 4, right: -10  }}>
+        {isFavorite ? (
+          <FavoriteIcon color="error" />
+        ) : (
+          <FavoriteBorderIcon color="action" />
+        )}
+      </Button>
       <CardMedia
         onClick={() => navigate(`/product/${product.id}`)}
         component="img"
@@ -130,58 +149,85 @@ const OneProductCard: React.FC<Props> = ({ product }) => {
         alt={product.productName}
         sx={{ objectFit: "contain", p: 2 }}
       />
-      <CardContent>
-        <Typography variant="body2">{product.productName}</Typography>
-        <Typography
-          variant="h6"
-          color="orange"
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          gap={1}
-        >
-          {product.productPrice.toLocaleString()} сом
-          <Button onClick={toggleFavorite} sx={{ minWidth: 0, p: 0 }}>
-            {isFavorite ? (
-              <FavoriteIcon color="error" />
-            ) : (
-              <FavoriteBorderIcon color="action" />
-            )}
-          </Button>
-        </Typography>
-        <Button
-          onClick={() => addProductToCart(product)}
-          variant="contained"
-          className="cart-button"
-          disabled={isAddToCartDisabled}
-          sx={{
-            mt: "10px",
-            backgroundColor: isAddToCartDisabled ? "#e0e0e0" : "#FFC107",
-            color: isAddToCartDisabled ? "#9e9e9e" : "white",
-            width: "100px",
-            padding: "20px 0",
-            borderRadius: 0,
-            overflow: "hidden",
-            position: "relative",
-            fontSize: "12px",
-          }}
-        >
-          <span className="cart-text">
-            {isAddToCartDisabled ? "Нет в наличии" : "В корзину"}
-          </span>
-          <span className="cart-icon">
-            <ShoppingCartIcon />
-          </span>
-        </Button>
+      <AnimatePresence initial={false}>
         {cartItem && cartItem.quantity > 0 && (
-          <Box sx={{
-            marginTop: "10px"
-          }}>
+          <motion.div
+            key="cart-info"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            transition={{ duration: 0.3 }}
+            style={{
+              position: "absolute",
+              left: 15,
+              bottom: 10,
+              width: "100%",
+            }}
+          >
             <Typography variant="body2" color="textSecondary">
-              В корзине: {cartItem ? cartItem.quantity : 0} шт.
+              В корзине: {cartItem.quantity} шт.
             </Typography>
-          </Box>
+          </motion.div>
         )}
+      </AnimatePresence>
+      <Divider sx={{ border: "2px solid gray" }}/>
+      <CardContent sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
+        <Typography
+          variant="body2"
+          sx={{
+          flexGrow: 1,
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          display: '-webkit-box',
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: 'vertical',
+          mb: 1,
+          }}
+        >{product.productName}</Typography>
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            {product.productWeight ? <Typography>
+              {product.productWeight} кг
+            </Typography> : null}
+          <Typography
+          >
+            {product.productPrice.toLocaleString()} сом
+          </Typography>
+          <Box sx={{ position: "relative" }}>
+            <IconButton
+              onClick={() => addProductToCart(product)}
+              disabled={isAddToCartDisabled}
+            >
+              <ShoppingCartIcon />
+            </IconButton>
+
+            <AnimatePresence>
+              {showAddAnimation && (
+                <motion.div
+                  initial={{ y: -20, opacity: 0, scale: 0.5 }}
+                  animate={{ y: 0, opacity: 1, scale: 1 }}
+                  exit={{ y: 20, opacity: 0, scale: 0.5 }}
+                  transition={{ duration: 0.5 }}
+                  style={{
+                    position: "absolute",
+                    top: -10,
+                    right: 10,
+                    backgroundColor: "#ffc107",
+                    color: "#fff",
+                    borderRadius: "50%",
+                    width: 20,
+                    height: 20,
+                    fontSize: 12,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  +1
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </Box>
+        </Box>
       </CardContent>
     </Card>
   );
