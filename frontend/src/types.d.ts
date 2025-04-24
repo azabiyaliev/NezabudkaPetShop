@@ -130,7 +130,7 @@ export interface ICategories {
   title: string;
   parentId?: number | null;
   subcategories?: Subcategory[];
-  parent: { id:number, title: string };
+  parent?: { id: number; title: string } | null;
   icon?: File | null;
   image?: File | null;
 }
