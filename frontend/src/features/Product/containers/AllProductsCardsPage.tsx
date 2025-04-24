@@ -16,6 +16,7 @@ import { clearCart } from '../../../store/cart/cartSlice.ts';
 import { fetchCart } from '../../../store/cart/cartThunk.ts';
 import { userRoleClient } from '../../../globalConstants.ts';
 import Grid from "@mui/material/Grid2";
+import Filters from '../../Filters/Filters.tsx';
 
 const AllProductsCardsPage = () => {
   const dispatch = useAppDispatch();
@@ -107,6 +108,7 @@ const AllProductsCardsPage = () => {
               );
             })}
           </Box>
+          <Filters/>
         </Grid>
         <Grid size={9}>
           {products.length === 0 ? (
