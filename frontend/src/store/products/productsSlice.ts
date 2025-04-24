@@ -1,22 +1,21 @@
-import { ProductRequest, ProductResponse } from "../../types";
-import { PayloadAction } from "@reduxjs/toolkit";
+import { ProductResponse, SubcategoryWithBrand } from '../../types';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
+  addProduct,
   editProduct,
+  getAllProductsByCategory,
   getOneProduct,
   getProducts,
   getProductsByBrand,
   getProductsByCategory,
   getPromotionalProducts
 } from './productsThunk.ts';
-import { SubcategoryWithBrand } from "../../types";
-import { createSlice } from "@reduxjs/toolkit";
-import { addProduct, getAllProductsByCategory } from "./productsThunk.ts";
-import { RootState } from "../../app/store.ts";
+import { RootState } from '../../app/store.ts';
 
 interface ProductsState {
   products: ProductResponse[];
   categoryProducts: ProductResponse[];
-  product: ProductRequest | null;
+  product: ProductResponse | null;
   brands: SubcategoryWithBrand[];
   promotionalProducts: ProductResponse[];
   loading: boolean;
@@ -89,8 +88,8 @@ const productsSlice = createSlice({
       })
       .addCase(
         getOneProduct.fulfilled,
-        (state, action: PayloadAction<ProductRequest>) => {
-          state.product = action.payload;
+        (state, {payload: product}) => {
+          state.product = product;
           state.loading = false;
         },
       )

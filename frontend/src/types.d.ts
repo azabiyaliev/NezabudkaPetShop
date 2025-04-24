@@ -182,6 +182,7 @@ export interface ProductRequest {
   category?: ICategories;
   startDateSales?: Date | null | string;
   endDateSales?: Date | null | string;
+  brand: IBrand;
 }
 
 export interface ICartBack {
@@ -332,7 +333,7 @@ export interface FavoritesResponse {
 
 export interface historyProduct {
   productId: number;
-  product: ProductRequest;
+  product: ProductResponse;
 }
 
 export interface CompanyPage{
