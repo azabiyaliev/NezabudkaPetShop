@@ -4,12 +4,12 @@ import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
 import  { useEffect, useState } from 'react';
 import { getOneProduct } from "../../../store/products/productsThunk.ts";
 import { useParams } from 'react-router-dom';
-import { selectProduct, selectProducts } from '../../../store/products/productsSlice.ts';
+import { selectProduct } from '../../../store/products/productsSlice.ts';
 import { apiUrl } from "../../../globalConstants.ts";
 import HistoryProduct from '../../../components/Domain/HistoryProduct/HistoryProduct.tsx';
 import '../../../components/TextEditor/styles.css'
 import theme from '../../../globalStyles/globalTheme.ts';
-import { ICategories, ProductRequest, ProductResponse } from '../../../types';
+import { ICategories, ProductResponse } from '../../../types';
 import { addItem, fetchCart } from '../../../store/cart/cartThunk.ts';
 import { cartFromSlice, newUserLogin, productCardToAdd } from '../../../store/cart/cartSlice.ts';
 import { enqueueSnackbar } from 'notistack';
@@ -29,7 +29,6 @@ import { Link as RouterLink } from "react-router-dom";
 const ProductPage = () => {
   const dispatch = useAppDispatch();
   const { id } = useParams<{ id: string }>();
-  const products = useAppSelector(selectProducts);
   const product = useAppSelector(selectProduct);
   const [quantity, setQuantity] = useState<number>(1);
   const cart = useAppSelector(cartFromSlice);
@@ -50,8 +49,12 @@ const ProductPage = () => {
   }, [dispatch, id]);
 
   useEffect(() => {
-    dispatch(fetchDeliveryPage())
-  }, [dispatch]);
+    dispatch(fetchDeliveryPage());
+
+    if (user) {
+      dispatch(fetchCart());
+    }
+  }, [dispatch, user]);
 
   useEffect(() => {
     if (cartItem && cartItem.quantity !== quantity) {
@@ -70,26 +73,18 @@ const ProductPage = () => {
       await dispatch(
         addItem({
           cartId: cart.id,
-          productId: id && Number(id),
+          productId: product.id,
           quantity: quantity,
         })
       ).unwrap();
 
       await dispatch(fetchCart()).unwrap();
     } else {
-      const productRequest: ProductResponse = {
-        id: product.id,
-        productName: product.productName,
-        productPhoto: product.productPhoto,
-        productPrice: product.productPrice,
-        productDescription: product.productDescription,
-        categoryId: product.categoryId,
-      };
 
       if (!cart) {
         dispatch(newUserLogin());
       }
-      dispatch(productCardToAdd(productRequest));
+      dispatch(productCardToAdd(product));
     }
 
     const isFirstTimeAdded = cart?.products.some((item) => item.product.id === product.id);
@@ -334,7 +329,7 @@ const ProductPage = () => {
                 }}
               >
                 <Button
-                  onClick={() => addProductToCart(products)}
+                  onClick={() => addProductToCart(product)}
                   variant="contained"
                   className="cart-button"
                   disabled={isAddToCartDisabled}

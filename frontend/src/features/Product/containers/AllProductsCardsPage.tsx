@@ -42,7 +42,7 @@ const AllProductsCardsPage = () => {
       dispatch(clearCart());
       dispatch(fetchCart()).unwrap();
     }
-  }, []);
+  }, [dispatch, user]);
 
   useEffect(() => {
     if (!id || !categories.length) return;
