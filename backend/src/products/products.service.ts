@@ -272,9 +272,9 @@ export class ProductsService {
         brandId: Number(brandId),
         categoryId: Number(categoryId),
         existence: existence === 'true',
-        sales,
-        startDateSales,
-        endDateSales,
+        sales: sales ? sales : false,
+        startDateSales: sales ? startDateSales : null,
+        endDateSales: sales ? endDateSales : null,
         productWeight:
           productWeight === undefined || productWeight === null
             ? null
