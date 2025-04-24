@@ -64,7 +64,7 @@ const PromotionalProduct:React.FC<Props> = ({product}) => {
             />
           </Box>
           <Box sx={{ width: "100px", position: "relative", p: 2 }}>
-            <DiscountBadge>-10%</DiscountBadge>
+            <DiscountBadge>{product.promoPercentage}%</DiscountBadge>
             <img
               src={apiUrl + product.productPhoto}
               alt={product.productName}
@@ -87,6 +87,7 @@ const PromotionalProduct:React.FC<Props> = ({product}) => {
           <Typography fontWeight={500} fontSize={14}>
             Корма {product.brand.title} скидка на 10%
           </Typography>
+          <Typography>{product.sales ? product.productPrice : product.originalPrice} сом</Typography>
           <Typography fontSize={12} color="gray" mt={0.5}>
             С {dayjs(product.startDateSales).format("DD.MM.YYYY")} по{" "}
             {dayjs(product.endDateSales).format("DD.MM.YYYY")}

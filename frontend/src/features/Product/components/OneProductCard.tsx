@@ -140,7 +140,7 @@ const OneProductCard: React.FC<Props> = ({ product }) => {
           justifyContent="center"
           gap={1}
         >
-          {product.productPrice.toLocaleString()} сом
+          {product.sales ? product.productPrice : product.originalPrice} сом
           <Button onClick={toggleFavorite} sx={{ minWidth: 0, p: 0 }}>
             {isFavorite ? (
               <FavoriteIcon color="error" />

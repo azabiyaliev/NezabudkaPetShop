@@ -66,4 +66,10 @@ export class CreateProductsDto {
 
   @IsOptional()
   productFeedClass?: string;
+
+  @IsOptional()
+  promoPercentage?: number;
+
+  @IsOptional()
+  originalPrice?: number;
 }
