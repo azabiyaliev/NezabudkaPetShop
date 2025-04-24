@@ -431,7 +431,7 @@ const ProductPage = () => {
         )}
       </Box>
       <Box sx={{ mt: theme.spacing.xxl }}>
-        <HistoryProduct />
+        <HistoryProducts />
       </Box>
     </div>
   );
