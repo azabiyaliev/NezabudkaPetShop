@@ -51,6 +51,7 @@ const initialState = {
   productWeight: 0,
   productFeedClass: "",
   productManufacturer: "",
+  promoPercentage: 0,
 };
 
 const ProductForm: React.FC<Props> = ({
@@ -109,6 +110,7 @@ const ProductForm: React.FC<Props> = ({
 
       setForm({
         ...editProduct,
+        promoPercentage: editProduct.promoPercentage ? Number(form.promoPercentage) : 0,
         startDateSales: formatDate(editProduct.startDateSales),
         endDateSales: formatDate(editProduct.endDateSales),
         productSize: sanitizeString(editProduct.productSize),
@@ -208,11 +210,18 @@ const ProductForm: React.FC<Props> = ({
       }
     }
 
+    if(form.promoPercentage === undefined) return 0;
+
+    if(form.promoPercentage < 0 || form.promoPercentage > 100) {
+      return toast.warning('Процент не может быть ниже 0 и выше 100!')
+    }
+
     const categoryIdToSend = form.subcategoryId
       ? form.subcategoryId
       : form.categoryId;
     onSubmit({
       ...form,
+      promoPercentage: Number(form.promoPercentage),
       categoryId: categoryIdToSend,
       sales: Boolean(form.sales),
       existence: Boolean(form.existence),
@@ -267,7 +276,9 @@ const ProductForm: React.FC<Props> = ({
     form.productDescription.trim() &&
     form.categoryId &&
     form.productPhoto &&
-    (!form.sales || (form.startDateSales && form.endDateSales && form.startDateSales <= form.endDateSales))
+    (!form.sales || (form.startDateSales && form.endDateSales && form.startDateSales <= form.endDateSales)) &&
+    (form.promoPercentage === undefined ||
+      (form.promoPercentage >= 0 && form.promoPercentage <= 100))
   );
 
   return (
@@ -665,6 +676,15 @@ const ProductForm: React.FC<Props> = ({
                       }
                     }}
                   />
+                </Grid>
+                <Grid>
+                  <TextField
+                  label='Скидочные проценты %'
+                  id="promoPercentage"
+                  name='promoPercentage'
+                  type='number'
+                  value={form.promoPercentage}
+                  onChange={inputChangeHandler}/>
                 </Grid>
               </Grid>
             )}

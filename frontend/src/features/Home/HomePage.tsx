@@ -164,21 +164,21 @@ const HomePage = () => {
         <CategoryCard/>
       </Box>
 
-      <Box>
-        <Typography
-          sx={{
-            fontSize: "40px",
-            mb: 0.5,
-            color: "rgba(250, 143, 1, 1)",
-            textAlign: "center",
-          }}
-        >
-          Акции
-        </Typography>
-        {promotionalProducts.length > 0 && (
+      {promotionalProducts.length > 0 && (
+        <Box>
+          <Typography
+            sx={{
+              fontSize: "40px",
+              mb: 0.5,
+              color: "rgba(250, 143, 1, 1)",
+              textAlign: "center",
+            }}
+          >
+            Акции
+          </Typography>
           <PromotionalProducts products={promotionalProducts}/>
-        )}
-      </Box>
+        </Box>
+      )}
 
       {brands.length > 0 && (
         <Box sx={{ marginTop: "40px" }}>

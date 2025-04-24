@@ -168,6 +168,7 @@ export interface ProductRequest {
   category?: ICategories;
   startDateSales?: Date | null | string;
   endDateSales?: Date | null | string;
+  promoPercentage?: number;
 }
 
 export interface ICartBack {
@@ -243,6 +244,8 @@ export interface ProductResponse {
   productWeight?: number;
   productFeedClass?: string;
   productManufacturer?: string;
+  promoPercentage?: number;
+  originalPrice?: number;
 }
 
 export interface AdminDataMutation {

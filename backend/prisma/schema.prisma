@@ -114,10 +114,12 @@ model Products {
   productFeedClass    String? @map("product_feed_class")
   productManufacturer String? @map("product_manufacturer")
 
-  existence      Boolean   @default(true)
-  sales          Boolean   @default(false)
-  startDateSales DateTime?
-  endDateSales   DateTime?
+  existence       Boolean   @default(true)
+  sales           Boolean   @default(false)
+  startDateSales  DateTime?
+  endDateSales    DateTime?
+  promoPercentage Int?      @map("sale_percentage")
+  originalPrice   Int?      @map("originalPrice")
 
   items                OrderItem[]
   brandId              Int?        @map("brand_id")
