@@ -6,7 +6,7 @@ import { getOneProduct } from "../../../store/products/productsThunk.ts";
 import { useParams } from 'react-router-dom';
 import { selectProduct } from '../../../store/products/productsSlice.ts';
 import { apiUrl } from "../../../globalConstants.ts";
-import HistoryProduct from '../../../components/Domain/HistoryProduct/HistoryProduct.tsx';
+import HistoryProducts from '../../../components/Domain/HistoryProducts/HistoryProducts.tsx';
 import '../../../components/TextEditor/styles.css'
 import theme from '../../../globalStyles/globalTheme.ts';
 import { ICategories, ProductResponse } from '../../../types';

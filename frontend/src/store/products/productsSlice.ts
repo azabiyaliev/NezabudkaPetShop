@@ -1,17 +1,16 @@
-import { ProductResponse } from "../../types";
-import { PayloadAction } from "@reduxjs/toolkit";
+import { ProductResponse, SubcategoryWithBrand } from '../../types';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
+  addProduct,
   editProduct,
+  getAllProductsByCategory,
   getOneProduct,
   getProducts,
   getProductsByBrand,
   getProductsByCategory,
   getPromotionalProducts
 } from './productsThunk.ts';
-import { SubcategoryWithBrand } from "../../types";
-import { createSlice } from "@reduxjs/toolkit";
-import { addProduct, getAllProductsByCategory } from "./productsThunk.ts";
-import { RootState } from "../../app/store.ts";
+import { RootState } from '../../app/store.ts';
 
 interface ProductsState {
   products: ProductResponse[];

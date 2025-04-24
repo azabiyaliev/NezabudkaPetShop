@@ -333,7 +333,7 @@ export interface FavoritesResponse {
 
 export interface historyProduct {
   productId: number;
-  product: ProductRequest;
+  product: ProductResponse;
 }
 
 export interface CompanyPage{
