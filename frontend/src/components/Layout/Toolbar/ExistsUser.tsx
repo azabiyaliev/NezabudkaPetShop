@@ -51,7 +51,7 @@ const ExistsUser = () => {
           flexDirection: "column",
           alignItems: "center",
           gap: 2,
-          "@media (min-width: 1100px)": {
+          "@media (max-width: 900px)": {
             flexDirection: "row",
           },
         }}
@@ -64,8 +64,7 @@ const ExistsUser = () => {
             flexDirection: "column",
             alignItems: "center",
             padding: 0,
-            gap: "4px",
-            "@media (min-width: 1100px)": {
+            "@media (min-width: 900px)": {
               flexDirection: "row",
               gap: "8px",
             },
@@ -75,30 +74,29 @@ const ExistsUser = () => {
             sx={{
               width: "30px",
               height: "30px",
-              color: "white",
-              "@media (max-width: 1100px)": { color: "black" },
+              color: "#343332",
+              "@media (max-width: 1100px)": { color: "#343332" },
             }}
           />
           {user && (
             <Typography
               sx={{
-                color: "white",
+                color: "#343332",
                 fontSize: "16px",
                 fontWeight: "500",
                 textTransform: "uppercase",
                 "@media (max-width: 1100px)": {
                   color: "black",
                   fontSize: "14px",
-                  marginTop: "-10px",
                   marginLeft: 0,
                 },
               }}
             >
               {user.role === "superAdmin" ? (
-                <span style={{ color: "white" }}>Super Admin</span>
+                <span style={{ color: "#343332" }}>Super Admin</span>
               ) : user.role === "admin" ? (
                 <>
-                  <span style={{ color: "#ffcc00" }}>Admin:</span> {user.firstName}
+                  <span style={{ color: "#a82626" }}>Admin:</span> {user.firstName}
                 </>
               ) : (
                 user.firstName

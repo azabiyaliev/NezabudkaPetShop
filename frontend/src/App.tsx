@@ -43,6 +43,7 @@ import ContactPage from './features/ContactPage/ContactPage.tsx';
 import AllOrders from './features/Admin/AdminOrderPage/AllOrders.tsx';
 import MyOrders from './features/Order/MyOrders.tsx';
 import AddAdmin from './features/Admin/AddAdmin/AddAdmin.tsx';
+import ErrorPage from './components/ErrorPage/ErrorPage.tsx';
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -186,7 +187,7 @@ const App = () => {
               </ProtectedRoute>
             }
           />
-          <Route path="*" element={<h1>Not found</h1>} />
+          <Route path="*" element={<ErrorPage/>}/>
           <Route path="/product/:id" element={<ProductPage />} />
           <Route path="/brand/:id" element={<BrandPage />} />
           <Route path="/all-products/:id" element={<AllProductsCardsPage />} />

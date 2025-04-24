@@ -1,6 +1,6 @@
 import { Box, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
+import { useAppDispatch, useAppSelector, usePermission } from '../../../app/hooks.ts';
 import { getProductsByCategory, } from '../../../store/products/productsThunk.ts';
 import { selectProductsByCategory } from '../../../store/products/productsSlice.ts';
 import OneProductCard from '../components/OneProductCard.tsx';
@@ -14,12 +14,14 @@ import {
 import { selectCategories, } from '../../../store/categories/categoriesSlice.ts';
 import { clearCart } from '../../../store/cart/cartSlice.ts';
 import { fetchCart } from '../../../store/cart/cartThunk.ts';
+import { userRoleClient } from '../../../globalConstants.ts';
 
 const AllProductsCardsPage = () => {
   const dispatch = useAppDispatch();
   const products = useAppSelector(selectProductsByCategory);
   const [columns, setColumns] = useState(4);
   const user = useAppSelector(selectUser);
+  const can = usePermission(user);
   const { id } = useParams();
   const categories = useAppSelector(selectCategories);
   const navigate = useNavigate();
@@ -36,7 +38,7 @@ const AllProductsCardsPage = () => {
   useEffect(() => {
     dispatch(fetchCategoriesThunk()).unwrap();
 
-    if (user) {
+    if (user && can([userRoleClient])) {
       dispatch(clearCart());
       dispatch(fetchCart()).unwrap();
     }
@@ -44,14 +46,18 @@ const AllProductsCardsPage = () => {
 
   useEffect(() => {
     if (!id || !categories.length) return;
-    if (id) {
-      const numId = Number(id);
-      dispatch(getProductsByCategory(numId));
-      const parent = categories.find((category) =>
-        category.subcategories?.some((sub) => sub.id === numId),
-      );
-      if (parent) dispatch(fetchOneCategoryThunk(String(parent.id))).unwrap();
+
+    const numId = Number(id);
+    const parent = categories.find((category) =>
+      category.subcategories?.some((sub) => sub.id === numId),
+    );
+
+    dispatch(getProductsByCategory(numId));
+
+    if (parent && !categories.find((cat) => cat.id === parent.id && cat.subcategories?.length)) {
+      dispatch(fetchOneCategoryThunk(String(parent.id))).unwrap();
     }
+
     if (user) dispatch(getFavoriteProducts());
   }, [dispatch, user, id, categories]);
 

@@ -17,6 +17,7 @@ import { userRoleClient } from '../../globalConstants.ts';
 import { selectPromotionalProducts } from '../../store/products/productsSlice.ts';
 import { getPromotionalProducts } from '../../store/products/productsThunk.ts';
 import PromotionalProducts from '../Product/components/PromotionalProducts/PromotionalProducts.tsx';
+import theme from '../../globalStyles/globalTheme.ts';
 
 const HomePage = () => {
   const [openCart, setOpenCart] = useState<boolean>(false);
@@ -153,13 +154,14 @@ const HomePage = () => {
       <Box className="mb-5">
         <Typography
           sx={{
-            fontSize: "30px",
+            fontSize: theme.fonts.size.xxl,
             mb: 3,
-            color: "rgb(88,138,84)",
+            fontWeight: theme.fonts.weight.medium,
+            color: theme.colors.text,
             textAlign: "center",
           }}
         >
-          Купите для своего питомца
+          Каталог
         </Typography>
         <CategoryCard/>
       </Box>

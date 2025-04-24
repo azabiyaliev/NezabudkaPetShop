@@ -1,15 +1,12 @@
 import { TextField, Button, Box, Typography } from '@mui/material';
-import React, { useCallback, useEffect, useState } from 'react';
-import { CategoryMutation } from "../../../types";
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { selectUser } from '../../../store/users/usersSlice.ts';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
-import {
-  addIconToCategoryThunk, addImageToCategoryThunk,
-  fetchCategoriesThunk,
-  updateCategoryThunk
-} from '../../../store/categories/categoriesThunk.ts';
+import { fetchCategoriesThunk, updateCategoryThunk } from '../../../store/categories/categoriesThunk.ts';
 import { toast } from 'react-toastify';
 import FileInputCategory from '../../FileInput/FileInputCategory.tsx';
+import { apiUrl } from '../../../globalConstants.ts';
+import CloseIcon from '@mui/icons-material/Close';
 
 interface EditCategoryProps {
   category: {
@@ -19,112 +16,119 @@ interface EditCategoryProps {
     image?: string;
   };
   onClose: () => void;
-  subcategoryId: number;
 }
 
-const WARNING_SELECT_CATEGORY = "Не оставляйте поля пустыми!!";
-const SUCCESSFUL_CATEGORY_UPDATE = "Категория успешно обновлена!";
-
-const EditCategory: React.FC<EditCategoryProps> = ({ category, onClose, subcategoryId }) => {
-  const [editedCategory, setEditedCategory] = useState<CategoryMutation>({
+const EditCategory: React.FC<EditCategoryProps> = ({ category, onClose }) => {
+  const [editedCategory, setEditedCategory] = useState<{
+    title: string;
+    icon: File | string | null;
+    image: File | string | null;
+  }>({
     title: category.title,
+    icon: category.icon || null,
+    image: category.image || null,
   });
+
   const user = useAppSelector(selectUser);
   const dispatch = useAppDispatch();
-  const [icon, setIcon] = useState<File | null>(null);
-  const [image, setImage] = useState<File | null>(null);
 
-  const [iconPreview, setIconPreview] = useState<string | null>(category.icon || null);
-  const [imagePreview, setImagePreview] = useState<string | null>(category.image || null);
+  const iconInputRef = useRef<HTMLInputElement | null>(null);
+  const imageInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
-    if (category.icon) {
-      setIconPreview(category.icon);
-    }
-    if (category.image) {
-      setImagePreview(category.image);
-    }
-  }, [category]);
+    dispatch(fetchCategoriesThunk());
+  }, [dispatch]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (editedCategory.title.trim() === "") {
-      toast.warning(WARNING_SELECT_CATEGORY, { position: 'top-center' });
+
+    if (!editedCategory.title.trim()) {
+      toast.warning("Не оставляйте поля пустыми!!", { position: 'top-center' });
       return;
     }
 
     if (!user) return;
 
-    await dispatch(updateCategoryThunk({
-      id: String(category.id),
-      category: {
+    try {
+      const updatedCategoryData: {
+        title: string;
+        icon?: File | null;
+        image?: File | null;
+      } = {
         title: editedCategory.title,
-      },
-      token: user.token,
-    }));
+      };
 
-    setEditedCategory((prevState) => ({
-      ...prevState,
-      title: editedCategory.title,
-    }));
-
-
-    if (icon || image) {
-      if (icon) {
-        await dispatch(addIconToCategoryThunk({ id: subcategoryId, iconFile: icon }));
+      if (editedCategory.icon instanceof File) {
+        updatedCategoryData.icon = editedCategory.icon;
+      } else if (editedCategory.icon === null && category.icon) {
+        updatedCategoryData.icon = null;
       }
 
-      if (image) {
-        await dispatch(addImageToCategoryThunk({ id: subcategoryId, imageFile: image }));
+      if (editedCategory.image instanceof File) {
+        updatedCategoryData.image = editedCategory.image;
+      } else if (editedCategory.image === null && category.image) {
+        updatedCategoryData.image = null;
       }
+
+      await dispatch(
+        updateCategoryThunk({
+          id: String(category.id),
+          category: updatedCategoryData,
+          token: user.token,
+        })
+      );
+
+      await dispatch(fetchCategoriesThunk());
+      toast.success('Категория успешно обновлена!', { position: 'top-center' });
+      onClose();
+    } catch (error) {
+      console.error(error);
+      toast.error("Ошибка при обновлении категории!", { position: 'top-center' });
     }
-
-    await dispatch(fetchCategoriesThunk());
-
-    toast.success(SUCCESSFUL_CATEGORY_UPDATE, { position: 'top-center' });
-
-    onClose();
   };
-
   const inputChangeHandler = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-
-    setEditedCategory((prevState) => ({
-      ...prevState,
+    setEditedCategory(prev => ({
+      ...prev,
       [name]: value,
     }));
   }, []);
 
+  const fileInputChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, files } = event.target;
+    if (!files || files.length === 0) return;
 
-  const fileEventChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { files, name } = e.target;
+    const file = files[0];
 
-    if (files && files[0]) {
-      const file = files[0];
-      if (name === "icon") {
-        setIcon(file);
-        setIconPreview(URL.createObjectURL(file));
-      } else if (name === "image") {
-        setImage(file);
-        setImagePreview(URL.createObjectURL(file));
-      }
+    setEditedCategory((prevState) => ({
+      ...prevState,
+      [name]: file,
+    }));
+  };
+
+  const deletePhotoIcon = () => {
+    setEditedCategory({
+      ...editedCategory,
+      icon: null,
+    });
+    if (iconInputRef.current) {
+      iconInputRef.current.value = '';
+    }
+  };
+
+  const deletePhotoImage = () => {
+    setEditedCategory({
+      ...editedCategory,
+      image: null,
+    });
+    if (imageInputRef.current) {
+      imageInputRef.current.value = '';
     }
   };
 
   return (
-    <Box
-      component="form"
-      onSubmit={handleSubmit}
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        gap: 2,
-        mx: "auto",
-      }}
-    >
-      <Typography variant="h6" textAlign="center">
-        Редактировать категорию
-      </Typography>
+    <Box component="form" onSubmit={handleSubmit} sx={{ display: "flex", flexDirection: "column", gap: 2, mx: "auto" }}>
+      <Typography variant="h6" textAlign="center">Редактировать категорию</Typography>
 
       <TextField
         label="Название категории"
@@ -136,51 +140,71 @@ const EditCategory: React.FC<EditCategoryProps> = ({ category, onClose, subcateg
         onChange={inputChangeHandler}
       />
 
-      <Box
-        sx={{ display: "flex", justifyContent: "space-between", gap: "20px" }}
-      >
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          {iconPreview && (
-            <img
-              width="40"
-              height="40"
-              src={iconPreview}
-              alt="icon preview"
-              style={{ objectFit: 'cover' }}
-            />
+          {editedCategory.icon && (
+            <Box sx={{ display: "flex" }}>
+              <img
+                style={{
+                  width: "50px",
+                  height: "50px",
+                  textIndent: "-9999px",
+                  display: "block",
+                  objectFit: "contain",
+                }}
+                src={
+                  editedCategory.icon instanceof File
+                    ? URL.createObjectURL(editedCategory.icon)
+                    : apiUrl + editedCategory.icon
+                }
+                alt={editedCategory.title}
+              />
+              <CloseIcon onClick={deletePhotoIcon} />
+            </Box>
           )}
-
           <FileInputCategory
             name="icon"
             label="Выберите иконку"
-            onGetFile={fileEventChangeHandler}
+            onGetFile={fileInputChangeHandler}
+            file={editedCategory.icon !== null ? editedCategory.icon : ""}
+            id="icon"
+            inputRef={iconInputRef}
           />
         </Box>
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          {imagePreview && (
-            <img
-              width="40"
-              height="40"
-              src={imagePreview}
-              alt="image preview"
-              style={{ objectFit: 'cover' }}
-            />
+          {editedCategory.image && (
+            <Box sx={{ display: "flex" }}>
+              <img
+                style={{
+                  width: "50px",
+                  height: "50px",
+                  textIndent: "-9999px",
+                  display: "block",
+                  objectFit: "contain",
+                }}
+                src={
+                  editedCategory.image instanceof File
+                    ? URL.createObjectURL(editedCategory.image)
+                    : apiUrl + editedCategory.image
+                }
+                alt={editedCategory.title}
+              />
+              <CloseIcon onClick={deletePhotoImage} />
+            </Box>
           )}
-
           <FileInputCategory
             name="image"
             label="Выберите изображение"
-            onGetFile={fileEventChangeHandler}
+            onGetFile={fileInputChangeHandler}
+            file={editedCategory.image !== null ? editedCategory.image : ""}
+            id="image"
+            inputRef={imageInputRef}
           />
         </Box>
       </Box>
 
-      <Button
-        type="submit"
-        variant="contained"
-        sx={{ bgcolor: "#237803", color: "white" }}
-      >
+      <Button type="submit" variant="contained" sx={{ bgcolor: "#237803", color: "white" }}>
         Сохранить изменения
       </Button>
     </Box>
