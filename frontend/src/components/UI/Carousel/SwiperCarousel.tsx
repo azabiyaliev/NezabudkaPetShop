@@ -33,7 +33,7 @@ const SwiperCarousel = () => {
         spaceBetween={0}
         speed={500}
         loop
-        centeredSlides
+        centeredSlides={false}
         autoplay={{
           delay: 3000,
           disableOnInteraction: false,
