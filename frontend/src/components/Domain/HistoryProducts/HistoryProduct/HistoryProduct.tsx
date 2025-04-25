@@ -25,7 +25,7 @@ import { selectedFavorite } from '../../../../store/favoriteProducts/favoritePro
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { AnimatePresence, motion } from 'framer-motion';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import { COLORS } from '../../../../globalStyles/stylesObjects.ts';
+import { COLORS, FONTS, SPACING } from '../../../../globalStyles/stylesObjects.ts';
 
 interface Props {
   item: historyProduct;
@@ -135,13 +135,13 @@ const HistoryProduct:React.FC<Props> = ({ item }) => {
           top: 8,
           left: 8,
           backgroundColor: 'red',
-          color: 'white',
-          padding: '5px 10px',
+          color: COLORS.white,
+          padding: SPACING.xs,
           borderRadius: '5px',
-          fontWeight: 'bold',
-          fontSize: '14px',
+          fontWeight: FONTS.weight.bold,
+          fontSize: FONTS.size.sm,
         }}>
-          % OFF
+          - {item.product.promoPercentage}%
         </Box>
       )}
 
@@ -188,31 +188,33 @@ const HistoryProduct:React.FC<Props> = ({ item }) => {
             mt: 'auto',
             display: 'flex',
             justifyContent: 'space-between',
-            alignItems: 'center',
+            alignItems: 'end',
             pt: 1.5,
             border: '1px solid red'
           }}
         >
-          <Typography
-            sx={{
-              visibility: item.product.productWeight ? 'visible' : 'hidden',
-              minWidth: '40px',
-              marginLeft: '10px'
-            }}
-          >
-            {item.product.productWeight} кг
-          </Typography>
+          <Box>
+            <Typography
+              sx={{
+                visibility: item.product.productWeight ? 'visible' : 'hidden',
+                minWidth: '40px',
+                marginLeft: '10px'
+              }}
+            >
+              {item.product.productWeight} кг
+            </Typography>
+          </Box>
           <Box>
             {item.product.sales ? (
               <>
-                <Typography fontWeight={600}>
-                  % цена
-                </Typography>
                 <Typography fontWeight={600} sx={{
                   textDecoration: 'line-through',
-                  color: 'gray',
+                  color: COLORS.text,
                 }}>
                   {item.product.productPrice} сом
+                </Typography>
+                <Typography fontWeight={600} sx={{color: COLORS.warning}}>
+                  {item.product.promoPrice} сом
                 </Typography>
               </>
 
