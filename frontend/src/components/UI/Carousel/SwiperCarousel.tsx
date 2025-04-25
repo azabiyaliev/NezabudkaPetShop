@@ -80,7 +80,6 @@ const SwiperCarousel = () => {
                   color: "#fff",
                   textAlign: "left",
                   px: 6,
-                  pointerEvents: "none",
                 }}
               >
                 <Container maxWidth="xl" sx={{ textAlign: { xs: 'center', md: 'left' } }}>
