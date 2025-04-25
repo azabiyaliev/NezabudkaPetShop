@@ -165,7 +165,7 @@ export interface Subcategory {
 
 export interface ProductRequest {
   productName: string;
-  productPhoto: File | null;
+  productPhoto: File | string | null;
   productPrice: number;
   productDescription: string;
   productSize?: string | null;
@@ -182,6 +182,7 @@ export interface ProductRequest {
   category?: ICategories;
   startDateSales?: Date | null | string;
   endDateSales?: Date | null | string;
+  originalPrice?: number;
   promoPercentage?: number;
   brand?: IBrand;
 }

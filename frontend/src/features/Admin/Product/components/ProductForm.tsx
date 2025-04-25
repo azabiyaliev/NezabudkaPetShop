@@ -26,6 +26,7 @@ import { addProductLoading } from "../../../../store/products/productsSlice.ts";
 import TextEditor from '../../../../components/TextEditor/TextEditor.tsx';
 import { apiUrl } from '../../../../globalConstants.ts';
 import CloseIcon from '@mui/icons-material/Close';
+import theme from '../../../../globalStyles/globalTheme.ts';
 
 
 interface Props {
@@ -51,6 +52,7 @@ const initialState = {
   productWeight: 0,
   productFeedClass: "",
   productManufacturer: "",
+  originalPrice: 0,
   promoPercentage: 0,
 };
 
@@ -210,7 +212,7 @@ const ProductForm: React.FC<Props> = ({
       }
     }
 
-    if(form.promoPercentage === undefined) return 0;
+    if(form.promoPercentage === undefined) return form.promoPercentage;
 
     if(form.promoPercentage < 0 || form.promoPercentage > 100) {
       return toast.warning('Процент не может быть ниже 0 и выше 100!')
@@ -221,7 +223,7 @@ const ProductForm: React.FC<Props> = ({
       : form.categoryId;
     onSubmit({
       ...form,
-      promoPercentage: Number(form.promoPercentage),
+        promoPercentage: form.sales ? Number(form.promoPercentage) : 0,
       categoryId: categoryIdToSend,
       sales: Boolean(form.sales),
       existence: Boolean(form.existence),
@@ -239,6 +241,15 @@ const ProductForm: React.FC<Props> = ({
       return;
     }
   };
+
+  const original =
+    form.originalPrice !== undefined
+      ? Number(form.originalPrice)
+      : Number(form.productPrice);
+
+  let promoPrice = Number(form.promoPercentage);
+  promoPrice =
+    form.sales && form.promoPercentage ? original * (1 - promoPrice / 100) : original;
 
   const selectChangeHandler = (e: SelectChangeEvent) => {
     const { name, value } = e.target;
@@ -317,27 +328,73 @@ const ProductForm: React.FC<Props> = ({
             />
           </Grid>
           <Grid size={{ xs: 12 }}>
-            <TextField
-              sx={{
-                width: "100%",
-                "& label.Mui-focused": { color: orange[500] },
-                "& .MuiOutlinedInput-root": {
-                  "& fieldset": { borderColor: "#ccc" },
-                  "&:hover fieldset": { borderColor: orange[500] },
-                  "&.Mui-focused fieldset": { borderColor: orange[500] },
-                },
-              }}
-              type="number"
-              id="productPrice"
-              name="productPrice"
-              label="Цена"
-              required
-              value={form.productPrice}
-              onChange={inputChangeHandler}
-              inputProps={{ min: 1 }}
-              error={!!priceError}
-              helperText={priceError}
-            />
+            {form.sales ?
+              <>
+              <TextField
+                sx={{
+                  width: "100%",
+                  "& label.Mui-focused": { color: orange[500] },
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": { borderColor: "#ccc" },
+                    "&:hover fieldset": { borderColor: orange[500] },
+                    "&.Mui-focused fieldset": { borderColor: orange[500] },
+                  },
+                }}
+                type="number"
+                id="productPrice"
+                name="productPrice"
+                label="Цена"
+                required
+                value={form.productPrice}
+                onChange={inputChangeHandler}
+                inputProps={{ min: 1 }}
+                error={!!priceError}
+                helperText={priceError}
+              />
+
+              <TextField
+                sx={{
+                  marginTop: theme.spacing.xs,
+                  width: "100%",
+                  "& label.Mui-focused": { color: orange[500] },
+                  "& .MuiOutlinedInput-root": {
+                    "&:hover fieldset": { borderColor: orange[500] },
+                    "&.Mui-focused fieldset": { borderColor: orange[500] },
+                  },
+                }}
+                type="number"
+                id="originalPrice"
+                name="originalPrice"
+                label="Цена без скидки"
+                value={form.originalPrice}
+                inputProps={{ min: 1, readOnly: true }}
+                error={!!priceError}
+                helperText={priceError}
+              />
+              </>
+              :
+              <TextField
+                sx={{
+                  width: "100%",
+                  "& label.Mui-focused": { color: orange[500] },
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": { borderColor: "#ccc" },
+                    "&:hover fieldset": { borderColor: orange[500] },
+                    "&.Mui-focused fieldset": { borderColor: orange[500] },
+                  },
+                }}
+                type="number"
+                id="originalPrice"
+                name="originalPrice"
+                label="Цена"
+                required
+                value={form.originalPrice}
+                onChange={inputChangeHandler}
+                inputProps={{ min: 1 }}
+                error={!!priceError}
+                helperText={priceError}
+              />
+            }
           </Grid>
           <Grid size={{ xs: 12 }}>
             <TextEditor
@@ -685,6 +742,9 @@ const ProductForm: React.FC<Props> = ({
                   type='number'
                   value={form.promoPercentage}
                   onChange={inputChangeHandler}/>
+                  <Typography sx={{marginTop: theme.spacing.xs}}>
+                    Цена с {form.promoPercentage} будет равна {promoPrice.toFixed(0)}
+                  </Typography>
                 </Grid>
               </Grid>
             )}

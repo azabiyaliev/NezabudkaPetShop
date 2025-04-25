@@ -228,6 +228,8 @@ export class ProductsService {
         existence: true,
         startDateSales: true,
         endDateSales: true,
+        originalPrice: true,
+        promoPercentage: true,
       },
     });
 
