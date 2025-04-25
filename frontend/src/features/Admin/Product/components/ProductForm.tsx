@@ -323,8 +323,6 @@ const ProductForm: React.FC<Props> = ({
             />
           </Grid>
           <Grid size={{ xs: 12 }}>
-            {form.sales ?
-              <>
               <TextField
                 sx={{
                   width: "100%",
@@ -346,50 +344,6 @@ const ProductForm: React.FC<Props> = ({
                 error={!!priceError}
                 helperText={priceError}
               />
-
-              <TextField
-                sx={{
-                  marginTop: theme.spacing.xs,
-                  width: "100%",
-                  "& label.Mui-focused": { color: orange[500] },
-                  "& .MuiOutlinedInput-root": {
-                    "&:hover fieldset": { borderColor: orange[500] },
-                    "&.Mui-focused fieldset": { borderColor: orange[500] },
-                  },
-                }}
-                type="number"
-                id="originalPrice"
-                name="originalPrice"
-                label="Цена без скидки"
-                value={form.promoPrice}
-                inputProps={{ min: 1, readOnly: true }}
-                error={!!priceError}
-                helperText={priceError}
-              />
-              </>
-              :
-              <TextField
-                sx={{
-                  width: "100%",
-                  "& label.Mui-focused": { color: orange[500] },
-                  "& .MuiOutlinedInput-root": {
-                    "& fieldset": { borderColor: "#ccc" },
-                    "&:hover fieldset": { borderColor: orange[500] },
-                    "&.Mui-focused fieldset": { borderColor: orange[500] },
-                  },
-                }}
-                type="number"
-                id="productPrice"
-                name="productPrice"
-                label="Цена"
-                required
-                value={form.productPrice}
-                onChange={inputChangeHandler}
-                inputProps={{ min: 1 }}
-                error={!!priceError}
-                helperText={priceError}
-              />
-            }
           </Grid>
           <Grid size={{ xs: 12 }}>
             <TextEditor
@@ -738,7 +692,7 @@ const ProductForm: React.FC<Props> = ({
                   value={form.promoPercentage}
                   onChange={inputChangeHandler}/>
                   <Typography sx={{marginTop: theme.spacing.xs}}>
-                    Цена с {form.promoPercentage} будет равна {promoFinalPrice}
+                    Цена с {form.promoPercentage}% будет равна {promoFinalPrice} cом
                   </Typography>
                 </Grid>
               </Grid>
