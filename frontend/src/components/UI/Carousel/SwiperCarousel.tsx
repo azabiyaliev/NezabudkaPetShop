@@ -99,33 +99,56 @@ const SwiperCarousel = () => {
                     pointerEvents: "none",
                   }}
                 >
-                  <Container maxWidth="xl">
-                    <Typography sx={{ fontSize: theme.fonts.size.xxl, mb: theme.spacing.xl, fontWeight: theme.fonts.weight.bold }}>{image.title}</Typography>
-                    <p style={{ fontSize: "1.5rem", maxWidth: "600px", marginTop: "1rem" }}>
+                  <Container maxWidth="xl" sx={{ textAlign: { xs: 'center', md: 'left' } }}>
+                    <Typography
+                      sx={{
+                        fontSize: {
+                          xs: theme.fonts.size.lg,  // маленькие экраны
+                          sm: theme.fonts.size.xl,
+                          md: theme.fonts.size.xxl,
+                        },
+                        mb: theme.spacing.lg,
+                        fontWeight: theme.fonts.weight.bold,
+                      }}
+                    >
+                      {image.title}
+                    </Typography>
+
+                    <Typography
+                      component="p"
+                      sx={{
+                        fontSize: { xs: '1rem', sm: '1.2rem', md: '1.5rem' },
+                        maxWidth: { xs: '100%', md: '600px' },
+                        marginTop: '1rem',
+                        mx: { xs: 'auto', md: 0 },
+                      }}
+                    >
                       {image.description}
-                    </p>
+                    </Typography>
+
                     <Button
-                      onClick={() => window.location.href = "/catalog"}
+                      onClick={() => (window.location.href = '/catalog')}
                       sx={{
                         mt: 5,
-                        width: "240px",
-                        fontSize: "1.2rem",
+                        width: { xs: '100%', sm: '240px' },
+                        fontSize: { xs: '1rem', sm: '1.2rem' },
                         py: 1.5,
                         backgroundColor: theme.colors.black,
-                        boxShadow: "0px 14px 40px rgba(0, 0, 0, 1)",
-                        borderRadius: "40px",
+                        boxShadow: '0px 14px 40px rgba(0, 0, 0, 1)',
+                        borderRadius: '40px',
                         '&:hover': {
                           backgroundColor: theme.colors.black,
-                          boxShadow: "0px 14px 40px rgba(0, 0, 0, 1)",
+                          boxShadow: '0px 14px 40px rgba(0, 0, 0, 1)',
                         },
+                        mx: { xs: 'auto', md: 0 },
                       }}
                       variant="contained"
                       color="success"
-                      style={{ pointerEvents: "auto" }}
                     >
                       В каталог
                     </Button>
                   </Container>
+
                 </Box>
             </div>
           </SwiperSlide>
