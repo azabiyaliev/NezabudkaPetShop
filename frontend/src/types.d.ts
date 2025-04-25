@@ -117,11 +117,15 @@ export interface PhotoCarousel {
   photo: File | null;
   link: string;
   order?: number;
+  title: string;
+  description: string;
 }
 
 export interface PhotoForm{
   photo: File | null;
   link: string;
+  title: string;
+  description: string;
 }
 
 
