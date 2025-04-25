@@ -30,7 +30,7 @@ const SwiperCarousel = () => {
       <Swiper
         modules={[Pagination, Autoplay]}
         slidesPerView={1}
-        spaceBetween={30}
+        spaceBetween={0}
         speed={500}
         loop
         centeredSlides
