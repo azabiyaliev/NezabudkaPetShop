@@ -153,24 +153,34 @@ export class SeedService {
 
     const carouselPhotos = [
       {
-        photo: '/fixtures/editionSitePhoto/photo1.jpg',
+        photo: '/fixtures/editionSitePhoto/animal_photo_1.jpg',
         link: 'https://example.com/photo1.jpg',
+        title: 'Купи корм',
+        description: 'Лучший выбор кормов для всех пород животных',
       },
       {
-        photo: '/fixtures/editionSitePhoto/photo2.jpg',
+        photo: '/fixtures/editionSitePhoto/anima_photo4.jpg',
         link: 'https://example.com/photo2.jpg',
+        title: 'Игрушки для питомцев',
+        description: 'Развлечение и забота о вашем любимце каждый день',
       },
       {
-        photo: '/fixtures/editionSitePhoto/photo2.jpg',
+        photo: '/fixtures/editionSitePhoto/animal_photo2.jpg',
         link: 'https://example.com/photo3.jpg',
+        title: 'Скидки до 50%',
+        description: 'Успейте купить всё необходимое по выгодной цене',
       },
       {
-        photo: '/fixtures/editionSitePhoto/photo4.jpg',
-        link: 'https://example.com/photo3.jpg',
+        photo: '/fixtures/editionSitePhoto/animal_photo5.jpg',
+        link: 'https://example.com/photo4.jpg',
+        title: 'Аксессуары',
+        description: 'Ошейники, миски, переноски и всё для комфорта',
       },
       {
-        photo: '/fixtures/editionSitePhoto/photo5.jpg',
-        link: 'https://example.com/photo3.jpg',
+        photo: '/fixtures/editionSitePhoto/animal_photo3.jpg',
+        link: 'https://example.com/photo5.jpg',
+        title: 'Уход за шерстью',
+        description: 'Щётки, шампуни и средства для здоровой шерсти',
       },
     ];
 
@@ -179,6 +189,8 @@ export class SeedService {
         data: {
           photo: carouselPhotos[i].photo,
           link: carouselPhotos[i].link,
+          title: carouselPhotos[i].title,
+          description: carouselPhotos[i].description,
           order: i + 1,
         },
       });

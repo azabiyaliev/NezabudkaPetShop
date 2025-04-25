@@ -11,7 +11,8 @@ import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 import "./swiper-custom.css";
-import { Button } from '@mui/material';
+import { Button, Container } from '@mui/material';
+import theme from '../../../globalStyles/globalTheme.ts';
 
 const SwiperCarousel = () => {
   const dispatch = useAppDispatch();
@@ -78,38 +79,52 @@ const SwiperCarousel = () => {
                 onClick={() => image.link && (window.location.href = image.link)}
               />
 
-              <Box
-                sx={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  width: "100%",
-                  height: "100%",
-                  background: "rgba(0,0,0,0.4)",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  flexDirection: "column",
-                  color: "#fff",
-                  textAlign: "center",
-                  px: 2,
-                  pointerEvents: "none",
-                }}
-              >
-                <h1 style={{ fontSize: "3rem", margin: 0 }}>Заголовок</h1>
-                <p style={{ fontSize: "1.5rem", maxWidth: "600px", marginTop: "1rem" }}>
-                  Описание для слайда — может быть любой рекламный текст.
-                </p>
-                <Button
-                  onClick={() => window.location.href = "/catalog"}
-                  sx={{ mt: 2 }}
-                  variant="contained"
-                  color="success"
-                  style={{ pointerEvents: "auto" }}
+                <Box
+                  sx={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    background: "rgba(0,0,0,0.4)",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "flex-start",
+                    flexDirection: "column",
+                    color: "#fff",
+                    textAlign: "left",
+                    px: 6,
+                    pointerEvents: "none",
+                  }}
                 >
-                  В каталог
-                </Button>
-              </Box>
+                  <Container maxWidth="xl" sx={{ px: 6, pt: 10 }}>
+                    <h1 style={{ fontSize: "3rem", margin: 0 }}>Заголовок</h1>
+                    <p style={{ fontSize: "1.5rem", maxWidth: "600px", marginTop: "1rem" }}>
+                      Описание для слайда — может быть любой рекламный текст.
+                    </p>
+                    <Button
+                      onClick={() => window.location.href = "/catalog"}
+                      sx={{
+                        mt: 2,
+                        width: "240px",
+                        fontSize: "1.2rem",
+                        py: 1.5,
+                        backgroundColor: theme.colors.black,
+                        boxShadow: "0px 14px 40px rgba(0, 0, 0, 1)",
+                        borderRadius: "40px",
+                        '&:hover': {
+                          backgroundColor: theme.colors.black,
+                          boxShadow: "0px 14px 40px rgba(0, 0, 0, 1)",
+                        },
+                      }}
+                      variant="contained"
+                      color="success"
+                      style={{ pointerEvents: "auto" }}
+                    >
+                      В каталог
+                    </Button>
+                  </Container>
+                </Box>
             </div>
           </SwiperSlide>
 

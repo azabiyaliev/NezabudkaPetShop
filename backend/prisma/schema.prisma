@@ -79,10 +79,12 @@ model SiteEdition {
 }
 
 model PhotoByCarousel {
-  id    Int    @id @default(autoincrement())
-  photo String
-  link  String @default("")
-  order Int    @default(0)
+  id          Int    @id @default(autoincrement())
+  photo       String
+  link        String @default("")
+  order       Int    @default(0)
+  title       String
+  description String
 
   @@map("photo_by_carousel")
 }

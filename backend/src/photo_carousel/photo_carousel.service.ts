@@ -29,7 +29,7 @@ export class PhotoCarouselService {
     photoDto: PhotoByCarouselDto,
     file?: Express.Multer.File,
   ) {
-    const { link } = photoDto;
+    const { link, title, description } = photoDto;
     let photo = photoDto.photo;
 
     if (file) {
@@ -51,6 +51,8 @@ export class PhotoCarouselService {
       data: {
         link,
         photo,
+        title,
+        description,
       },
     });
   }

@@ -121,9 +121,11 @@ const HomePage = () => {
 
   return (
     <>
-      <Container>
+      <Container maxWidth="xl">
         <CustomCart openCart={openCart} closeCart={closeCart}/>
-        <Box className="mb-5">
+        <Box sx={{
+          mt: theme.spacing.xxl
+        }}>
           <Typography
             sx={{
               fontSize: theme.fonts.size.xxl,

@@ -26,7 +26,7 @@ const Layout: React.FC<LayoutProps> = ({ children, beforeContainer }) => {
           marginBottom:"100px"
         }}
       >
-        <Container maxWidth={false} sx={{ maxWidth: "1350px" }}>
+        <Container maxWidth="xl">
           {children}
         </Container>
       </main>
