@@ -1,8 +1,8 @@
 import {
-  Box,
+  Box, Collapse,
   Container,
   ListItemButton,
-  Typography,
+  Typography
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import {
@@ -184,36 +184,58 @@ const AllProductsCardsPage = () => {
 
   return (
     <Container>
-      <Typography variant="h4" sx={{ m: 4, textAlign: 'center'}}>
-        {
-          (() => {
-            const category = categories.find((cat) => cat.id === selectedId);
-            if (category) {
-              return `Категория: ${category.title}`;
-            }
-            const parentCategory = categories.find((cat) =>
-              cat.subcategories?.some((sub) => sub.id === selectedId)
-            );
-            const subcategory = parentCategory?.subcategories?.find(
-              (sub) => sub.id === selectedId
-            );
-            if (subcategory && parentCategory) {
-              return `Раздел: ${parentCategory.title} / ${subcategory.title}`;
-            }
-            return 'Все товары';
-          })()
-        }
-      </Typography>
-      <Grid container spacing={2}>
+      <Grid container spacing={2} sx={{mt: 4}}>
         <Grid size={3}>
           <Box  sx={{
             backgroundColor: COLORS.background,
             borderRadius: 2,
             p: SPACING.sm,
-          }}>{renderCategories(categories)}</Box>
+          }}>
+            <Typography
+              variant="h6"
+              sx={{
+                mb: 2,
+                fontWeight: FONTS.weight.medium,
+                color: COLORS.text,
+                textAlign: 'center',
+              }}
+            >
+              {(() => {
+                const category = categories.find((cat) => cat.id === selectedId);
+                const parent = categories.find((cat) =>
+                  cat.subcategories?.some((sub) => sub.id === selectedId)
+                );
+                return (parent || category)?.title || 'Категории';
+              })()}
+            </Typography>
+            {renderCategories(categories)}</Box>
           <Filters />
         </Grid>
         <Grid size={9}>
+          {(() => {
+            const parent = categories.find((cat) =>
+              cat.subcategories?.some((sub) => sub.id === selectedId)
+            );
+            const sub = parent?.subcategories?.find((s) => s.id === selectedId);
+
+            return (
+              <Collapse in={!!sub} timeout={300} unmountOnExit>
+                <Box>
+                  <Typography
+                    variant="h4"
+                    sx={{
+                      mt: 2,
+                      mb: 4,
+                      textAlign: "center",
+                      fontWeight: FONTS.weight.bold,
+                    }}
+                  >
+                    {sub?.title || ''}
+                  </Typography>
+                </Box>
+              </Collapse>
+            );
+          })()}
           {products.length === 0 ? (
             <Typography textAlign="center" mt={4} color="text.secondary">
               Товары в данной категории отсутствуют.
