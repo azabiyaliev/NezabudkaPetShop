@@ -18,12 +18,16 @@ interface Props {
 const initialState = {
   link: "",
   photo: null,
+  title: "",
+  description: "",
 };
 
 const ModalWindowAddNewPhoto: React.FC<Props> = ({ open, onClose }) => {
   const [newPhoto, setNewPhoto] = useState<PhotoForm>({ ...initialState });
   const dispatch = useAppDispatch();
   const [linkError, setLinkError] = useState<string>("");
+  const [titleError, setTitleError] = useState<string>("");
+  const [descError, setDescError] = useState<string>("");
 
   const onFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,10 +50,22 @@ const ModalWindowAddNewPhoto: React.FC<Props> = ({ open, onClose }) => {
       setLinkError("");
     }
 
+    if (name === 'title' && value.trim() !== "") {
+      setTitleError("");
+    }
+
+    if (name === 'description' && value.trim() !== "") {
+      setDescError("");
+    }
+
     setNewPhoto((prevState) => ({ ...prevState, [name]: value }));
 
     if (name === 'link' && value.trim() === "") {
       setLinkError("Поле для ссылки не может быть пустым");
+    }
+
+    if (name === 'description' && value.trim() === "") {
+      setDescError("Поле для описания не может быть пустым");
     }
   };
 
@@ -77,7 +93,7 @@ const ModalWindowAddNewPhoto: React.FC<Props> = ({ open, onClose }) => {
     });
   };
 
-  const isButtonFormInvalid = Boolean(linkError) || !newPhoto.photo;
+  const isButtonFormInvalid = Boolean(linkError) || !newPhoto.photo || Boolean(titleError) || Boolean(descError);
 
   return (
     <div>
@@ -107,7 +123,7 @@ const ModalWindowAddNewPhoto: React.FC<Props> = ({ open, onClose }) => {
                 helperText={linkError}
                 sx={{
                   marginBottom:"30px",
-                  width: '95%',
+                  width: '85%',
                   borderRadius: "20px",
                   "& .MuiOutlinedInput-root": {
                     borderRadius: "20px",
@@ -148,6 +164,7 @@ const ModalWindowAddNewPhoto: React.FC<Props> = ({ open, onClose }) => {
                 }}
               />
             </div>
+
             <div>
               <FileInput
                 id="photo"
@@ -156,6 +173,111 @@ const ModalWindowAddNewPhoto: React.FC<Props> = ({ open, onClose }) => {
                 onGetFile={onFileChange}
                 file={newPhoto.photo}
               />
+            </div>
+            <TextField
+              id="outlined-basic"
+              label="Зоголовок"
+              name="title"
+              variant="outlined"
+              value={newPhoto.title}
+              onChange={onInputChange}
+              error={Boolean(titleError)}
+              helperText={titleError}
+              sx={{
+                marginTop:"30px",
+                marginBottom:"30px",
+                width: '85%',
+                borderRadius: "20px",
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: "20px",
+                  backgroundColor: "white",
+                  transition: "all 0.3s ease",
+                  height: "56px",
+                  "&.Mui-focused": {
+                    borderColor: "green",
+                  },
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "green",
+                    transition: "border-color 0.3s ease",
+                  },
+                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "darkgreen",
+                  },
+                },
+                "& .MuiInputLabel-root.Mui-focused": {
+                  color: "green",
+                },
+                "& .MuiOutlinedInput-root.Mui-error": {
+                  backgroundColor: "white",
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#FF0000",
+                  },
+                },
+                "& .MuiInputLabel-root.Mui-error": {
+                  color: "#FF0000",
+                },
+                "& .MuiFormHelperText-root": {
+                  minHeight: "20px",
+                },
+                "& .MuiFormHelperText-root.Mui-error": {
+                  color: "#FF0000",
+                  fontSize: "0.9rem",
+                  fontWeight: 500,
+                },
+              }}
+            />
+            <TextField
+              id="outlined-basic"
+              label="Описание"
+              name="description"
+              variant="outlined"
+              value={newPhoto.description}
+              onChange={onInputChange}
+              error={Boolean(descError)}
+              helperText={descError}
+              sx={{
+                marginBottom:"30px",
+                width: '85%',
+                borderRadius: "20px",
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: "20px",
+                  backgroundColor: "white",
+                  transition: "all 0.3s ease",
+                  height: "56px",
+                  "&.Mui-focused": {
+                    borderColor: "green",
+                  },
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "green",
+                    transition: "border-color 0.3s ease",
+                  },
+                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "darkgreen",
+                  },
+                },
+                "& .MuiInputLabel-root.Mui-focused": {
+                  color: "green",
+                },
+                "& .MuiOutlinedInput-root.Mui-error": {
+                  backgroundColor: "white",
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#FF0000",
+                  },
+                },
+                "& .MuiInputLabel-root.Mui-error": {
+                  color: "#FF0000",
+                },
+                "& .MuiFormHelperText-root": {
+                  minHeight: "20px",
+                },
+                "& .MuiFormHelperText-root.Mui-error": {
+                  color: "#FF0000",
+                  fontSize: "0.9rem",
+                  fontWeight: 500,
+                },
+              }}
+            />
+            <>
               {newPhoto.photo && (
                 <Box sx={{
                   display: "flex",
@@ -178,7 +300,7 @@ const ModalWindowAddNewPhoto: React.FC<Props> = ({ open, onClose }) => {
                   <CloseIcon onClick={() => deletePhoto()}/>
                 </Box>
               )}
-            </div>
+            </>
             <div style={{ marginTop: '20px' }}>
               <Button
                 disabled={isButtonFormInvalid}

@@ -11,12 +11,14 @@ import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 import "./swiper-custom.css";
-import { Button, Container } from '@mui/material';
+import { Button, Container, Typography } from '@mui/material';
 import theme from '../../../globalStyles/globalTheme.ts';
 
 const SwiperCarousel = () => {
   const dispatch = useAppDispatch();
   const carousel = useAppSelector(selectPhotoCarousel);
+
+  console.log(carousel)
 
   useEffect(() => {
     dispatch(fetchPhoto()).unwrap();
@@ -97,15 +99,15 @@ const SwiperCarousel = () => {
                     pointerEvents: "none",
                   }}
                 >
-                  <Container maxWidth="xl" sx={{ px: 6, pt: 10 }}>
-                    <h1 style={{ fontSize: "3rem", margin: 0 }}>Заголовок</h1>
+                  <Container maxWidth="xl">
+                    <Typography sx={{ fontSize: theme.fonts.size.xxl, mb: theme.spacing.xl, fontWeight: theme.fonts.weight.bold }}>{image.title}</Typography>
                     <p style={{ fontSize: "1.5rem", maxWidth: "600px", marginTop: "1rem" }}>
-                      Описание для слайда — может быть любой рекламный текст.
+                      {image.description}
                     </p>
                     <Button
                       onClick={() => window.location.href = "/catalog"}
                       sx={{
-                        mt: 2,
+                        mt: 5,
                         width: "240px",
                         fontSize: "1.2rem",
                         py: 1.5,
