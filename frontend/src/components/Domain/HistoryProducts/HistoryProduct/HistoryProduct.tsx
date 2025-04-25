@@ -17,11 +17,15 @@ import {
   removeFavoriteProduct
 } from '../../../../store/favoriteProducts/favoriteProductLocal.ts';
 import {
-  addFavoriteProducts, getFavoriteProducts,
+  addFavoriteProducts,
+  getFavoriteProducts,
   removeFavoriteProductThunk
 } from '../../../../store/favoriteProducts/favoriteProductsThunks.ts';
 import { selectedFavorite } from '../../../../store/favoriteProducts/favoriteProductsSlice.ts';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import { AnimatePresence, motion } from 'framer-motion';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import { COLORS } from '../../../../globalStyles/stylesObjects.ts';
 
 interface Props {
   item: historyProduct;
@@ -29,6 +33,7 @@ interface Props {
 
 const HistoryProduct:React.FC<Props> = ({ item }) => {
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
+  const [showAddAnimation, setShowAddAnimation] = useState<boolean>(false);
   const user = useAppSelector(selectUser);
   const cart = useAppSelector(cartFromSlice);
   const favoriteProduct = useAppSelector(selectedFavorite);
@@ -59,6 +64,12 @@ const HistoryProduct:React.FC<Props> = ({ item }) => {
   };
 
   const addItemToCart = async (productItem: ProductResponse) => {
+    setShowAddAnimation(true);
+
+    setTimeout(() => {
+      setShowAddAnimation(false);
+    }, 1000);
+
     if (user && cart) {
       await dispatch(
         addItem({
@@ -179,6 +190,7 @@ const HistoryProduct:React.FC<Props> = ({ item }) => {
             justifyContent: 'space-between',
             alignItems: 'center',
             pt: 1.5,
+            border: '1px solid red'
           }}
         >
           <Typography
@@ -210,17 +222,58 @@ const HistoryProduct:React.FC<Props> = ({ item }) => {
               </Typography>
             )}
           </Box>
-          {quantityInCart > 0 ?
-            <IconButton aria-label="cart" onClick={() => addItemToCart(item.product)}>
-              <Badge color="secondary" badgeContent={quantityInCart} showZero>
-                <ShoppingCartOutlinedIcon />
-              </Badge>
-            </IconButton> :
-            <ShoppingCartOutlinedIcon
-              sx={{ cursor: 'pointer', marginRight: '10px' }}
+          <Box sx={{ position: "relative"}}>
+            <IconButton
               onClick={() => addItemToCart(item.product)}
-            />
-          }
+              disabled={!item.product.existence}
+            >
+              {item.product.existence ?
+                <>
+                  {quantityInCart > 0 ?
+                    <Badge
+                      badgeContent={quantityInCart}
+                      sx={{
+                        '& .MuiBadge-badge': {
+                          backgroundColor: COLORS.info,
+                          color: COLORS.background,
+                        },
+                      }}
+                    >
+                      <ShoppingCartOutlinedIcon />
+                    </Badge> : <ShoppingCartOutlinedIcon />
+                  }
+                </> : <ShoppingCartIcon />
+              }
+            </IconButton>
+            <AnimatePresence>
+              {showAddAnimation && (
+                <motion.div
+                  initial={{ y: -20, opacity: 0, scale: 0.5 }}
+                  animate={{ y: 0, opacity: 1, scale: 1 }}
+                  exit={{ y: 20, opacity: 0, scale: 0.5 }}
+                  transition={{ duration: 0.5 }}
+                  style={{
+                    position: "absolute",
+                    top: -12,
+                    right: 10,
+                    backgroundColor: "#ffc107",
+                    color: "#fff",
+                    borderRadius: "50%",
+                    width: 30,
+                    height: 30,
+                    fontSize: 12,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    zIndex: 10,
+                    pointerEvents: 'none',
+                  }}
+                >
+                  +1
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </Box>
         </Box>
       </Box>
     </Card>

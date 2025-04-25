@@ -1,34 +1,34 @@
 import { Card, Typography } from '@mui/material';
 import { ProductResponse } from '../../../../../types';
 import React from 'react';
-import { Box, styled } from '@mui/joy';
+import { Box } from '@mui/joy';
 import { apiUrl } from '../../../../../globalConstants.ts';
 import dayjs from 'dayjs';
 import { useNavigate } from 'react-router-dom';
-
 
 interface Props {
   product: ProductResponse;
 }
 
-const DiscountBadge = styled("div")({
-  position: "absolute",
-  top: 8,
-  right: 8,
-  backgroundColor: "#ccc",
-  borderRadius: "50%",
-  width: 48,
-  height: 48,
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  color: "red",
-  fontWeight: "bold",
-  fontSize: 14,
-});
+// const DiscountBadge = styled("div")({
+//   position: "absolute",
+//   top: 8,
+//   right: 8,
+//   backgroundColor: "#ccc",
+//   borderRadius: "50%",
+//   width: 48,
+//   height: 48,
+//   display: "flex",
+//   alignItems: "center",
+//   justifyContent: "center",
+//   color: "red",
+//   fontWeight: "bold",
+//   fontSize: 14,
+// });
 
 const PromotionalProduct:React.FC<Props> = ({product}) => {
   const navigate = useNavigate();
+  console.log(product);
   return (
     <>
       <Card
@@ -42,11 +42,25 @@ const PromotionalProduct:React.FC<Props> = ({product}) => {
           overflow: 'hidden',
           boxShadow: 3,
           fontFamily: 'Arial, sans-serif',
-          p: 1,
+          p: 2,
           backgroundColor: '#fff',
+          position: 'relative',
         }}
         onClick={() => navigate(`/product/${product.id}`)}
       >
+        <Box sx={{
+          position: 'absolute',
+          top: 8,
+          right: 8,
+          backgroundColor: 'red',
+          color: 'white',
+          padding: '5px 10px',
+          borderRadius: '5px',
+          fontWeight: 'bold',
+          fontSize: '14px',
+        }}>
+          {product.promoPercentage} %
+        </Box>
         <Box sx={{ display: "flex", height: 120 }}>
           <Box
             sx={{
@@ -64,7 +78,7 @@ const PromotionalProduct:React.FC<Props> = ({product}) => {
             />
           </Box>
           <Box sx={{ width: "100px", position: "relative", p: 2 }}>
-            <DiscountBadge>{product.promoPercentage}%</DiscountBadge>
+            {/*<DiscountBadge>{product.promoPercentage}%</DiscountBadge>*/}
             <img
               src={apiUrl + product.productPhoto}
               alt={product.productName}
@@ -85,9 +99,21 @@ const PromotionalProduct:React.FC<Props> = ({product}) => {
           }}
         >
           <Typography fontWeight={500} fontSize={14}>
-            Корма {product.brand.title} скидка на 10%
+            {product.brand.title} скидка {product.promoPercentage}% на {product.productName}
           </Typography>
-          <Typography>{product.sales ? product.productPrice : product.originalPrice} сом</Typography>
+          <Box>
+            <Typography fontWeight={600} sx={{
+              color: 'orange',
+            }}>
+              {product.promoPrice} сом
+            </Typography>
+            <Typography fontWeight={600} sx={{
+              textDecoration: 'line-through',
+              color: 'gray',
+            }}>
+              {product.productPrice} сом
+            </Typography>
+          </Box>
           <Typography fontSize={12} color="gray" mt={0.5}>
             С {dayjs(product.startDateSales).format("DD.MM.YYYY")} по{" "}
             {dayjs(product.endDateSales).format("DD.MM.YYYY")}
