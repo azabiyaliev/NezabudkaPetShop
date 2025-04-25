@@ -169,7 +169,7 @@ export interface Subcategory {
 
 export interface ProductRequest {
   productName: string;
-  productPhoto: File | null;
+  productPhoto: File | string | null;
   productPrice: number;
   productDescription: string;
   productSize?: string | null;
@@ -186,8 +186,9 @@ export interface ProductRequest {
   category?: ICategories;
   startDateSales?: Date | null | string;
   endDateSales?: Date | null | string;
+  promoPrice?: number;
   promoPercentage?: number;
-  brand: IBrand;
+  brand?: IBrand;
 }
 
 export interface ICartBack {
@@ -264,7 +265,7 @@ export interface ProductResponse {
   productFeedClass?: string;
   productManufacturer?: string;
   promoPercentage?: number;
-  originalPrice?: number;
+  promoPrice?: number;
 }
 
 export interface AdminDataMutation {

@@ -91,6 +91,7 @@ export class ProductsService {
       productFeedClass,
       productWeight,
       productManufacturer,
+      promoPercentage,
     } = createProductsDto;
 
     if (!categoryId) {
@@ -105,6 +106,14 @@ export class ProductsService {
       });
     }
 
+    const price = Number(productPrice);
+    const promo = Number(promoPercentage);
+
+    const promoFinalPrice =
+      sales && promoPercentage
+        ? Math.round(price - (price * promo) / 100)
+        : null;
+
     const newProduct = await this.prismaService.products.create({
       data: {
         productName,
@@ -117,7 +126,9 @@ export class ProductsService {
         productAge,
         brandId: Number(brandId) || null,
         categoryId: Number(categoryId),
-        productPrice: Number(productPrice),
+        productPrice: price,
+        promoPrice: promoFinalPrice,
+        promoPercentage: Number(promoPercentage),
         sales,
         existence: existence === 'true',
         startDateSales,
@@ -215,6 +226,8 @@ export class ProductsService {
         existence: true,
         startDateSales: true,
         endDateSales: true,
+        promoPrice: true,
+        promoPercentage: true,
       },
     });
 
@@ -245,7 +258,6 @@ export class ProductsService {
       productFeedClass,
       productWeight,
       promoPercentage,
-      originalPrice,
     }: CreateProductsDto,
     file?: Express.Multer.File,
   ) {
@@ -262,14 +274,13 @@ export class ProductsService {
       throw new NotFoundException('Товар не найден');
     }
 
-    const original =
-      originalPrice !== undefined
-        ? Number(originalPrice)
-        : (productId.originalPrice ?? Number(productPrice));
-    let promoPrice = Number(promoPercentage);
+    const price = Number(productPrice);
+    const promo = Number(promoPercentage);
 
-    promoPrice =
-      sales && promoPercentage ? original * (1 - promoPrice / 100) : original;
+    const promoFinalPrice =
+      sales && promoPercentage
+        ? Math.round(price - (price * promo) / 100)
+        : null;
 
     const changedProduct = await this.prismaService.products.update({
       where: {
@@ -278,8 +289,8 @@ export class ProductsService {
       data: {
         productName,
         productDescription,
-        productPrice: promoPrice,
-        originalPrice: original,
+        productPrice: price,
+        promoPrice: promoFinalPrice,
         productPhoto: photo,
         brandId: Number(brandId),
         categoryId: Number(categoryId),
@@ -318,6 +329,7 @@ export class ProductsService {
         productWeight: true,
         productAge: true,
         promoPercentage: true,
+        promoPrice: true,
       },
     });
 
@@ -355,14 +367,14 @@ export class ProductsService {
           { categoryId },
           {
             category: {
-              parentId: categoryId
-            }
-          }
-        ]
+              parentId: categoryId,
+            },
+          },
+        ],
       },
       include: {
         brand: true,
-      }
+      },
     });
 
     if (!products || products.length === 0) {
@@ -372,22 +384,48 @@ export class ProductsService {
         ages: [],
         weights: [],
         foodClasses: [],
-        manufacturers: []
+        manufacturers: [],
       };
     }
 
     // Извлекаем уникальные значения для всех атрибутов
-    const brands = [...new Set(products
-      .filter(p => p.brand !== null && p.brand !== undefined)
-      .map(p => (p.brand as any).title))];
-    const sizes = [...new Set(products.filter(p => p.productSize).map(p => p.productSize))];
-    const ages = [...new Set(products.filter(p => p.productAge).map(p => p.productAge))];
-    const weights = [...new Set(products.filter(p => p.productWeight).map(p => p.productWeight))];
-    const foodClasses = [...new Set(products.filter(p => p.productFeedClass).map(p => p.productFeedClass))];
-    const manufacturers = [...new Set(products.filter(p => p.productManufacturer).map(p => p.productManufacturer))];
+    const brands = [
+      ...new Set(
+        products
+          .filter((p) => p.brand !== null && p.brand !== undefined)
+          .map((p) => (p.brand as any).title),
+      ),
+    ];
+    const sizes = [
+      ...new Set(
+        products.filter((p) => p.productSize).map((p) => p.productSize),
+      ),
+    ];
+    const ages = [
+      ...new Set(products.filter((p) => p.productAge).map((p) => p.productAge)),
+    ];
+    const weights = [
+      ...new Set(
+        products.filter((p) => p.productWeight).map((p) => p.productWeight),
+      ),
+    ];
+    const foodClasses = [
+      ...new Set(
+        products
+          .filter((p) => p.productFeedClass)
+          .map((p) => p.productFeedClass),
+      ),
+    ];
+    const manufacturers = [
+      ...new Set(
+        products
+          .filter((p) => p.productManufacturer)
+          .map((p) => p.productManufacturer),
+      ),
+    ];
 
     // Находим минимальную и максимальную цену
-    const prices = products.map(p => p.productPrice);
+    const prices = products.map((p) => p.productPrice);
     const minPrice = prices.length > 0 ? Math.min(...prices) : 0;
     const maxPrice = prices.length > 0 ? Math.max(...prices) : 5000;
 
@@ -400,8 +438,8 @@ export class ProductsService {
       manufacturers,
       priceRange: {
         min: minPrice,
-        max: maxPrice
-      }
+        max: maxPrice,
+      },
     };
   }
 
@@ -488,7 +526,7 @@ export class ProductsService {
       minPrice,
       maxPrice,
       existence,
-      sales
+      sales,
     } = filters;
 
     // Строим условия WHERE для фильтрации
@@ -497,10 +535,10 @@ export class ProductsService {
         { categoryId },
         {
           category: {
-            parentId: categoryId
-          }
-        }
-      ]
+            parentId: categoryId,
+          },
+        },
+      ],
     };
 
     // Фильтрация по бренду
@@ -508,8 +546,8 @@ export class ProductsService {
       const brandValues = Array.isArray(brands) ? brands : [brands];
       whereConditions.brand = {
         title: {
-          in: brandValues
-        }
+          in: brandValues,
+        },
       };
     }
 
@@ -517,7 +555,7 @@ export class ProductsService {
     if (sizes) {
       const sizeValues = Array.isArray(sizes) ? sizes : [sizes];
       whereConditions.productSize = {
-        in: sizeValues
+        in: sizeValues,
       };
     }
 
@@ -525,42 +563,48 @@ export class ProductsService {
     if (ages) {
       const ageValues = Array.isArray(ages) ? ages : [ages];
       whereConditions.productAge = {
-        in: ageValues
+        in: ageValues,
       };
     }
 
     // Фильтрация по весу
     if (weights) {
-      const weightValues = Array.isArray(weights) ? weights.map(Number) : [Number(weights)];
+      const weightValues = Array.isArray(weights)
+        ? weights.map(Number)
+        : [Number(weights)];
       whereConditions.productWeight = {
-        in: weightValues
+        in: weightValues,
       };
     }
 
     // Фильтрация по классу корма
     if (foodClasses) {
-      const foodClassValues = Array.isArray(foodClasses) ? foodClasses : [foodClasses];
+      const foodClassValues = Array.isArray(foodClasses)
+        ? foodClasses
+        : [foodClasses];
       whereConditions.productFeedClass = {
-        in: foodClassValues
+        in: foodClassValues,
       };
     }
 
     // Фильтрация по производителю
     if (manufacturers) {
-      const manufacturerValues = Array.isArray(manufacturers) ? manufacturers : [manufacturers];
+      const manufacturerValues = Array.isArray(manufacturers)
+        ? manufacturers
+        : [manufacturers];
       whereConditions.productManufacturer = {
-        in: manufacturerValues
+        in: manufacturerValues,
       };
     }
 
     // Фильтрация по цене
     if (minPrice || maxPrice) {
       whereConditions.productPrice = {};
-      
+
       if (minPrice) {
         whereConditions.productPrice.gte = Number(minPrice);
       }
-      
+
       if (maxPrice) {
         whereConditions.productPrice.lte = Number(maxPrice);
       }
@@ -581,8 +625,8 @@ export class ProductsService {
       where: whereConditions,
       include: {
         brand: true,
-        category: true
-      }
+        category: true,
+      },
     });
 
     return filteredProducts;
