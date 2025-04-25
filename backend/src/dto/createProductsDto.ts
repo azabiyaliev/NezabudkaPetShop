@@ -71,5 +71,5 @@ export class CreateProductsDto {
   promoPercentage?: number;
 
   @IsOptional()
-  originalPrice?: number;
+  promoPrice?: number;
 }

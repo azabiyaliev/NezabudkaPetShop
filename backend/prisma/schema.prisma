@@ -119,7 +119,7 @@ model Products {
   startDateSales  DateTime?
   endDateSales    DateTime?
   promoPercentage Int?      @map("sale_percentage")
-  originalPrice   Int?      @map("originalPrice")
+  promoPrice      Int?      @map("originalPrice")
 
   items                OrderItem[]
   brandId              Int?        @map("brand_id")

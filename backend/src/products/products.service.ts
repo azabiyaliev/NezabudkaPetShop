@@ -91,7 +91,6 @@ export class ProductsService {
       productFeedClass,
       productWeight,
       productManufacturer,
-      originalPrice,
       promoPercentage,
     } = createProductsDto;
 
@@ -107,14 +106,13 @@ export class ProductsService {
       });
     }
 
-    const original =
-      originalPrice !== undefined
-        ? Number(originalPrice)
-        : Number(productPrice);
-    let promoPrice = Number(promoPercentage);
+    const price = Number(productPrice);
+    const promo = Number(promoPercentage);
 
-    promoPrice =
-      sales && promoPercentage ? original * (1 - promoPrice / 100) : original;
+    const promoFinalPrice =
+      sales && promoPercentage
+        ? Math.round(price - (price * promo) / 100)
+        : null;
 
     const newProduct = await this.prismaService.products.create({
       data: {
@@ -128,8 +126,8 @@ export class ProductsService {
         productAge,
         brandId: Number(brandId) || null,
         categoryId: Number(categoryId),
-        productPrice: promoPrice,
-        originalPrice: original,
+        productPrice: price,
+        promoPrice: promoFinalPrice,
         promoPercentage: Number(promoPercentage),
         sales,
         existence: existence === 'true',
@@ -228,7 +226,7 @@ export class ProductsService {
         existence: true,
         startDateSales: true,
         endDateSales: true,
-        originalPrice: true,
+        promoPrice: true,
         promoPercentage: true,
       },
     });
@@ -260,7 +258,6 @@ export class ProductsService {
       productFeedClass,
       productWeight,
       promoPercentage,
-      originalPrice,
     }: CreateProductsDto,
     file?: Express.Multer.File,
   ) {
@@ -277,14 +274,13 @@ export class ProductsService {
       throw new NotFoundException('Товар не найден');
     }
 
-    const original =
-      originalPrice !== undefined
-        ? Number(originalPrice)
-        : (productId.originalPrice ?? Number(productPrice));
-    let promoPrice = Number(promoPercentage);
+    const price = Number(productPrice);
+    const promo = Number(promoPercentage);
 
-    promoPrice =
-      sales && promoPercentage ? original * (1 - promoPrice / 100) : original;
+    const promoFinalPrice =
+      sales && promoPercentage
+        ? Math.round(price - (price * promo) / 100)
+        : null;
 
     const changedProduct = await this.prismaService.products.update({
       where: {
@@ -293,8 +289,8 @@ export class ProductsService {
       data: {
         productName,
         productDescription,
-        productPrice: promoPrice,
-        originalPrice: original,
+        productPrice: price,
+        promoPrice: promoFinalPrice,
         productPhoto: photo,
         brandId: Number(brandId),
         categoryId: Number(categoryId),
@@ -333,6 +329,7 @@ export class ProductsService {
         productWeight: true,
         productAge: true,
         promoPercentage: true,
+        promoPrice: true,
       },
     });
 

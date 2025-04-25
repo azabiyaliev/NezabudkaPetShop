@@ -52,7 +52,7 @@ const initialState = {
   productWeight: 0,
   productFeedClass: "",
   productManufacturer: "",
-  originalPrice: 0,
+  promoPrice: 0,
   promoPercentage: 0,
 };
 
@@ -242,14 +242,9 @@ const ProductForm: React.FC<Props> = ({
     }
   };
 
-  const original =
-    form.originalPrice !== undefined
-      ? Number(form.originalPrice)
-      : Number(form.productPrice);
-
-  let promoPrice = Number(form.promoPercentage);
-  promoPrice =
-    form.sales && form.promoPercentage ? original * (1 - promoPrice / 100) : original;
+  let promoFinalPrice = Number(form.promoPercentage);
+  promoFinalPrice =
+    form.sales && form.promoPercentage ? form.productPrice * (1 - promoFinalPrice / 100) : form.productPrice;
 
   const selectChangeHandler = (e: SelectChangeEvent) => {
     const { name, value } = e.target;
@@ -366,7 +361,7 @@ const ProductForm: React.FC<Props> = ({
                 id="originalPrice"
                 name="originalPrice"
                 label="Цена без скидки"
-                value={form.originalPrice}
+                value={form.promoPrice}
                 inputProps={{ min: 1, readOnly: true }}
                 error={!!priceError}
                 helperText={priceError}
@@ -388,7 +383,7 @@ const ProductForm: React.FC<Props> = ({
                 name="originalPrice"
                 label="Цена"
                 required
-                value={form.originalPrice}
+                value={form.productPrice}
                 onChange={inputChangeHandler}
                 inputProps={{ min: 1 }}
                 error={!!priceError}
@@ -743,7 +738,7 @@ const ProductForm: React.FC<Props> = ({
                   value={form.promoPercentage}
                   onChange={inputChangeHandler}/>
                   <Typography sx={{marginTop: theme.spacing.xs}}>
-                    Цена с {form.promoPercentage} будет равна {promoPrice.toFixed(0)}
+                    Цена с {form.promoPercentage} будет равна {promoFinalPrice.toFixed(0)}
                   </Typography>
                 </Grid>
               </Grid>

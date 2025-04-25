@@ -182,7 +182,7 @@ export interface ProductRequest {
   category?: ICategories;
   startDateSales?: Date | null | string;
   endDateSales?: Date | null | string;
-  originalPrice?: number;
+  promoPrice?: number;
   promoPercentage?: number;
   brand?: IBrand;
 }
@@ -261,7 +261,7 @@ export interface ProductResponse {
   productFeedClass?: string;
   productManufacturer?: string;
   promoPercentage?: number;
-  originalPrice?: number;
+  promoPrice?: number;
 }
 
 export interface AdminDataMutation {
