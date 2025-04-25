@@ -3,7 +3,11 @@ import Header from "../Header/Header.tsx";
 import { Container, Box } from "@mui/material";
 import Footer from "../Footer/Footer.tsx";
 
-const Layout: React.FC<PropsWithChildren> = ({ children }) => {
+interface LayoutProps extends PropsWithChildren {
+  beforeContainer?: React.ReactNode;
+}
+
+const Layout: React.FC<LayoutProps> = ({ children, beforeContainer }) => {
   return (
     <Box
       sx={{
@@ -15,13 +19,14 @@ const Layout: React.FC<PropsWithChildren> = ({ children }) => {
       <header>
         <Header />
       </header>
+      {beforeContainer}
       <main
         style={{
           flex: 1,
           marginBottom:"100px"
         }}
       >
-        <Container maxWidth={false} sx={{ maxWidth: "1350px" }}>
+        <Container maxWidth="xl">
           {children}
         </Container>
       </main>

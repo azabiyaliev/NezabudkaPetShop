@@ -17,9 +17,17 @@ export class PhotoCarouselService {
   }
 
   async createPhoto(photoDto: PhotoByCarouselDto) {
+    if (!photoDto.title || !photoDto.description) {
+      throw new BadRequestException('Не передан title или description');
+    }
+
     return this.prisma.photoByCarousel.create({
       data: {
-        ...photoDto,
+        photo: photoDto.photo,
+        link: photoDto.link,
+        title: photoDto.title,
+        description: photoDto.description,
+        order: photoDto.order ?? 0,
       },
     });
   }
@@ -29,7 +37,7 @@ export class PhotoCarouselService {
     photoDto: PhotoByCarouselDto,
     file?: Express.Multer.File,
   ) {
-    const { link } = photoDto;
+    const { link, title, description } = photoDto;
     let photo = photoDto.photo;
 
     if (file) {
@@ -51,6 +59,8 @@ export class PhotoCarouselService {
       data: {
         link,
         photo,
+        title,
+        description,
       },
     });
   }

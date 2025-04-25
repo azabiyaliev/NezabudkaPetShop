@@ -5,9 +5,7 @@ import { getBrands } from '../../store/brands/brandsThunk.ts';
 import BrandForHomePage from '../../components/Domain/Brand/BrandForHomePage/BrandForHomePage.tsx';
 import { Box, Container } from '@mui/material';
 import Typography from '@mui/joy/Typography';
-import SwiperCarousel from '../../components/UI/Carousel/SwiperCarousel.tsx';
 import CustomCart from '../../components/Domain/CustomCart/CustomCart.tsx';
-import CategoryMenuBox from '../Category/CategoryMenuBox/CategoryMenuBox.tsx';
 import CategoryCard from '../Category/CategoryCard/CategoryCard.tsx';
 import { cartErrorFromSlice, cartFromSlice, setToLocalStorage } from '../../store/cart/cartSlice.ts';
 import { selectUser } from '../../store/users/usersSlice.ts';
@@ -122,82 +120,60 @@ const HomePage = () => {
 
 
   return (
-    <Container>
-      <CustomCart openCart={openCart} closeCart={closeCart}/>
-
-      <Box
-        className="mb-5"
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          flexDirection: { xs: "column", md: "row" },
-          alignItems: { xs: "center", md: "stretch" },
-          gap: 2,
-          "@media (max-width: 990px)": { display: "flex",
-            justifyContent: "row", },
-        }}
-      >
-        <CategoryMenuBox />
-        <Box
-          sx={{
-            flex: 1,
-            minWidth: 0,
-            maxWidth: "100%",
-            overflow: "hidden",
-          }}
-        >
-          <SwiperCarousel />
-        </Box>
-      </Box>
-
-
-      <Box className="mb-5">
-        <Typography
-          sx={{
-            fontSize: theme.fonts.size.xxl,
-            mb: 3,
-            fontWeight: theme.fonts.weight.medium,
-            color: theme.colors.text,
-            textAlign: "center",
-          }}
-        >
-          Каталог
-        </Typography>
-        <CategoryCard/>
-      </Box>
-
-      {promotionalProducts.length > 0 && (
-        <Box>
+    <>
+      <Container maxWidth="xl">
+        <CustomCart openCart={openCart} closeCart={closeCart}/>
+        <Box sx={{
+          mt: theme.spacing.xxl
+        }}>
           <Typography
             sx={{
-              fontSize: "40px",
-              mb: 0.5,
-              color: "rgba(250, 143, 1, 1)",
+              fontSize: theme.fonts.size.xxl,
+              mb: 3,
+              fontWeight: theme.fonts.weight.medium,
+              color: theme.colors.text,
               textAlign: "center",
             }}
           >
-            Акции
+            Каталог
           </Typography>
-          <PromotionalProducts products={promotionalProducts}/>
+          <CategoryCard/>
         </Box>
-      )}
 
-      {brands.length > 0 && (
-        <Box sx={{ marginTop: "40px" }}>
-          <Typography
-            sx={{
-              fontSize: "40px",
-              mb: 0.5,
-              color: "rgba(250, 143, 1, 1)",
-              textAlign: "center",
-            }}
-          >
-            Наши бренды
-          </Typography>
-          <BrandForHomePage brands={brands} />
-        </Box>
-      )}
-    </Container>
+        {promotionalProducts.length > 0 && (
+          <Box>
+            <Typography
+              sx={{
+                fontSize: "40px",
+                mb: 0.5,
+                color: "rgba(250, 143, 1, 1)",
+                textAlign: "center",
+              }}
+            >
+              Акции
+            </Typography>
+            <PromotionalProducts products={promotionalProducts}/>
+          </Box>
+        )}
+
+        {brands.length > 0 && (
+          <Box sx={{ marginTop: "40px" }}>
+            <Typography
+              sx={{
+                fontSize: "40px",
+                mb: 0.5,
+                color: "rgba(250, 143, 1, 1)",
+                textAlign: "center",
+              }}
+            >
+              Наши бренды
+            </Typography>
+            <BrandForHomePage brands={brands} />
+          </Box>
+        )}
+      </Container>
+    </>
+
   );
 };
 

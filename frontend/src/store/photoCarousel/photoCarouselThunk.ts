@@ -25,6 +25,8 @@ export const addNewPhoto = createAsyncThunk<
       formData.append("photo", photo.photo, photo.photo.name);
     }
     formData.append("link", photo.link);
+    formData.append("title", photo.title);
+    formData.append("description", photo.description);
 
     await axiosApi.post("/photos", formData);
   } catch (error) {

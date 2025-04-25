@@ -22,12 +22,16 @@ const FormEditPhoto: React.FC<FormEditPhotoProps> = ({ photoId }) => {
   const photos = useAppSelector(selectPhotoCarousel);
   const navigate = useNavigate();
   const [linkError, setLinkError] = useState("");
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
 
   const [editPhoto, setEditPhoto] = useState<PhotoCarousel>({
     id: photoId,
     link: '',
     photo: null,
     order: 0,
+    title: "",
+    description: "",
   });
 
   const dispatch = useAppDispatch();
@@ -51,6 +55,16 @@ const FormEditPhoto: React.FC<FormEditPhotoProps> = ({ photoId }) => {
     if (name === "link") setLinkError("");
     if (name === "link" && value.trim() === "") {
       setLinkError("Поле для ссылки не может быть пустым");
+    }
+
+    if (name === "title") setTitle("");
+    if (name === "title" && value.trim() === "") {
+      setTitle("Поле для заголовка не может быть пустым");
+    }
+
+    if (name === "description") setDescription("");
+    if (name === "description" && value.trim() === "") {
+      setDescription("Поле для описания не может быть пустым");
     }
   };
 
@@ -194,6 +208,91 @@ const FormEditPhoto: React.FC<FormEditPhotoProps> = ({ photoId }) => {
                 helperText={!editPhoto.photo ? "Фото обязательно для загрузки" : ""}
               />
             </div>
+            <TextField
+              id="outlined-basic"
+              label="Зоголовок"
+              name="title"
+              variant="outlined"
+              value={editPhoto.title}
+              onChange={inputChangeHandler}
+              error={Boolean(title)}
+              helperText={title}
+              sx={{
+                mb: 3,
+                width: '60%',
+                borderRadius: "20px",
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: "20px",
+                  backgroundColor: "white",
+                  transition: "all 0.3s ease",
+                  height: "56px",
+                  "&.Mui-focused": {
+                    borderColor: "green",
+                  },
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "green",
+                    transition: "border-color 0.3s ease",
+                  },
+                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "darkgreen",
+                  },
+                },
+                "& .MuiInputLabel-root.Mui-focused": {
+                  color: "green",
+                },
+                "@media (max-width: 600px)": {
+                  width: '90%',
+                  padding: '10px',
+                },
+                "@media (max-width: 430px)": {
+                  padding: '5px',
+                  width: '100%',
+                },
+              }}
+            />
+
+            <TextField
+              id="outlined-basic"
+              label="Описание"
+              name="description"
+              variant="outlined"
+              value={editPhoto.description}
+              onChange={inputChangeHandler}
+              error={Boolean(description)}
+              helperText={description}
+              sx={{
+                mb: 3,
+                width: '60%',
+                borderRadius: "20px",
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: "20px",
+                  backgroundColor: "white",
+                  transition: "all 0.3s ease",
+                  height: "56px",
+                  "&.Mui-focused": {
+                    borderColor: "green",
+                  },
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "green",
+                    transition: "border-color 0.3s ease",
+                  },
+                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "darkgreen",
+                  },
+                },
+                "& .MuiInputLabel-root.Mui-focused": {
+                  color: "green",
+                },
+                "@media (max-width: 600px)": {
+                  width: '90%',
+                  padding: '10px',
+                },
+                "@media (max-width: 430px)": {
+                  padding: '5px',
+                  width: '100%',
+                },
+              }}
+            />
             {editPhoto.photo && (
               <Box sx={{
                 display: "flex",
@@ -217,6 +316,7 @@ const FormEditPhoto: React.FC<FormEditPhotoProps> = ({ photoId }) => {
               </Box>
             )}
           </Box>
+
 
           <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 3 }}>
             <Button

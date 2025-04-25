@@ -6,4 +6,8 @@ export class PhotoByCarouselDto {
   @IsString()
   link!: string;
   order!: number;
+  @IsString()
+  title!: string;
+  @IsString()
+  description!: string;
 }
