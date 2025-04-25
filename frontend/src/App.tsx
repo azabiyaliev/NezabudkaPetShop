@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import RegisterUser from './components/Forms/UserFrom/RegisterUser.tsx';
 import LoginUser from './components/Forms/UserFrom/LoginUser.tsx';
 import AdminProfile from './features/Admin/AdminProfile/AdminProfile.tsx';
@@ -37,19 +37,21 @@ import { userRoleAdmin, userRoleSuperAdmin } from './globalConstants.ts';
 import DeliveryPage from './features/DeliveryPage/DeliveryPage.tsx';
 import DeliveryPageForm from './components/Forms/DeliveryPageFrom/DeliveryPageFrom.tsx';
 import CategoryPage from './features/Category/CategoryPage/CategoryPage.tsx';
-import { useEffect } from 'react';
+import  { useEffect } from 'react';
 import { fetchMe } from './store/users/usersThunk.ts';
 import ContactPage from './features/ContactPage/ContactPage.tsx';
 import AllOrders from './features/Admin/AdminOrderPage/AllOrders.tsx';
 import MyOrders from './features/Order/MyOrders.tsx';
 import AddAdmin from './features/Admin/AddAdmin/AddAdmin.tsx';
 import ErrorPage from './components/ErrorPage/ErrorPage.tsx';
+import SwiperCarousel from './components/UI/Carousel/SwiperCarousel.tsx';
 
 const App = () => {
   const user = useAppSelector(selectUser);
   const can = usePermission(user);
   const dispatch = useAppDispatch();
   const meChecked = useAppSelector(meCheck);
+  const location = useLocation();
 
   useEffect(() => {
     const tokenExists = document.cookie.includes('tokenPresent=true');
@@ -64,7 +66,7 @@ const App = () => {
 
   return (
     <div>
-      <Layout>
+      <Layout beforeContainer={location.pathname === "/" ? <SwiperCarousel /> : null}>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/register" element={<RegisterUser />} />

@@ -11,6 +11,7 @@ import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 import "./swiper-custom.css";
+import { Button } from '@mui/material';
 
 const SwiperCarousel = () => {
   const dispatch = useAppDispatch();
@@ -27,10 +28,8 @@ const SwiperCarousel = () => {
   return (
     <Box
       sx={{
-        padding: "20px",
         width: "100%",
         position: "relative",
-        marginTop: "30px",
       }}
     >
       <Swiper
@@ -53,7 +52,6 @@ const SwiperCarousel = () => {
         navigation={true}
         className="pet-shop-swiper"
         style={{
-          borderRadius: "20px",
           overflow: "hidden",
           "--swiper-pagination-color": "rgb(35, 120, 3)",
           "--swiper-navigation-color": "rgb(35, 120, 3)",
@@ -62,9 +60,7 @@ const SwiperCarousel = () => {
         {images.map((image, index) => (
           <SwiperSlide key={index}>
             <div
-              onClick={() => image.link && (window.location.href = image.link)}
               style={{
-                cursor: "pointer",
                 width: "100%",
                 height: "100%",
                 position: "relative",
@@ -77,10 +73,47 @@ const SwiperCarousel = () => {
                   width: "100%",
                   height: "100%",
                   objectFit: "cover",
+                  cursor: "pointer",
                 }}
+                onClick={() => image.link && (window.location.href = image.link)}
               />
+
+              <Box
+                sx={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  background: "rgba(0,0,0,0.4)",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  flexDirection: "column",
+                  color: "#fff",
+                  textAlign: "center",
+                  px: 2,
+                  pointerEvents: "none",
+                }}
+              >
+                <h1 style={{ fontSize: "3rem", margin: 0 }}>Заголовок</h1>
+                <p style={{ fontSize: "1.5rem", maxWidth: "600px", marginTop: "1rem" }}>
+                  Описание для слайда — может быть любой рекламный текст.
+                </p>
+                <Button
+                  onClick={() => window.location.href = "/catalog"}
+                  sx={{ mt: 2 }}
+                  variant="contained"
+                  color="success"
+                  style={{ pointerEvents: "auto" }}
+                >
+                  В каталог
+                </Button>
+              </Box>
             </div>
           </SwiperSlide>
+
+
         ))}
       </Swiper>
     </Box>
