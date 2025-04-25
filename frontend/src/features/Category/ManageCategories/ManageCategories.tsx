@@ -46,6 +46,7 @@ const ManageCategories = () => {
 
   const [fetchedCategory, setFetchedCategory] = useState<ICategories | null>(null);
 
+
   useEffect(() => {
     dispatch(fetchCategoriesThunk());
   }, [dispatch]);
@@ -194,6 +195,28 @@ const ManageCategories = () => {
                 tree={treeData}
                 rootId={0}
                 onDrop={handleDrop}
+                dragPreviewRender={({ item }) => {
+                  return (
+                    <Box
+                      sx={{
+                        padding: '8px 16px',
+                        backgroundColor: '#fefefe',
+                        border: '2px solid #1976d2',
+                        borderRadius: '8px',
+                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
+                        color: '#1976d2',
+                        fontWeight: 'bold',
+                        fontSize: '1rem',
+                        maxWidth: '300px',
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                      }}
+                    >
+                      {item.text}
+                    </Box>
+                  );
+                }}
                 render={(node, { depth, isOpen, onToggle }) => {
                   const category = node.data as ICategories;
                   const isSubcategory = depth > 0;
