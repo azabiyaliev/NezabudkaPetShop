@@ -379,8 +379,8 @@ const ProductForm: React.FC<Props> = ({
                   },
                 }}
                 type="number"
-                id="originalPrice"
-                name="originalPrice"
+                id="productPrice"
+                name="productPrice"
                 label="Цена"
                 required
                 value={form.productPrice}
@@ -738,7 +738,7 @@ const ProductForm: React.FC<Props> = ({
                   value={form.promoPercentage}
                   onChange={inputChangeHandler}/>
                   <Typography sx={{marginTop: theme.spacing.xs}}>
-                    Цена с {form.promoPercentage} будет равна {promoFinalPrice.toFixed(0)}
+                    Цена с {form.promoPercentage} будет равна {promoFinalPrice}
                   </Typography>
                 </Grid>
               </Grid>
