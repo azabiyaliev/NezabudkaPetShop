@@ -52,12 +52,6 @@ const initialState = {
   productFeedClass: "",
   productManufacturer: "",
   promoPercentage: 0,
-  brand: {
-    id: 0,
-    title: '',
-    description: "",
-    logo: null,
-  },
 };
 
 const ProductForm: React.FC<Props> = ({
