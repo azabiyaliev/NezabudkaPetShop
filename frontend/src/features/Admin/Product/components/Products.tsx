@@ -118,7 +118,7 @@ const Products: React.FC<Props> = ({products}) => {
       headerName: 'Категория',
       width: 100,
       editable: false,
-      valueGetter: (_value, row: ProductResponse) => row.category.parentId ? row.category.parent.title : row.category.title,
+      valueGetter: (_value, row: ProductResponse) => row.category.parentId ? row.category.parent && row.category.parent.title : row.category.title,
     },
     {
       field: 'subcategory',

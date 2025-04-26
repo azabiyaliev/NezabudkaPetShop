@@ -8,7 +8,7 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks.ts';
 import { selectCategories } from '../../store/categories/categoriesSlice.ts';
 import { fetchCategoriesThunk } from '../../store/categories/categoriesThunk.ts';
 import Typography from '@mui/joy/Typography';
-import { Box, Collapse, List, ListItem, ListItemButton, ListItemText } from '@mui/material';
+import { Box, Collapse, Link, List, ListItem, ListItemButton, ListItemText } from "@mui/material";
 import ArrowDropDownOutlinedIcon from '@mui/icons-material/ArrowDropDownOutlined';
 import ArrowRightOutlinedIcon from '@mui/icons-material/ArrowRightOutlined';
 
@@ -116,7 +116,7 @@ const CategoryNavMenu: React.FC<Props> = ({ openMenu, closeMenu }) => {
                     {category.subcategories?.length ? (
                       category.subcategories.map((subcategory) => (
                         <ListItem key={subcategory.id} sx={{ padding: "4px 16px" }}>
-                          <ListItemButton component="a" href={String(subcategory.id)}>
+                          <ListItemButton component={Link} href={`/all-products/${subcategory.id}`}>
                             <ListItemText primary={subcategory.title} />
                           </ListItemButton>
                         </ListItem>
