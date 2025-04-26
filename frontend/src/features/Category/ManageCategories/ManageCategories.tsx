@@ -29,6 +29,7 @@ import SubcategoryForm from '../../../components/Forms/SubcategoryForm/Subcatego
 import { toast } from 'react-toastify';
 import './ManageCategories.css';
 import EditCategory from '../../../components/Forms/CategoryForm/EditCategory.tsx';
+import { COLORS } from '../../../globalStyles/stylesObjects.ts';
 
 const SUCCESSFUL_CATEGORY_DELETE = "Удаление прошло успешно!";
 const ERROR_CATEGORY_DELETE = "Ошибка при удалении подкатегории!";
@@ -45,7 +46,6 @@ const ManageCategories = () => {
   const [treeData, setTreeData] = useState<NodeModel[]>([]);
 
   const [fetchedCategory, setFetchedCategory] = useState<ICategories | null>(null);
-
 
   useEffect(() => {
     dispatch(fetchCategoriesThunk());
@@ -204,7 +204,7 @@ const ManageCategories = () => {
                         border: '2px solid #1976d2',
                         borderRadius: '8px',
                         boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
-                        color: '#1976d2',
+                        color: COLORS.info,
                         fontWeight: 'bold',
                         fontSize: '1rem',
                         maxWidth: '300px',
