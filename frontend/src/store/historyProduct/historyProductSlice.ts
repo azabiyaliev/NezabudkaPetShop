@@ -19,12 +19,12 @@ const historyProductSlice = createSlice({
       );
 
       if (productIndex !== -1) {
-        state.history.splice(productIndex, 1);
+        const existing = state.history.splice(productIndex, 1)[0];
+        state.history.unshift(existing);
+      } else {
+        state.history.unshift(action.payload);
       }
-      state.history.unshift(action.payload);
-
       state.history = state.history.slice(0, 5);
-
       localStorage.setItem('viewedProducts', JSON.stringify(state.history));
     },
   }
