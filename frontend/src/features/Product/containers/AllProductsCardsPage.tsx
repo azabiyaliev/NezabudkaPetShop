@@ -1,48 +1,28 @@
-import {
-  Box, Collapse,
-  Container,
-  ListItemButton,
-  Typography
-} from "@mui/material";
-import { useEffect, useState } from "react";
-import { Box, Container, Typography } from '@mui/material';
+import { Box, Collapse, Container, ListItemButton, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector, usePermission } from '../../../app/hooks.ts';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
 import { getProductsByCategory, } from '../../../store/products/productsThunk.ts';
 import { selectProductsByCategory } from '../../../store/products/productsSlice.ts';
 import { getFavoriteProducts } from '../../../store/favoriteProducts/favoriteProductsThunks.ts';
 import { selectUser } from '../../../store/users/usersSlice.ts';
 import { useNavigate, useParams } from 'react-router-dom';
-import {
-  useAppDispatch,
-  useAppSelector,
-  usePermission,
-} from "../../../app/hooks.ts";
-import { getProductsByCategory } from "../../../store/products/productsThunk.ts";
-import { selectProductsByCategory } from "../../../store/products/productsSlice.ts";
-import OneProductCard from "../components/OneProductCard.tsx";
-import { getFavoriteProducts } from "../../../store/favoriteProducts/favoriteProductsThunks.ts";
-import { selectUser } from "../../../store/users/usersSlice.ts";
-import { useNavigate, useParams } from "react-router-dom";
-import { fetchCategoriesThunk } from "../../../store/categories/categoriesThunk.ts";
-import { selectCategories } from "../../../store/categories/categoriesSlice.ts";
-import { clearCart } from "../../../store/cart/cartSlice.ts";
-import { fetchCart } from "../../../store/cart/cartThunk.ts";
-import { userRoleClient } from "../../../globalConstants.ts";
-import Grid from "@mui/material/Grid2";
+import { fetchCategoriesThunk } from '../../../store/categories/categoriesThunk.ts';
+import { selectCategories } from '../../../store/categories/categoriesSlice.ts';
+import { clearCart } from '../../../store/cart/cartSlice.ts';
+import { fetchCart } from '../../../store/cart/cartThunk.ts';
+import { userRoleClient } from '../../../globalConstants.ts';
+import Grid from '@mui/material/Grid2';
 import Filters from '../../Filters/Filters.tsx';
 import ProductCard from '../../../components/Domain/ProductCard/ProductCard.tsx';
-import Filters from "../../Filters/Filters.tsx";
-import { ICategories, Subcategory } from "../../../types";
-import ArrowDropDownOutlinedIcon from "@mui/icons-material/ArrowDropDownOutlined";
-import { alpha } from "@mui/material/styles";
-import { COLORS, FONTS, SPACING } from "../../../globalStyles/stylesObjects.ts";
+import { ICategories, Subcategory } from '../../../types';
+import ArrowDropDownOutlinedIcon from '@mui/icons-material/ArrowDropDownOutlined';
+import { alpha } from '@mui/material/styles';
+import { COLORS, FONTS, SPACING } from '../../../globalStyles/stylesObjects.ts';
 
 const AllProductsCardsPage = () => {
   const dispatch = useAppDispatch();
   const products = useAppSelector(selectProductsByCategory);
   const user = useAppSelector(selectUser);
-  const can = usePermission(user);
   const { id } = useParams();
   const categories = useAppSelector(selectCategories);
   const navigate = useNavigate();
@@ -52,7 +32,7 @@ const AllProductsCardsPage = () => {
   useEffect(() => {
     dispatch(fetchCategoriesThunk());
 
-    if (user && can([userRoleClient])) {
+    if (user && user.role === userRoleClient) {
       dispatch(clearCart());
       dispatch(fetchCart());
     }
