@@ -20,13 +20,13 @@ const HistoryProducts = () => {
   }, [dispatch, id]);
 
   useEffect(() => {
-    if (product && id) {
+    if (id && product && product.id && product.productName) {
       dispatch(addProductToHistory({
-        productId: Number(id),
+        productId: product.id,
         product,
       }));
     }
-  }, [dispatch, product, id]);
+  }, [id, product]);
 
   return (
     <div>
