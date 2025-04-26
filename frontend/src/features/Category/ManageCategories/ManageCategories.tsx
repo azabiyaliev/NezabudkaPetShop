@@ -31,6 +31,7 @@ import './ManageCategories.css';
 import EditCategory from '../../../components/Forms/CategoryForm/EditCategory.tsx';
 import { COLORS } from '../../../globalStyles/stylesObjects.ts';
 import styles from './styles.module.css';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 
 const SUCCESSFUL_CATEGORY_DELETE = "Удаление прошло успешно!";
 const ERROR_CATEGORY_DELETE = "Ошибка при удалении подкатегории!";
@@ -211,6 +212,14 @@ const ManageCategories = () => {
           Перетащите категорию (подкатегорию), чтобы изменить её порядок или
           положение в иерархии.
         </Typography>
+
+        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-end", mt: 2}}>
+          <Typography sx={{ fontSize: "10px", color: "#757575", textAlign: "right" }}>
+            Чтобы вытащить подкатегорию из категории перенесите в пустое место
+          </Typography>
+          <ArrowDownwardIcon sx={{ mt: 1, mr: 5, color: "#757575"}} />
+        </Box>
+
 
         <Box>
           <DndProvider backend={MultiBackend} options={getBackendOptions()}>
