@@ -25,6 +25,7 @@ import { selectDelivery } from '../../../store/deliveryPage/deliveryPageSlice.ts
 import { fetchDeliveryPage } from '../../../store/deliveryPage/deliveryPageThunk.ts';
 import { Link as MuiLink } from '@mui/material';
 import { Link as RouterLink } from "react-router-dom";
+import { addProductToHistory } from '../../../store/historyProduct/historyProductSlice.ts';
 
 const ProductPage = () => {
   const dispatch = useAppDispatch();
@@ -38,6 +39,16 @@ const ProductPage = () => {
   const selectDeliveryInfo = useAppSelector(selectDelivery)
   const isAddToCartDisabled = !product?.existence;
   const cartItem = cart?.products.find(item => item.product?.id === product?.id);
+
+  useEffect(() => {
+    if (id && product && product.id && product.productName) {
+      dispatch(addProductToHistory({
+        productId: product.id,
+        product,
+      }));
+    }
+  }, [id, product]);
+
 
   useEffect(() => {
     if (id) {

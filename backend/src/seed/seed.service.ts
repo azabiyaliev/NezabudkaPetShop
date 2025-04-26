@@ -510,6 +510,8 @@ export class SeedService {
 
         let startDateSales: Date | undefined = undefined;
         let endDateSales: Date | undefined = undefined;
+        let promoPrice: number | undefined = undefined;
+        let promoPercentage: number | undefined = undefined;
         if (onSale) {
           const now = new Date();
           startDateSales = new Date(now);
@@ -520,6 +522,11 @@ export class SeedService {
           endDateSales = new Date(now);
           endDateSales.setDate(
             now.getDate() + Math.floor(Math.random() * 30) + 5,
+          );
+          const discountPercentage = Math.floor(Math.random() * 26) + 5;
+          promoPercentage = discountPercentage;
+          promoPrice = Math.round(
+            (randomPrice * (100 - discountPercentage)) / 100,
           );
         }
 
@@ -546,6 +553,8 @@ export class SeedService {
         if (onSale && startDateSales && endDateSales) {
           productData.startDateSales = startDateSales;
           productData.endDateSales = endDateSales;
+          productData.promoPrice = promoPrice;
+          productData.promoPercentage = promoPercentage;
         }
 
         const product = await this.prisma.products.create({

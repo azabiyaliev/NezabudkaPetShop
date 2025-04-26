@@ -26,6 +26,7 @@ import { addProductLoading } from "../../../../store/products/productsSlice.ts";
 import TextEditor from '../../../../components/TextEditor/TextEditor.tsx';
 import { apiUrl } from '../../../../globalConstants.ts';
 import CloseIcon from '@mui/icons-material/Close';
+import theme from '../../../../globalStyles/globalTheme.ts';
 
 
 interface Props {
@@ -51,13 +52,8 @@ const initialState = {
   productWeight: 0,
   productFeedClass: "",
   productManufacturer: "",
+  promoPrice: 0,
   promoPercentage: 0,
-  brand: {
-    id: 0,
-    title: '',
-    description: "",
-    logo: null,
-  },
 };
 
 const ProductForm: React.FC<Props> = ({
@@ -216,7 +212,7 @@ const ProductForm: React.FC<Props> = ({
       }
     }
 
-    if(form.promoPercentage === undefined) return 0;
+    if(form.promoPercentage === undefined) return form.promoPercentage;
 
     if(form.promoPercentage < 0 || form.promoPercentage > 100) {
       return toast.warning('Процент не может быть ниже 0 и выше 100!')
@@ -227,7 +223,7 @@ const ProductForm: React.FC<Props> = ({
       : form.categoryId;
     onSubmit({
       ...form,
-      promoPercentage: Number(form.promoPercentage),
+        promoPercentage: form.sales ? Number(form.promoPercentage) : 0,
       categoryId: categoryIdToSend,
       sales: Boolean(form.sales),
       existence: Boolean(form.existence),
@@ -245,6 +241,10 @@ const ProductForm: React.FC<Props> = ({
       return;
     }
   };
+
+  let promoFinalPrice = Number(form.promoPercentage);
+  promoFinalPrice =
+    form.sales && form.promoPercentage ? form.productPrice * (1 - promoFinalPrice / 100) : form.productPrice;
 
   const selectChangeHandler = (e: SelectChangeEvent) => {
     const { name, value } = e.target;
@@ -323,27 +323,27 @@ const ProductForm: React.FC<Props> = ({
             />
           </Grid>
           <Grid size={{ xs: 12 }}>
-            <TextField
-              sx={{
-                width: "100%",
-                "& label.Mui-focused": { color: orange[500] },
-                "& .MuiOutlinedInput-root": {
-                  "& fieldset": { borderColor: "#ccc" },
-                  "&:hover fieldset": { borderColor: orange[500] },
-                  "&.Mui-focused fieldset": { borderColor: orange[500] },
-                },
-              }}
-              type="number"
-              id="productPrice"
-              name="productPrice"
-              label="Цена"
-              required
-              value={form.productPrice}
-              onChange={inputChangeHandler}
-              inputProps={{ min: 1 }}
-              error={!!priceError}
-              helperText={priceError}
-            />
+              <TextField
+                sx={{
+                  width: "100%",
+                  "& label.Mui-focused": { color: orange[500] },
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": { borderColor: "#ccc" },
+                    "&:hover fieldset": { borderColor: orange[500] },
+                    "&.Mui-focused fieldset": { borderColor: orange[500] },
+                  },
+                }}
+                type="number"
+                id="productPrice"
+                name="productPrice"
+                label="Цена"
+                required
+                value={form.productPrice}
+                onChange={inputChangeHandler}
+                inputProps={{ min: 1 }}
+                error={!!priceError}
+                helperText={priceError}
+              />
           </Grid>
           <Grid size={{ xs: 12 }}>
             <TextEditor
@@ -691,6 +691,9 @@ const ProductForm: React.FC<Props> = ({
                   type='number'
                   value={form.promoPercentage}
                   onChange={inputChangeHandler}/>
+                  <Typography sx={{marginTop: theme.spacing.xs}}>
+                    Цена с {form.promoPercentage}% будет равна {promoFinalPrice} cом
+                  </Typography>
                 </Grid>
               </Grid>
             )}

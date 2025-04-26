@@ -83,8 +83,8 @@ model PhotoByCarousel {
   photo       String
   link        String @default("")
   order       Int    @default(0)
-  title       String
-  description String
+  title       String @default("")
+  description String @default("")
 
   @@map("photo_by_carousel")
 }
@@ -121,7 +121,7 @@ model Products {
   startDateSales  DateTime?
   endDateSales    DateTime?
   promoPercentage Int?      @map("sale_percentage")
-  originalPrice   Int?      @map("originalPrice")
+  promoPrice      Int?      @map("promo_price")
 
   items                OrderItem[]
   brandId              Int?        @map("brand_id")

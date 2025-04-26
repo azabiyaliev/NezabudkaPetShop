@@ -26,4 +26,6 @@ export interface ProductData {
   productAge: string;
   startDateSales?: Date;
   endDateSales?: Date;
+  promoPrice?: number;
+  promoPercentage?: number;
 }

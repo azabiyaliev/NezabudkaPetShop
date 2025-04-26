@@ -86,7 +86,7 @@ const Products: React.FC<Props> = ({products}) => {
       width: 100,
       editable: false,
       valueGetter: (_value, row: ProductResponse) =>
-        row.sales ? `${row.productPrice} сом (скидка)` : `${row.productPrice} сом`,
+        row.sales ? `${row.promoPrice} сом (скидка)` : `${row.productPrice} сом`,
     },
     {
       field: 'productDescription',
