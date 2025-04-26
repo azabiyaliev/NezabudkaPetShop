@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Box,
   IconButton,
@@ -30,6 +30,7 @@ import { toast } from 'react-toastify';
 import './ManageCategories.css';
 import EditCategory from '../../../components/Forms/CategoryForm/EditCategory.tsx';
 import { COLORS } from '../../../globalStyles/stylesObjects.ts';
+import styles from './styles.module.css';
 
 const SUCCESSFUL_CATEGORY_DELETE = "Удаление прошло успешно!";
 const ERROR_CATEGORY_DELETE = "Ошибка при удалении подкатегории!";
@@ -167,6 +168,29 @@ const ManageCategories = () => {
     await dispatch(fetchCategoriesThunk());
   };
 
+  type Props = {
+    node: NodeModel;
+    depth: number;
+  }
+
+  const Placeholder: React.FC<Props> = (props) => {
+    const left = props.depth * 24;
+
+    return (
+      <Box
+        sx={{
+          backgroundColor: '#1967d2',
+          height: '2px',
+          position: 'absolute',
+          right: 0,
+          transform: 'translateY(-50%)',
+          top: 0,
+          left: left,
+        }}
+      />
+    );
+  };
+
   return (
     <>
       <Box sx={{ display: "flex", flexDirection: "column" }}>
@@ -217,6 +241,12 @@ const ManageCategories = () => {
                     </Box>
                   );
                 }}
+                classes={{
+                  dropTarget: styles.dropTarget
+                }}
+                placeholderRender={(node, { depth }) => (
+                  <Placeholder node={node} depth={depth} />
+                )}
                 render={(node, { depth, isOpen, onToggle }) => {
                   const category = node.data as ICategories;
                   const isSubcategory = depth > 0;
