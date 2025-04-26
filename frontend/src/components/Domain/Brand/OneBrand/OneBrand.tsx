@@ -3,8 +3,8 @@ import { IBrandForm, ProductResponse } from '../../../../types';
 import { Box, Typography } from '@mui/joy';
 import { apiUrl } from '../../../../globalConstants';
 import ReactHtmlParser from 'html-react-parser';
-import OneProductCard from '../../../../features/Product/components/OneProductCard.tsx';
 import noImage from '../../../../assets/no-image.jpg';
+import ProductCard from '../../ProductCard/ProductCard.tsx';
 
 interface Props {
   brand: IBrandForm;
@@ -87,15 +87,12 @@ const OneBrand:React.FC<Props> = ({ brand, products }) => {
           </Typography>
           <Box sx={{
             display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
+            justifyContent: "center",
             flexWrap: "wrap",
-            "@media (max-width: 630px)": {
-              display: "block",
-            },
+            gap: '20px',
           }}>
             {products.map((product) => (
-              <OneProductCard key={product.id} product={product}/>
+              <ProductCard key={product.id} product={product}/>
             ))}
           </Box>
         </Box>

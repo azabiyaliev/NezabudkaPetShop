@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector, usePermission } from '../../../app/hooks.ts';
 import { getProductsByCategory, } from '../../../store/products/productsThunk.ts';
 import { selectProductsByCategory } from '../../../store/products/productsSlice.ts';
-import OneProductCard from '../components/OneProductCard.tsx';
 import { getFavoriteProducts } from '../../../store/favoriteProducts/favoriteProductsThunks.ts';
 import { selectUser } from '../../../store/users/usersSlice.ts';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -17,6 +16,7 @@ import { fetchCart } from '../../../store/cart/cartThunk.ts';
 import { userRoleClient } from '../../../globalConstants.ts';
 import Grid from "@mui/material/Grid2";
 import Filters from '../../Filters/Filters.tsx';
+import ProductCard from '../../../components/Domain/ProductCard/ProductCard.tsx';
 
 const AllProductsCardsPage = () => {
   const dispatch = useAppDispatch();
@@ -118,7 +118,7 @@ const AllProductsCardsPage = () => {
           ) : (
             <Grid container sx={{ justifyContent: "space-evenly", gap: 2 }}>
               {products.map((product) => (
-                  <OneProductCard product={product} key={product.id} />
+                <ProductCard product={product} key={product.id} />
               ))}
             </Grid>
           )}

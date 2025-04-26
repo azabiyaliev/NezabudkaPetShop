@@ -5,7 +5,7 @@ import  { useEffect, useState } from 'react';
 import { getOneProduct } from "../../../store/products/productsThunk.ts";
 import { useParams } from 'react-router-dom';
 import { selectProduct } from '../../../store/products/productsSlice.ts';
-import { apiUrl } from "../../../globalConstants.ts";
+import { apiUrl, userRoleClient } from '../../../globalConstants.ts';
 import HistoryProducts from '../../../components/Domain/HistoryProducts/HistoryProducts.tsx';
 import '../../../components/TextEditor/styles.css'
 import theme from '../../../globalStyles/globalTheme.ts';
@@ -51,7 +51,7 @@ const ProductPage = () => {
   useEffect(() => {
     dispatch(fetchDeliveryPage());
 
-    if (user) {
+    if (user && user.role === userRoleClient) {
       dispatch(fetchCart());
     }
   }, [dispatch, user]);

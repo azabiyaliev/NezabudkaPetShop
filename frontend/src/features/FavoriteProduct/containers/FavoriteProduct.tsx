@@ -1,19 +1,18 @@
-import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
-import { useEffect, useState } from "react";
-import { getFavoriteProducts } from "../../../store/favoriteProducts/favoriteProductsThunks.ts";
-import { selectedFavorite } from "../../../store/favoriteProducts/favoriteProductsSlice.ts";
-import { Box, Typography } from "@mui/material";
-import OneProductCard from "../../Product/components/OneProductCard.tsx";
-import { selectUser } from "../../../store/users/usersSlice.ts";
+import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
+import { useEffect, useState } from 'react';
+import { getFavoriteProducts } from '../../../store/favoriteProducts/favoriteProductsThunks.ts';
+import { selectedFavorite } from '../../../store/favoriteProducts/favoriteProductsSlice.ts';
+import { Box, Breadcrumbs, Link, Typography } from '@mui/material';
+import { selectUser } from '../../../store/users/usersSlice.ts';
 import {
   clearLocalFavoriteProducts,
   getLocalFavoriteProducts
 } from '../../../store/favoriteProducts/favoriteProductLocal.ts';
-import axiosApi from "../../../axiosApi.ts";
-import { ProductResponse } from "../../../types";
-import image from "../../../assets/image_transparent.png";
-import { Breadcrumbs, Link } from "@mui/material";
+import axiosApi from '../../../axiosApi.ts';
+import { ProductResponse } from '../../../types';
+import image from '../../../assets/image_transparent.png';
 import { useNavigate } from 'react-router-dom';
+import ProductCard from '../../../components/Domain/ProductCard/ProductCard.tsx';
 
 
 const FavoriteProduct = () => {
@@ -92,7 +91,7 @@ const FavoriteProduct = () => {
           ) : (
             favorites.map((fav) => (
               <Box key={fav.id}>
-                <OneProductCard product={fav.product} />
+                <ProductCard product={fav.product} />
               </Box>
             ))
           )
@@ -116,7 +115,7 @@ const FavoriteProduct = () => {
         ) : (
           localFavorites.map((item) => (
             <Box key={item.id}>
-              <OneProductCard product={item} />
+              <ProductCard product={item} />
             </Box>
           ))
         )}

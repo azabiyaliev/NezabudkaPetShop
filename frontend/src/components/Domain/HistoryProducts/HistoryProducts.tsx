@@ -7,7 +7,7 @@ import { getOneProduct } from '../../../store/products/productsThunk.ts';
 import { addProductToHistory } from '../../../store/historyProduct/historyProductSlice.ts';
 import { Box } from '@mui/material';
 import Typography from '@mui/joy/Typography';
-import HistoryProduct from './HistoryProduct/HistoryProduct.tsx';
+import ProductCard from '../ProductCard/ProductCard.tsx';
 
 const HistoryProducts = () => {
   const viewedProducts = useAppSelector((state) => state.history.history);
@@ -51,7 +51,7 @@ const HistoryProducts = () => {
           {viewedProducts
             .filter((item): item is historyProduct => !!item.product && !!item.product.productName)
             .map((item) => (
-              <HistoryProduct item={item} key={item.productId} />
+              <ProductCard product={item.product} key={item.productId}/>
             ))}
         </Box>
       </Box>
