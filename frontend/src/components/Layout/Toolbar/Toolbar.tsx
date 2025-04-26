@@ -38,12 +38,15 @@ import {
   getFromLocalStorage,
 } from "../../../store/cart/cartSlice.ts";
 import { userRoleAdmin, userRoleSuperAdmin } from "../../../globalConstants.ts";
-import ReactHtmlParser from "html-react-parser";
 import IconButton from "@mui/joy/IconButton";
 import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
 import { fetchUserIdBonus } from "../../../store/users/usersThunk.ts";
 import Tooltip from "@mui/joy/Tooltip";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
+import { ClickAwayListener } from "@mui/material";
+import theme from "../../../globalStyles/globalTheme.ts";
+import { motion } from "framer-motion";
+
 
 const MainToolbar = () => {
   const [openCart, setOpenCart] = useState<boolean>(false);
@@ -57,6 +60,8 @@ const MainToolbar = () => {
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState<string>("");
   const can = usePermission(user);
+  const [focused, setFocused] = useState(false);
+
 
   useEffect(() => {
     if (user?.id) {
@@ -104,6 +109,22 @@ const MainToolbar = () => {
       acc = acc + i;
       return acc;
     }, 0);
+
+  const highlightText = (text: string, search: string) => {
+    if (!search) return text;
+    const reg = new RegExp(`(${search})`, 'gi');
+    const parts = text.split(reg);
+
+    return parts.map((part, index) =>
+      part.toLowerCase() === search.toLowerCase() ? (
+        <strong key={index} style={{ fontWeight: theme.fonts.weight.medium }}>
+          {part}
+        </strong>
+      ) : (
+        part
+      )
+    );
+  };
 
   return (
     <div>
@@ -227,7 +248,17 @@ const MainToolbar = () => {
                 },
               }}
             >
-              <div style={{ display: "flex", alignItems: "center" }}>
+              <motion.div
+                layout
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  maxWidth: (focused && window.innerWidth <= 1060) ? "0%" : "100%",
+                  opacity: (focused && window.innerWidth <= 1060) ? 0 : 1,
+                  visibility: (focused && window.innerWidth <= 1060) ? "hidden" : "visible",
+                  transition: "opacity 0.3s ease, visibility 0.3s ease",
+                }}
+              >
                 <Box
                   onClick={() => setOpenCategoryMenu(true)}
                   sx={{
@@ -280,6 +311,7 @@ const MainToolbar = () => {
                         fontFamily: "COMIC SANS MS, Roboto, Arial, sans-serif",
                         color: "white",
                         cursor: "pointer",
+                        marginRight: theme.spacing.xs,
                         "@media (max-width: 500px)": {
                           paddingRight: "10px",
                         },
@@ -289,13 +321,14 @@ const MainToolbar = () => {
                     </Typography>
                   </div>
                 </NavLink>
-              </div>
+              </motion.div>
 
-              {(user && can(["client"])) || !user ? (
+              {(user && can(["client"])) || !user && !focused ? (
                 <Box
                   sx={{
                     display: "flex",
                     alignItems: "center",
+                    marginLeft: "auto",
                     gap: "27px",
                     "@media (max-width: 1100px)": {
                       display: "inline",
@@ -367,43 +400,42 @@ const MainToolbar = () => {
                   </Box>
                 </Box>
               ) : null}
-
-              <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <ClickAwayListener onClickAway={() => { setFocused(false); setSearch(""); }}>
                 <Box
                   sx={{
                     display: "flex",
-                    justifyContent: "flex-end",
+                    marginLeft: "auto",
+                    marginRight: "10px",
                     position: "relative",
                     width: "100%",
-                    maxWidth: 400,
-                    "@media (max-width: 800px)": { display: "none" },
+                    maxWidth: focused ? "800px" : "50px",
+
                   }}
                 >
                   <Box
                     component="form"
                     sx={{
                       position: "relative",
-                      width: "50px",
+                      marginLeft: "auto",
+                      width: focused ? "100%" : "50px",
                       height: "50px",
                       paddingRight: "50px",
                       transition: "all 0.5s",
                       borderRadius: "25px",
-                      backgroundColor: "white",
+                      backgroundColor: theme.colors.white,
                       overflow: "hidden",
                       boxSizing: "border-box",
                       zIndex: 10,
-                      "@media (max-width: 1430px)": {
-                        display: "none",
-                      },
+                      display: "flex",
+                      alignItems: "center",
                       "&:focus-within": {
-                        width: "300px",
                         cursor: "pointer",
                         "& .MuiInputBase-root": {
                           display: "block",
                         },
                         "& .MuiIconButton-root": {
-                          backgroundColor: "#FDE910",
-                          color: "#333",
+                          backgroundColor: theme.colors.yellow,
+                          color: theme.colors.text,
                         },
                       },
                     }}
@@ -418,20 +450,22 @@ const MainToolbar = () => {
                         lineHeight: "30px",
                         outline: 0,
                         border: 0,
-                        display: "none",
-                        fontSize: "1em",
+                        display: focused ? "block" : "none",
+                        fontSize: theme.fonts.size.default,
                         borderRadius: "20px",
-                        padding: "0 20px",
+                        padding: `0 ${theme.spacing.sm}`,
                         transition: "all 0.3s ease-in-out",
-                        color: "#333",
-                        backgroundColor: "white",
+                        color: theme.colors.text,
+                        backgroundColor: theme.colors.white,
                         flexGrow: 1,
                       }}
                       placeholder="Поиск товара"
                       value={search}
                       onChange={(e) => setSearch(e.target.value)}
+                      onFocus={() => setFocused(true)}
                     />
                     <IconButton
+                      onClick={() => setFocused(true)}
                       sx={{
                         boxSizing: "border-box",
                         width: "42.5px",
@@ -440,8 +474,9 @@ const MainToolbar = () => {
                         top: 5,
                         right: 3,
                         borderRadius: "50%",
-                        color: "#054500",
+                        color: focused ? theme.colors.text : theme.colors.primary,
                         transition: "all 0.5s",
+                        backgroundColor: focused ? theme.colors.yellow : "transparent",
                       }}
                     >
                       <SearchIcon />
@@ -457,7 +492,7 @@ const MainToolbar = () => {
                         width: "100%",
                         maxHeight: 300,
                         overflowY: "auto",
-                        backgroundColor: "white",
+                        backgroundColor: theme.colors.white,
                         boxShadow: 3,
                         zIndex: 1000,
                         marginTop: 1,
@@ -467,6 +502,7 @@ const MainToolbar = () => {
                       {products.length > 0 ? (
                         products.map((product) => (
                           <NavLink
+                            key={product.id}
                             className="text-decoration-none text-black"
                             to={
                               user &&
@@ -475,30 +511,33 @@ const MainToolbar = () => {
                                 ? `/private/edit_product/${product.id}`
                                 : `/product/${product.id}`
                             }
-                            onClick={() => setSearch("")}
+                            onClick={() => { setSearch(""); setFocused(false); }}
                           >
-                            <div
-                              key={product.id}
-                              style={{
-                                padding: "10px",
-                                borderBottom: "1px solid #ddd",
+                            <Box
+                              sx={{
+                                padding: theme.spacing.xs,
+                                borderBottom: `1px solid ${theme.colors.background}`,
                               }}
                             >
-                              <h3>{product.productName}</h3>
-                              <p>
-                                {ReactHtmlParser(product.productDescription)}
-                              </p>
-                            </div>
+                              <Box
+                                sx={{ fontSize: theme.fonts.size.default, fontWeight: theme.fonts.weight.normal }}
+                              >
+                                {highlightText(product.productName, search)}
+                              </Box>
+                            </Box>
                           </NavLink>
                         ))
                       ) : (
-                        <div style={{ padding: "10px" }}>
+                        <Box sx={{ padding: theme.spacing.xs }}>
                           Товаров не найдено
-                        </div>
+                        </Box>
                       )}
                     </Box>
                   )}
                 </Box>
+              </ClickAwayListener>
+
+              <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
                 {(user && can(["client"])) || !user ? (
                   <Box
                     sx={{
@@ -890,123 +929,6 @@ const MainToolbar = () => {
                 </Box>
               )}
             </Toolbar>
-            <Box
-              sx={{
-                "@media (max-width: 800px)": {
-                  paddingBottom: "10px",
-                },
-              }}
-            >
-              <Box
-                sx={{
-                  display: "none",
-                  "@media (max-width: 1430px)": {
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  },
-                }}
-              >
-                <Box
-                  sx={{
-                    position: "relative",
-                    display: "flex",
-                    alignItems: "center",
-                    width: "100%",
-                    margin: "10px 40px",
-                  }}
-                >
-                  <input
-                    style={{
-                      width: "100%",
-                      padding: "10px 40px 10px 16px",
-                      fontSize: "16px",
-                      color: "#333",
-                      backgroundColor: "white",
-                      border: "2px solid rgb(195, 190, 182)",
-                      borderRadius: "30px",
-                      outline: "none",
-                      transition: "all 0.3s ease-in-out",
-                      boxShadow: "0 4px 10px rgba(91, 113, 51, 0.3)",
-                    }}
-                    placeholder="Поиск товара"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    onFocus={(e) => {
-                      e.target.style.borderColor = "#d4d9c5";
-                      e.target.style.boxShadow =
-                        "0 0 8px rgba(91, 113, 51, 0.5)";
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.borderColor = "#475726";
-                      e.target.style.boxShadow =
-                        "0 4px 10px rgba(91, 113, 51, 0.3)";
-                    }}
-                  />
-                  <button
-                    style={{
-                      position: "absolute",
-                      right: "10px",
-                      background: "transparent",
-                      border: "none",
-                      cursor: "pointer",
-                      color: "#8EA58C",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <SearchIcon />
-                  </button>
-                </Box>
-
-                {search && (
-                  <Box
-                    sx={{
-                      position: "absolute",
-                      top: "100%",
-                      left: 0,
-                      width: "100%",
-                      maxHeight: 300,
-                      overflowY: "auto",
-                      backgroundColor: "white",
-                      boxShadow: 3,
-                      zIndex: 1000,
-                      marginTop: 1,
-                      borderRadius: 1,
-                      "@media (max-width: 1430px)": {
-                        top: "32%",
-                        left: 12,
-                        width: "98%",
-                      },
-                    }}
-                  >
-                    {products.length > 0 ? (
-                      products.map((product) => (
-                        <NavLink
-                          className="text-decoration-none text-black"
-                          to={`/product/${product.id}`}
-                          onClick={() => setSearch("")}
-                        >
-                          <div
-                            key={product.id}
-                            style={{
-                              padding: "10px",
-                              borderBottom: "1px solid #ddd",
-                            }}
-                          >
-                            <h3>{product.productName}</h3>
-                            <p>{product.productDescription}</p>
-                          </div>
-                        </NavLink>
-                      ))
-                    ) : (
-                      <div style={{ padding: "10px" }}>Товаров не найдено</div>
-                    )}
-                  </Box>
-                )}
-              </Box>
-            </Box>
           </Box>
         </Container>
       </div>
