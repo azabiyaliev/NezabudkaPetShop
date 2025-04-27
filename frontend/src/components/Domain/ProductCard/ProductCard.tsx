@@ -203,6 +203,7 @@ const ProductCard:React.FC<Props> = ({ product, cart }) => {
             color: 'inherit',
             cursor: 'pointer',
             margin: SPACING.xs,
+            height: '80px',
           }}
         >
           <Typography

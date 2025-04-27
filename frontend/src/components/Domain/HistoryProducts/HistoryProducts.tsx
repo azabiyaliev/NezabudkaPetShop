@@ -37,7 +37,7 @@ const HistoryProducts:React.FC<Props> = ({cart}) => {
       <Box sx={{ p: 2 }}>
         <Typography level="h2" gutterBottom sx={{
           mb:5,
-          "@media (max-width: 570px)": {
+          "@media (max-width: 625px)": {
             textAlign: 'center',
           },
         }}>
@@ -48,7 +48,7 @@ const HistoryProducts:React.FC<Props> = ({cart}) => {
           flexWrap: 'wrap',
           gap: 3,
           justifyContent: 'flex-start',
-          "@media (max-width: 570px)": {
+          "@media (max-width: 625px)": {
             justifyContent: 'center',
           },
         }}>
