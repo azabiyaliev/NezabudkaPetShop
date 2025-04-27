@@ -99,19 +99,25 @@ const ContactPage = () => {
             sx={{
               width: "480px",
               height: "480px",
-              flexShrink: 0,
-              borderRadius: "12px",
               overflow: "hidden",
+              borderRadius: "12px",
               boxShadow: 2,
+              position: "relative",
             }}
           >
             <iframe
               src={site?.mapGoogleLink}
-              width="100%"
-              height="100%"
-              style={{ border: 0 }}
+              width="600px"
+              height="600px"
+              style={{
+                position: "absolute",
+                top: "-60px",
+                left: "-60px",
+                border: 0,
+              }}
               allowFullScreen
               loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
             ></iframe>
           </Box>
         </Box>

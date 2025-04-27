@@ -59,7 +59,6 @@ const DeliveryPage = () => {
               />
             </Box>
 
-            {/* Карта */}
             {delivery?.map && (
               <Box
                 sx={{
@@ -70,16 +69,22 @@ const DeliveryPage = () => {
                   borderRadius: '12px',
                   overflow: 'hidden',
                   boxShadow: '0 2px 6px rgba(0, 0, 0, 0.1)',
+                  position: 'relative',
                 }}
               >
                 <iframe
                   src={delivery.map}
-                  width="100%"
-                  height="100%"
-                  style={{ border: 0 }}
+                  width="600px"
+                  height="600px"
+                  style={{
+                    position: 'absolute',
+                    top: '-60px',
+                    left: '-60px',
+                    border: 0,
+                  }}
                   allowFullScreen
                   loading="lazy"
-                  title="Delivery map"
+                  referrerPolicy="no-referrer-when-downgrade"
                 />
               </Box>
             )}
