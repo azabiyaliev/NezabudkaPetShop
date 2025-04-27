@@ -173,6 +173,8 @@ const OrderForm = () => {
     } else if (!form.guestName) {
       toast.error("Заполните поле Имя");
       return;
+    } else if (!form.address) {
+      toast.error("Заполните поле для Адреса")
     }
 
 try {
