@@ -125,7 +125,7 @@ const ProductCard:React.FC<Props> = ({ product, cart }) => {
     >
       {product.sales && (
         <Tooltip title={`С ${dayjs(product.startDateSales).format("DD.MM.YYYY")} по 
-        ${dayjs(product.endDateSales).format("DD.MM.YYYY")}`} sx={{color: COLORS.white, backgroundColor: COLORS.info}} variant='outlined'
+      ${dayjs(product.endDateSales).format("DD.MM.YYYY")}`} sx={{color: COLORS.white, backgroundColor: COLORS.info}} variant='outlined'
                  placement="top-start">
           <Box sx={{
             position: 'absolute',
@@ -137,14 +137,15 @@ const ProductCard:React.FC<Props> = ({ product, cart }) => {
             borderRadius: '5px',
             fontWeight: FONTS.weight.bold,
             fontSize: FONTS.size.sm,
-            cursor: 'pointer'
+            cursor: 'pointer',
+            zIndex: 2,
           }}>
             - {product.promoPercentage}%
           </Box>
         </Tooltip>
       )}
 
-      <Box sx={{position: 'absolute', top: 8, right: 8}}>
+      <Box sx={{ position: 'absolute', top: 8, right: 8, zIndex: 2 }}>
         {user && (user.role === userRoleAdmin || user.role === userRoleSuperAdmin) ?
           <Tooltip
             title={'Вы не можете добавлять товар в избранные'}
@@ -152,31 +153,30 @@ const ProductCard:React.FC<Props> = ({ product, cart }) => {
             variant="plain"
             sx={{color: COLORS.white, backgroundColor: COLORS.yellow}}
           >
-             <span>
-               <IconButton disabled>
-                 <FavoriteBorderOutlinedIcon/>
-               </IconButton>
-             </span>
+        <span>
+          <IconButton disabled>
+            <FavoriteBorderOutlinedIcon />
+          </IconButton>
+        </span>
           </Tooltip> :
           <>
             {isFavorite ?
               <IconButton onClick={() => toggleFavorite(product.id)}>
-                <FavoriteIcon color="error"/>
+                <FavoriteIcon color="error" />
               </IconButton>
               :
               <IconButton onClick={() => toggleFavorite(product.id)}>
-                <FavoriteBorderOutlinedIcon/>
+                <FavoriteBorderOutlinedIcon />
               </IconButton>
             }
           </>
         }
-
       </Box>
 
       <a
         href={`/product/${product.id}`}
         rel="noopener noreferrer"
-        style={{textDecoration: 'none'}}
+        style={{ textDecoration: 'none' }}
       >
         <CardMedia
           component="img"
@@ -188,145 +188,147 @@ const ProductCard:React.FC<Props> = ({ product, cart }) => {
             objectFit: 'contain',
             mb: 1,
             cursor: 'pointer',
+            position: 'relative',
+            zIndex: 0,
           }}
         />
       </a>
-        <Box sx={{display: 'flex', flexDirection: 'column', flexGrow: 1, borderTop: '1px solid lightgrey', mt: 1.5}}>
-            <a
-              href={`/product/${product.id}`}
-              rel="noopener noreferrer"
-              style={{
-                textDecoration: 'none',
-                color: 'inherit',
-                cursor: 'pointer',
-                margin: SPACING.xs,
+
+      <Box sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1, borderTop: '1px solid lightgrey', mt: 1.5 }}>
+        <a
+          href={`/product/${product.id}`}
+          rel="noopener noreferrer"
+          style={{
+            textDecoration: 'none',
+            color: 'inherit',
+            cursor: 'pointer',
+            margin: SPACING.xs,
+          }}
+        >
+          <Typography
+            variant="body2"
+            sx={{
+              flexGrow: 1,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              display: '-webkit-box',
+              WebkitLineClamp: 3,
+              WebkitBoxOrient: 'vertical',
+              mb: 1,
+              fontSize: FONTS.size.sm,
+            }}
+          >{product.productName}</Typography>
+        </a>
+
+        <Box
+          sx={{
+            mt: 'auto',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'end',
+          }}
+        >
+          <Box>
+            <Typography
+              sx={{
+                visibility: product.productWeight ? 'visible' : 'hidden',
+                minWidth: '40px',
+                marginLeft: '10px'
               }}
             >
-              <Typography
-                variant="body2"
-                sx={{
-                  flexGrow: 1,
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  display: '-webkit-box',
-                  WebkitLineClamp: 3,
-                  WebkitBoxOrient: 'vertical',
-                  mb: 1,
-                  fontSize: FONTS.size.sm,
-                }}
-              >{product.productName}</Typography>
-            </a>
-
-          <Box
-            sx={{
-              mt: 'auto',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'end',
-            }}
-          >
-            <Box>
-              <Typography
-                sx={{
-                  visibility: product.productWeight ? 'visible' : 'hidden',
-                  minWidth: '40px',
-                  marginLeft: '10px'
-                }}
-              >
-                {product.productWeight} кг
-              </Typography>
-            </Box>
-            <Box>
-              {product.sales ? (
-                <>
-                  <Typography fontWeight={600} sx={{
-                    textDecoration: 'line-through',
-                    color: COLORS.text,
-                  }}>
-                    {product.productPrice} сом
-                  </Typography>
-                  <Typography fontWeight={600} sx={{color: COLORS.warning}}>
-                    {product.promoPrice} сом
-                  </Typography>
-                </>
-
-              ) : (
-                <Typography fontWeight={600}>
+              {product.productWeight} кг
+            </Typography>
+          </Box>
+          <Box>
+            {product.sales ? (
+              <>
+                <Typography fontWeight={600} sx={{
+                  textDecoration: 'line-through',
+                  color: COLORS.text,
+                }}>
                   {product.productPrice} сом
                 </Typography>
-              )}
-            </Box>
-            <Box sx={{ position: "relative", mb: '-5px' }}>
-              {(!product.existence || (user && (user.role === userRoleAdmin || user.role === userRoleSuperAdmin))) ? (
-                <Tooltip
-                  title={
-                    !product.existence
-                      ? "Нет в наличии"
-                      : "Вы не можете добавлять товар в корзину"
-                  }
-                  placement="bottom-start"
-                  variant="plain"
-                  sx={{color: COLORS.white, backgroundColor: COLORS.yellow}}
-                >
-                  <span>
-                    <IconButton disabled>
-                      <ShoppingCartIcon sx={{ color: 'grey.400' }} />
-                    </IconButton>
-                  </span>
-                </Tooltip>
-              ) : (
-                <IconButton onClick={() => addItemToCart(product)}>
-                  {quantityInCart > 0 ? (
-                    <Badge
-                      badgeContent={quantityInCart}
-                      sx={{
-                        '& .MuiBadge-badge': {
-                          backgroundColor: COLORS.info,
-                          color: COLORS.background,
-                        },
-                      }}
-                    >
-                      <ShoppingCartOutlinedIcon />
-                    </Badge>
-                  ) : (
-                    <ShoppingCartOutlinedIcon />
-                  )}
-                </IconButton>
-              )}
-
-              <AnimatePresence>
-                {showAddAnimation && (
-                  <motion.div
-                    initial={{ y: -20, opacity: 0, scale: 0.5 }}
-                    animate={{ y: 0, opacity: 1, scale: 1 }}
-                    exit={{ y: 20, opacity: 0, scale: 0.5 }}
-                    transition={{ duration: 0.5 }}
-                    style={{
-                      position: "absolute",
-                      top: -12,
-                      right: 10,
-                      backgroundColor: "#ffc107",
-                      color: "#fff",
-                      borderRadius: "50%",
-                      width: 30,
-                      height: 30,
-                      fontSize: 12,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      zIndex: 10,
-                      pointerEvents: 'none',
+                <Typography fontWeight={600} sx={{ color: COLORS.warning }}>
+                  {product.promoPrice} сом
+                </Typography>
+              </>
+            ) : (
+              <Typography fontWeight={600}>
+                {product.productPrice} сом
+              </Typography>
+            )}
+          </Box>
+          <Box sx={{ position: "relative", mb: '-5px', zIndex: 2 }}>
+            {(!product.existence || (user && (user.role === userRoleAdmin || user.role === userRoleSuperAdmin))) ? (
+              <Tooltip
+                title={
+                  !product.existence
+                    ? "Нет в наличии"
+                    : "Вы не можете добавлять товар в корзину"
+                }
+                placement="bottom-start"
+                variant="plain"
+                sx={{ color: COLORS.white, backgroundColor: COLORS.yellow }}
+              >
+            <span>
+              <IconButton disabled>
+                <ShoppingCartIcon sx={{ color: 'grey.400' }} />
+              </IconButton>
+            </span>
+              </Tooltip>
+            ) : (
+              <IconButton onClick={() => addItemToCart(product)}>
+                {quantityInCart > 0 ? (
+                  <Badge
+                    badgeContent={quantityInCart}
+                    sx={{
+                      '& .MuiBadge-badge': {
+                        backgroundColor: COLORS.info,
+                        color: COLORS.background,
+                      },
                     }}
                   >
-                    +1
-                  </motion.div>
+                    <ShoppingCartOutlinedIcon />
+                  </Badge>
+                ) : (
+                  <ShoppingCartOutlinedIcon />
                 )}
-              </AnimatePresence>
-            </Box>
+              </IconButton>
+            )}
+
+            <AnimatePresence>
+              {showAddAnimation && (
+                <motion.div
+                  initial={{ y: -20, opacity: 0, scale: 0.5 }}
+                  animate={{ y: 0, opacity: 1, scale: 1 }}
+                  exit={{ y: 20, opacity: 0, scale: 0.5 }}
+                  transition={{ duration: 0.5 }}
+                  style={{
+                    position: "absolute",
+                    top: -12,
+                    right: 10,
+                    backgroundColor: "#ffc107",
+                    color: "#fff",
+                    borderRadius: "50%",
+                    width: 30,
+                    height: 30,
+                    fontSize: 12,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    zIndex: 10,
+                    pointerEvents: 'none',
+                  }}
+                >
+                  +1
+                </motion.div>
+              )}
+            </AnimatePresence>
           </Box>
         </Box>
+      </Box>
     </Card>
-);
+  );
 };
 
 export default ProductCard;

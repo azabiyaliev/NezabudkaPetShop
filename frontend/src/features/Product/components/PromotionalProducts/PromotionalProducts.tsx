@@ -10,7 +10,6 @@ import ProductCard from '../../../../components/Domain/ProductCard/ProductCard.t
 
 interface Props {
   products: ProductResponse[];
-  // favoriteProduct: FavoritesResponse[];
   cart: ICartBack;
 }
 
@@ -99,6 +98,7 @@ const PromotionalProducts: React.FC<Props> = ({ products, cart }) => {
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
+                position: 'relative',
                 '& a:not(:has(img))': {
                   height: '80px',
                 },
@@ -106,6 +106,10 @@ const PromotionalProducts: React.FC<Props> = ({ products, cart }) => {
                   height: '150px',
                   objectFit: 'contain',
                   margin: '0 auto',
+                  pointerEvents: 'none',
+                  userSelect: 'none',
+                  position: 'static',
+                  zIndex: -1,
                 },
               }}
             >
@@ -119,3 +123,5 @@ const PromotionalProducts: React.FC<Props> = ({ products, cart }) => {
 };
 
 export default PromotionalProducts;
+
+
