@@ -44,6 +44,9 @@ import { BonusPageController } from './bonus_program_page/bonus_program_pg.contr
 import { DeliveryPageModule } from './delivery_page/delivery_page.module';
 import { DeliveryPageController } from './delivery_page/delivery_page.conrtoller';
 import { DeliveryPageService } from './delivery_page/delivery_page.service';
+import { IntegrationController } from './1C/IntegrationController';
+import { IntegrationService } from './1C/IntegrationService';
+import { IntegrationModule } from './1C/IntegrationModule';
 
 @Module({
   imports: [
@@ -66,6 +69,7 @@ import { DeliveryPageService } from './delivery_page/delivery_page.service';
     CartItemsModule,
     BonusPageModule,
     DeliveryPageModule,
+    IntegrationModule,
   ],
   controllers: [
     AppController,
@@ -79,6 +83,7 @@ import { DeliveryPageService } from './delivery_page/delivery_page.service';
     CartItemsController,
     BonusPageController,
     DeliveryPageController,
+    IntegrationController,
   ],
   providers: [
     AppService,
@@ -96,6 +101,7 @@ import { DeliveryPageService } from './delivery_page/delivery_page.service';
     CartItemsService,
     BonusProgramService,
     DeliveryPageService,
+    IntegrationService,
   ],
 })
 export class AppModule {}
