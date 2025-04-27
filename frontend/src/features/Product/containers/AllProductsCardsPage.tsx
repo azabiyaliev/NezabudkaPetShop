@@ -235,8 +235,8 @@ const AllProductsCardsPage = () => {
             </Typography>
           ) : (
             <Grid container sx={{ justifyContent: "space-evenly", gap: 2 }}>
-              {products.map((product) => (
-                cart && (<ProductCard product={product} key={product.id} cart={cart} />)
+              {cart && products.map((product) => (
+                <ProductCard product={product} key={product.id} cart={cart} />
               ))}
             </Grid>
           )}
