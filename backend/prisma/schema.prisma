@@ -298,3 +298,13 @@ model DeliveryPage {
 
   @@map("deliveryPage")
 }
+
+model IntegrationLog {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  requestBody Json
+  status      String
+  error       String?
+
+  @@map("integration_logs")
+}
