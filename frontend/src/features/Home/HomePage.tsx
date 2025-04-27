@@ -16,6 +16,7 @@ import { selectPromotionalProducts } from '../../store/products/productsSlice.ts
 import { getPromotionalProducts } from '../../store/products/productsThunk.ts';
 import PromotionalProducts from '../Product/components/PromotionalProducts/PromotionalProducts.tsx';
 import theme from '../../globalStyles/globalTheme.ts';
+import { getFavoriteProducts } from '../../store/favoriteProducts/favoriteProductsThunks.ts';
 
 const HomePage = () => {
   const [openCart, setOpenCart] = useState<boolean>(false);
@@ -118,6 +119,11 @@ const HomePage = () => {
     }
   }, [dispatch, cart, user]);
 
+  useEffect(() => {
+    if (user && user.role === userRoleClient) {
+      dispatch(getFavoriteProducts());
+    }
+  }, [dispatch, user]);
 
   return (
     <>
@@ -152,7 +158,10 @@ const HomePage = () => {
             >
               Акции
             </Typography>
-            <PromotionalProducts products={promotionalProducts}/>
+            {cart && (
+              <PromotionalProducts products={promotionalProducts} cart={cart} />
+            )}
+
           </Box>
         )}
 

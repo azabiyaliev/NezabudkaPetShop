@@ -8,10 +8,16 @@ import { Container } from '@mui/material';
 import { selectProducts } from '../../store/products/productsSlice.ts';
 import { getProductsByBrand } from '../../store/products/productsThunk.ts';
 import { Typography } from '@mui/joy';
+import { userRoleClient } from '../../globalConstants.ts';
+import { fetchCart } from '../../store/cart/cartThunk.ts';
+import { cartFromSlice, getFromLocalStorage } from '../../store/cart/cartSlice.ts';
+import { selectUser } from '../../store/users/usersSlice.ts';
 
 const BrandPage = () => {
   const brand = useAppSelector(brandFromSlice);
   const products = useAppSelector(selectProducts);
+  const cart = useAppSelector(cartFromSlice);
+  const user = useAppSelector(selectUser);
   const dispatch = useAppDispatch();
   const { id } = useParams();
 
@@ -22,9 +28,17 @@ const BrandPage = () => {
     }
   }, [dispatch, id]);
 
+  useEffect(() => {
+    if (user && user.role === userRoleClient) {
+      dispatch(fetchCart());
+    } else {
+      dispatch(getFromLocalStorage());
+    }
+  }, [dispatch, user]);
+
   return brand && (
     <Container>
-      <OneBrand brand={brand} products={products}/>
+      {cart && ( <OneBrand brand={brand} products={products} cart={cart}/>)}
       {products.length === 0 && (
         <Typography
           level="h2"
