@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Box,
   IconButton,
@@ -29,6 +29,9 @@ import SubcategoryForm from '../../../components/Forms/SubcategoryForm/Subcatego
 import { toast } from 'react-toastify';
 import './ManageCategories.css';
 import EditCategory from '../../../components/Forms/CategoryForm/EditCategory.tsx';
+import { COLORS } from '../../../globalStyles/stylesObjects.ts';
+import styles from './styles.module.css';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 
 const SUCCESSFUL_CATEGORY_DELETE = "Удаление прошло успешно!";
 const ERROR_CATEGORY_DELETE = "Ошибка при удалении подкатегории!";
@@ -166,6 +169,29 @@ const ManageCategories = () => {
     await dispatch(fetchCategoriesThunk());
   };
 
+  type Props = {
+    node: NodeModel;
+    depth: number;
+  }
+
+  const Placeholder: React.FC<Props> = (props) => {
+    const left = props.depth * 24;
+
+    return (
+      <Box
+        sx={{
+          backgroundColor: '#1967d2',
+          height: '2px',
+          position: 'absolute',
+          right: 0,
+          transform: 'translateY(-50%)',
+          top: 0,
+          left: left,
+        }}
+      />
+    );
+  };
+
   return (
     <>
       <Box sx={{ display: "flex", flexDirection: "column" }}>
@@ -187,6 +213,14 @@ const ManageCategories = () => {
           положение в иерархии.
         </Typography>
 
+        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-end", mt: 2}}>
+          <Typography sx={{ fontSize: "10px", color: "#757575", textAlign: "right" }}>
+            Чтобы вытащить подкатегорию из категории перенесите в пустое место
+          </Typography>
+          <ArrowDownwardIcon sx={{ mt: 1, mr: 5, color: "#757575"}} />
+        </Box>
+
+
         <Box>
           <DndProvider backend={MultiBackend} options={getBackendOptions()}>
             <div className="categories-ul">
@@ -194,6 +228,34 @@ const ManageCategories = () => {
                 tree={treeData}
                 rootId={0}
                 onDrop={handleDrop}
+                dragPreviewRender={({ item }) => {
+                  return (
+                    <Box
+                      sx={{
+                        padding: '8px 16px',
+                        backgroundColor: '#fefefe',
+                        border: '2px solid #1976d2',
+                        borderRadius: '8px',
+                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
+                        color: COLORS.info,
+                        fontWeight: 'bold',
+                        fontSize: '1rem',
+                        maxWidth: '300px',
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                      }}
+                    >
+                      {item.text}
+                    </Box>
+                  );
+                }}
+                classes={{
+                  dropTarget: styles.dropTarget
+                }}
+                placeholderRender={(node, { depth }) => (
+                  <Placeholder node={node} depth={depth} />
+                )}
                 render={(node, { depth, isOpen, onToggle }) => {
                   const category = node.data as ICategories;
                   const isSubcategory = depth > 0;

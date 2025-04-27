@@ -18,7 +18,7 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@greatsumini/react-facebook-login": "^3.4.0",
-    "@minoru/react-dnd-treeview": "^3.5.0",
+    "@minoru/react-dnd-treeview": "^3.5.2",
     "@mui/icons-material": "^6.4.6",
     "@mui/joy": "^5.0.0-beta.51",
     "@mui/material": "^6.4.9",
