@@ -1,49 +1,37 @@
-import {
-  Badge,
-  Box,
-  Button,
-  Container,
-  InputBase,
-  Toolbar,
-} from "@mui/material";
-import { NavLink, useNavigate } from "react-router-dom";
-import {
-  useAppDispatch,
-  useAppSelector,
-  usePermission,
-} from "../../../app/hooks.ts";
-import ExistsUser from "./ExistsUser.tsx";
-import UnknownUser from "./UnknownUser.tsx";
-import logo from "../../../assets/logo-nezabudka.png";
-import backImage from "../../../assets/фон.png";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import Typography from "@mui/material/Typography";
-import "./Fonts.css";
-import { selectEditSite } from "../../../store/editionSite/editionSiteSlice.ts";
-import { selectUser } from "../../../store/users/usersSlice.ts";
-import { useEffect, useState } from "react";
-import CustomCart from "../../Domain/CustomCart/CustomCart.tsx";
-import { fetchSite } from "../../../store/editionSite/editionSiteThunk.ts";
-import { selectProducts } from "../../../store/products/productsSlice.ts";
-import { getProducts } from "../../../store/products/productsThunk.ts";
-import SearchIcon from "@mui/icons-material/Search";
-import LocalMallOutlinedIcon from "@mui/icons-material/LocalMallOutlined";
-import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined";
-import SettingsIcon from "@mui/icons-material/Settings";
-import MenuIcon from "@mui/icons-material/Menu";
-import CategoryNavMenu from "../../Domain/CategoryNavMenu.tsx";
-import {
-  cartFromSlice,
-  getFromLocalStorage,
-} from "../../../store/cart/cartSlice.ts";
-import { userRoleAdmin, userRoleSuperAdmin } from "../../../globalConstants.ts";
-import ReactHtmlParser from "html-react-parser";
-import IconButton from "@mui/joy/IconButton";
-import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
-import { fetchUserIdBonus } from "../../../store/users/usersThunk.ts";
-import Tooltip from "@mui/joy/Tooltip";
-import LocalShippingIcon from "@mui/icons-material/LocalShipping";
+import { Badge, Box, Button, Container, InputBase, Toolbar, } from '@mui/material';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { useAppDispatch, useAppSelector, usePermission, } from '../../../app/hooks.ts';
+import ExistsUser from './ExistsUser.tsx';
+import UnknownUser from './UnknownUser.tsx';
+import logo from '../../../assets/logo-nezabudka.png';
+import backImage from '../../../assets/фон.png';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import Typography from '@mui/material/Typography';
+import './Fonts.css';
+import { selectEditSite } from '../../../store/editionSite/editionSiteSlice.ts';
+import { selectUser } from '../../../store/users/usersSlice.ts';
+import { useEffect, useState } from 'react';
+import CustomCart from '../../Domain/CustomCart/CustomCart.tsx';
+import { fetchSite } from '../../../store/editionSite/editionSiteThunk.ts';
+import { selectProducts } from '../../../store/products/productsSlice.ts';
+import { getProducts } from '../../../store/products/productsThunk.ts';
+import SearchIcon from '@mui/icons-material/Search';
+import LocalMallOutlinedIcon from '@mui/icons-material/LocalMallOutlined';
+import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
+import SettingsIcon from '@mui/icons-material/Settings';
+import MenuIcon from '@mui/icons-material/Menu';
+import CategoryNavMenu from '../../Domain/CategoryNavMenu.tsx';
+import { cartFromSlice, getFromLocalStorage, } from '../../../store/cart/cartSlice.ts';
+import { userRoleAdmin, userRoleClient, userRoleSuperAdmin } from '../../../globalConstants.ts';
+import ReactHtmlParser from 'html-react-parser';
+import IconButton from '@mui/joy/IconButton';
+import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
+import { fetchUserIdBonus } from '../../../store/users/usersThunk.ts';
+import Tooltip from '@mui/joy/Tooltip';
+import LocalShippingIcon from '@mui/icons-material/LocalShipping';
+import { selectedFavorite } from '../../../store/favoriteProducts/favoriteProductsSlice.ts';
+import { getLocalFavoriteProducts } from '../../../store/favoriteProducts/favoriteProductLocal.ts';
 
 const MainToolbar = () => {
   const [openCart, setOpenCart] = useState<boolean>(false);
@@ -51,6 +39,7 @@ const MainToolbar = () => {
   const user = useAppSelector(selectUser);
   const site = useAppSelector(selectEditSite);
   const cart = useAppSelector(cartFromSlice);
+  const favoriteProducts = useAppSelector(selectedFavorite);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const products = useAppSelector(selectProducts);
@@ -104,6 +93,8 @@ const MainToolbar = () => {
       acc = acc + i;
       return acc;
     }, 0);
+
+  const favorite = getLocalFavoriteProducts().length;
 
   return (
     <div>
@@ -568,25 +559,42 @@ const MainToolbar = () => {
                         />
                       </Box>
 
-                      <NavLink
+                      <Box
+                        component={NavLink}
                         to="/favorite-products"
-                        style={{ textDecoration: "none" }}
+                        sx={{
+                          backgroundColor: "#FDE910",
+                          padding: { xs: "10px", sm: "10px", md: "7px 20px" },
+                          borderRadius: { xs: "50%", md: "10px" },
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          cursor: "pointer",
+                          transition: "background 0.3s ease",
+                          position: "relative",
+                        }}
                       >
-                        <Box
+                        <FavoriteIcon
                           sx={{
-                            backgroundColor: "#FDE910",
-                            padding: "10px 20px",
-                            borderRadius: "10px",
-                            display: { xs: "none", md: "flex" },
-                            alignItems: "center",
-                            justifyContent: "center",
-                            cursor: "pointer",
-                            transition: "background 0.3s ease",
+                            color: "rgb(52, 51, 50)",
+                            "@media (max-width: 500px)": {
+                              fontSize: "20px",
+                            },
                           }}
-                        >
-                          <FavoriteIcon sx={{ color: "rgb(52, 51, 50)" }} />
-                        </Box>
-                      </NavLink>
+                        />
+                        <Badge
+                          badgeContent={user && user.role === userRoleClient ?
+                            favoriteProducts.length : favorite}
+                          overlap="circular"
+                          color="warning"
+                          sx={{
+                            position: user ? "absolute" : "static",
+                            top: user ? "10px" : undefined,
+                            right: user ? "17px" : undefined,
+                            backgroundColor: user ? "olive" : undefined,
+                          }}
+                        />
+                      </Box>
 
                       <Tooltip title="Мои бонусы">
                         <NavLink
@@ -678,7 +686,8 @@ const MainToolbar = () => {
                         style={{ textDecoration: "none" }}
                       >
                         <Badge
-                          badgeContent={sum}
+                          badgeContent={user && user.role === userRoleClient ?
+                            favoriteProducts.length : favorite}
                           overlap="circular"
                           color="warning"
                         >

@@ -8,7 +8,7 @@ import { selectUser } from '../../../store/users/usersSlice.ts';
 import { useNavigate, useParams } from 'react-router-dom';
 import { fetchCategoriesThunk } from '../../../store/categories/categoriesThunk.ts';
 import { selectCategories } from '../../../store/categories/categoriesSlice.ts';
-import { clearCart } from '../../../store/cart/cartSlice.ts';
+import { cartFromSlice, clearCart, getFromLocalStorage } from '../../../store/cart/cartSlice.ts';
 import { fetchCart } from '../../../store/cart/cartThunk.ts';
 import { userRoleClient } from '../../../globalConstants.ts';
 import Grid from '@mui/material/Grid2';
@@ -23,6 +23,7 @@ const AllProductsCardsPage = () => {
   const dispatch = useAppDispatch();
   const products = useAppSelector(selectProductsByCategory);
   const user = useAppSelector(selectUser);
+  const cart = useAppSelector(cartFromSlice);
   const { id } = useParams();
   const categories = useAppSelector(selectCategories);
   const navigate = useNavigate();
@@ -35,6 +36,8 @@ const AllProductsCardsPage = () => {
     if (user && user.role === userRoleClient) {
       dispatch(clearCart());
       dispatch(fetchCart());
+    } else {
+      dispatch(getFromLocalStorage());
     }
   }, [dispatch, user]);
 
@@ -233,7 +236,9 @@ const AllProductsCardsPage = () => {
           ) : (
             <Grid container sx={{ justifyContent: "space-evenly", gap: 2 }}>
               {products.map((product) => (
-                <ProductCard product={product} key={product.id} />
+                <>
+                  {cart && (<ProductCard product={product} key={product.id} cart={cart} />)}
+                </>
               ))}
             </Grid>
           )}

@@ -1,4 +1,4 @@
-import { ProductResponse } from '../../../../types';
+import { ICartBack, ProductResponse } from '../../../../types';
 import React from 'react';
 import { Box } from '@mui/joy';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -10,9 +10,11 @@ import ProductCard from '../../../../components/Domain/ProductCard/ProductCard.t
 
 interface Props {
   products: ProductResponse[];
+  // favoriteProduct: FavoritesResponse[];
+  cart: ICartBack;
 }
 
-const PromotionalProducts: React.FC<Props> = ({ products }) => {
+const PromotionalProducts: React.FC<Props> = ({ products, cart }) => {
   return (
     <Box
       sx={{
@@ -107,7 +109,7 @@ const PromotionalProducts: React.FC<Props> = ({ products }) => {
                 },
               }}
             >
-              <ProductCard product={product} />
+              <ProductCard product={product} cart={cart} key={product.id} />
             </Box>
           </SwiperSlide>
         ))}

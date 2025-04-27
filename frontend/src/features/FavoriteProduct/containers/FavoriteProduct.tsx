@@ -13,11 +13,14 @@ import { ProductResponse } from '../../../types';
 import image from '../../../assets/image_transparent.png';
 import { useNavigate } from 'react-router-dom';
 import ProductCard from '../../../components/Domain/ProductCard/ProductCard.tsx';
-
+import { cartFromSlice, getFromLocalStorage } from '../../../store/cart/cartSlice.ts';
+import { userRoleClient } from '../../../globalConstants.ts';
+import { fetchCart } from '../../../store/cart/cartThunk.ts';
 
 const FavoriteProduct = () => {
   const dispatch = useAppDispatch();
   const favorites = useAppSelector(selectedFavorite);
+  const cart = useAppSelector(cartFromSlice);
   const user = useAppSelector(selectUser);
   const [localFavorites, setLocalFavorites] = useState<ProductResponse[]>([]);
   const navigate = useNavigate();
@@ -43,6 +46,15 @@ const FavoriteProduct = () => {
       void fetchLocalFavorites();
     }
   }, [user, dispatch]);
+
+  useEffect(() => {
+    if (user && user.role === userRoleClient) {
+      dispatch(fetchCart()).unwrap();
+    } else {
+      dispatch(getFromLocalStorage());
+    }
+  }, [dispatch, user]);
+
   return (
     <Box>
       <Breadcrumbs aria-label="breadcrumb" sx={{ margin: '20px 0' }}>
@@ -91,7 +103,7 @@ const FavoriteProduct = () => {
           ) : (
             favorites.map((fav) => (
               <Box key={fav.id}>
-                <ProductCard product={fav.product} />
+                {cart && (<ProductCard product={fav.product} cart={cart} />)}
               </Box>
             ))
           )
@@ -115,7 +127,7 @@ const FavoriteProduct = () => {
         ) : (
           localFavorites.map((item) => (
             <Box key={item.id}>
-              <ProductCard product={item} />
+              {cart && (<ProductCard product={item} cart={cart} />)}
             </Box>
           ))
         )}

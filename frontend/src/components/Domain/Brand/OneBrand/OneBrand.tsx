@@ -1,5 +1,5 @@
 import React from 'react';
-import { IBrandForm, ProductResponse } from '../../../../types';
+import { IBrandForm, ICartBack, ProductResponse } from '../../../../types';
 import { Box, Typography } from '@mui/joy';
 import { apiUrl } from '../../../../globalConstants';
 import ReactHtmlParser from 'html-react-parser';
@@ -9,9 +9,10 @@ import ProductCard from '../../ProductCard/ProductCard.tsx';
 interface Props {
   brand: IBrandForm;
   products: ProductResponse[];
+  cart: ICartBack;
 }
 
-const OneBrand:React.FC<Props> = ({ brand, products }) => {
+const OneBrand:React.FC<Props> = ({ brand, products, cart }) => {
   return (
     <>
       <Box sx={{ position: 'relative', overflow: 'hidden', marginTop: '60px' }}>
@@ -92,7 +93,7 @@ const OneBrand:React.FC<Props> = ({ brand, products }) => {
             gap: '20px',
           }}>
             {products.map((product) => (
-              <ProductCard key={product.id} product={product}/>
+              <ProductCard key={product.id} product={product} cart={cart}/>
             ))}
           </Box>
         </Box>

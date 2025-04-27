@@ -2,61 +2,60 @@ import { Badge, Box, Card, CardMedia, IconButton, Typography } from '@mui/materi
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import { apiUrl, userRoleAdmin, userRoleClient, userRoleSuperAdmin } from '../../../globalConstants.ts';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
-import { ProductResponse } from '../../../types';
+import { ICartBack, ProductResponse } from '../../../types';
 import React, { useEffect, useState } from 'react';
-import { addItem, fetchCart } from '../../../store/cart/cartThunk.ts';
-import { cartFromSlice, newUserLogin, productCardToAdd, setToLocalStorage } from '../../../store/cart/cartSlice.ts';
-import { enqueueSnackbar } from 'notistack';
-import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
-import { selectUser } from '../../../store/users/usersSlice.ts';
 import {
   addFavoriteProduct,
   getLocalFavoriteProducts,
   removeFavoriteProduct
 } from '../../../store/favoriteProducts/favoriteProductLocal.ts';
-import {
-  addFavoriteProducts,
-  getFavoriteProducts,
-  removeFavoriteProductThunk
-} from '../../../store/favoriteProducts/favoriteProductsThunks.ts';
-import { selectedFavorite } from '../../../store/favoriteProducts/favoriteProductsSlice.ts';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { AnimatePresence, motion } from 'framer-motion';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { COLORS, FONTS, SPACING } from '../../../globalStyles/stylesObjects.ts';
 import { Tooltip } from '@mui/joy';
 import dayjs from 'dayjs';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
+import { enqueueSnackbar } from 'notistack';
+import {
+  addFavoriteProducts,
+  removeFavoriteProductThunk
+} from '../../../store/favoriteProducts/favoriteProductsThunks.ts';
+import { addItem, fetchCart } from '../../../store/cart/cartThunk.ts';
+import { newUserLogin, productCardToAdd } from '../../../store/cart/cartSlice.ts';
+import { selectUser } from '../../../store/users/usersSlice.ts';
+import { selectedFavorite } from '../../../store/favoriteProducts/favoriteProductsSlice.ts';
 
 interface Props {
   product: ProductResponse;
+  cart: ICartBack;
 }
 
-const ProductCard:React.FC<Props> = ({ product }) => {
+const ProductCard:React.FC<Props> = ({ product, cart }) => {
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const [showAddAnimation, setShowAddAnimation] = useState<boolean>(false);
   const user = useAppSelector(selectUser);
-  const cart = useAppSelector(cartFromSlice);
-  const favoriteProduct = useAppSelector(selectedFavorite);
+  const favoriteProducts = useAppSelector(selectedFavorite);
   const dispatch = useAppDispatch();
 
   const toggleFavorite = (id: number) => {
     const newValue = !isFavorite;
     setIsFavorite(newValue);
 
-    if (!user) {
-      if (newValue) {
-        addFavoriteProduct(id);
-        enqueueSnackbar("Добавлено в избранное", { variant: "success" });
-      } else {
-        removeFavoriteProduct(id);
-        enqueueSnackbar("Удалено из избранного", { variant: "info" });
-      }
-    } else {
+    if (user && user.role === userRoleClient) {
       if (newValue) {
         dispatch(addFavoriteProducts(id));
         enqueueSnackbar("Добавлено в избранное", { variant: "success" });
       } else {
         dispatch(removeFavoriteProductThunk(id));
+        enqueueSnackbar("Удалено из избранного", { variant: "info" });
+      }
+    } else {
+      if (newValue) {
+        addFavoriteProduct(id);
+        enqueueSnackbar("Добавлено в избранное", { variant: "success" });
+      } else {
+        removeFavoriteProduct(id);
         enqueueSnackbar("Удалено из избранного", { variant: "info" });
       }
     }
@@ -67,7 +66,7 @@ const ProductCard:React.FC<Props> = ({ product }) => {
 
     setTimeout(() => {
       setShowAddAnimation(false);
-    }, 1000);
+    }, 800);
 
     if (user && (user.role === userRoleClient) && cart) {
       await dispatch(
@@ -94,20 +93,16 @@ const ProductCard:React.FC<Props> = ({ product }) => {
     }
   };
 
-  useEffect(() => {
-    dispatch(setToLocalStorage(cart));
-
-    if (user) {
-      dispatch(getFavoriteProducts());
-    }
-  }, [dispatch, cart, user]);
-
   const cartItem = cart?.products.find((item) => item.product.id === product.id);
   const quantityInCart = cartItem ? cartItem.quantity : 0;
 
-  const isProductFavorite = user
-    ? favoriteProduct.some((fav) => fav.id === product.id)
-    : getLocalFavoriteProducts().some((fav) => fav === product.id);
+  useEffect(() => {
+    const isFav = user
+      ? favoriteProducts.some((fav) => fav.product.id === product.id)
+      : getLocalFavoriteProducts().includes(product.id);
+
+    setIsFavorite(isFav);
+  }, [user, favoriteProducts, product.id]);
 
   return (
     <Card
@@ -150,15 +145,32 @@ const ProductCard:React.FC<Props> = ({ product }) => {
       )}
 
       <Box sx={{position: 'absolute', top: 8, right: 8}}>
-        {isProductFavorite ?
-          <IconButton onClick={() => toggleFavorite(product.id)}>
-            <FavoriteIcon color="error"/>
-          </IconButton>
-          :
-          <IconButton onClick={() => toggleFavorite(product.id)}>
-            <FavoriteBorderOutlinedIcon/>
-          </IconButton>
+        {user && (user.role === userRoleAdmin || user.role === userRoleSuperAdmin) ?
+          <Tooltip
+            title={'Вы не можете добавлять товар в избранные'}
+            placement="bottom-start"
+            variant="plain"
+            sx={{color: COLORS.white, backgroundColor: COLORS.yellow}}
+          >
+             <span>
+               <IconButton disabled>
+                 <FavoriteBorderOutlinedIcon/>
+               </IconButton>
+             </span>
+          </Tooltip> :
+          <>
+            {isFavorite ?
+              <IconButton onClick={() => toggleFavorite(product.id)}>
+                <FavoriteIcon color="error"/>
+              </IconButton>
+              :
+              <IconButton onClick={() => toggleFavorite(product.id)}>
+                <FavoriteBorderOutlinedIcon/>
+              </IconButton>
+            }
+          </>
         }
+
       </Box>
 
       <a
