@@ -1,14 +1,12 @@
 import { Box } from '@mui/joy';
 import { useAppDispatch, useAppSelector } from '../../app/hooks.ts';
-import Carts from '../../components/Domain/CustomCart/Basket/Carts/Carts.tsx';
 import { Container } from '@mui/material';
 import image from '../../assets/image_transparent.png';
 import Typography from '@mui/joy/Typography';
 import OrderForm from '../Order/OrderForm.tsx';
-import { cartFromSlice, clearCart, setToLocalStorage } from '../../store/cart/cartSlice.ts';
+import { cartFromSlice, setToLocalStorage } from '../../store/cart/cartSlice.ts';
 import { selectUser } from '../../store/users/usersSlice.ts';
-import { enqueueSnackbar } from 'notistack';
-import { deleteItemsCart, fetchCart } from '../../store/cart/cartThunk.ts';
+import { fetchCart } from '../../store/cart/cartThunk.ts';
 import { useEffect } from 'react';
 import { userRoleClient } from '../../globalConstants.ts';
 
@@ -23,16 +21,6 @@ const CartPage = () => {
     }
   }, [dispatch, user]);
 
-  const deleteAllProducts = async () => {
-    if (user && (user.role === userRoleClient) && cart) {
-      await dispatch(deleteItemsCart({cartId: cart.id})).unwrap();
-      await dispatch(fetchCart()).unwrap();
-    } else {
-      dispatch(clearCart());
-    }
-    enqueueSnackbar("Корзина успешно очищена!", { variant: "success" });
-  };
-
   useEffect(() => {
     if (user && (user.role === userRoleClient)) {
       dispatch(setToLocalStorage(cart));
@@ -40,7 +28,7 @@ const CartPage = () => {
   }, [dispatch, cart, user]);
 
   return (
-    <Container>
+    <Container maxWidth="xl">
       {cart && cart.products.length > 0 ? (
         <>
           <Typography
@@ -61,7 +49,6 @@ const CartPage = () => {
             }}
           >
             <Box>
-              <Carts products={cart.products} deleteAllProduct={() => deleteAllProducts()}/>
               <OrderForm/>
             </Box>
 
