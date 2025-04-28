@@ -515,7 +515,7 @@ export class ProductsService {
     return products;
   }
 
-  async getFilteredProducts(categoryId: number, filters: any) {
+  async getFilteredProducts(categoryId: number | undefined, filters: any) {
     const {
       brands,
       sizes,
@@ -530,16 +530,19 @@ export class ProductsService {
     } = filters;
 
     // Строим условия WHERE для фильтрации
-    const whereConditions: any = {
-      OR: [
+    const whereConditions: any = {};
+
+    // Если передан `categoryId`, добавляем условие фильтрации по категории
+    if (categoryId) {
+      whereConditions.OR = [
         { categoryId },
         {
           category: {
             parentId: categoryId,
           },
         },
-      ],
-    };
+      ];
+    }
 
     // Фильтрация по бренду
     if (brands) {

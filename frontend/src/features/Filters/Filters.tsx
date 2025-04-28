@@ -4,7 +4,11 @@ import { useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { selectProductsByCategory } from '../../store/products/productsSlice';
 import axiosApi from '../../axiosApi';
-import { getFilteredProducts, getProductsByCategory } from '../../store/products/productsThunk';
+import {
+  getFilteredProducts,
+  getFilteredProductsWithoutCategory,
+  getProductsByCategory
+} from '../../store/products/productsThunk';
 
 // Интерфейс для опций фильтров
 interface FilterOptions {
@@ -190,68 +194,36 @@ const Filters = () => {
   };
   
   // Применение фильтров
+  // Применение фильтров
   const applyFilters = (filters = selectedFilters) => {
-    if (!id) return;
-    
-    // Формируем объект с фильтрами для запроса
     const filtersToApply: Record<string, any> = {};
-    
-    // Добавляем выбранные бренды
-    if (filters.brands.length > 0) {
-      filtersToApply.brands = filters.brands;
+
+    if (filters.brands.length > 0) filtersToApply.brands = filters.brands;
+    if (filters.sizes.length > 0) filtersToApply.sizes = filters.sizes;
+    if (filters.ages.length > 0) filtersToApply.ages = filters.ages;
+    if (filters.weights.length > 0) filtersToApply.weights = filters.weights;
+    if (filters.foodClasses.length > 0) filtersToApply.foodClasses = filters.foodClasses;
+    if (filters.manufacturers.length > 0) filtersToApply.manufacturers = filters.manufacturers;
+    if (filters.existence !== null) filtersToApply.existence = filters.existence;
+    if (filters.sales !== null) filtersToApply.sales = filters.sales;
+
+    if (filters.minPrice !== null) filtersToApply.minPrice = filters.minPrice;
+    if (filters.maxPrice !== null) filtersToApply.maxPrice = filters.maxPrice;
+
+    // Если передан ID категории — фильтруем по категории, в противном случае — по всем товарам
+    if (id) {
+      // Фильтрация товаров в категории
+      dispatch(getFilteredProducts({
+        categoryId: Number(id),
+        filters: filtersToApply
+      }));
+    } else {
+      // Фильтрация всех товаров
+      dispatch(getFilteredProductsWithoutCategory(filtersToApply));
     }
-    
-    // Добавляем выбранные размеры
-    if (filters.sizes.length > 0) {
-      filtersToApply.sizes = filters.sizes;
-    }
-    
-    // Добавляем выбранные возрасты
-    if (filters.ages.length > 0) {
-      filtersToApply.ages = filters.ages;
-    }
-    
-    // Добавляем выбранные веса
-    if (filters.weights.length > 0) {
-      filtersToApply.weights = filters.weights;
-    }
-    
-    // Добавляем выбранные классы корма
-    if (filters.foodClasses.length > 0) {
-      filtersToApply.foodClasses = filters.foodClasses;
-    }
-    
-    // Добавляем выбранных производителей
-    if (filters.manufacturers.length > 0) {
-      filtersToApply.manufacturers = filters.manufacturers;
-    }
-    
-    // Добавляем фильтр по наличию
-    if (filters.existence !== null) {
-      filtersToApply.existence = filters.existence;
-    }
-    
-    // Добавляем фильтр по акциям
-    if (filters.sales !== null) {
-      filtersToApply.sales = filters.sales;
-    }
-    
-    // Добавляем диапазон цен
-    if (priceRange[0] > 0) {
-      filtersToApply.minPrice = priceRange[0];
-    }
-    
-    if (priceRange[1] < 5000) {
-      filtersToApply.maxPrice = priceRange[1];
-    }
-    
-    // Отправляем действие для фильтрации продуктов
-    dispatch(getFilteredProducts({
-      categoryId: Number(id),
-      filters: filtersToApply
-    }));
   };
-  
+
+
   // Сброс фильтров
   const resetFilters = () => {
     setSelectedFilters({

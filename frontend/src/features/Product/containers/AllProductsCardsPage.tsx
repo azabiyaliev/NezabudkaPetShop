@@ -140,13 +140,14 @@ const AllProductsCardsPage = () => {
                   alignItems: 'center',
                   justifyContent: 'center',
                   cursor: 'pointer',
+                  padding: '10px',
                   transition: 'transform 0.3s ease',
                   transform: isExpanded ? 'rotate(90deg)' : 'rotate(0deg)',
                 }}
               >
                 <ArrowDropDownOutlinedIcon
                   sx={{
-                    fontSize: FONTS.size.lg,
+                    fontSize: FONTS.size.xxl,
                     color: isSelected ? COLORS.primary : COLORS.text,
                   }}
                 />

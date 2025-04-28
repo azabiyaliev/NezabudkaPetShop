@@ -154,18 +154,16 @@ export const getProductsByCategory = createAsyncThunk<ProductResponse[], number>
 
 export const getFilteredProducts = createAsyncThunk<
   ProductResponse[],
-  { categoryId: number; filters: Record<string, any> }
+  { categoryId?: number; filters: Record<string, any> }
 >(
   "products/getFilteredProducts",
   async ({ categoryId, filters }) => {
-    // Конвертируем фильтры в параметры запроса
     const params = new URLSearchParams();
-    
-    // Добавляем параметры фильтрации
+
+    // Применяем фильтры к запросу
     Object.entries(filters).forEach(([key, value]) => {
       if (value !== null && value !== undefined) {
         if (Array.isArray(value) && value.length > 0) {
-          // Для массивов добавляем каждый элемент с одинаковым ключом
           value.forEach((item) => {
             params.append(key, item.toString());
           });
@@ -176,12 +174,26 @@ export const getFilteredProducts = createAsyncThunk<
         }
       }
     });
-    
-    // Выполняем запрос с параметрами фильтрации
-    const products = await axiosApi<ProductResponse[]>(
-      `products/productsByCategory/${categoryId}?${params.toString()}`
-    );
-    
+
+    // Если категория есть, фильтруем по ней, иначе получаем все продукты
+    const url = categoryId
+      ? `products/productsByCategory/${categoryId}?${params.toString()}`
+      : `products/products?${params.toString()}`; // Получаем все продукты
+
+    const products = await axiosApi<ProductResponse[]>(url);
     return products.data || [];
   }
 );
+
+export const getFilteredProductsWithoutCategory = createAsyncThunk(
+  'products/getFilteredProductsWithoutCategory',
+  async (filters: Record<string, any>, thunkAPI) => {
+    try {
+      const response = await axiosApi.post('/products/filter/all', filters);
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
