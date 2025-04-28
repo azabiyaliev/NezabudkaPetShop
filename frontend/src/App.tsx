@@ -192,6 +192,7 @@ const App = () => {
           <Route path="*" element={<ErrorPage/>}/>
           <Route path="/product/:id" element={<ProductPage />} />
           <Route path="/brand/:id" element={<BrandPage />} />
+          <Route path="/all-products" element={<AllProductsCardsPage />} />
           <Route path="/all-products/:id" element={<AllProductsCardsPage />} />
           <Route path="/admin-create" element={
             <ProtectedRoute isAllowed={user && can(["superAdmin"])}>
