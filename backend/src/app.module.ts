@@ -44,6 +44,7 @@ import { BonusPageController } from './bonus_program_page/bonus_program_pg.contr
 import { DeliveryPageModule } from './delivery_page/delivery_page.module';
 import { DeliveryPageController } from './delivery_page/delivery_page.conrtoller';
 import { DeliveryPageService } from './delivery_page/delivery_page.service';
+import { CommonModule } from './common/common.module';
 
 @Module({
   imports: [
@@ -66,6 +67,7 @@ import { DeliveryPageService } from './delivery_page/delivery_page.service';
     CartItemsModule,
     BonusPageModule,
     DeliveryPageModule,
+    CommonModule,
   ],
   controllers: [
     AppController,

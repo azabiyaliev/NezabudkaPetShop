@@ -13,13 +13,15 @@ import {
 import { PhotoByCarouselDto } from '../dto/photoCarousel.dto';
 import { PhotoCarouselService } from './photo_carousel.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
-import * as crypto from 'crypto';
+import { memoryStorage } from 'multer';
+import { ImageProcessorService, RESIZE_PRESETS } from '../common/image-processor.service';
 
 @Controller('photos')
 export class PhotoCarouselController {
-  constructor(private readonly photoCarouselService: PhotoCarouselService) {}
+  constructor(
+    private readonly photoCarouselService: PhotoCarouselService,
+    private readonly imageProcessorService: ImageProcessorService,
+  ) {}
 
   @Get()
   async getPhotos() {
@@ -29,21 +31,20 @@ export class PhotoCarouselController {
   @Post()
   @UseInterceptors(
     FileInterceptor('photo', {
-      storage: diskStorage({
-        destination: './public/photo_carousel',
-        filename: (_req, file, callback) => {
-          const imageFormat = extname(file.originalname);
-          callback(null, `${crypto.randomUUID()}${imageFormat}`);
-        },
-      }),
+      storage: memoryStorage(),
     }),
   )
   async createPhoto(
     @Body() photoDto: PhotoByCarouselDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    if (file && file.filename) {
-      photoDto.photo = '/photo_carousel/' + file.filename;
+    if (file) {
+      const photoPath = await this.imageProcessorService.convertToWebP(
+        file,
+        './public/photo_carousel',
+        'CAROUSEL'
+      );
+      photoDto.photo = photoPath;
     }
     return await this.photoCarouselService.createPhoto(photoDto);
   }
@@ -51,13 +52,7 @@ export class PhotoCarouselController {
   @Put(':id')
   @UseInterceptors(
     FileInterceptor('photo', {
-      storage: diskStorage({
-        destination: './public/photo_carousel',
-        filename: (_req, file, callback) => {
-          const imageFormat = extname(file.originalname);
-          callback(null, `${crypto.randomUUID()}${imageFormat}`);
-        },
-      }),
+      storage: memoryStorage(),
     }),
   )
   async updatePhoto(
@@ -65,6 +60,14 @@ export class PhotoCarouselController {
     @Body() photoDto: PhotoByCarouselDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
+    if (file) {
+      const photoPath = await this.imageProcessorService.convertToWebP(
+        file,
+        './public/photo_carousel',
+        'CAROUSEL'
+      );
+      photoDto.photo = photoPath;
+    }
     return await this.photoCarouselService.updatePhoto(id, photoDto, file);
   }
 
