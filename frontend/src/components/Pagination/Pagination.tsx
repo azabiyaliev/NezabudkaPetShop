@@ -5,11 +5,12 @@ interface PaginationProps<T> {
   items: T[];
   renderItem: (item: T) => React.ReactNode;
   columns?: number;
+  rows?: number;
 }
 
-const CustomPagination = <T,>({ items, renderItem, columns = 1 }: PaginationProps<T>) => {
+const CustomPagination = <T,>({ items, renderItem, columns = 1, rows = 5 }: PaginationProps<T>) => {
   const [page, setPage] = useState(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = columns * rows;
 
   const pageCount = Math.ceil(items.length / itemsPerPage);
   const paginatedItems = items.slice((page - 1) * itemsPerPage, page * itemsPerPage);
