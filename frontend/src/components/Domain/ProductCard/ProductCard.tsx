@@ -203,7 +203,7 @@ const ProductCard:React.FC<Props> = ({ product, cart }) => {
             color: 'inherit',
             cursor: 'pointer',
             margin: SPACING.xs,
-            height: '80px',
+            height: '75px',
           }}
         >
           <Typography
@@ -227,6 +227,7 @@ const ProductCard:React.FC<Props> = ({ product, cart }) => {
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'end',
+            height: '50px',
           }}
         >
           <Box>
