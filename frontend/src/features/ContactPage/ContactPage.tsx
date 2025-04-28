@@ -112,7 +112,6 @@ const ContactPage = () => {
               style={{
                 position: "absolute",
                 top: "-60px",
-                left: "-60px",
                 border: 0,
               }}
               allowFullScreen

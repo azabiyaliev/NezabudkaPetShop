@@ -78,8 +78,7 @@ const DeliveryPage = () => {
                   height="600px"
                   style={{
                     position: 'absolute',
-                    top: '-60px',
-                    left: '-60px',
+                    top: '-70px',
                     border: 0,
                   }}
                   allowFullScreen
