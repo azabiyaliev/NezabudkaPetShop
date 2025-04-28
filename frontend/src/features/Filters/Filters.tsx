@@ -131,50 +131,49 @@ const Filters = () => {
   }, [id]);
   
   // Обработчик изменения чекбоксов фильтров
-  const handleFilterChange = (filterType: keyof SelectedFilters, value: any) => {
+
+  const handleFilterChange = (filterType: keyof SelectedFilters, value: string | boolean | number | null) => {
     setSelectedFilters(prev => {
-      const currentValues = prev[filterType] as any[];
-      
-      let updatedFilters;
+      const currentValues = prev[filterType];
+
+      let updatedFilters: SelectedFilters;
+
       if (Array.isArray(currentValues)) {
-        // Если значение уже выбрано - удаляем его, иначе добавляем
+        const arrayValues = currentValues as string[];
+
         updatedFilters = {
           ...prev,
-          [filterType]: currentValues.includes(value)
-            ? currentValues.filter(v => v !== value)
-            : [...currentValues, value]
-        };
+          [filterType]: arrayValues.includes(value as string)
+            ? arrayValues.filter(v => v !== value)
+            : [...arrayValues, value as string],
+        } as SelectedFilters;
       } else {
-        // Для булевых фильтров (existence, sales)
         updatedFilters = {
           ...prev,
-          [filterType]: value
+          [filterType]: value as boolean | number | null,
         };
       }
-
-      // Автоматически применяем фильтры после обновления состояния
       setTimeout(() => applyFilters(updatedFilters), 0);
-      
+
       return updatedFilters;
     });
   };
-  
+
   // Обработчик изменения диапазона цен
-  const handlePriceChange = (event: Event, newValue: number | number[]) => {
+  const handlePriceChange = (_event: Event, newValue: number | number[]) => {
     if (Array.isArray(newValue)) {
       setPriceRange(newValue as [number, number]);
-      
-      // Автоматически применяем фильтры при изменении ценового диапазона
+
       const updatedFilters = {
         ...selectedFilters,
         minPrice: newValue[0],
         maxPrice: newValue[1]
       };
-      
+
       setTimeout(() => applyFilters(updatedFilters), 300);
     }
   };
-  
+
   // Обработчик изменения полей ввода цен
   const handlePriceInputChange = (type: 'min' | 'max', value: number) => {
     if (type === 'min') {
@@ -192,11 +191,13 @@ const Filters = () => {
     
     setTimeout(() => applyFilters(updatedFilters), 500);
   };
-  
-  // Применение фильтров
-  // Применение фильтров
-  const applyFilters = (filters = selectedFilters) => {
-    const filtersToApply: Record<string, any> = {};
+
+  type FiltersToApply = Partial<Pick<SelectedFilters,
+    'brands' | 'sizes' | 'ages' | 'weights' | 'foodClasses' | 'manufacturers' | 'existence' | 'sales' | 'minPrice' | 'maxPrice'
+  >>;
+
+  const applyFilters = (filters: SelectedFilters = selectedFilters) => {
+    const filtersToApply: FiltersToApply = {};
 
     if (filters.brands.length > 0) filtersToApply.brands = filters.brands;
     if (filters.sizes.length > 0) filtersToApply.sizes = filters.sizes;
@@ -210,19 +211,15 @@ const Filters = () => {
     if (filters.minPrice !== null) filtersToApply.minPrice = filters.minPrice;
     if (filters.maxPrice !== null) filtersToApply.maxPrice = filters.maxPrice;
 
-    // Если передан ID категории — фильтруем по категории, в противном случае — по всем товарам
     if (id) {
-      // Фильтрация товаров в категории
       dispatch(getFilteredProducts({
         categoryId: Number(id),
         filters: filtersToApply
       }));
     } else {
-      // Фильтрация всех товаров
       dispatch(getFilteredProductsWithoutCategory(filtersToApply));
     }
   };
-
 
   // Сброс фильтров
   const resetFilters = () => {
