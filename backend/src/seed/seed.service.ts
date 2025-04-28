@@ -147,7 +147,7 @@ export class SeedService {
         phone: '+(996)500-430-481',
         linkAddress: 'https://go.2gis.com/ZA3mL',
         mapGoogleLink:
-          'https://www.google.com/maps/d/u/0/embed?mid=13x6QctVrCI831zyl84NAk4f4rI6LUDI&usp=sharing',
+          'https://www.google.com/maps/d/u/0/embed?mid=13x6QctVrCI831zyl84NAk4f4rI6LUDI&ehbc=2E312F&noprof=1',
       },
     });
 
