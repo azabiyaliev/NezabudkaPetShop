@@ -1,4 +1,4 @@
-import { Box, Collapse, Container, ListItemButton, Typography } from '@mui/material';
+import { Box, Collapse, ListItemButton, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
 import { getProducts, getProductsByCategory, } from '../../../store/products/productsThunk.ts';
@@ -235,7 +235,6 @@ const AllProductsCardsPage = () => {
   };
 
   return (
-    <Container>
       <Grid container spacing={2} sx={{mt: 4}}>
         <Grid size={3}>
           <Box  sx={{
@@ -291,19 +290,23 @@ const AllProductsCardsPage = () => {
             );
           })()}
 
-          {!id && (
-            <Typography
-              variant="h4"
-              sx={{
-                mt: 2,
-                mb: 4,
-                textAlign: "center",
-                fontWeight: FONTS.weight.bold,
-              }}
-            >
-              Все товары
-            </Typography>
-          )}
+          <Typography
+            variant="h4"
+            sx={{
+              mt: 2,
+              mb: 4,
+              textAlign: "center",
+              fontWeight: FONTS.weight.bold,
+            }}
+          >
+            {id ? (() => {
+              const category = categories.find((cat) => cat.id === selectedId);
+              const parent = categories.find((cat) =>
+                cat.subcategories?.some((sub) => sub.id === selectedId)
+              );
+              return (parent || category)?.title || '';
+            })() : 'Все товары'}
+          </Typography>
 
           {products.length === 0 ? (
             <Typography textAlign="center" mt={4} color="text.secondary">
@@ -320,7 +323,6 @@ const AllProductsCardsPage = () => {
           )}
         </Grid>
       </Grid>
-    </Container>
   );
 };
 

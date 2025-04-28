@@ -8,7 +8,7 @@ interface PaginationProps<T> {
   rows?: number;
 }
 
-const CustomPagination = <T,>({ items, renderItem, columns = 1, rows = 5 }: PaginationProps<T>) => {
+const CustomPagination = <T,>({ items, renderItem, columns = 3, rows = 5 }: PaginationProps<T>) => {
   const [page, setPage] = useState(1);
   const itemsPerPage = columns * rows;
 
@@ -19,14 +19,12 @@ const CustomPagination = <T,>({ items, renderItem, columns = 1, rows = 5 }: Pagi
     <Box mt={3}>
       <Box
         sx={{
-          display: 'grid',
-          gridTemplateColumns: `repeat(${columns}, 1fr)`,
-          gap: 3,
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: '15px',
         }}
       >
-        {paginatedItems.map((item, index) => (
-          <div key={index}>{renderItem(item)}</div>
-        ))}
+        {paginatedItems.map((item) => renderItem(item))}
       </Box>
       <Box mt={3} display="flex" justifyContent="center">
         <Pagination
