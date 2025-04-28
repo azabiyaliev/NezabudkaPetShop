@@ -1,4 +1,4 @@
-import { Box, Collapse, Container, Divider, ListItemButton, Typography } from '@mui/material';
+import { Box, Collapse, Container, ListItemButton, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
 import { getProducts, getProductsByCategory, } from '../../../store/products/productsThunk.ts';
@@ -18,6 +18,7 @@ import { ICategories, Subcategory } from '../../../types';
 import ArrowDropDownOutlinedIcon from '@mui/icons-material/ArrowDropDownOutlined';
 import { alpha } from '@mui/material/styles';
 import { COLORS, FONTS, SPACING } from '../../../globalStyles/stylesObjects.ts';
+import CustomPagination from '../../../components/Pagination/Pagination.tsx';
 
 const AllProductsCardsPage = () => {
   const dispatch = useAppDispatch();
@@ -130,7 +131,10 @@ const AllProductsCardsPage = () => {
           <Box sx={{ display: 'flex', alignItems: 'center', gap: SPACING.sm, flexGrow: 1 }}>
             {hasSubcategories && toggleSubcategories && (
               <Box
-                onClick={toggleSubcategories}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleSubcategories(e);
+                }}
                 sx={{
                   display: 'flex',
                   alignItems: 'center',
@@ -306,11 +310,13 @@ const AllProductsCardsPage = () => {
               {id ? 'Товары в данной категории отсутствуют.' : 'Товары отсутствуют.'}
             </Typography>
           ) : (
-            <Grid container sx={{ justifyContent: "space-evenly", gap: 2 }}>
-              {cart && products.map((product) => (
+            <CustomPagination
+              items={products}
+              columns={3}
+              renderItem={(product) => (
                 <ProductCard product={product} key={product.id} cart={cart} />
-              ))}
-            </Grid>
+              )}
+            />
           )}
         </Grid>
       </Grid>
