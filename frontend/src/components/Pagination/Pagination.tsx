@@ -8,7 +8,7 @@ interface PaginationProps<T> {
   rows?: number;
 }
 
-const CustomPagination = <T,>({ items, renderItem, columns = 3, rows = 5 }: PaginationProps<T>) => {
+const CustomPagination = <T,>({ items, renderItem, columns = 4, rows = 5 }: PaginationProps<T>) => {
   const [page, setPage] = useState(1);
   const itemsPerPage = columns * rows;
 
@@ -19,8 +19,8 @@ const CustomPagination = <T,>({ items, renderItem, columns = 3, rows = 5 }: Pagi
     <Box mt={3}>
       <Box
         sx={{
-          display: 'flex',
-          flexWrap: 'wrap',
+          display: 'grid',
+          gridTemplateColumns: `repeat(${columns}, 1fr)`,
           gap: '15px',
           justifyContent: 'center',
         }}

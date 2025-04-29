@@ -316,7 +316,7 @@ const AllProductsCardsPage = () => {
           ) : (
             <CustomPagination
               items={products}
-              columns={3}
+              columns={4}
               renderItem={(product) => (
                 <ProductCard product={product} key={product.id} cart={cart} />
               )}
