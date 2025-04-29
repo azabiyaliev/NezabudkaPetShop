@@ -161,7 +161,7 @@ export class SeedService {
       {
         photo: '/fixtures/editionSitePhoto/animal2.jpg',
         link: 'https://example.com/photo2.jpg',
-        title: 'Игрушки для питомцев',
+        title: 'Игрушки',
         description: 'Развлечение и забота о вашем любимце каждый день',
       },
       {
@@ -179,7 +179,7 @@ export class SeedService {
       {
         photo: '/fixtures/editionSitePhoto/animal5.jpg',
         link: 'https://example.com/photo5.jpg',
-        title: 'Уход за шерстью',
+        title: 'Уход',
         description: 'Щётки, шампуни и средства для здоровой шерсти',
       },
     ];
