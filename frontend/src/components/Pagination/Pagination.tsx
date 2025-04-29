@@ -22,6 +22,7 @@ const CustomPagination = <T,>({ items, renderItem, columns = 3, rows = 5 }: Pagi
           display: 'flex',
           flexWrap: 'wrap',
           gap: '15px',
+          justifyContent: 'center',
         }}
       >
         {paginatedItems.map((item) => renderItem(item))}
