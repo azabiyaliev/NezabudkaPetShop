@@ -1,6 +1,6 @@
 import { useAppDispatch, useAppSelector } from '../../app/hooks.ts';
 import { selectUser } from '../../store/users/usersSlice.ts';
-import { useEffect, useState } from 'react';
+import  { useEffect, useState } from 'react';
 import { GetClientOrders, GetGuestOrders, transferGuestOrders } from '../../store/orders/ordersThunk.ts';
 import { Alert, Box, CircularProgress, Container, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import Typography from '@mui/material/Typography';
@@ -8,6 +8,9 @@ import { IOrder } from '../../types';
 import dayjs from 'dayjs';
 import CustomPagination from '../../components/Pagination/Pagination.tsx';
 import ClientOrdersItem from './ClientOrdersItem.tsx';
+import { NavLink } from 'react-router-dom';
+import { COLORS, FONTS } from '../../globalStyles/stylesObjects.ts';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const MyOrders = () => {
   const dispatch = useAppDispatch();
@@ -18,6 +21,7 @@ const MyOrders = () => {
   const guestEmail = localStorage.getItem('guestEmail');
   const [statusFilter, setStatusFilter] = useState<string>('All');
   const [timeFilter, setTimeFilter] = useState<string>('All');
+
 
   useEffect(() => {
     const loadOrders = async () => {
@@ -100,7 +104,11 @@ const MyOrders = () => {
   }
 
   return (
-    <Box sx={{my: 5, display: 'flex', flexDirection: 'column', gap: '20px', alignItems: 'center'}}>
+    <Box sx={{my: 5, display: 'flex', flexDirection: 'column', gap: '20px', alignItems: 'center', position: 'relative'}}>
+      <NavLink to={`/my_account/users/account/${user?.id}`} style={{position: 'absolute', left: 1, textDecoration: 'none', color: COLORS.success, fontSize: FONTS.size.lg, display: 'flex', alignItems: 'center'}}>
+        <ArrowBackIcon sx={{fontSize: FONTS.size.lg, marginRight: 1}}/>
+        Назад
+      </NavLink>
       <Typography variant="h4" gutterBottom>
         Мои заказы
       </Typography>
