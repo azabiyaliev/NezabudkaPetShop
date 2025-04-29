@@ -11,6 +11,7 @@ import { useAppSelector } from '../../../app/hooks.ts';
 import CartProduct from './CartProduct.tsx';
 import imageCart from '../../../assets/image_transparent.png';
 import { cartFromSlice } from '../../../store/cart/cartSlice.ts';
+import { Box } from '@mui/material';
 
 interface Props {
   openCart: boolean;
@@ -77,63 +78,70 @@ const CustomCart: React.FC<Props> = ({ openCart, closeCart }) => {
             p: 2,
             display: "flex",
             flexDirection: "column",
-            gap: 2,
             height: "100%",
-            overflow: "auto",
+            backgroundColor: 'white',
           }}
         >
-          {cart && cart.products.length > 0 ? (
-            <DialogTitle
-              sx={{ fontFamily: "Nunito, sans-serif", fontWeight: 600 }}
-            >
-              В корзине <b>{amount}</b>
-              {amount === 1
-                ? "товар"
-                : (amount && amount > 1) && amount < 5
-                  ? "товара"
-                  : "товаров"}
-            </DialogTitle>
-          ) : (
-            <DialogTitle
-              sx={{ fontFamily: "Nunito, sans-serif", fontWeight: 600 }}
-            >
-              В корзине нет товаров
-            </DialogTitle>
-          )}
-          <ModalClose />
-          <Divider />
-          {cart && cart.products.length === 0 || cart === null ? (
-            <>
-              <img
-                style={{
-                  margin: "15% auto 0",
-                }}
-                width="150"
-                height="150"
-                src={imageCart}
-                alt="shopping-cart"
-              />
-              <Typography
-                level="h2"
-                sx={{
-                  fontSize: "xl",
-                  margin: "20px auto",
-                  fontFamily: "Nunito, sans-serif",
-                  fontWeight: 600,
-                }}
-              >
-                Корзина пуста!
-              </Typography>
-            </>
-          ) : (
-            <>
-              {Array.isArray(cart?.products) && cart.products.map((product, index) => (
-                <React.Fragment key={product.product.id}>
-                  <CartProduct productCart={product} closeCart={closeCart} />
-                  {index < cart.products.length - 1 && <Divider sx={{ mt: "auto" }} />}
-                </React.Fragment>
-              ))}
-              <Divider sx={{ mt: "auto" }} />
+          <Box sx={{ position: 'sticky', top: 0, zIndex: 2, backgroundColor: 'white', pb: 2 }}>
+            <Box sx={{ position: 'relative', pb: 1 }}>
+              <DialogTitle sx={{ fontFamily: "Nunito, sans-serif", fontWeight: 600 }}>
+                {cart && cart.products.length > 0 ? (
+                  <>
+                    В корзине <b>{amount}</b>{" "}
+                    {amount === 1
+                      ? "товар"
+                      : amount && amount < 5
+                        ? "товара"
+                        : "товаров"}
+                  </>
+                ) : (
+                  "В корзине нет товаров"
+                )}
+              </DialogTitle>
+              <ModalClose  sx={{
+                marginTop: '-15px'
+              }}/>
+            </Box>
+            <Divider />
+          </Box>
+
+          <Box sx={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: 2 }}>
+            {cart && cart.products.length === 0 || cart === null ? (
+              <>
+                <img
+                  style={{ margin: "15% auto 0" }}
+                  width="150"
+                  height="150"
+                  src={imageCart}
+                  alt="shopping-cart"
+                />
+                <Typography
+                  level="h2"
+                  sx={{
+                    fontSize: "xl",
+                    margin: "20px auto",
+                    fontFamily: "Nunito, sans-serif",
+                    fontWeight: 600,
+                  }}
+                >
+                  Корзина пуста!
+                </Typography>
+              </>
+            ) : (
+              <>
+                {Array.isArray(cart?.products) &&
+                  cart.products.map((product, index) => (
+                    <React.Fragment key={product.product.id}>
+                      <CartProduct productCart={product} closeCart={closeCart} />
+                      {index < cart.products.length - 1 && <Divider />}
+                    </React.Fragment>
+                  ))}
+              </>
+            )}
+          </Box>
+
+          {cart && cart.products.length > 0 && (
+            <Box sx={{ pt: 2, borderTop: '1px solid #eee' }}>
               <Typography
                 level="h2"
                 sx={{
@@ -164,6 +172,7 @@ const CustomCart: React.FC<Props> = ({ openCart, closeCart }) => {
                   color: "white",
                   fontWeight: 600,
                   padding: "13px",
+                  width: "100%",
                   "&:hover": {
                     backgroundColor: "#154902",
                   },
@@ -171,7 +180,7 @@ const CustomCart: React.FC<Props> = ({ openCart, closeCart }) => {
               >
                 Оформление заказа
               </Button>
-            </>
+            </Box>
           )}
         </Sheet>
       </Drawer>
@@ -180,3 +189,4 @@ const CustomCart: React.FC<Props> = ({ openCart, closeCart }) => {
 };
 
 export default CustomCart;
+

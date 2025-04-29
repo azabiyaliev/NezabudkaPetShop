@@ -16,81 +16,99 @@ interface Props {
   productCart: ICartItem;
   closeCart: () => void;
 }
+
 const CartProduct: React.FC<Props> = ({ productCart, closeCart }) => {
   const user = useAppSelector(selectUser);
   const cart = useAppSelector(cartFromSlice);
   const dispatch = useAppDispatch();
 
   const deleteProductFromCart = async (id: number) => {
-    if (user && (user.role === userRoleClient) && cart) {
-      await dispatch(deleteItemCart({cartId: cart.id, productId: id})).unwrap();
+    if (user && user.role === userRoleClient && cart) {
+      await dispatch(deleteItemCart({ cartId: cart.id, productId: id })).unwrap();
       await dispatch(fetchCart()).unwrap();
     } else {
       dispatch(deleteProductInCart(id));
     }
 
-    enqueueSnackbar("Данный товар успешно удален из корзины!", {
-      variant: "success",
+    enqueueSnackbar('Данный товар успешно удален из корзины!', {
+      variant: 'success',
     });
   };
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-      }}
-    >
-      <Box>
+    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+      <Box
+        sx={{
+          width: 80,
+          height: 80,
+          backgroundColor: '#f5f5f5',
+          borderRadius: 1,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexShrink: 0,
+        }}
+      >
         <Link
           to={`/product/${productCart.product.id}`}
-          onClick={() => closeCart()}
-          style={{
-            display: 'flex',
-            textDecoration: "none",
-        }}>
+          onClick={closeCart}
+          style={{ display: 'block', width: '100%', height: '100%', backgroundColor: 'white' }}
+        >
           <img
-            style={{
-              width: '80px',
-              height: '80px',
-              objectFit: 'contain',
-            }}
             src={apiUrl + productCart.product.productPhoto}
             alt={productCart.product.productName}
+            style={{
+              maxWidth: '100%',
+              maxHeight: '100%',
+              objectFit: 'contain',
+              display: 'block',
+              margin: 'auto',
+              backgroundColor: 'white'
+            }}
           />
-          <Box sx={{ marginLeft: "20px" }}>
-            <Typography
-              sx={{
-                fontFamily: "Nunito, sans-serif",
-                  '&:hover': {
-                    color: COLORS.primary,
-                  }
-              }}
-            >
-              {productCart.product.productName}
-            </Typography>
-            <Typography
-              level="body-sm"
-              sx={{ marginTop: "10px", fontFamily: "Nunito, sans-serif" }}
-            >
-              {productCart.quantity} x
-              <span
-                style={{
-                  color: "rgba(250, 179, 1, 1)",
-                  marginLeft: "5px",
-                }}
-              >
-            <b>{productCart.product.productPrice} сом</b>
-          </span>
-            </Typography>
-          </Box>
         </Link>
       </Box>
-      <Box sx={{ml: 'auto'}}>
-        <Button
-          size="small"
-          onClick={() => deleteProductFromCart(productCart.product.id)}
+
+      <Box sx={{ flexGrow: 1 }}>
+        <Link
+          to={`/product/${productCart.product.id}`}
+          onClick={closeCart}
+          style={{ textDecoration: 'none', color: 'inherit' }}
         >
-          <ClearOutlinedIcon fontSize="small"/>
+          <Typography
+            sx={{
+              fontFamily: 'Nunito, sans-serif',
+              fontWeight: 600,
+              display: '-webkit-box',
+              WebkitLineClamp: 3,
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              '&:hover': { color: COLORS.primary },
+            }}
+          >
+            {productCart.product.productName}
+          </Typography>
+        </Link>
+        <Typography
+          level="body-sm"
+          sx={{ marginTop: '5px', fontFamily: 'Nunito, sans-serif' }}
+        >
+          {productCart.quantity} x{' '}
+          <span
+            style={{
+              color: 'rgba(250, 179, 1, 1)',
+              marginLeft: '5px',
+            }}
+          >
+            <b>{productCart.product.productPrice.toLocaleString('ru-RU').replace(/,/g, ' ')} сом</b>
+          </span>
+        </Typography>
+      </Box>
+
+      <Box sx={{ ml: 1 }}>
+        <Button size="small" onClick={() => deleteProductFromCart(productCart.product.id)}>
+          <ClearOutlinedIcon fontSize="small" />
         </Button>
       </Box>
     </Box>
