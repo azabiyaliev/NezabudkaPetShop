@@ -12,8 +12,8 @@ import { selectUser } from '../../store/users/usersSlice.ts';
 import { addItem, createCart, deleteItemsCart, fetchCart } from '../../store/cart/cartThunk.ts';
 import { ICartBack, ICartItem } from '../../types';
 import { userRoleClient } from '../../globalConstants.ts';
-import { selectPromotionalProducts } from '../../store/products/productsSlice.ts';
-import { getPromotionalProducts } from '../../store/products/productsThunk.ts';
+import { selectPromotionalProducts, selectTopSellingProducts } from '../../store/products/productsSlice.ts';
+import { getPromotionalProducts, getTopSellingProducts } from '../../store/products/productsThunk.ts';
 import PromotionalProducts from '../Product/components/PromotionalProducts/PromotionalProducts.tsx';
 import theme from '../../globalStyles/globalTheme.ts';
 import { getFavoriteProducts } from '../../store/favoriteProducts/favoriteProductsThunks.ts';
@@ -26,6 +26,7 @@ const HomePage = () => {
   const user = useAppSelector(selectUser);
   const cart = useAppSelector(cartFromSlice);
   const promotionalProducts = useAppSelector(selectPromotionalProducts);
+  const topSellingProducts = useAppSelector(selectTopSellingProducts);
   const createCartError = useAppSelector(cartErrorFromSlice);
   const dispatch = useAppDispatch();
 
@@ -76,6 +77,7 @@ const HomePage = () => {
     const fetchData = async () => {
       await dispatch(getBrands()).unwrap();
       await dispatch(getPromotionalProducts()).unwrap();
+      await dispatch(getTopSellingProducts()).unwrap();
 
       if (user && (user.role === userRoleClient)) {
         await dispatch(createCart()).unwrap();
@@ -124,6 +126,8 @@ const HomePage = () => {
       dispatch(getFavoriteProducts());
     }
   }, [dispatch, user]);
+
+  console.log(topSellingProducts);
 
   return (
     <>
