@@ -23,12 +23,12 @@ import { ImageProcessorService } from '../common/image-processor.service';
 export class BrandsController {
   constructor(
     private brandsService: BrandsService,
-    private imageProcessorService: ImageProcessorService
+    private imageProcessorService: ImageProcessorService,
   ) {}
 
   @Get()
   async getBrands() {
-    return await this.brandsService.getBrands();
+    return this.brandsService.getBrands();
   }
 
   @Get(':id')
@@ -37,7 +37,7 @@ export class BrandsController {
   }
 
   @UseGuards(TokenAuthGuard, RolesGuard)
-  @Roles('admin')
+  @Roles('admin', 'superAdmin')
   @Post()
   @UseInterceptors(
     FileInterceptor('logo', {
@@ -49,21 +49,19 @@ export class BrandsController {
     @Body() brandDTO: BrandDto,
   ) {
     if (file) {
-      // Конвертируем и сохраняем изображение с пресетом для логотипов брендов
       const logoPath = await this.imageProcessorService.convertToWebP(
         file,
         './public/brands',
-        'BRAND_LOGO'
+        'BRAND_LOGO',
       );
-      // Передаем обработанный файл в сервис вместе с его путем
       file.filename = logoPath.split('/').pop() || '';
       brandDTO.logo = logoPath;
     }
-    return await this.brandsService.createBrand(brandDTO, file);
+    return await this.brandsService.createBrand(brandDTO);
   }
 
   @UseGuards(TokenAuthGuard, RolesGuard)
-  @Roles('admin')
+  @Roles('admin', 'superAdmin')
   @Patch(':id')
   @UseInterceptors(
     FileInterceptor('logo', {
@@ -76,13 +74,11 @@ export class BrandsController {
     @Body() brandDTO: BrandDto,
   ) {
     if (file) {
-      // Конвертируем и сохраняем изображение с пресетом для логотипов брендов
       const logoPath = await this.imageProcessorService.convertToWebP(
         file,
         './public/brands',
-        'BRAND_LOGO'
+        'BRAND_LOGO',
       );
-      // Передаем обработанный файл в сервис вместе с его путем
       file.filename = logoPath.split('/').pop() || '';
       brandDTO.logo = logoPath;
     }
@@ -90,7 +86,7 @@ export class BrandsController {
   }
 
   @UseGuards(TokenAuthGuard, RolesGuard)
-  @Roles('admin')
+  @Roles('admin', 'superAdmin')
   @Delete(':id')
   async deleteBrand(@Param('id') id: string) {
     return await this.brandsService.deleteBrand(id);
