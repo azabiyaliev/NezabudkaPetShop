@@ -27,6 +27,8 @@ const OrderCard: React.FC<Props> = ({ order }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
+  console.log(order)
+
   const totalAmount = order.items.reduce((sum, item) => sum + item.product.productPrice * item.quantity, 0);
   const cancelOrder = async() => {
       await dispatch(deleteOrder(String(order.id)));
@@ -39,26 +41,15 @@ const OrderCard: React.FC<Props> = ({ order }) => {
         boxShadow: 4,
         overflow: 'hidden',
         mb: 3,
+        maxWidth: '100%',
+        minWidth: 350,
+        width: '100%',
       }}
     >
       <CardContent>
         <Typography variant="h6" gutterBottom fontWeight="bold">
           Заказ №{order.id} — {dayjs(order.createdAt).format('DD.MM.YYYY HH:mm')}
         </Typography>
-
-        <CardMedia
-          onClick={() => navigate(`/product/${order.items[0]?.product.id}`)}
-          component="img"
-          image={apiUrl + '/' + order.items[0]?.product.productPhoto}
-          alt={order.items[0]?.product.productName}
-          sx={{
-            objectFit: 'cover',
-            height: 250,
-            borderRadius: 2,
-            cursor: 'pointer',
-            mb: 2,
-          }}
-        />
 
         <Typography variant="subtitle2" color="text.secondary" gutterBottom>
           Статус: <b>{order.status}</b>
@@ -70,13 +61,31 @@ const OrderCard: React.FC<Props> = ({ order }) => {
           {order.items.map((item) => (
             <ListItem
               key={item.id}
+              onClick={() => navigate(`/product/${ item.product.id}`)}
               sx={{
                 py: 1,
                 display: 'flex',
                 justifyContent: 'space-between',
-                alignItems: 'flex-start',
+                alignItems: 'center',
+                cursor: 'pointer',
+                border: '1px solid #eee',
+                marginBottom: 2,
+                padding: 2,
               }}
             >
+              <CardMedia
+                component="img"
+                image={apiUrl + '/' + item.product.productPhoto}
+                alt={order.items[0]?.product.productName}
+                sx={{
+                  width: 100,
+                  height: 100,
+                  borderRadius: 2,
+                  cursor: 'pointer',
+                  mb: 2,
+                  marginRight: 2,
+                }}
+              />
               <ListItemText
                 primary={
                   <Typography variant="body1">

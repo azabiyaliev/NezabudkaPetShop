@@ -2,7 +2,7 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks.ts';
 import { selectUser } from '../../store/users/usersSlice.ts';
 import { useEffect, useState } from 'react';
 import { GetClientOrders, GetGuestOrders, transferGuestOrders } from '../../store/orders/ordersThunk.ts';
-import { Alert, CircularProgress, Container, MenuItem, Select, SelectChangeEvent } from '@mui/material';
+import { Alert, Box, CircularProgress, Container, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { IOrder } from '../../types';
 import dayjs from 'dayjs';
@@ -93,14 +93,14 @@ const MyOrders = () => {
 
   if (!orders || orders.length === 0) {
     return (
-      <Container maxWidth="md" sx={{ py: 4 }}>
+      <Container>
         <Typography>У вас пока нет заказов.</Typography>
       </Container>
     );
   }
 
   return (
-    <Container maxWidth="md" sx={{ py: 4 }}>
+    <Box sx={{my: 5, display: 'flex', flexDirection: 'column', gap: '20px', alignItems: 'center'}}>
       <Typography variant="h4" gutterBottom>
         Мои заказы
       </Typography>
@@ -138,7 +138,7 @@ const MyOrders = () => {
           renderItem={(item) => <ClientOrdersItem key={item.id} order={item} />}
         />
       )}
-    </Container>
+    </Box>
   );
 };
 
