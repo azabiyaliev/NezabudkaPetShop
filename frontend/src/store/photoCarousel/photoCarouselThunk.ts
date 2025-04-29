@@ -49,6 +49,13 @@ export const updatePhoto = createAsyncThunk<
     if (photo.link) {
       data.append("link", photo.link);
     }
+
+    if (photo.title) {
+      data.append("title", photo.title);
+    }
+    if (photo.description) {
+      data.append("description", photo.description);
+    }
     await axiosApi.put(`/photos/${photo.id}`, data);
 
     console.log(photo.link)

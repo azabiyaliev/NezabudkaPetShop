@@ -1,6 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
+import {
+  Box,
+  Button,
+  FormHelperText,
+  TextField,
+} from "@mui/material";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
-import { Box, Button, FormHelperText } from "@mui/material";
 
 interface Props {
   name: string;
@@ -25,15 +30,12 @@ const FileInput: React.FC<Props> = ({
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [fileName, setFileName] = useState("");
-  const [touched, setTouched] = useState(false);
 
   const activateInput = () => {
     inputRef.current?.click();
   };
 
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTouched(true);
-
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
       setFileName(selectedFile.name);
@@ -55,80 +57,59 @@ const FileInput: React.FC<Props> = ({
     }
   }, [file]);
 
+  const isError = error && !fileName;
   const finalHelperText = helperText || "Фото обязательно для загрузки";
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        gap: 2,
-        width: "100%",
-      }}
-    >
+    <Box sx={{ width: "100%" }}>
       <input
-        style={{ display: "none" }}
         type="file"
         name={name}
         ref={inputRef}
         onChange={onFileChange}
+        style={{ display: "none" }}
       />
 
-      <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-        <Box
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 2,
+          width: "100%",
+        }}
+      >
+        <TextField
           id={id}
-          className={className}
+          label={label}
+          variant="outlined"
+          size="small"
+          fullWidth
+          value={fileName}
           onClick={activateInput}
-          sx={{
-            padding: "15px 30px",
-            borderRadius: "20px",
-            border: `1px solid ${error || (touched && !fileName) ? "#FF0000" : "darkgreen"}`,
-            backgroundColor: "white",
-            width: "240px",
-            maxWidth: "100%",
-            cursor: "pointer",
-            userSelect: "none",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-            "@media (max-width: 600px)": {
-              padding: "12px 20px",
-            },
+          InputProps={{
+            readOnly: true,
           }}
-        >
-          {fileName || label}
-        </Box>
+          error={isError}
+          className={className}
+        />
 
         <Button
-          variant="outlined"
           onClick={activateInput}
+          variant="outlined"
           sx={{
-            borderColor: error || (touched && !fileName) ? "#FF0000" : "darkgreen",
-            borderRadius: "15px",
-            backgroundColor: "white",
-            padding: "15px 20px",
-            cursor: "pointer",
-            color: error || (touched && !fileName) ? "#FF0000" : "darkgreen",
             minWidth: "50px",
-            "@media (max-width: 600px)": {
-              padding: "10px 15px",
-            },
+            padding: "8px",
+            borderRadius: "8px",
+            borderColor: isError ? "#FF0000" : "gray",
+            color: isError ? "#FF0000" : "gray",
           }}
         >
           <AddPhotoAlternateIcon />
         </Button>
       </Box>
 
-      {(error || (touched && !fileName)) && (
-        <FormHelperText
-          sx={{
-            color: "#FF0000",
-            fontSize: "12px",
-            marginTop: "-10px",
-            marginLeft: "10px",
-            marginBottom: "10px",
-          }}
-        >
+      {isError && (
+        <FormHelperText error sx={{ ml: 1, mt: 0.5 }}>
           {finalHelperText}
         </FormHelperText>
       )}
