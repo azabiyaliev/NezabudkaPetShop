@@ -60,11 +60,8 @@ const FormEditPhoto: React.FC<FormEditPhotoProps> = ({ photoId }) => {
     setEditPhoto(prev => ({ ...prev, [name]: value }));
   };
 
-  const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, files } = e.target;
-    if (files && files[0]) {
-      setEditPhoto(prev => ({ ...prev, [name]: files[0] }));
-    }
+  const onFileChange = (file: File) => {
+    setEditPhoto(prev => ({ ...prev, photo: file }));
   };
 
   const deletePhoto = () => {
@@ -75,6 +72,7 @@ const FormEditPhoto: React.FC<FormEditPhotoProps> = ({ photoId }) => {
     e.preventDefault();
     try {
       await dispatch(updatePhoto({ photo: editPhoto })).unwrap();
+      console.log('Отправка фото:', editPhoto.photo);
       enqueueSnackbar('Вы отредактировали фото для карусели;)', { variant: 'success' });
       navigate('/edit-carousel');
     } catch (error) {
@@ -92,7 +90,6 @@ const FormEditPhoto: React.FC<FormEditPhotoProps> = ({ photoId }) => {
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: { xs: 2, md: 4 } }}>
-
       <NavLink to="/edit-carousel" style={{ textDecoration: 'none', color: '#738A6E', alignSelf: 'flex-start' }}>
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
           <ArrowBackIcon sx={{ mr: 1 }} />
@@ -135,7 +132,7 @@ const FormEditPhoto: React.FC<FormEditPhotoProps> = ({ photoId }) => {
             onGetFile={onFileChange}
             file={editPhoto.photo}
             error={!editPhoto.photo}
-            helperText={!editPhoto.photo ? 'Фото обязательно для загрузки' : ''}
+            helperText={!editPhoto.photo ? 'Фото обязательно для загрузки' : undefined}
           />
 
           <TextField

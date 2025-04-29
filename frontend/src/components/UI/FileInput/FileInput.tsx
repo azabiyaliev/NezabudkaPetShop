@@ -1,17 +1,17 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
-  Box,
   Button,
   FormControl,
   FormHelperText,
-  TextField,
+  InputLabel,
+  OutlinedInput,
 } from "@mui/material";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 
 interface Props {
   name: string;
   label: string;
-  onGetFile: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onGetFile: (file: File) => void;
   file: File | string | null;
   id: string;
   className?: string;
@@ -26,25 +26,27 @@ const FileInput: React.FC<Props> = ({
   file,
   id,
   className,
-  error = false,
+  error,
   helperText,
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [fileName, setFileName] = useState("");
+  const [touched, setTouched] = useState(false);
 
   const activateInput = () => {
     inputRef.current?.click();
   };
 
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTouched(true);
+
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
       setFileName(selectedFile.name);
+      onGetFile(selectedFile);
     } else {
       setFileName("");
     }
-
-    onGetFile(e);
   };
 
   useEffect(() => {
@@ -58,11 +60,11 @@ const FileInput: React.FC<Props> = ({
     }
   }, [file]);
 
-  const isError = error;
+  const isError = error || (touched && !fileName);
   const finalHelperText = helperText || "Фото обязательно для загрузки";
 
   return (
-    <Box sx={{ width: "100%" }}>
+    <FormControl fullWidth size="small" error={isError} sx={{ mb: 2 }}>
       <input
         type="file"
         name={name}
@@ -71,39 +73,32 @@ const FileInput: React.FC<Props> = ({
         style={{ display: "none" }}
       />
 
-      <Box sx={{ display: "flex", alignItems: "center", gap: 2, width: "100%" }}>
-        <FormControl error={isError} fullWidth>
-          <TextField
-            id={id}
-            label={label}
-            variant="outlined"
-            size="small"
-            fullWidth
-            value={fileName}
-            onClick={activateInput}
-            InputProps={{ readOnly: true }}
-            className={className}
-          />
-          {isError && finalHelperText && (
-            <FormHelperText>{finalHelperText}</FormHelperText>
-          )}
-        </FormControl>
+      <InputLabel htmlFor={id}>{label}</InputLabel>
 
-        <Button
-          onClick={activateInput}
-          variant="outlined"
-          sx={{
-            minWidth: "50px",
-            padding: "8px",
-            borderRadius: "8px",
-            borderColor: isError ? "#FF0000" : "gray",
-            color: isError ? "#FF0000" : "gray",
-          }}
-        >
-          <AddPhotoAlternateIcon />
-        </Button>
-      </Box>
-    </Box>
+      <OutlinedInput
+        id={id}
+        className={className}
+        label={label}
+        readOnly
+        value={fileName}
+        onClick={activateInput}
+        endAdornment={
+          <Button
+            onClick={activateInput}
+            sx={{
+              minWidth: "40px",
+              padding: "4px",
+              color: isError ? "#FF0000" : "#1976d2",
+            }}
+          >
+            <AddPhotoAlternateIcon />
+          </Button>
+        }
+        sx={{ cursor: "pointer", backgroundColor: "white" }}
+      />
+
+      {isError && <FormHelperText>{finalHelperText}</FormHelperText>}
+    </FormControl>
   );
 };
 
