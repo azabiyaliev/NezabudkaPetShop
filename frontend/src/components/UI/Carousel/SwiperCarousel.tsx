@@ -54,223 +54,114 @@ const SwiperCarousel = () => {
         {images.map((image, index) => (
           <SwiperSlide key={index}>
             <div style={{ width: "100%", height: "100%", position: "relative" }}>
-              {image.link ? (
-                <a
-                  href={image.link}
-                  target="_self"
-                  rel="noopener noreferrer"
-                  style={{
-                    display: "block",
-                    width: "100%",
-                    height: "100%",
-                    position: "relative",
-                    textDecoration: "none",
-                    color: "inherit",
-                  }}
+              <img
+                src={`${apiUrl}/${image.photo}`}
+                alt={`Slide ${index}`}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  display: "block",
+                }}
+              />
+
+              <Box
+                sx={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  background: "rgba(0,0,0,0.4)",
+                  zIndex: 1,
+                }}
+              />
+
+              <Box
+                sx={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "flex-start",
+                  flexDirection: "column",
+                  color: "#fff",
+                  textAlign: "left",
+                  px: 6,
+                  zIndex: 2,
+                }}
+              >
+                <Container
+                  maxWidth="xl"
+                  sx={{ textAlign: { xs: "center", md: "left" } }}
                 >
-                  <img
-                    src={`${apiUrl}/${image.photo}`}
-                    alt={`Slide ${index}`}
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                      display: "block",
-                      cursor: "pointer",
-                    }}
-                  />
-
-                  {/* overlay */}
-                  <Box
+                  <Typography
                     sx={{
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                      width: "100%",
-                      height: "100%",
-                      background: "rgba(0,0,0,0.4)",
-                      zIndex: 1,
-                    }}
-                  />
-
-                  {/* текст и кнопка */}
-                  <Box
-                    sx={{
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                      width: "100%",
-                      height: "100%",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "flex-start",
-                      flexDirection: "column",
-                      color: "#fff",
-                      textAlign: "left",
-                      px: 6,
-                      zIndex: 2,
-                      pointerEvents: "none",
+                      fontSize: {
+                        xs: theme.fonts.size.lg,
+                        sm: theme.fonts.size.xl,
+                        md: theme.fonts.size.xxl,
+                      },
+                      mb: theme.spacing.lg,
+                      fontWeight: theme.fonts.weight.bold,
                     }}
                   >
-                    <Container
-                      maxWidth="xl"
+                    {image.title}
+                  </Typography>
+
+                  <Typography
+                    component="p"
+                    sx={{
+                      fontSize: { xs: "1rem", sm: "1.2rem", md: "1.5rem" },
+                      maxWidth: { xs: "100%", md: "600px" },
+                      marginTop: "1rem",
+                      mx: { xs: "auto", md: 0 },
+                    }}
+                  >
+                    {image.description}
+                  </Typography>
+
+                  {image.link && (
+                    <Button
+                      onClick={() => (window.location.href = image.link)}
                       sx={{
-                        textAlign: { xs: "center", md: "left" },
-                        pointerEvents: "auto",
+                        mt: 5,
+                        maxWidth: "240px",
+                        width: { xs: "100%", sm: "240px" },
+                        fontSize: { xs: "1rem", sm: "1.2rem" },
+                        py: 1.5,
+                        backgroundColor: theme.colors.black,
+                        boxShadow: "0px 14px 40px rgba(0, 0, 0, 1)",
+                        borderRadius: "40px",
+                        "&:hover": {
+                          backgroundColor: theme.colors.black,
+                          boxShadow: "0px 14px 40px rgba(0, 0, 0, 1)",
+                        },
+                        mx: { xs: "auto", md: 0 },
+                        display: "inline-block",
+                        textAlign: "center",
                       }}
+                      variant="contained"
+                      color="success"
                     >
-                      <Typography
-                        sx={{
-                          fontSize: {
-                            xs: theme.fonts.size.lg,
-                            sm: theme.fonts.size.xl,
-                            md: theme.fonts.size.xxl,
-                          },
-                          mb: theme.spacing.lg,
-                          fontWeight: theme.fonts.weight.bold,
-                        }}
-                      >
-                        {image.title}
-                      </Typography>
-
-                      <Typography
-                        component="p"
-                        sx={{
-                          fontSize: { xs: "1rem", sm: "1.2rem", md: "1.5rem" },
-                          maxWidth: { xs: "100%", md: "600px" },
-                          marginTop: "1rem",
-                          mx: { xs: "auto", md: 0 },
-                        }}
-                      >
-                        {image.description}
-                      </Typography>
-
-                      <Button
-                        onClick={(e) => {
-                          e.preventDefault();
-                          window.location.href = "/all-products";
-                        }}
-                        sx={{
-                          mt: 5,
-                          width: { xs: "100%", sm: "240px" },
-                          fontSize: { xs: "1rem", sm: "1.2rem" },
-                          py: 1.5,
-                          backgroundColor: theme.colors.black,
-                          boxShadow: "0px 14px 40px rgba(0, 0, 0, 1)",
-                          borderRadius: "40px",
-                          "&:hover": {
-                            backgroundColor: theme.colors.black,
-                            boxShadow: "0px 14px 40px rgba(0, 0, 0, 1)",
-                          },
-                          mx: { xs: "auto", md: 0 },
-                        }}
-                        variant="contained"
-                        color="success"
-                      >
-                        В каталог
-                      </Button>
-                    </Container>
-                  </Box>
-                </a>
-              ) : (
-                <>
-                  <img
-                    src={`${apiUrl}/${image.photo}`}
-                    alt={`Slide ${index}`}
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                      display: "block",
-                    }}
-                  />
-
-                  {/* overlay */}
-                  <Box
-                    sx={{
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                      width: "100%",
-                      height: "100%",
-                      background: "rgba(0,0,0,0.4)",
-                      zIndex: 1,
-                    }}
-                  />
-
-                  {/* текст и кнопка */}
-                  <Box
-                    sx={{
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                      width: "100%",
-                      height: "100%",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "flex-start",
-                      flexDirection: "column",
-                      color: "#fff",
-                      textAlign: "left",
-                      px: 6,
-                      zIndex: 2,
-                    }}
-                  >
-                    <Container
-                      maxWidth="xl"
-                      sx={{ textAlign: { xs: "center", md: "left" } }}
-                    >
-                      <Typography
-                        sx={{
-                          fontSize: {
-                            xs: theme.fonts.size.lg,
-                            sm: theme.fonts.size.xl,
-                            md: theme.fonts.size.xxl,
-                          },
-                          mb: theme.spacing.lg,
-                          fontWeight: theme.fonts.weight.bold,
-                        }}
-                      >
-                        {image.title}
-                      </Typography>
-
-                      <Typography
-                        component="p"
-                        sx={{
-                          fontSize: { xs: "1rem", sm: "1.2rem", md: "1.5rem" },
-                          maxWidth: { xs: "100%", md: "600px" },
-                          marginTop: "1rem",
-                          mx: { xs: "auto", md: 0 },
-                        }}
-                      >
-                        {image.description}
-                      </Typography>
-
-                      <Button
-                        onClick={() => (window.location.href = "/catalog")}
-                        sx={{
-                          mt: 5,
-                          width: { xs: "100%", sm: "240px" },
-                          fontSize: { xs: "1rem", sm: "1.2rem" },
-                          py: 1.5,
-                          backgroundColor: theme.colors.black,
-                          boxShadow: "0px 14px 40px rgba(0, 0, 0, 1)",
-                          borderRadius: "40px",
-                          "&:hover": {
-                            backgroundColor: theme.colors.black,
-                            boxShadow: "0px 14px 40px rgba(0, 0, 0, 1)",
-                          },
-                          mx: { xs: "auto", md: 0 },
-                        }}
-                        variant="contained"
-                        color="success"
-                      >
-                        В каталог
-                      </Button>
-                    </Container>
-                  </Box>
-                </>
-              )}
+                       <span
+                         style={{
+                           display: "block",
+                           whiteSpace: "nowrap",
+                           overflow: "hidden",
+                           textOverflow: "ellipsis",
+                         }}
+                         title={image.title}
+                       >
+                             {image.title}
+                        </span>
+                    </Button>
+                  )}
+                </Container>
+              </Box>
             </div>
           </SwiperSlide>
         ))}
