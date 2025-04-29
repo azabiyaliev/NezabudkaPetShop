@@ -19,8 +19,8 @@ const CustomPagination = <T,>({ items, renderItem, columns = 4, rows = 5 }: Pagi
     <Box mt={3}>
       <Box
         sx={{
-          display: 'grid',
-          gridTemplateColumns: `repeat(${columns}, 1fr)`,
+          display: 'flex',
+          flexWrap: 'wrap',
           gap: '15px',
           justifyContent: 'center',
         }}
