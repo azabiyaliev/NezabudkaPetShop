@@ -22,17 +22,27 @@ const AddNewPhotoForm = () => {
   const [linkError, setLinkError] = useState<string>("");
   const [titleError, setTitleError] = useState<string>("");
   const [descError, setDescError] = useState<string>("");
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const onFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitted(true);
     try {
       await dispatch(addNewPhoto(newPhoto)).unwrap();
       enqueueSnackbar('Вы успешно добавили новое фото в карусель;)', { variant: 'success' });
-      setNewPhoto({ ...initialState });
+      resetForm();
       await dispatch(fetchPhoto()).unwrap();
     } catch (e) {
       console.error("Error during form submission:", e);
     }
+  };
+
+  const resetForm = () => {
+    setNewPhoto({ ...initialState });
+    setLinkError("");
+    setTitleError("");
+    setDescError("");
+    setIsSubmitted(false);
   };
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -45,6 +55,7 @@ const AddNewPhotoForm = () => {
 
     if (name === 'link' && value.trim() === "") setLinkError("Поле для ссылки не может быть пустым");
     if (name === 'description' && value.trim() === "") setDescError("Поле для описания не может быть пустым");
+    if (name === 'title' && value.trim() === "") setTitleError("Поле для заголовка не может быть пустым");
   };
 
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,13 +66,6 @@ const AddNewPhotoForm = () => {
         [name]: files[0],
       }));
     }
-  };
-
-  const resetForm = () => {
-    setNewPhoto({ ...initialState });
-    setLinkError("");
-    setTitleError("");
-    setDescError("");
   };
 
   const deletePhoto = () => {
@@ -117,6 +121,8 @@ const AddNewPhotoForm = () => {
             label="Фото"
             onGetFile={onFileChange}
             file={newPhoto.photo}
+            error={isSubmitted && !newPhoto.photo}
+            helperText={isSubmitted && !newPhoto.photo ? 'Фото обязательно для загрузки' : undefined}
           />
 
           <TextField

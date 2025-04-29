@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import {
   Box,
   Button,
+  FormControl,
   FormHelperText,
   TextField,
 } from "@mui/material";
@@ -25,7 +26,7 @@ const FileInput: React.FC<Props> = ({
   file,
   id,
   className,
-  error,
+  error = false,
   helperText,
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -57,7 +58,7 @@ const FileInput: React.FC<Props> = ({
     }
   }, [file]);
 
-  const isError = error && !fileName;
+  const isError = error;
   const finalHelperText = helperText || "Фото обязательно для загрузки";
 
   return (
@@ -70,28 +71,23 @@ const FileInput: React.FC<Props> = ({
         style={{ display: "none" }}
       />
 
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          gap: 2,
-          width: "100%",
-        }}
-      >
-        <TextField
-          id={id}
-          label={label}
-          variant="outlined"
-          size="small"
-          fullWidth
-          value={fileName}
-          onClick={activateInput}
-          InputProps={{
-            readOnly: true,
-          }}
-          error={isError}
-          className={className}
-        />
+      <Box sx={{ display: "flex", alignItems: "center", gap: 2, width: "100%" }}>
+        <FormControl error={isError} fullWidth>
+          <TextField
+            id={id}
+            label={label}
+            variant="outlined"
+            size="small"
+            fullWidth
+            value={fileName}
+            onClick={activateInput}
+            InputProps={{ readOnly: true }}
+            className={className}
+          />
+          {isError && finalHelperText && (
+            <FormHelperText>{finalHelperText}</FormHelperText>
+          )}
+        </FormControl>
 
         <Button
           onClick={activateInput}
@@ -107,12 +103,6 @@ const FileInput: React.FC<Props> = ({
           <AddPhotoAlternateIcon />
         </Button>
       </Box>
-
-      {isError && (
-        <FormHelperText error sx={{ ml: 1, mt: 0.5 }}>
-          {finalHelperText}
-        </FormHelperText>
-      )}
     </Box>
   );
 };
