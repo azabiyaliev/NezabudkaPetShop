@@ -12,6 +12,7 @@ import CartProduct from './CartProduct.tsx';
 import imageCart from '../../../assets/image_transparent.png';
 import { cartFromSlice } from '../../../store/cart/cartSlice.ts';
 import { Box } from '@mui/material';
+import { SPACING } from '../../../globalStyles/stylesObjects.ts';
 
 interface Props {
   openCart: boolean;
@@ -147,7 +148,7 @@ const CustomCart: React.FC<Props> = ({ openCart, closeCart }) => {
                 sx={{
                   fontFamily: "Nunito, sans-serif",
                   fontSize: "xl",
-                  mb: 0.5,
+                  mb: SPACING.xs,
                   display: "flex",
                   justifyContent: "space-between",
                 }}
