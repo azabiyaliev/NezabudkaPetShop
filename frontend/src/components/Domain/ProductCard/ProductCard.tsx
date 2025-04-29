@@ -25,6 +25,7 @@ import { addItem, fetchCart } from '../../../store/cart/cartThunk.ts';
 import { newUserLogin, productCardToAdd } from '../../../store/cart/cartSlice.ts';
 import { selectUser } from '../../../store/users/usersSlice.ts';
 import { selectedFavorite } from '../../../store/favoriteProducts/favoriteProductsSlice.ts';
+import { selectTopSellingProducts } from '../../../store/products/productsSlice.ts';
 
 interface Props {
   product: ProductResponse;
@@ -36,6 +37,7 @@ const ProductCard:React.FC<Props> = ({ product, cart }) => {
   const [showAddAnimation, setShowAddAnimation] = useState<boolean>(false);
   const user = useAppSelector(selectUser);
   const favoriteProducts = useAppSelector(selectedFavorite);
+  const topSellingProducts = useAppSelector(selectTopSellingProducts);
   const dispatch = useAppDispatch();
 
   const toggleFavorite = (id: number) => {
@@ -104,6 +106,8 @@ const ProductCard:React.FC<Props> = ({ product, cart }) => {
     setIsFavorite(isFav);
   }, [user, favoriteProducts, product.id]);
 
+  const isTopSellingProduct = topSellingProducts.some((item) => item.id === product.id);
+
   return (
     <Card
       sx={{
@@ -143,6 +147,15 @@ const ProductCard:React.FC<Props> = ({ product, cart }) => {
             - {product.promoPercentage}%
           </Box>
         </Tooltip>
+      )}
+
+      {isTopSellingProduct && (
+        <Box sx={{
+          textTransform: 'uppercase',
+          color: COLORS.yellow,
+        }}>
+          хит
+        </Box>
       )}
 
       <Box sx={{ position: 'absolute', top: 8, right: 8, zIndex: 2 }}>

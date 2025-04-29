@@ -17,6 +17,8 @@ import { getPromotionalProducts, getTopSellingProducts } from '../../store/produ
 import PromotionalProducts from '../Product/components/PromotionalProducts/PromotionalProducts.tsx';
 import theme from '../../globalStyles/globalTheme.ts';
 import { getFavoriteProducts } from '../../store/favoriteProducts/favoriteProductsThunks.ts';
+import TopSellingProducts from '../Product/components/TopSellingProducts/TopSellingProducts.tsx';
+import { FONTS, SPACING } from '../../globalStyles/stylesObjects.ts';
 
 const HomePage = () => {
   const [openCart, setOpenCart] = useState<boolean>(false);
@@ -127,66 +129,85 @@ const HomePage = () => {
     }
   }, [dispatch, user]);
 
-  console.log(topSellingProducts);
-
   return (
-    <>
-      <Container maxWidth="xl">
-        <CustomCart openCart={openCart} closeCart={closeCart}/>
+    <Container maxWidth="xl">
+      <CustomCart openCart={openCart} closeCart={closeCart}/>
+      <Box sx={{
+        margin: `${SPACING.xxl} 0`,
+      }}>
+        <Typography
+          sx={{
+            fontSize: theme.fonts.size.xxl,
+            fontWeight: FONTS.weight.bold,
+            margin: `${SPACING.md} 0`,
+            color: theme.colors.text,
+            textAlign: "center",
+          }}
+        >
+          Каталог
+        </Typography>
+        <CategoryCard/>
+      </Box>
+
+      {promotionalProducts.length > 0 && (
         <Box sx={{
-          mt: theme.spacing.xxl
+          marginBottom: SPACING.xxl,
         }}>
           <Typography
             sx={{
               fontSize: theme.fonts.size.xxl,
-              mb: 3,
-              fontWeight: theme.fonts.weight.medium,
+              fontWeight: FONTS.weight.bold,
+              margin: `${SPACING.md} 0`,
               color: theme.colors.text,
               textAlign: "center",
             }}
           >
-            Каталог
+            Акции
           </Typography>
-          <CategoryCard/>
+          {cart && (
+            <PromotionalProducts products={promotionalProducts} cart={cart} />
+          )}
         </Box>
+      )}
 
-        {promotionalProducts.length > 0 && (
-          <Box>
-            <Typography
-              sx={{
-                fontSize: "40px",
-                mb: 0.5,
-                color: "rgba(250, 143, 1, 1)",
-                textAlign: "center",
-              }}
-            >
-              Акции
-            </Typography>
-            {cart && (
-              <PromotionalProducts products={promotionalProducts} cart={cart} />
-            )}
+      {topSellingProducts.length > 0 && (
+        <Box sx={{
+          marginBottom: SPACING.xxl,
+        }}>
+          <Typography
+            sx={{
+              fontSize: theme.fonts.size.xxl,
+              fontWeight: FONTS.weight.bold,
+              color: theme.colors.text,
+              textAlign: "center",
+              margin: `${SPACING.md} 0`,
+            }}
+          >
+            Хиты продаж
+          </Typography>
+          {cart && (
+            <TopSellingProducts products={topSellingProducts} cart={cart} />
+          )}
+        </Box>
+      )}
 
-          </Box>
-        )}
-
-        {brands.length > 0 && (
-          <Box sx={{ marginTop: "40px" }}>
-            <Typography
-              sx={{
-                fontSize: "40px",
-                mb: 0.5,
-                color: "rgba(250, 143, 1, 1)",
-                textAlign: "center",
-              }}
-            >
-              Наши бренды
-            </Typography>
-            <BrandForHomePage brands={brands} />
-          </Box>
-        )}
-      </Container>
-    </>
-
+      {brands.length > 0 && (
+        <Box sx={{ marginTop: "40px" }}>
+          <Typography
+            sx={{
+              fontSize: theme.fonts.size.xxl,
+              fontWeight: FONTS.weight.bold,
+              margin: `${SPACING.md} 0`,
+              color: theme.colors.text,
+              textAlign: "center",
+            }}
+          >
+            Наши бренды
+          </Typography>
+          <BrandForHomePage brands={brands} />
+        </Box>
+      )}
+    </Container>
   );
 };
 
