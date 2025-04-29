@@ -27,8 +27,6 @@ const OrderCard: React.FC<Props> = ({ order }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  console.log(order)
-
   const totalAmount = order.items.reduce((sum, item) => sum + item.product.productPrice * item.quantity, 0);
   const cancelOrder = async() => {
       await dispatch(deleteOrder(String(order.id)));

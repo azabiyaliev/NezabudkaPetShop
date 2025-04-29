@@ -104,8 +104,17 @@ const MyOrders = () => {
   }
 
   return (
-    <Box sx={{my: 5, display: 'flex', flexDirection: 'column', gap: '20px', alignItems: 'center', position: 'relative'}}>
-      <NavLink to={`/my_account/users/account/${user?.id}`} style={{position: 'absolute', left: 1, textDecoration: 'none', color: COLORS.success, fontSize: FONTS.size.lg, display: 'flex', alignItems: 'center'}}>
+    <Box
+      sx={{my: 5, display: 'flex', flexDirection: 'column', gap: '20px', alignItems: 'center', position: 'relative'}}>
+      <NavLink to={`/my_account/users/account/${user?.id}`} style={{
+        position: 'absolute',
+        left: 1,
+        textDecoration: 'none',
+        color: COLORS.success,
+        fontSize: FONTS.size.lg,
+        display: 'flex',
+        alignItems: 'center'
+      }}>
         <ArrowBackIcon sx={{fontSize: FONTS.size.lg, marginRight: 1}}/>
         Назад
       </NavLink>
@@ -116,7 +125,7 @@ const MyOrders = () => {
       <Select
         value={statusFilter}
         onChange={handleStatusFilterChange}
-        sx={{ mb: 3, minWidth: 200 }}
+        sx={{mb: 3, minWidth: 200}}
       >
         <MenuItem value="All">Все</MenuItem>
         <MenuItem value="Pending">Pending</MenuItem>
@@ -130,7 +139,7 @@ const MyOrders = () => {
       <Select
         value={timeFilter}
         onChange={handleTimeFilterChange}
-        sx={{ minWidth: 200 }}
+        sx={{minWidth: 200}}
       >
         <MenuItem value="All">За всё время</MenuItem>
         <MenuItem value="Today">Сегодня</MenuItem>
@@ -139,11 +148,11 @@ const MyOrders = () => {
       </Select>
 
       {loading ? (
-        <CircularProgress />
+        <CircularProgress/>
       ) : (
         <CustomPagination
           items={filteredOrders}
-          renderItem={(item) => <ClientOrdersItem key={item.id} order={item} />}
+          renderItem={(item) => <ClientOrdersItem key={item.id} order={item}/>}
         />
       )}
     </Box>
