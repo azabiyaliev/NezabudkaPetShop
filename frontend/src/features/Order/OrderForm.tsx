@@ -621,14 +621,13 @@ try {
               paddingTop: '15px',
               marginTop: '15px'
             }}>
-              <Typography fontWeight="bold">
-                <TotalPrice
-                  products={carts.products}
-                  bonusUsed={form.bonusUsed || 0}
-                  deliveryZone={deliveryZone}
-                  deliveryMethod={form.deliveryMethod}
-                  onDeliveryZoneChange={setDeliveryZone} />
-              </Typography>
+              <TotalPrice
+                products={carts.products}
+                bonusUsed={form.bonusUsed || 0}
+                deliveryZone={deliveryZone}
+                deliveryMethod={form.deliveryMethod}
+                onDeliveryZoneChange={setDeliveryZone}
+              />
             </div>
 
             <div>

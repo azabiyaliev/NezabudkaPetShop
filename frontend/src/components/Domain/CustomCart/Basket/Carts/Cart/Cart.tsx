@@ -14,12 +14,15 @@ import {
 import { deleteItemCart, fetchCart, updateCartItem } from '../../../../../../store/cart/cartThunk.ts';
 import { selectUser } from '../../../../../../store/users/usersSlice.ts';
 import { enqueueSnackbar } from 'notistack';
+import { Link } from 'react-router-dom';
+import { COLORS, SPACING } from '../../../../../../globalStyles/stylesObjects.ts';
 
 interface Props {
   product: ICartItem;
+  isFirst: boolean;
 }
 
-const Cart: React.FC<Props> = ({ product }) => {
+const Cart: React.FC<Props> = ({ product, isFirst }) => {
   const user = useAppSelector(selectUser);
   const cart = useAppSelector(cartFromSlice);
   const dispatch = useAppDispatch();
@@ -29,8 +32,8 @@ const Cart: React.FC<Props> = ({ product }) => {
       const existingProduct = cart.products.find((item) => item.product.id === product.id);
       if (existingProduct) {
         const amount = existingProduct.quantity + 1;
-        await dispatch(updateCartItem({cartId: cart.id,  productId: product.id, quantity: amount, token: user.token})).unwrap();
-        await dispatch(fetchCart({ token: user.token })).unwrap();
+        await dispatch(updateCartItem({cartId: cart.id,  productId: product.id, quantity: amount})).unwrap();
+        await dispatch(fetchCart()).unwrap();
       }
     } else {
       dispatch(productCardToAdd(product));
@@ -42,8 +45,8 @@ const Cart: React.FC<Props> = ({ product }) => {
       const existingProduct = cart.products.find((item) => item.product.id === product.id);
       if (existingProduct && existingProduct.quantity > 1) {
         const amount = existingProduct.quantity - 1;
-        await dispatch(updateCartItem({cartId: cart.id,  productId: product.id, quantity: amount, token: user.token})).unwrap();
-        await dispatch(fetchCart({ token: user.token })).unwrap();
+        await dispatch(updateCartItem({cartId: cart.id,  productId: product.id, quantity: amount})).unwrap();
+        await dispatch(fetchCart()).unwrap();
       }
     } else {
       dispatch(productCardToRemoveQuantity(product));
@@ -52,8 +55,8 @@ const Cart: React.FC<Props> = ({ product }) => {
 
   const deleteProductFromCart = async (id: number) => {
     if (user && (user.role === userRoleClient) && cart) {
-      await dispatch(deleteItemCart({cartId: cart.id, productId: id, token: user.token})).unwrap();
-      await dispatch(fetchCart({ token: user.token })).unwrap();
+      await dispatch(deleteItemCart({cartId: cart.id, productId: id})).unwrap();
+      await dispatch(fetchCart()).unwrap();
     } else {
       dispatch(deleteProductInCart(id));
     }
@@ -70,13 +73,8 @@ const Cart: React.FC<Props> = ({ product }) => {
         alignItems: "center",
         flexWrap: "wrap",
         justifyContent: "space-between",
-        "@media (max-width: 825px)": {
-          flexWrap: "nowrap",
-        },
-        "@media (max-width: 720px)": {
-          border: "1px solid #e4e4e4",
-          borderRadius: "20px",
-        },
+        borderTop: isFirst ? "none" : `1px solid ${COLORS.background}`,
+        pt: SPACING.sm,
       }}
     >
       <Box
@@ -137,23 +135,33 @@ const Cart: React.FC<Props> = ({ product }) => {
             flexDirection: "column",
           }}
         >
-          <Typography
-            level="h4"
-            sx={{
-              fontSize: "lg",
-              mb: 0.5,
-              fontFamily: "Nunito, sans-serif",
-              wordWrap: "break-word",
-              "@media (max-width: 570px)": {
-                mb: 0,
-                mt: 1.5,
-                fontSize: "md",
-                textAlign: "center",
-              },
+          <Link
+            to={`/product/${product.product.id}`}
+            style={{
+              textDecoration: 'none',
             }}
           >
-            {product.product.productName}
-          </Typography>
+            <Typography
+              level="h4"
+              sx={{
+                fontSize: "lg",
+                mb: 0.5,
+                fontFamily: "Nunito, sans-serif",
+                wordWrap: "break-word",
+                '&:hover': {
+                  color: COLORS.primary,
+                },
+                "@media (max-width: 570px)": {
+                  mb: 0,
+                  mt: 1.5,
+                  fontSize: "md",
+                  textAlign: "center",
+                },
+              }}
+            >
+              {product.product.productName}
+            </Typography>
+          </Link>
           <Typography
             level="h3"
             sx={{
