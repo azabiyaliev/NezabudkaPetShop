@@ -203,7 +203,7 @@ const ProductCard:React.FC<Props> = ({ product, cart }) => {
             color: 'inherit',
             cursor: 'pointer',
             margin: SPACING.xs,
-            height: '80px',
+            height: '75px',
           }}
         >
           <Typography
@@ -227,6 +227,7 @@ const ProductCard:React.FC<Props> = ({ product, cart }) => {
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'end',
+            height: '50px',
           }}
         >
           <Box>
@@ -247,15 +248,15 @@ const ProductCard:React.FC<Props> = ({ product, cart }) => {
                   textDecoration: 'line-through',
                   color: COLORS.text,
                 }}>
-                  {product.productPrice} сом
+                  {product.productPrice.toLocaleString('ru-RU').replace(/,/g, ' ')} сом
                 </Typography>
                 <Typography fontWeight={600} sx={{ color: COLORS.warning }}>
-                  {product.promoPrice} сом
+                  {product.promoPrice && product.promoPrice.toLocaleString('ru-RU').replace(/,/g, ' ')} сом
                 </Typography>
               </>
             ) : (
               <Typography fontWeight={600}>
-                {product.productPrice} сом
+                {product.productPrice.toLocaleString('ru-RU').replace(/,/g, ' ')} сом
               </Typography>
             )}
           </Box>

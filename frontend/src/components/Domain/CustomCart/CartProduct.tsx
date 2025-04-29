@@ -9,69 +9,105 @@ import { enqueueSnackbar } from 'notistack';
 import { deleteItemCart, fetchCart } from '../../../store/cart/cartThunk.ts';
 import { selectUser } from '../../../store/users/usersSlice.ts';
 import { cartFromSlice, deleteProductInCart } from '../../../store/cart/cartSlice.ts';
+import { Link } from 'react-router-dom';
+import { COLORS } from '../../../globalStyles/stylesObjects.ts';
 
 interface Props {
   productCart: ICartItem;
+  closeCart: () => void;
 }
-const CartProduct: React.FC<Props> = ({ productCart }) => {
+
+const CartProduct: React.FC<Props> = ({ productCart, closeCart }) => {
   const user = useAppSelector(selectUser);
   const cart = useAppSelector(cartFromSlice);
   const dispatch = useAppDispatch();
 
   const deleteProductFromCart = async (id: number) => {
-    if (user && (user.role === userRoleClient) && cart) {
-      await dispatch(deleteItemCart({cartId: cart.id, productId: id, token: user.token})).unwrap();
-      await dispatch(fetchCart({ token: user.token })).unwrap();
+    if (user && user.role === userRoleClient && cart) {
+      await dispatch(deleteItemCart({ cartId: cart.id, productId: id })).unwrap();
+      await dispatch(fetchCart()).unwrap();
     } else {
       dispatch(deleteProductInCart(id));
     }
 
-    enqueueSnackbar("Данный товар успешно удален из корзины!", {
-      variant: "success",
+    enqueueSnackbar('Данный товар успешно удален из корзины!', {
+      variant: 'success',
     });
   };
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-      }}
-    >
-      <Box>
-        <img
-          style={{
-            width: "80px",
-            height: "80px",
-            objectFit: 'contain',
-          }}
-          src={apiUrl + productCart.product.productPhoto}
-          alt={productCart.product.productName}
-        />
-      </Box>
-      <Box sx={{ marginLeft: "20px" }}>
-        <Typography sx={{ fontFamily: "Nunito, sans-serif" }}>
-          {productCart.product.productName}
-        </Typography>
-        <Typography
-          level="body-sm"
-          sx={{ marginTop: "10px", fontFamily: "Nunito, sans-serif" }}
+    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+      <Box
+        sx={{
+          width: 80,
+          height: 80,
+          backgroundColor: '#f5f5f5',
+          borderRadius: 1,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexShrink: 0,
+        }}
+      >
+        <Link
+          to={`/product/${productCart.product.id}`}
+          onClick={closeCart}
+          style={{ display: 'block', width: '100%', height: '100%', backgroundColor: 'white' }}
         >
-          {productCart.quantity} x
-          <span
+          <img
+            src={apiUrl + productCart.product.productPhoto}
+            alt={productCart.product.productName}
             style={{
-              color: "rgba(250, 179, 1, 1)",
-              marginLeft: "5px",
+              maxWidth: '100%',
+              maxHeight: '100%',
+              objectFit: 'contain',
+              display: 'block',
+              margin: 'auto',
+              backgroundColor: 'white'
+            }}
+          />
+        </Link>
+      </Box>
+
+      <Box sx={{ flexGrow: 1 }}>
+        <Link
+          to={`/product/${productCart.product.id}`}
+          onClick={closeCart}
+          style={{ textDecoration: 'none', color: 'inherit' }}
+        >
+          <Typography
+            sx={{
+              fontFamily: 'Nunito, sans-serif',
+              fontWeight: 600,
+              display: '-webkit-box',
+              WebkitLineClamp: 3,
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              '&:hover': { color: COLORS.primary },
             }}
           >
-            <b>{productCart.product.productPrice} сом</b>
+            {productCart.product.productName}
+          </Typography>
+        </Link>
+        <Typography
+          level="body-sm"
+          sx={{ marginTop: '5px', fontFamily: 'Nunito, sans-serif' }}
+        >
+          {productCart.quantity} x{' '}
+          <span
+            style={{
+              color: 'rgba(250, 179, 1, 1)',
+              marginLeft: '5px',
+            }}
+          >
+            <b>{productCart.product.productPrice.toLocaleString('ru-RU').replace(/,/g, ' ')} сом</b>
           </span>
         </Typography>
       </Box>
-      <Box sx={{ ml: "auto" }}>
-        <Button
-          size="small"
-          onClick={() => deleteProductFromCart(productCart.product.id)}
-        >
+
+      <Box sx={{ ml: 1 }}>
+        <Button size="small" onClick={() => deleteProductFromCart(productCart.product.id)}>
           <ClearOutlinedIcon fontSize="small" />
         </Button>
       </Box>
