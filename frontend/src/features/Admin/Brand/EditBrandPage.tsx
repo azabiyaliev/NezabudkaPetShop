@@ -14,6 +14,7 @@ import { useEffect } from 'react';
 import { editBrand, getOneBrand } from '../../../store/brands/brandsThunk.ts';
 import { useNavigate, useParams } from 'react-router-dom';
 import { enqueueSnackbar } from 'notistack';
+import { userRoleAdmin, userRoleSuperAdmin } from '../../../globalConstants.ts';
 
 const EditBrandPage = () => {
   const user = useAppSelector(selectUser);
@@ -36,7 +37,7 @@ const EditBrandPage = () => {
   }
 
   const addNewBrand = async (newBrand: IBrandForm) => {
-    if (user) {
+    if (user && (user.role === userRoleAdmin || user.role === userRoleSuperAdmin)) {
       if (id) {
         await dispatch(
           editBrand({ token: user.token, brand: newBrand }),

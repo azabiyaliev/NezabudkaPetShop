@@ -1,6 +1,6 @@
 import { IBrand } from '../../../../../types';
 import React from 'react';
-import { apiUrl } from '../../../../../globalConstants.ts';
+import { apiUrl, userRoleAdmin, userRoleSuperAdmin } from '../../../../../globalConstants.ts';
 import EditNoteOutlinedIcon from '@mui/icons-material/EditNoteOutlined';
 import { Button } from '@mui/material';
 import DeleteSweepOutlinedIcon from '@mui/icons-material/DeleteSweepOutlined';
@@ -28,7 +28,7 @@ const Brand: React.FC<Props> = ({ brand, index }) => {
   }
 
   const deleteThisBrand = async (id: number) => {
-    if (user && user.role === "admin") {
+    if (user && (user.role === userRoleAdmin || user.role === userRoleSuperAdmin)) {
       await dispatch(brandeDelete({ brandId: id, token: user.token })).unwrap();
       toast.success("Бренд успешно удален!");
       await dispatch(getBrands()).unwrap();
