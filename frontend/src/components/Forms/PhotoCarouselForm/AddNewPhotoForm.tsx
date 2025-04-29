@@ -159,8 +159,8 @@ const AddNewPhotoForm = () => {
                 src={newPhoto.photo instanceof File ? URL.createObjectURL(newPhoto.photo) : apiUrl + newPhoto.photo}
                 alt="Превью фото"
                 style={{
-                  width: '80px',
-                  height: '80px',
+                  width: '200px',
+                  height: '100px',
                   objectFit: 'cover',
                   borderRadius: '8px',
                   marginRight: '10px',
