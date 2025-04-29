@@ -109,13 +109,13 @@ const ProductCard:React.FC<Props> = ({ product, cart }) => {
       sx={{
         display: 'flex',
         flexDirection: 'column',
+        justifyContent: 'space-between',
         padding: '10px',
         width: 233,
         borderRadius: 3,
         boxShadow: 3,
         overflow: 'hidden',
         position: 'relative',
-        margin: `0 ${SPACING.xs} ${SPACING.sm}`,
         '&:hover': {
           transform: 'scale(1.02)',
           boxShadow: 6,

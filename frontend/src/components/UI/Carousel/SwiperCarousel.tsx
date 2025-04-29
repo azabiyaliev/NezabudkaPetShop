@@ -148,7 +148,7 @@ const SwiperCarousel = () => {
                       <Button
                         onClick={(e) => {
                           e.preventDefault();
-                          window.location.href = "/catalog";
+                          window.location.href = "/all-products";
                         }}
                         sx={{
                           mt: 5,
