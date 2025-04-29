@@ -1,4 +1,4 @@
-import { Box, Collapse, ListItemButton, Typography } from '@mui/material';
+import { Box, Collapse, Container, ListItemButton, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
 import { getProducts, getProductsByCategory, } from '../../../store/products/productsThunk.ts';
