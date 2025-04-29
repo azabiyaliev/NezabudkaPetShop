@@ -14,7 +14,11 @@ const TopSellingProducts:React.FC<Props> = ({ products, cart }) => {
         display: 'flex',
         flexWrap: 'wrap',
         justifyContent: 'space-between',
-        alignItems: 'center'
+        alignItems: 'center',
+        padding: '20px 0',
+        "@media (max-width: 665px)": {
+          justifyContent: 'center',
+        },
       }}>
         {products.map((product) => (
           <ProductCard key={product.id} product={product} cart={cart} />
