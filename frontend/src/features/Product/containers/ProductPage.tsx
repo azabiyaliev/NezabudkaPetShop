@@ -49,6 +49,13 @@ const ProductPage = () => {
     }
   }, [dispatch, id, product]);
 
+  useEffect(() => {
+    if (user && user.role === userRoleClient) {
+      dispatch(fetchCart());
+    } else {
+      dispatch(getFromLocalStorage());
+    }
+  }, [dispatch, user]);
 
   useEffect(() => {
     if (id) {
@@ -61,13 +68,7 @@ const ProductPage = () => {
 
   useEffect(() => {
     dispatch(fetchDeliveryPage());
-
-    if (user && user.role === userRoleClient) {
-      dispatch(fetchCart());
-    } else {
-      dispatch(getFromLocalStorage());
-    }
-  }, [dispatch, user]);
+  }, [dispatch]);
 
   useEffect(() => {
     if (cartItem && cartItem.quantity !== quantity) {

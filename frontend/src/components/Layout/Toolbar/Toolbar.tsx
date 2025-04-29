@@ -295,7 +295,7 @@ const MainToolbar = () => {
                 >
                   <Box
                     component={NavLink}
-                    to="/catalog"
+                    to="/all-products"
                     sx={{
                       fontSize: "20px",
                       textDecoration: "none",

@@ -6,6 +6,19 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateProductsDto } from '../dto/createProductsDto';
 
+interface ProductFilters {
+  brands?: string[] | string;
+  sizes?: string[] | string;
+  ages?: string[] | string;
+  weights?: number[] | number | string[] | string;
+  foodClasses?: string[] | string;
+  manufacturers?: string[] | string;
+  minPrice?: number | string;
+  maxPrice?: number | string;
+  existence?: boolean | string;
+  sales?: boolean | string;
+}
+
 @Injectable()
 export class ProductsService {
   constructor(private prismaService: PrismaService) {}
@@ -410,9 +423,7 @@ export class ProductsService {
     // Извлекаем уникальные значения для всех атрибутов
     const brands = [
       ...new Set(
-        products
-          .filter((p) => p.brand !== null && p.brand !== undefined)
-          .map((p) => (p.brand as any).title),
+        products.filter((p) => p.brand?.title).map((p) => p.brand!.title),
       ),
     ];
     const sizes = [
@@ -534,7 +545,10 @@ export class ProductsService {
     return products;
   }
 
-  async getFilteredProducts(categoryId: number, filters: any) {
+  async getFilteredProducts(
+    categoryId: number | undefined,
+    filters: ProductFilters,
+  ) {
     const {
       brands,
       sizes,
@@ -548,19 +562,19 @@ export class ProductsService {
       sales,
     } = filters;
 
-    // Строим условия WHERE для фильтрации
-    const whereConditions: any = {
-      OR: [
+    const whereConditions: Record<string, unknown> = {};
+
+    if (categoryId) {
+      whereConditions.OR = [
         { categoryId },
         {
           category: {
             parentId: categoryId,
           },
         },
-      ],
-    };
+      ];
+    }
 
-    // Фильтрация по бренду
     if (brands) {
       const brandValues = Array.isArray(brands) ? brands : [brands];
       whereConditions.brand = {
@@ -570,7 +584,6 @@ export class ProductsService {
       };
     }
 
-    // Фильтрация по размеру
     if (sizes) {
       const sizeValues = Array.isArray(sizes) ? sizes : [sizes];
       whereConditions.productSize = {
@@ -578,7 +591,6 @@ export class ProductsService {
       };
     }
 
-    // Фильтрация по возрасту
     if (ages) {
       const ageValues = Array.isArray(ages) ? ages : [ages];
       whereConditions.productAge = {
@@ -586,17 +598,15 @@ export class ProductsService {
       };
     }
 
-    // Фильтрация по весу
     if (weights) {
       const weightValues = Array.isArray(weights)
-        ? weights.map(Number)
+        ? (weights as (number | string)[]).map(Number)
         : [Number(weights)];
       whereConditions.productWeight = {
         in: weightValues,
       };
     }
 
-    // Фильтрация по классу корма
     if (foodClasses) {
       const foodClassValues = Array.isArray(foodClasses)
         ? foodClasses
@@ -606,7 +616,6 @@ export class ProductsService {
       };
     }
 
-    // Фильтрация по производителю
     if (manufacturers) {
       const manufacturerValues = Array.isArray(manufacturers)
         ? manufacturers
@@ -616,30 +625,28 @@ export class ProductsService {
       };
     }
 
-    // Фильтрация по цене
     if (minPrice || maxPrice) {
       whereConditions.productPrice = {};
 
       if (minPrice) {
-        whereConditions.productPrice.gte = Number(minPrice);
+        (whereConditions.productPrice as Record<string, number>).gte =
+          Number(minPrice);
       }
 
       if (maxPrice) {
-        whereConditions.productPrice.lte = Number(maxPrice);
+        (whereConditions.productPrice as Record<string, number>).lte =
+          Number(maxPrice);
       }
     }
 
-    // Фильтрация по наличию
-    if (existence === 'true') {
+    if (existence === 'true' || existence === true) {
       whereConditions.existence = true;
     }
 
-    // Фильтрация по акциям
-    if (sales === 'true') {
+    if (sales === 'true' || sales === true) {
       whereConditions.sales = true;
     }
 
-    // Выполняем запрос с фильтрами
     const filteredProducts = await this.prismaService.products.findMany({
       where: whereConditions,
       include: {

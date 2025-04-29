@@ -145,4 +145,9 @@ export class ProductsController {
   async getCategoryFilterOptions(@Param('categoryId') categoryId: string) {
     return this.productsService.getCategoryFilterOptions(parseInt(categoryId));
   }
+
+  @Post('filter/all')
+  async filterAllProducts(@Body() filters: any) {
+    return await this.productsService.getFilteredProducts(undefined, filters);
+  }
 }
