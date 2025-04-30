@@ -4,7 +4,7 @@ import {
   addProduct,
   editProduct,
   getAllProductsByCategory,
-  getFilteredProducts,
+  getFilteredProducts, getFilteredProductsWithoutCategory,
   getOneProduct,
   getProducts,
   getProductsByBrand,
@@ -142,6 +142,17 @@ const productsSlice = createSlice({
       .addCase(getFilteredProducts.rejected, (state) => {
         state.loading = false;
         state.error = true;
+      })
+      .addCase(getFilteredProductsWithoutCategory.pending, (state) => {
+        state.loading = true;
+        state.error = false;
+      })
+      .addCase(getFilteredProductsWithoutCategory.fulfilled, (state, action) => {
+        state.loading = false;
+        state.products = action.payload;
+      })
+      .addCase(getFilteredProductsWithoutCategory.rejected, (state) => {
+        state.loading = false;
       });
   },
 });

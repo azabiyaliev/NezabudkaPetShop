@@ -47,13 +47,6 @@ const Carts: React.FC<Props> = ({ products, deleteAllProduct}) => {
               },
             }}
           >
-            <span
-              style={{
-                marginRight: "10px",
-              }}
-            >
-              1.
-            </span>{" "}
             Корзина
           </Typography>
           <Link
@@ -128,10 +121,11 @@ const Carts: React.FC<Props> = ({ products, deleteAllProduct}) => {
             </Tooltip>
           </Link>
         </Box>
-        {products.map((product) => (
+        {products.map((product, index) => (
           <Cart
             product={product}
             key={product.product.id}
+            isFirst={index === 0}
           />
         ))}
       </Box>
