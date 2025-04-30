@@ -505,7 +505,8 @@ export class SeedService {
         const randomManufacturer =
           manufacturers[Math.floor(Math.random() * manufacturers.length)];
         const randomAge = ages[Math.floor(Math.random() * ages.length)];
-        const randomTopSelling = topSelling[Math.floor(Math.random() * topSelling.length)];
+        const randomTopSelling =
+          topSelling[Math.floor(Math.random() * topSelling.length)];
 
         const existence = Math.random() > 0.1; // 90% товаров в наличии
         const onSale = Math.random() > 0.8; // 20% товаров на акции

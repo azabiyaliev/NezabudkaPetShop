@@ -45,6 +45,9 @@ import { DeliveryPageModule } from './delivery_page/delivery_page.module';
 import { DeliveryPageController } from './delivery_page/delivery_page.conrtoller';
 import { DeliveryPageService } from './delivery_page/delivery_page.service';
 import { CommonModule } from './common/common.module';
+import { AdminInfoModule } from './admin_info/admin_info.module';
+import { AdminInfoController } from './admin_info/admin_info.controller';
+import { AdminInfoService } from './admin_info/admin_info.service';
 
 @Module({
   imports: [
@@ -68,6 +71,7 @@ import { CommonModule } from './common/common.module';
     BonusPageModule,
     DeliveryPageModule,
     CommonModule,
+    AdminInfoModule,
   ],
   controllers: [
     AppController,
@@ -81,6 +85,7 @@ import { CommonModule } from './common/common.module';
     CartItemsController,
     BonusPageController,
     DeliveryPageController,
+    AdminInfoController,
   ],
   providers: [
     AppService,
@@ -98,6 +103,7 @@ import { CommonModule } from './common/common.module';
     CartItemsService,
     BonusProgramService,
     DeliveryPageService,
+    AdminInfoService,
   ],
 })
 export class AppModule {}
