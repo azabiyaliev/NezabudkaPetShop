@@ -5,12 +5,12 @@ import EditNoteOutlinedIcon from '@mui/icons-material/EditNoteOutlined';
 import { Button } from '@mui/material';
 import DeleteSweepOutlinedIcon from '@mui/icons-material/DeleteSweepOutlined';
 import { useNavigate } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../../../../../app/hooks.ts';
+import { useAppDispatch, useAppSelector, usePermission } from '../../../../../app/hooks.ts';
 import { selectUser } from '../../../../../store/users/usersSlice.ts';
 import { brandeDelete, getBrands } from '../../../../../store/brands/brandsThunk.ts';
-import { toast } from 'react-toastify';
 import noImage from '../../../../../assets/no-image.jpg';
 import { Link } from '@mui/joy';
+import { enqueueSnackbar } from 'notistack';
 
 interface Props {
   brand: IBrand;
@@ -19,6 +19,7 @@ interface Props {
 
 const Brand: React.FC<Props> = ({ brand, index }) => {
   const user = useAppSelector(selectUser);
+  const can = usePermission(user);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   let brandImage = noImage;
@@ -28,9 +29,9 @@ const Brand: React.FC<Props> = ({ brand, index }) => {
   }
 
   const deleteThisBrand = async (id: number) => {
-    if (user && (user.role === userRoleAdmin || user.role === userRoleSuperAdmin)) {
+    if (user && (can([userRoleAdmin, userRoleSuperAdmin]))) {
       await dispatch(brandeDelete({ brandId: id, token: user.token })).unwrap();
-      toast.success("Бренд успешно удален!");
+      enqueueSnackbar("Бренд успешно удален!", { variant: 'success' });
       await dispatch(getBrands()).unwrap();
     }
   };

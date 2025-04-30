@@ -1,7 +1,7 @@
 import { Box } from '@mui/material';
 import AdminBar from '../AdminProfile/AdminBar.tsx';
 import BrandForm from '../../../components/Forms/BrandForm/BrandForm.tsx';
-import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
+import { useAppDispatch, useAppSelector, usePermission } from '../../../app/hooks.ts';
 import { selectUser } from '../../../store/users/usersSlice.ts';
 import {
   brandFromSlice,
@@ -20,6 +20,7 @@ const EditBrandPage = () => {
   const user = useAppSelector(selectUser);
   let brand = useAppSelector(brandFromSlice);
   const editError = useAppSelector(editErrorFromSlice);
+  const can = usePermission(user);
   const dispatch = useAppDispatch();
   const loading = useAppSelector(editLoadingFromSlice);
   const { id } = useParams();
@@ -37,7 +38,7 @@ const EditBrandPage = () => {
   }
 
   const addNewBrand = async (newBrand: IBrandForm) => {
-    if (user && (user.role === userRoleAdmin || user.role === userRoleSuperAdmin)) {
+    if (user && (can([userRoleAdmin, userRoleSuperAdmin]))) {
       if (id) {
         await dispatch(
           editBrand({ token: user.token, brand: newBrand }),
