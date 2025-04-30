@@ -16,7 +16,7 @@ const TopSellingProducts:React.FC<Props> = ({ products, cart }) => {
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: '20px 0',
-        "@media (max-width: 665px)": {
+        "@media (max-width: 666px)": {
           justifyContent: 'center',
         },
       }}>

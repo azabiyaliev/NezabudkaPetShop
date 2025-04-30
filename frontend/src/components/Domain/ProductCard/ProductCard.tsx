@@ -120,7 +120,7 @@ const ProductCard:React.FC<Props> = ({ product, cart }) => {
         boxShadow: 3,
         overflow: 'hidden',
         position: 'relative',
-        mb: SPACING.md,
+        m: `${SPACING.md} ${SPACING.xs}`,
         '&:hover': {
           transform: 'scale(1.02)',
           boxShadow: 6,
