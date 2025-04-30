@@ -16,6 +16,7 @@ import FacebookIcon from '@mui/icons-material/Facebook';
 import { selectLoginError } from '../../../store/users/usersSlice.ts';
 import ModalWindow from '../../UI/ModalWindow/ModalWindowEmail.tsx';
 import { regEmail, userRoleAdmin, userRoleSuperAdmin } from '../../../globalConstants.ts';
+import { clearCart } from '../../../store/cart/cartSlice.ts';
 
 const LoginUser = () => {
   const dispatch = useAppDispatch();
@@ -48,7 +49,7 @@ const LoginUser = () => {
     e.preventDefault();
     try {
       const loggedInUser = await dispatch(login(form)).unwrap();
-
+      dispatch(clearCart())
       if (
         loggedInUser.user.role === userRoleAdmin ||
         loggedInUser.user.role === userRoleSuperAdmin

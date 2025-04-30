@@ -22,7 +22,7 @@ const CartPage = () => {
   }, [dispatch, user]);
 
   useEffect(() => {
-    if (user && (user.role === userRoleClient)) {
+    if (!user) {
       dispatch(setToLocalStorage(cart));
     }
   }, [dispatch, cart, user]);

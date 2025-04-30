@@ -100,10 +100,6 @@ const OrderForm = () => {
     dispatch(fetchDeliveryPage()).unwrap();
   }, [dispatch]);
 
-  useEffect(() => {
-    dispatch(fetchDeliveryPage()).unwrap();
-  }, [dispatch]);
-
   const handlePaymentMethodChange = (method: PaymentMethod) => {
     setForm(prev => ({
       ...prev,
