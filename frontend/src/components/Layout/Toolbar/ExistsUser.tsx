@@ -31,9 +31,13 @@ const ExistsUser = () => {
     setIsDrawerOpen(open);
   };
 
-  const userLogout = () => {
-    dispatch(logout());
-    navigate("/");
+  const userLogout = async () => {
+    try {
+      await dispatch(logout()).unwrap();
+      navigate("/", { replace: true });
+    } catch (e) {
+      console.error("Ошибка при выходе:", e);
+    }
   };
 
   const toggleBrand = (open: boolean) => {
@@ -240,7 +244,19 @@ const ExistsUser = () => {
             </List>
           )}
           <Divider />
-          <ListItem onClick={userLogout} style={{ marginTop: "30px" }}>
+          <ListItem
+            component="button"
+            onClick={userLogout}
+            style={{
+              marginTop: "30px",
+              border: "none",
+              background: "none",
+              padding: 0,
+              textAlign: "left",
+              width: "100%",
+              cursor: "pointer",
+            }}
+          >
             <LogoutOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
             <ListItemText primary="Выйти" className="text-black" />
           </ListItem>

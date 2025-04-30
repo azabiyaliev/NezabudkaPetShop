@@ -5,11 +5,12 @@ interface PaginationProps<T> {
   items: T[];
   renderItem: (item: T) => React.ReactNode;
   columns?: number;
+  rows?: number;
 }
 
-const CustomPagination = <T,>({ items, renderItem, columns = 1 }: PaginationProps<T>) => {
+const CustomPagination = <T,>({ items, renderItem, columns = 4, rows = 5 }: PaginationProps<T>) => {
   const [page, setPage] = useState(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = columns * rows;
 
   const pageCount = Math.ceil(items.length / itemsPerPage);
   const paginatedItems = items.slice((page - 1) * itemsPerPage, page * itemsPerPage);
@@ -18,14 +19,13 @@ const CustomPagination = <T,>({ items, renderItem, columns = 1 }: PaginationProp
     <Box mt={3}>
       <Box
         sx={{
-          display: 'grid',
-          gridTemplateColumns: `repeat(${columns}, 1fr)`,
-          gap: 3,
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: '15px',
+          justifyContent: 'center',
         }}
       >
-        {paginatedItems.map((item, index) => (
-          <div key={index}>{renderItem(item)}</div>
-        ))}
+        {paginatedItems.map((item) => renderItem(item))}
       </Box>
       <Box mt={3} display="flex" justifyContent="center">
         <Pagination

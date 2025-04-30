@@ -4,7 +4,11 @@ import { useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { selectProductsByCategory } from '../../store/products/productsSlice';
 import axiosApi from '../../axiosApi';
-import { getFilteredProducts, getProductsByCategory } from '../../store/products/productsThunk';
+import {
+  getFilteredProducts,
+  getFilteredProductsWithoutCategory,
+  getProductsByCategory
+} from '../../store/products/productsThunk';
 
 // Интерфейс для опций фильтров
 interface FilterOptions {
@@ -127,50 +131,49 @@ const Filters = () => {
   }, [id]);
   
   // Обработчик изменения чекбоксов фильтров
-  const handleFilterChange = (filterType: keyof SelectedFilters, value: any) => {
+
+  const handleFilterChange = (filterType: keyof SelectedFilters, value: string | boolean | number | null) => {
     setSelectedFilters(prev => {
-      const currentValues = prev[filterType] as any[];
-      
-      let updatedFilters;
+      const currentValues = prev[filterType];
+
+      let updatedFilters: SelectedFilters;
+
       if (Array.isArray(currentValues)) {
-        // Если значение уже выбрано - удаляем его, иначе добавляем
+        const arrayValues = currentValues as string[];
+
         updatedFilters = {
           ...prev,
-          [filterType]: currentValues.includes(value)
-            ? currentValues.filter(v => v !== value)
-            : [...currentValues, value]
-        };
+          [filterType]: arrayValues.includes(value as string)
+            ? arrayValues.filter(v => v !== value)
+            : [...arrayValues, value as string],
+        } as SelectedFilters;
       } else {
-        // Для булевых фильтров (existence, sales)
         updatedFilters = {
           ...prev,
-          [filterType]: value
+          [filterType]: value as boolean | number | null,
         };
       }
-
-      // Автоматически применяем фильтры после обновления состояния
       setTimeout(() => applyFilters(updatedFilters), 0);
-      
+
       return updatedFilters;
     });
   };
-  
+
   // Обработчик изменения диапазона цен
-  const handlePriceChange = (event: Event, newValue: number | number[]) => {
+  const handlePriceChange = (_event: Event, newValue: number | number[]) => {
     if (Array.isArray(newValue)) {
       setPriceRange(newValue as [number, number]);
-      
-      // Автоматически применяем фильтры при изменении ценового диапазона
+
       const updatedFilters = {
         ...selectedFilters,
         minPrice: newValue[0],
         maxPrice: newValue[1]
       };
-      
+
       setTimeout(() => applyFilters(updatedFilters), 300);
     }
   };
-  
+
   // Обработчик изменения полей ввода цен
   const handlePriceInputChange = (type: 'min' | 'max', value: number) => {
     if (type === 'min') {
@@ -188,70 +191,36 @@ const Filters = () => {
     
     setTimeout(() => applyFilters(updatedFilters), 500);
   };
-  
-  // Применение фильтров
-  const applyFilters = (filters = selectedFilters) => {
-    if (!id) return;
-    
-    // Формируем объект с фильтрами для запроса
-    const filtersToApply: Record<string, any> = {};
-    
-    // Добавляем выбранные бренды
-    if (filters.brands.length > 0) {
-      filtersToApply.brands = filters.brands;
+
+  type FiltersToApply = Partial<Pick<SelectedFilters,
+    'brands' | 'sizes' | 'ages' | 'weights' | 'foodClasses' | 'manufacturers' | 'existence' | 'sales' | 'minPrice' | 'maxPrice'
+  >>;
+
+  const applyFilters = (filters: SelectedFilters = selectedFilters) => {
+    const filtersToApply: FiltersToApply = {};
+
+    if (filters.brands.length > 0) filtersToApply.brands = filters.brands;
+    if (filters.sizes.length > 0) filtersToApply.sizes = filters.sizes;
+    if (filters.ages.length > 0) filtersToApply.ages = filters.ages;
+    if (filters.weights.length > 0) filtersToApply.weights = filters.weights;
+    if (filters.foodClasses.length > 0) filtersToApply.foodClasses = filters.foodClasses;
+    if (filters.manufacturers.length > 0) filtersToApply.manufacturers = filters.manufacturers;
+    if (filters.existence !== null) filtersToApply.existence = filters.existence;
+    if (filters.sales !== null) filtersToApply.sales = filters.sales;
+
+    if (filters.minPrice !== null) filtersToApply.minPrice = filters.minPrice;
+    if (filters.maxPrice !== null) filtersToApply.maxPrice = filters.maxPrice;
+
+    if (id) {
+      dispatch(getFilteredProducts({
+        categoryId: Number(id),
+        filters: filtersToApply
+      }));
+    } else {
+      dispatch(getFilteredProductsWithoutCategory(filtersToApply));
     }
-    
-    // Добавляем выбранные размеры
-    if (filters.sizes.length > 0) {
-      filtersToApply.sizes = filters.sizes;
-    }
-    
-    // Добавляем выбранные возрасты
-    if (filters.ages.length > 0) {
-      filtersToApply.ages = filters.ages;
-    }
-    
-    // Добавляем выбранные веса
-    if (filters.weights.length > 0) {
-      filtersToApply.weights = filters.weights;
-    }
-    
-    // Добавляем выбранные классы корма
-    if (filters.foodClasses.length > 0) {
-      filtersToApply.foodClasses = filters.foodClasses;
-    }
-    
-    // Добавляем выбранных производителей
-    if (filters.manufacturers.length > 0) {
-      filtersToApply.manufacturers = filters.manufacturers;
-    }
-    
-    // Добавляем фильтр по наличию
-    if (filters.existence !== null) {
-      filtersToApply.existence = filters.existence;
-    }
-    
-    // Добавляем фильтр по акциям
-    if (filters.sales !== null) {
-      filtersToApply.sales = filters.sales;
-    }
-    
-    // Добавляем диапазон цен
-    if (priceRange[0] > 0) {
-      filtersToApply.minPrice = priceRange[0];
-    }
-    
-    if (priceRange[1] < 5000) {
-      filtersToApply.maxPrice = priceRange[1];
-    }
-    
-    // Отправляем действие для фильтрации продуктов
-    dispatch(getFilteredProducts({
-      categoryId: Number(id),
-      filters: filtersToApply
-    }));
   };
-  
+
   // Сброс фильтров
   const resetFilters = () => {
     setSelectedFilters({

@@ -71,7 +71,7 @@ export class ProductsController {
       const photoPath = await this.imageProcessorService.convertToWebP(
         file,
         './public/productImg',
-        'PRODUCT'
+        'PRODUCT',
       );
       productDto.productPhoto = photoPath;
     }
@@ -102,7 +102,7 @@ export class ProductsController {
       const photoPath = await this.imageProcessorService.convertToWebP(
         file,
         './public/productImg',
-        'PRODUCT'
+        'PRODUCT',
       );
       createProductDto.productPhoto = photoPath;
     }
@@ -126,15 +126,12 @@ export class ProductsController {
   }
 
   @Get('productsByCategory/:id')
-  async getProductsByCategory(
-    @Param('id') id: string,
-    @Query() filters: any,
-  ) {
+  async getProductsByCategory(@Param('id') id: string, @Query() filters: any) {
     // Если есть параметры фильтрации, используем метод getFilteredProducts
     if (Object.keys(filters).length > 0) {
       return this.productsService.getFilteredProducts(parseInt(id), filters);
     }
-    
+
     // Иначе используем существующий метод
     return this.productsService.getProductsByCategoryId(parseInt(id));
   }
@@ -142,5 +139,10 @@ export class ProductsController {
   @Get('categories/:categoryId/filter-options')
   async getCategoryFilterOptions(@Param('categoryId') categoryId: string) {
     return this.productsService.getCategoryFilterOptions(parseInt(categoryId));
+  }
+
+  @Post('filter/all')
+  async filterAllProducts(@Body() filters: any) {
+    return await this.productsService.getFilteredProducts(undefined, filters);
   }
 }
