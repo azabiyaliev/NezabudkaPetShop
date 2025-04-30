@@ -75,7 +75,7 @@ export class ImageProcessorService {
 
     if (typeof options === 'string' && options in RESIZE_PRESETS) {
       // Если передано имя пресета
-      resizeOptions = RESIZE_PRESETS[options as ResizePresetType];
+      resizeOptions = RESIZE_PRESETS[options];
     } else if (options && typeof options !== 'string') {
       // Если переданы конкретные параметры
       resizeOptions = options;
