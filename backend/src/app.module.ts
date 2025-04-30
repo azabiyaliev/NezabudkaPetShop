@@ -48,6 +48,9 @@ import { CommonModule } from './common/common.module';
 import { AdminInfoModule } from './admin_info/admin_info.module';
 import { AdminInfoController } from './admin_info/admin_info.controller';
 import { AdminInfoService } from './admin_info/admin_info.service';
+import {ClientInfoModule} from "./client_info/client_info.module";
+import {ClientInfoController} from "./client_info/client_info.controller";
+import {ClientInfoService} from "./client_info/client_info.service";
 
 @Module({
   imports: [
@@ -72,6 +75,7 @@ import { AdminInfoService } from './admin_info/admin_info.service';
     DeliveryPageModule,
     CommonModule,
     AdminInfoModule,
+    ClientInfoModule,
   ],
   controllers: [
     AppController,
@@ -86,6 +90,7 @@ import { AdminInfoService } from './admin_info/admin_info.service';
     BonusPageController,
     DeliveryPageController,
     AdminInfoController,
+    ClientInfoController,
   ],
   providers: [
     AppService,
@@ -104,6 +109,7 @@ import { AdminInfoService } from './admin_info/admin_info.service';
     BonusProgramService,
     DeliveryPageService,
     AdminInfoService,
+    ClientInfoService,
   ],
 })
 export class AppModule {}

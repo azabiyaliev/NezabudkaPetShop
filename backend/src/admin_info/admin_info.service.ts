@@ -18,11 +18,11 @@ export class AdminInfoService {
     });
   }
   async updateAdminInfo(id: number, adminInfoDto: AdminInfoDto) {
-    const bonusPage = await this.prisma.adminInfo.findUnique({
+    const adminInfo = await this.prisma.adminInfo.findUnique({
       where: { id },
     });
-    if (!bonusPage) {
-      throw new NotFoundException(`Сайт с id = ${id} не найден!`);
+    if (!adminInfo) {
+      throw new NotFoundException(`Инофрмация для админа id = ${id} не найден!`);
     }
 
     return this.prisma.adminInfo.update({
