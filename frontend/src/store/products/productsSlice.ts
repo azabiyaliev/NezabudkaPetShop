@@ -18,6 +18,7 @@ interface ProductsState {
   categoryProducts: ProductResponse[];
   product: ProductResponse | null;
   brands: SubcategoryWithBrand[];
+  brandProducts: ProductResponse[];
   promotionalProducts: ProductResponse[];
   loading: boolean;
   error: boolean;
@@ -27,6 +28,7 @@ const initialState: ProductsState = {
   brands: [],
   categoryProducts: [],
   products: [],
+  brandProducts: [],
   promotionalProducts: [],
   product: null,
   loading: false,
@@ -37,6 +39,7 @@ export const addProductLoading = (state: RootState) => state.products.loading;
 export const selectProductsByCategory = (state: RootState) => state.products.categoryProducts;
 export const selectProducts = (state: RootState) => state.products.products;
 export const selectPromotionalProducts = (state: RootState) => state.products.promotionalProducts;
+export const selectBrandProducts = (state: RootState) => state.products.brandProducts;
 export const selectProduct = (state: RootState) => state.products.product;
 
 const productsSlice = createSlice({
@@ -101,9 +104,9 @@ const productsSlice = createSlice({
         state.loading = true;
       })
       .addCase(getProductsByBrand.fulfilled, (state, {payload: products}) => {
-        state.products = [];
+        state.brandProducts = [];
         state.loading = false;
-        state.products = products;
+        state.brandProducts = products;
       })
       .addCase(getProductsByBrand.rejected, (state) => {
         state.loading = false;
