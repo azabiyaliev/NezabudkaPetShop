@@ -96,6 +96,10 @@ const AllOrders = () => {
 
         {loading ? (
           <CircularProgress />
+        ) : filteredOrders.length === 0 ? (
+          <Typography variant="h6" sx={{ mt: 4 }}>
+            Заказов за выбранный период нет.
+          </Typography>
         ) : (
           <CustomPagination
             items={filteredOrders}
@@ -103,6 +107,7 @@ const AllOrders = () => {
             columns={2}
           />
         )}
+
       </Box>
     </Box>
   );
