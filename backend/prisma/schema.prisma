@@ -291,10 +291,11 @@ model BonusProgramPage {
 }
 
 model DeliveryPage {
-  id    Int    @id @default(autoincrement())
-  text  String
-  price String
-  map   String
+  id                        Int     @id @default(autoincrement())
+  text                      String
+  price                     String
+  map                       String
+  checkoutDeliveryPriceInfo String? @map("checkout_delivery_page_info")
 
   @@map("deliveryPage")
 }

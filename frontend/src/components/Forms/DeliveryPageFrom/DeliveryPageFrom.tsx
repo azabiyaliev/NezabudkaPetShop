@@ -16,6 +16,7 @@ const initialState = {
   text: "",
   price: '',
   map: '',
+  checkoutDeliveryPriceInfo: ''
 }
 
 const DELIVERY_MAP_REGEX = /https:\/\/www\.google\.com\/maps\/d\/u\/\d\/embed\?mid=[A-Za-z0-9_-]+/;
@@ -50,6 +51,13 @@ const DeliveryPageForm = () => {
       price: html,
     }));
   };
+
+  const onChangeEditorCheckoutDeliveryPriceInfo = (html: string) => {
+    setForm((prevState) => ({
+      ...prevState,
+      checkoutDeliveryPriceInfo: html,
+    }));
+  }
 
   const handleMapChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const mapValue = e.target.value;
@@ -140,6 +148,20 @@ const DeliveryPageForm = () => {
               onChange={onChangeEditorPrice}
               error={!form.price}
               helperText={!form.price ? 'Поле обязательно для заполнения' : undefined}
+            />
+
+            <Typography
+              variant="subtitle1"
+              sx={{ mt: 3, mb: 1, alignSelf: 'flex-start', fontWeight: 500 }}
+            >
+              Введите информацию о зонах доставки :
+            </Typography>
+
+            <TextEditor
+              value={form.checkoutDeliveryPriceInfo}
+              onChange={onChangeEditorCheckoutDeliveryPriceInfo}
+              error={!form.checkoutDeliveryPriceInfo}
+              helperText={!form.checkoutDeliveryPriceInfo ? 'Поле обязательно для заполнения' : undefined}
             />
 
             <TextField
