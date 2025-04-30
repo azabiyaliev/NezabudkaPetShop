@@ -44,6 +44,11 @@ export class ProductsController {
     return await this.productsService.getPromotionalProducts();
   }
 
+  @Get('selling')
+  async getTopSellingProducts() {
+    return await this.productsService.getTopSellingProducts();
+  }
+
   @Get(':id')
   async getOneProduct(@Param('id') id: string) {
     return await this.productsService.getProductById(Number(id));
