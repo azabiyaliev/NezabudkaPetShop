@@ -58,8 +58,6 @@ export const updatePhoto = createAsyncThunk<
     }
     await axiosApi.put(`/photos/${photo.id}`, data);
 
-    console.log(photo.link)
-
   } catch (error) {
     console.error(error);
     throw error;

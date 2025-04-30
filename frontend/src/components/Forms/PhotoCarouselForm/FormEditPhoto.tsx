@@ -8,86 +8,101 @@ import { enqueueSnackbar } from 'notistack';
 import {
   Box, Button, Paper, Typography, TextField,
 } from '@mui/material';
-import FileInput from '../../UI/FileInput/FileInput.tsx';
 import { apiUrl } from '../../../globalConstants.ts';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import CloseIcon from '@mui/icons-material/Close';
-
+import FileInput from '../../UI/FileInput/FileInput.tsx';
 interface FormEditPhotoProps {
   photoId: number;
 }
 
 const FormEditPhoto: React.FC<FormEditPhotoProps> = ({ photoId }) => {
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
   const photos = useAppSelector(selectPhotoCarousel);
+  const navigate = useNavigate();
+  const [linkError, setLinkError] = useState("");
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
 
   const [editPhoto, setEditPhoto] = useState<PhotoCarousel>({
     id: photoId,
     link: '',
     photo: null,
     order: 0,
-    title: '',
-    description: '',
+    title: "",
+    description: "",
   });
 
-  const [linkError, setLinkError] = useState('');
-  const [titleError, setTitleError] = useState('');
-  const [descError, setDescError] = useState('');
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(fetchPhoto()).unwrap();
+    dispatch(fetchPhoto())
+      .unwrap()
   }, [dispatch]);
 
   useEffect(() => {
-    const photoToEdit = photos.find(p => p.id === photoId);
-    if (photoToEdit) setEditPhoto(photoToEdit);
+    const photoToEdit = photos.find((p) => p.id === photoId);
+    if (photoToEdit) {
+      setEditPhoto(photoToEdit)
+    }
   }, [photos, photoId]);
 
-  const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    setEditPhoto((prevState) => ({ ...prevState, [name]: value }));
 
-    if (name === 'link') {
-      setLinkError(value.trim() === '' ? 'Поле для ссылки не может быть пустым' : '');
-    }
-    if (name === 'title') {
-      setTitleError(value.trim() === '' ? 'Поле для заголовка не может быть пустым' : '');
-    }
-    if (name === 'description') {
-      setDescError(value.trim() === '' ? 'Поле для описания не может быть пустым' : '');
+    if (name === "link") setLinkError("");
+    if (name === "link" && value.trim() === "") {
+      setLinkError("Поле для ссылки не может быть пустым");
     }
 
-    setEditPhoto(prev => ({ ...prev, [name]: value }));
-  };
+    if (name === "title") setTitle("");
+    if (name === "title" && value.trim() === "") {
+      setTitle("Поле для заголовка не может быть пустым");
+    }
 
-  const onFileChange = (file: File) => {
-    setEditPhoto(prev => ({ ...prev, photo: file }));
+    if (name === "description") setDescription("");
+    if (name === "description" && value.trim() === "") {
+      setDescription("Поле для описания не может быть пустым");
+    }
   };
+  const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, files } = e.target;
 
-  const deletePhoto = () => {
-    setEditPhoto(prev => ({ ...prev, photo: null }));
-  };
+    if (files && files.length > 0) {
+      setEditPhoto((prev) => ({
+        ...prev,
+        [name]: files[0],
+      }));
+    }
+  }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handlePhotoSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     try {
       await dispatch(updatePhoto({ photo: editPhoto })).unwrap();
-      console.log('Отправка фото:', editPhoto.photo);
-      enqueueSnackbar('Вы отредактировали фото для карусели;)', { variant: 'success' });
       navigate('/edit-carousel');
+      enqueueSnackbar('Вы отредатировали фото для карусели;)', { variant: 'success' });
     } catch (error) {
-      console.error(error);
-      enqueueSnackbar('Ошибка при обновлении фото.', { variant: 'error' });
+      console.error('Ошибка обновления фото:', error);
+      enqueueSnackbar('Ошибка при обновлении фото.', { variant: 'warning' });
     }
   };
 
   const isFormInvalid =
     !editPhoto.link.trim() ||
-    !editPhoto.photo ||
     Boolean(linkError) ||
-    Boolean(titleError) ||
-    Boolean(descError);
+    !editPhoto.title.trim() ||
+    Boolean(title) ||
+    !editPhoto.description.trim() ||
+    Boolean(description);
 
+  const deletePhoto = () => {
+    setEditPhoto({
+      ...editPhoto,
+      photo: null,
+    });
+  };
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: { xs: 2, md: 4 } }}>
       <NavLink to="/edit-carousel" style={{ textDecoration: 'none', color: '#738A6E', alignSelf: 'flex-start' }}>
@@ -112,7 +127,7 @@ const FormEditPhoto: React.FC<FormEditPhotoProps> = ({ photoId }) => {
           Редактировать фото
         </Typography>
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handlePhotoSubmit}>
           <TextField
             fullWidth
             size="small"
@@ -131,8 +146,6 @@ const FormEditPhoto: React.FC<FormEditPhotoProps> = ({ photoId }) => {
             label="Фото"
             onGetFile={onFileChange}
             file={editPhoto.photo}
-            error={!editPhoto.photo}
-            helperText={!editPhoto.photo ? 'Фото обязательно для загрузки' : undefined}
           />
 
           <TextField
@@ -142,8 +155,8 @@ const FormEditPhoto: React.FC<FormEditPhotoProps> = ({ photoId }) => {
             name="title"
             value={editPhoto.title}
             onChange={inputChangeHandler}
-            error={Boolean(titleError)}
-            helperText={titleError}
+            error={Boolean(title)}
+            helperText={title}
             sx={{ mt: 2, mb: 2 }}
           />
 
@@ -156,8 +169,8 @@ const FormEditPhoto: React.FC<FormEditPhotoProps> = ({ photoId }) => {
             onChange={inputChangeHandler}
             multiline
             minRows={2}
-            error={Boolean(descError)}
-            helperText={descError}
+            error={Boolean(description)}
+            helperText={description}
             sx={{ mb: 2 }}
           />
 

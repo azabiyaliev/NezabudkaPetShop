@@ -1,4 +1,4 @@
-import {Injectable} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import * as sharp from 'sharp';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -13,7 +13,11 @@ export interface ResizeOptions {
   quality?: number; // Качество WebP (1-100)
 }
 
-export type ResizePresetType = 'CAROUSEL' | 'PRODUCT' | 'CATEGORY' | 'BRAND_LOGO';
+export type ResizePresetType =
+  | 'CAROUSEL'
+  | 'PRODUCT'
+  | 'CATEGORY'
+  | 'BRAND_LOGO';
 
 // Предустановленные настройки для разных типов контента
 export const RESIZE_PRESETS: Record<ResizePresetType, ResizeOptions> = {
@@ -22,31 +26,31 @@ export const RESIZE_PRESETS: Record<ResizePresetType, ResizeOptions> = {
     height: 1080,
     // fit: 'inside',
     // withoutEnlargement: true,
-    quality: 85
+    quality: 85,
   },
-  
+
   PRODUCT: {
     width: 800,
     height: 800,
     // fit: 'cover',
     // withoutEnlargement: true,
-    quality: 60
+    quality: 60,
   },
-  
+
   CATEGORY: {
     width: 600,
     height: 400,
     // fit: 'cover',
     withoutEnlargement: true,
-    quality: 60
+    quality: 60,
   },
-  
+
   BRAND_LOGO: {
     width: 400,
     height: 200,
     // fit: 'contain',
     withoutEnlargement: true,
-    quality: 60
+    quality: 60,
   },
 };
 
@@ -68,7 +72,7 @@ export class ImageProcessorService {
 
     // Получаем параметры resize
     let resizeOptions: ResizeOptions | undefined;
-    
+
     if (typeof options === 'string' && options in RESIZE_PRESETS) {
       // Если передано имя пресета
       resizeOptions = RESIZE_PRESETS[options as ResizePresetType];
@@ -79,24 +83,24 @@ export class ImageProcessorService {
 
     // Качество для WebP
     const quality = resizeOptions?.quality || 80;
-    
+
     // Создаем экземпляр Sharp
     let sharpInstance = sharp(file.buffer);
-    
+
     // Применяем resize, если заданы параметры
     if (resizeOptions) {
       const { width, height, fit, withoutEnlargement } = resizeOptions;
-      
+
       if (width || height) {
         sharpInstance = sharpInstance.resize({
           width,
           height,
           fit: fit || 'inside',
-          withoutEnlargement: withoutEnlargement !== false
+          withoutEnlargement: withoutEnlargement !== false,
         });
       }
     }
-    
+
     // Конвертируем в WebP
     sharpInstance = sharpInstance.webp({ quality });
 
@@ -106,4 +110,4 @@ export class ImageProcessorService {
     // Возвращаем путь к файлу относительно public директории
     return destinationFolder.replace('./public', '') + '/' + filename;
   }
-} 
+}

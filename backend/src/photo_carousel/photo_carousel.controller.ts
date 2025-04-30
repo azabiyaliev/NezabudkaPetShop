@@ -13,8 +13,12 @@ import {
 import { PhotoByCarouselDto } from '../dto/photoCarousel.dto';
 import { PhotoCarouselService } from './photo_carousel.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { memoryStorage } from 'multer';
-import { ImageProcessorService, RESIZE_PRESETS } from '../common/image-processor.service';
+import { diskStorage, memoryStorage } from 'multer';
+import {
+  ImageProcessorService,
+  RESIZE_PRESETS,
+} from '../common/image-processor.service';
+import * as path from 'node:path';
 
 @Controller('photos')
 export class PhotoCarouselController {
@@ -42,7 +46,7 @@ export class PhotoCarouselController {
       const photoPath = await this.imageProcessorService.convertToWebP(
         file,
         './public/photo_carousel',
-        'CAROUSEL'
+        'CAROUSEL',
       );
       photoDto.photo = photoPath;
     }
@@ -52,25 +56,26 @@ export class PhotoCarouselController {
   @Put(':id')
   @UseInterceptors(
     FileInterceptor('photo', {
-      storage: memoryStorage(),
+      storage: diskStorage({
+        destination: './public/photo_carousel',
+        filename: (req, file, cb) => {
+          const ext = path.extname(file.originalname);
+          cb(null, 'CAROUSEL_' + Date.now() + ext);
+        },
+      }),
     }),
   )
   async updatePhoto(
     @Param('id') id: string,
     @Body() photoDto: PhotoByCarouselDto,
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile() file?: Express.Multer.File,
   ) {
     if (file) {
-      const photoPath = await this.imageProcessorService.convertToWebP(
-        file,
-        './public/photo_carousel',
-        'CAROUSEL'
-      );
-      photoDto.photo = photoPath;
+      photoDto.photo = '/photo_carousel/' + file.filename;
     }
-    return await this.photoCarouselService.updatePhoto(id, photoDto, file);
-  }
 
+    return this.photoCarouselService.updatePhoto(id, photoDto);
+  }
   @Patch()
   async updatePhotoOrder(@Body() photos: PhotoByCarouselDto[]) {
     return await this.photoCarouselService.updatePhotoOrder(photos);

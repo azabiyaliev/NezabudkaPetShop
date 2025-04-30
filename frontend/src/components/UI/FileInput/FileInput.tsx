@@ -11,7 +11,7 @@ import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 interface Props {
   name: string;
   label: string;
-  onGetFile: (file: File) => void;
+  onGetFile: (e: React.ChangeEvent<HTMLInputElement>) => void;
   file: File | string | null;
   id: string;
   className?: string;
@@ -31,21 +31,13 @@ const FileInput: React.FC<Props> = ({
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [fileName, setFileName] = useState("");
-  const [touched, setTouched] = useState(false);
 
-  const activateInput = () => {
-    inputRef.current?.click();
-  };
+  const activateInput = () => inputRef.current?.click();
 
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTouched(true);
-
     if (e.target.files && e.target.files[0]) {
-      const selectedFile = e.target.files[0];
-      setFileName(selectedFile.name);
-      onGetFile(selectedFile);
-    } else {
-      setFileName("");
+      setFileName(e.target.files[0].name);
+      onGetFile(e);
     }
   };
 
@@ -60,11 +52,8 @@ const FileInput: React.FC<Props> = ({
     }
   }, [file]);
 
-  const isError = error || (touched && !fileName);
-  const finalHelperText = helperText || "Фото обязательно для загрузки";
-
   return (
-    <FormControl fullWidth size="small" error={isError} sx={{ mb: 2 }}>
+    <FormControl fullWidth size="small" sx={{ mb: 2 }}>
       <input
         type="file"
         name={name}
@@ -84,20 +73,23 @@ const FileInput: React.FC<Props> = ({
         onClick={activateInput}
         endAdornment={
           <Button
-            onClick={activateInput}
+            onClick={(e) => {
+              e.stopPropagation();
+              activateInput();
+            }}
             sx={{
               minWidth: "40px",
               padding: "4px",
-              color: isError ? "#FF0000" : "#1976d2",
+              color: error ? "#FF0000" : "#1976d2",
             }}
           >
-            <AddPhotoAlternateIcon />
+            <AddPhotoAlternateIcon sx={{color: "gray"}} />
           </Button>
         }
         sx={{ cursor: "pointer", backgroundColor: "white" }}
       />
 
-      {isError && <FormHelperText>{finalHelperText}</FormHelperText>}
+      {error && <FormHelperText>{helperText}</FormHelperText>}
     </FormControl>
   );
 };

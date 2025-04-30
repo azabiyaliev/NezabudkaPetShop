@@ -32,17 +32,8 @@ export class PhotoCarouselService {
     });
   }
 
-  async updatePhoto(
-    id: string,
-    photoDto: PhotoByCarouselDto,
-    file?: Express.Multer.File,
-  ) {
-    const { link, title, description } = photoDto;
-    let photo = photoDto.photo;
-
-    if (file) {
-      photo = '/photo_carousel/' + file.filename;
-    }
+  async updatePhoto(id: string, photoDto: PhotoByCarouselDto) {
+    const { link, title, description, photo } = photoDto;
 
     const photoId = parseInt(id);
 
@@ -58,9 +49,9 @@ export class PhotoCarouselService {
       where: { id: photoId },
       data: {
         link,
-        photo,
         title,
         description,
+        photo,
       },
     });
   }
