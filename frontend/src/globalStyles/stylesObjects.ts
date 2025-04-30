@@ -12,6 +12,7 @@ export const COLORS = {
   background: '#f8f9fa',
   white: '#ffffff',
   black: '#000000',
+  rgbaGrey: 'rgba(241,239,239,0.61)',
 }
 
 //ОТСТУПЫ

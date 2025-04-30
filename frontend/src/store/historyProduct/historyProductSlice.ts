@@ -1,5 +1,6 @@
 import { historyProduct } from '../../types';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { RootState } from '../../app/store.ts';
 
 interface historyState {
   history: historyProduct []
@@ -8,6 +9,8 @@ interface historyState {
 const initialState: historyState ={
   history : JSON.parse(localStorage.getItem('viewedProducts') || '[]'),
 }
+
+export const historyProductsFromSlice = (state: RootState) => state.history.history;
 
 const historyProductSlice = createSlice({
   name:"history",

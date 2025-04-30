@@ -70,6 +70,11 @@ const AllProductsCardsPage = () => {
     navigate(`/all-products/${id}`);
   };
 
+  const sortedProducts = [...products].sort((a, b) => {
+    if (a.existence === b.existence) return 0;
+    return a.existence ? -1 : 1;
+  });
+
   const renderCategories = (categories: (ICategories | Subcategory)[], depth = 0) => {
     const items = [];
 
@@ -315,7 +320,7 @@ const AllProductsCardsPage = () => {
             </Typography>
           ) : (
             <CustomPagination
-              items={products}
+              items={sortedProducts}
               columns={4}
               renderItem={(product) => (
                 <ProductCard product={product} key={product.id} cart={cart} />

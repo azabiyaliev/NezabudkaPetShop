@@ -343,6 +343,20 @@ const ProductCard:React.FC<Props> = ({ product, cart }) => {
           </Box>
         </Box>
       </Box>
+      {!product.existence && (
+        <Box
+          sx={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            backgroundColor: `${COLORS.rgbaGrey}`,
+            zIndex: 1,
+            pointerEvents: 'none',
+          }}
+        />
+      )}
     </Card>
   );
 };
