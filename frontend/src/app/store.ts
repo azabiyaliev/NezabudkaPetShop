@@ -13,6 +13,8 @@ import { historyReducer } from '../store/historyProduct/historyProductSlice.ts';
 import { companyPageReducer } from '../store/companyPage/compantPageSlice.ts';
 import { bonusPageReducer } from '../store/bonusProgramPage/bonusProgramPageSlice.ts';
 import { deliveryPageReducer } from '../store/deliveryPage/deliveryPageSlice.ts';
+import { adminInfoReducer } from '../store/adminInfo/adminInfoSlice.ts';
+import { clientInfoReducer } from '../store/clientInfo/clientInfoSlice.ts';
 
 
 
@@ -31,6 +33,8 @@ const rootReducer = combineReducers({
   company_page: companyPageReducer,
   bonus_program: bonusPageReducer,
   delivery: deliveryPageReducer,
+  admin_info: adminInfoReducer,
+  client_info: clientInfoReducer,
 });
 
 export const store = configureStore({

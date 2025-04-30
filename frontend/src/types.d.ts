@@ -374,3 +374,21 @@ export interface DeliveryPageMutation{
   price: string;
   map: string;
 }
+
+export interface AdminInfo{
+  id: number;
+  information: string;
+}
+
+export interface AdminInfoMutation{
+  information: string;
+}
+
+export interface ClientInfo{
+  id: number;
+  information: string;
+}
+
+export interface ClientInfoMutation{
+  information: string;
+}

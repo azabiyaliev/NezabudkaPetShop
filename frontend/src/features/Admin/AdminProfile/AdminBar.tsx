@@ -21,11 +21,15 @@ import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
 import BallotOutlinedIcon from '@mui/icons-material/BallotOutlined';
 import Diversity2OutlinedIcon from '@mui/icons-material/Diversity2Outlined';
 import ListAltOutlinedIcon from '@mui/icons-material/ListAltOutlined';
+import { selectAdminInfo } from '../../../store/adminInfo/adminInfoSlice.ts';
+import { selectClientInfo } from "../../../store/clientInfo/clientInfoSlice.ts";
 
 const AdminBar = () => {
   const company = useAppSelector(selectCompany);
   const delivery = useAppSelector(selectDelivery);
   const bonusProgram = useAppSelector(selectBonusProgram);
+  const adminInfo = useAppSelector(selectAdminInfo);
+  const clientInfo = useAppSelector(selectClientInfo);
   const user = useAppSelector(selectUser);
   const can = usePermission(user);
 
@@ -41,6 +45,21 @@ const AdminBar = () => {
             <EditNoteOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
             <ListItemText primary="Редактирование личного кабинета" className="text-black" />
           </ListItem>
+
+          {can(['superAdmin']) && (
+            <>
+              <List component="div" disablePadding>
+                <ListItemButton sx={{ pl: 5 }} component={NavLink} to={`/admin_info/${adminInfo?.id}`}>
+                  <EditNoteOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
+                  <ListItemText primary="Информация для администрации" />
+                </ListItemButton>
+                <ListItemButton sx={{ pl: 5 }} component={NavLink} to={`/client_info/${clientInfo?.id}`}>
+                  <EditNoteOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
+                  <ListItemText primary="Информация для клиентов" />
+                </ListItemButton>
+              </List>
+            </>
+          )}
           <ListItem component={NavLink} to="/edition_site">
             <SettingsSuggestOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
             <ListItemText primary="Редактирование профиля магазина" className="text-black" />
