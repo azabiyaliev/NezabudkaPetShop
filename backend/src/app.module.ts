@@ -48,9 +48,9 @@ import { CommonModule } from './common/common.module';
 import { AdminInfoModule } from './admin_info/admin_info.module';
 import { AdminInfoController } from './admin_info/admin_info.controller';
 import { AdminInfoService } from './admin_info/admin_info.service';
-import {ClientInfoModule} from "./client_info/client_info.module";
-import {ClientInfoController} from "./client_info/client_info.controller";
-import {ClientInfoService} from "./client_info/client_info.service";
+import { ClientInfoModule } from './client_info/client_info.module';
+import { ClientInfoController } from './client_info/client_info.controller';
+import { ClientInfoService } from './client_info/client_info.service';
 
 @Module({
   imports: [

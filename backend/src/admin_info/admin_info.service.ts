@@ -22,7 +22,9 @@ export class AdminInfoService {
       where: { id },
     });
     if (!adminInfo) {
-      throw new NotFoundException(`Инофрмация для админа id = ${id} не найден!`);
+      throw new NotFoundException(
+        `Инофрмация для админа id = ${id} не найден!`,
+      );
     }
 
     return this.prisma.adminInfo.update({
