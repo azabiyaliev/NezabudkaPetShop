@@ -129,6 +129,11 @@ const HomePage = () => {
     }
   }, [dispatch, user]);
 
+  const sortedProducts = [...topSellingProducts].sort((a, b) => {
+    if (a.existence === b.existence) return 0;
+    return a.existence ? -1 : 1;
+  });
+
   return (
     <Container maxWidth="xl">
       <CustomCart openCart={openCart} closeCart={closeCart}/>
@@ -186,7 +191,7 @@ const HomePage = () => {
             Хиты продаж
           </Typography>
           {cart && (
-            <TopSellingProducts products={topSellingProducts} cart={cart} />
+            <TopSellingProducts products={sortedProducts} cart={cart} />
           )}
         </Box>
       )}
