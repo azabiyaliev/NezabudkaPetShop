@@ -44,10 +44,10 @@ const AllOrders = () => {
       return orderDate.isSame(dayjs(), "day");
     }
     if (timeFilter === "Last7Days") {
-      return orderDate.isAfter(dayjs().subtract(7, "day"));
+      return orderDate.isAfter(dayjs().subtract(7, "day").startOf("day"));
     }
     if (timeFilter === "Last30Days") {
-      return orderDate.isAfter(dayjs().subtract(30, "day"));
+      return orderDate.isAfter(dayjs().subtract(30, "day").startOf("day"));
     }
     return true;
   };
