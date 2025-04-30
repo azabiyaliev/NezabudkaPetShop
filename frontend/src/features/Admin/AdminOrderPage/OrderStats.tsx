@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { getStatistics } from "../../../store/orders/ordersThunk";
 import ColumnChart from "../../../components/UI/ColumnChart/ColumnChart.tsx";
 import { DataGrid, gridClasses, GridToolbar } from "@mui/x-data-grid";
-import { Box, CircularProgress, Paper, Stack } from '@mui/material';
+import { Box, CircularProgress, Paper } from '@mui/material';
 import Typography from "@mui/material/Typography";
 import AdminBar from '../AdminProfile/AdminBar.tsx';
 
@@ -89,16 +89,7 @@ const OrderStats = () => {
   ];
 
   return (
-    <Stack
-      direction={{
-        xs: 'column',
-        sm: 'row'
-    }}
-      spacing={{
-        xs: 1,
-        sm: 2,
-        md: 4 }}
-      className='mt-5'>
+    <Box sx={{display: "flex"}}>
       <Box>
         <AdminBar/>
       </Box>
@@ -175,7 +166,7 @@ const OrderStats = () => {
           </Box>
         </Paper>
       </Box>
-    </Stack>
+    </Box>
   );
 };
 

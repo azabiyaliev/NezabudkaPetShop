@@ -55,18 +55,20 @@ const AllOrders = () => {
   const filteredOrders = orders.filter(order => filterByStatus(order) && filterByTime(order));
 
   return (
-    <Box sx={{display: 'flex', gap: '100px'}} className='mt-5'>
-      <Box>
-        <AdminBar/>
+    <Box sx={{display: 'flex' }}>
+      <Box sx={{ width: 500, flexShrink: 0, height: '100%' }}>
+        <AdminBar />
       </Box>
       <Box>
         <Box>
-        <Typography variant="h4" sx={{ mb: 2 }}>Заказы</Typography>
+          <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600, mt:"56px"}}>
+           Заказы
+          </Typography>
 
         <Select
           value={statusFilter}
           onChange={handleStatusFilterChange}
-          sx={{ mb: 3, minWidth: 200 }}
+          sx={{ mb: 3, minWidth: 200, ml:4 }}
         >
           <MenuItem value="All">Все</MenuItem>
           <MenuItem value="Pending">Pending</MenuItem>

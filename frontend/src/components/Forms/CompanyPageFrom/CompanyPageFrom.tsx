@@ -55,22 +55,13 @@ const CompanyPageFrom = () => {
   };
 
   return (
-    <div className="d-flex ">
-      <div className="col-3 mt-5 ">
+    <Box sx={{ display: "flex", margin: "30px 0" }}>
+      <Box sx={{ minWidth: 499  }}>
         <AdminBar />
-      </div>
+      </Box>
       <div className="col-9 mt-5" style={{ display: 'flex', justifyContent: 'center' }}>
         <Box sx={{ width: '100%', maxWidth: '800px' }}>
-          <Typography
-            variant="h4"
-            sx={{
-              textAlign: "center",
-              mt: 4,
-              mb: 3,
-              fontWeight: "bold",
-              color: "black",
-            }}
-          >
+          <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600 }}>
             Редактирование страницы «О компании»
           </Typography>
 
@@ -83,13 +74,19 @@ const CompanyPageFrom = () => {
               flexDirection: 'column',
               alignItems: 'center',
               width: '100%',
+              mt:5,
             }}
           >
             <Typography
-              variant="subtitle1"
-              sx={{ mb: 1, alignSelf: 'flex-start', fontWeight: 500, ml:3}}
+              variant="body2"
+              sx={{
+                alignSelf: 'flex-start',
+                color: 'text.secondary',
+                fontWeight: 400,
+                mb: 0.5,
+              }}
             >
-              Введите информацию о компании:
+              Информация  о компании:
             </Typography>
 
             <TextEditor
@@ -109,7 +106,7 @@ const CompanyPageFrom = () => {
         </Box>
       </div>
 
-    </div>
+    </Box>
   );
 };
 

@@ -111,9 +111,11 @@ const DragAndDropPhoto = () => {
   };
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: "flex", margin: "30px 0" }}>
+      <Box sx={{minWidth: 250 }}>
       <AdminBar />
-      <Box sx={{ marginLeft: "20px", width: "90%" }}>
+      </Box>
+      <Box sx={{ marginLeft: "20px", width: "60%" }}>
         <AddNewPhotoForm />
         <Box
           sx={{
@@ -156,8 +158,8 @@ const DragAndDropPhoto = () => {
               <Box
                 key={image.id}
                 sx={{
-                  width: "300px",
-                  height: "200px",
+                  width: "250px",
+                  height: "150px",
                   overflow: "hidden",
                   borderRadius: "8px",
                   border: "1px solid #ccc",
@@ -235,7 +237,6 @@ const DragAndDropPhoto = () => {
           )}
         </Box>
 
-        {/* Кнопка сохранения */}
         <Box
           sx={{
             marginTop: "40px",

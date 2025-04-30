@@ -17,7 +17,7 @@ const BrandsPage = () => {
 
   return (
     <Box sx={{ display: "flex", margin: "30px 0" }}>
-      <AdminBar />
+      <AdminBar/>
       <Box
         sx={{
           marginLeft: "20px",

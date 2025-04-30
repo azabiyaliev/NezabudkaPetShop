@@ -17,10 +17,10 @@ const ProductsPage = () => {
 
   return (
     <Grid container spacing={2}>
-      <Grid size={3}>
+      <Grid size={4}>
         <AdminBar />
       </Grid>
-      <Grid size={9}>
+      <Grid size={8}>
         {products.length > 0 ? (
           <Products products={products} />
         ) : (
@@ -30,6 +30,7 @@ const ProductsPage = () => {
         )}
       </Grid>
     </Grid>
+
   );
 };
 

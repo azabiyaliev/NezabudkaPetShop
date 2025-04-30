@@ -66,12 +66,8 @@ const AdminList: React.FC<Props> = ({ admins }) => {
   ];
 
   return (
-    <Grid container>
-      <Typography
-        variant="h5"
-        component="div"
-        sx={{ flexGrow: 1, textAlign: "center", mt: 3, mb: 3 }}
-      >
+    <Grid container direction="column" alignItems="center">
+      <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600, mt: 5 }}>
         Список администраторов
       </Typography>
       <Divider />

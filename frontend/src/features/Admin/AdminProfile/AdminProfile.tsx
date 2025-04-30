@@ -2,33 +2,27 @@ import AdminBar from "./AdminBar.tsx";
 import { useAppSelector } from '../../../app/hooks.ts';
 import { selectUser } from '../../../store/users/usersSlice.ts';
 import { userRoleAdmin } from '../../../globalConstants.ts';
-import OrderStats from '../AdminOrderPage/OrderStats.tsx';
+import { Box, Typography } from '@mui/material';
 
 const AdminProfile = () => {
   const user = useAppSelector(selectUser);
 
   return (
     <>
-      {user && (
-        <>
-          {user.role === userRoleAdmin ?
-            <div className="d-flex ">
-              <div className="col-3 ">
-                <AdminBar/>
-              </div>
-              <div className="col-9">
-                <h2 className="text-uppercase text-center mt-4">Личный кабинет</h2>
-                <div>
-                  <h6 style={{textAlign: 'center', marginTop: '20px'}}>
-                    Info by super admin
-                  </h6>
-                </div>
-              </div>
-            </div> : <OrderStats/>
-          }
-        </>
+      {user && user.role === userRoleAdmin && (
+        <Box sx={{ display: "flex", margin: "30px 0" }}>
+          <Box>
+          <AdminBar />
+          </Box>
+          <Box sx={{ marginLeft: "20px" }}>
+            <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600, mt:3 }}>
+              Личный кабинет
+            </Typography>
+          </Box>
+        </Box>
       )}
     </>
+
   );
 };
 
