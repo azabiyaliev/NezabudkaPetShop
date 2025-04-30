@@ -69,6 +69,12 @@ const OrderCard: React.FC<Props> = ({ order }) => {
                 border: '1px solid #eee',
                 marginBottom: 2,
                 padding: 2,
+                "@media (max-width: 900px)": {
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                flexDirection: 'column',
+              },
               }}
             >
               <CardMedia
