@@ -1,31 +1,22 @@
-import { useAppDispatch, useAppSelector } from "../../app/hooks.ts";
-import { brandsFromSlice } from "../../store/brands/brandsSlice.ts";
-import { useEffect, useState } from "react";
-import { getBrands } from "../../store/brands/brandsThunk.ts";
-import BrandForHomePage from "../../components/Domain/Brand/BrandForHomePage/BrandForHomePage.tsx";
-import { Box, Container } from "@mui/material";
-import Typography from "@mui/joy/Typography";
-import CustomCart from "../../components/Domain/CustomCart/CustomCart.tsx";
-import CategoryCard from "../Category/CategoryCard/CategoryCard.tsx";
-import {
-  cartErrorFromSlice,
-  cartFromSlice,
-  setToLocalStorage,
-} from "../../store/cart/cartSlice.ts";
-import { selectUser } from "../../store/users/usersSlice.ts";
-import {
-  addItem,
-  createCart,
-  deleteItemsCart,
-  fetchCart,
-} from "../../store/cart/cartThunk.ts";
-import { ICartBack, ICartItem } from "../../types";
-import { userRoleClient } from "../../globalConstants.ts";
-import { selectPromotionalProducts } from "../../store/products/productsSlice.ts";
-import { getPromotionalProducts } from "../../store/products/productsThunk.ts";
-import PromotionalProducts from "../Product/components/PromotionalProducts/PromotionalProducts.tsx";
-import theme from "../../globalStyles/globalTheme.ts";
-import { getFavoriteProducts } from "../../store/favoriteProducts/favoriteProductsThunks.ts";
+import { useAppDispatch, useAppSelector } from '../../app/hooks.ts';
+import { brandsFromSlice } from '../../store/brands/brandsSlice.ts';
+import { useEffect, useState } from 'react';
+import { getBrands } from '../../store/brands/brandsThunk.ts';
+import BrandForHomePage from '../../components/Domain/Brand/BrandForHomePage/BrandForHomePage.tsx';
+import { Box, Container } from '@mui/material';
+import Typography from '@mui/joy/Typography';
+import CustomCart from '../../components/Domain/CustomCart/CustomCart.tsx';
+import CategoryCard from '../Category/CategoryCard/CategoryCard.tsx';
+import { cartErrorFromSlice, cartFromSlice, setToLocalStorage } from '../../store/cart/cartSlice.ts';
+import { selectUser } from '../../store/users/usersSlice.ts';
+import { addItem, createCart, deleteItemsCart, fetchCart } from '../../store/cart/cartThunk.ts';
+import { ICartBack, ICartItem } from '../../types';
+import { userRoleClient } from '../../globalConstants.ts';
+import { selectPromotionalProducts } from '../../store/products/productsSlice.ts';
+import { getPromotionalProducts } from '../../store/products/productsThunk.ts';
+import PromotionalProducts from '../Product/components/PromotionalProducts/PromotionalProducts.tsx';
+import theme from '../../globalStyles/globalTheme.ts';
+import { getFavoriteProducts } from '../../store/favoriteProducts/favoriteProductsThunks.ts';
 
 const HomePage = () => {
   const [openCart, setOpenCart] = useState<boolean>(false);
@@ -44,7 +35,7 @@ const HomePage = () => {
     if (localCart && Array.isArray(localCart.products)) {
       localCart.products.forEach((localProduct) => {
         const existingItemIndex = mergedCart.findIndex(
-          (item) => item.productId === localProduct.productId,
+          (item) => item.productId === localProduct.productId
         );
 
         if (existingItemIndex === -1) {
@@ -57,7 +48,7 @@ const HomePage = () => {
   };
 
   useEffect(() => {
-    if (user && user.role === userRoleClient && cart) {
+    if (user && (user.role === userRoleClient) && cart) {
       const cartFromLS = localStorage.getItem("cart");
 
       if (cartFromLS !== null) {
@@ -86,7 +77,7 @@ const HomePage = () => {
       await dispatch(getBrands()).unwrap();
       await dispatch(getPromotionalProducts()).unwrap();
 
-      if (user && user.role === userRoleClient) {
+      if (user && (user.role === userRoleClient)) {
         await dispatch(createCart()).unwrap();
 
         if (!createCartError) {
@@ -99,7 +90,7 @@ const HomePage = () => {
           setSynced(true);
 
           if (userCart.products.length > 0) {
-            await dispatch(deleteItemsCart({ cartId: userCart.id })).unwrap();
+            await dispatch(deleteItemsCart({cartId: userCart.id})).unwrap();
           }
 
           for (const product of products) {
@@ -108,7 +99,7 @@ const HomePage = () => {
                 cartId: userCart.id,
                 productId: product.productId,
                 quantity: product.quantity,
-              }),
+              })
             ).unwrap();
           }
           await dispatch(fetchCart()).unwrap();
@@ -137,16 +128,14 @@ const HomePage = () => {
   return (
     <>
       <Container maxWidth="xl">
-        <CustomCart openCart={openCart} closeCart={closeCart} />
-        <Box
-          sx={{
-            mt: theme.spacing.xxl,
-          }}
-        >
+        <CustomCart openCart={openCart} closeCart={closeCart}/>
+        <Box sx={{
+          mt: theme.spacing.xxl
+        }}>
           <Typography
             sx={{
               fontSize: theme.fonts.size.xxl,
-              margin: "100px 0 50px 0",
+              mb: 3,
               fontWeight: theme.fonts.weight.medium,
               color: theme.colors.text,
               textAlign: "center",
@@ -154,24 +143,16 @@ const HomePage = () => {
           >
             Каталог
           </Typography>
-          <CategoryCard />
+          <CategoryCard/>
         </Box>
 
         {promotionalProducts.length > 0 && (
-          <Box
-            sx={{
-              backgroundColor: '#FFF1DF',
-              pt: '50px',
-              pb: '75px',
-              borderRadius: '55px',
-            }}
-          >
+          <Box>
             <Typography
               sx={{
-                fontSize: theme.fonts.size.xxl,
-                margin: "50px 0 50px 0",
-                fontWeight: theme.fonts.weight.medium,
-                color: theme.colors.text,
+                fontSize: "40px",
+                mb: 0.5,
+                color: "rgba(250, 143, 1, 1)",
                 textAlign: "center",
               }}
             >
@@ -180,23 +161,17 @@ const HomePage = () => {
             {cart && (
               <PromotionalProducts products={promotionalProducts} cart={cart} />
             )}
+
           </Box>
         )}
 
         {brands.length > 0 && (
-          <Box
-            sx={{
-            backgroundColor: '#FFF1DF',
-            pt: '50px',
-            pb: '75px',
-            borderRadius: '55px',
-          }}>
+          <Box sx={{ marginTop: "40px" }}>
             <Typography
               sx={{
-                fontSize: theme.fonts.size.xxl,
-                margin: "100px 0 50px 0",
-                fontWeight: theme.fonts.weight.medium,
-                color: theme.colors.text,
+                fontSize: "40px",
+                mb: 0.5,
+                color: "rgba(250, 143, 1, 1)",
                 textAlign: "center",
               }}
             >
@@ -207,6 +182,7 @@ const HomePage = () => {
         )}
       </Container>
     </>
+
   );
 };
 

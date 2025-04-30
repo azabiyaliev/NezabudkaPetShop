@@ -6,7 +6,6 @@ import Typography from '@mui/material/Typography';
 import { useNavigate } from 'react-router-dom';
 import { apiUrl } from '../../../globalConstants.ts';
 import theme from '../../../globalStyles/globalTheme.ts';
-import { Box } from '@mui/material';
 
 
 const CategoryCard = () => {
@@ -17,20 +16,12 @@ const CategoryCard = () => {
 
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        gap: 4,
-        justifyContent: 'center',
-        mb: '100px',
-      }}
-    >
+    <div className="d-flex flex-wrap gap-4 justify-content-center">
       {filteredCategories.map((category) => (
-        <Box
+        <div
           key={category.id}
           onClick={() => navigate(`/all-products/${category.id}`)}
-          sx={{ cursor: 'pointer' }}
+          style={{ cursor: 'pointer' }}
         >
           <Card
             sx={{
@@ -67,9 +58,9 @@ const CategoryCard = () => {
               alt={category.title}
             />
           </Card>
-        </Box>
+        </div>
       ))}
-    </Box>
+    </div>
   );
 };
 
