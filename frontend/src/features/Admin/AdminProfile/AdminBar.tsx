@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { List, ListItem, ListItemButton, ListItemText } from '@mui/material';
 import { NavLink } from 'react-router-dom';
 import { EditNote, ExpandLess, KeyboardArrowRight, PlaylistAddOutlined, ReorderOutlined } from '@mui/icons-material';
-import ModalWindowAddNewPhoto from '../../../components/UI/ModalWindow/ModalWindowAddNewPhoto.tsx';
 import { useAppSelector, usePermission } from '../../../app/hooks.ts';
 import { selectUser } from '../../../store/users/usersSlice.ts';
 import { selectCompany } from '../../../store/companyPage/compantPageSlice.ts';
@@ -30,7 +29,6 @@ const AdminBar = () => {
   const [openBrands, setOpenBrands] = useState(false);
   const [openProducts, setOpenProducts] = useState(false);
   const [openAdmins, setOpenAdmins] = useState(false);
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const can = usePermission(user);
   const [openPagesEdit, setOpenPagesEdit ] = useState(false);
 
@@ -43,10 +41,6 @@ const AdminBar = () => {
 
   return (
     <>
-      <ModalWindowAddNewPhoto
-        open={isAddModalOpen}
-        onClose={() => setIsAddModalOpen(false)}
-      />
       <div className="admin-bar">
         {user && can(["admin", "superAdmin"]) && (
           <List>
@@ -151,11 +145,6 @@ const AdminBar = () => {
             </ListItemButton>
             {openCarousel && (
               <List component="div" disablePadding>
-                <ListItemButton sx={{pl: 5}} onClick={() => setIsAddModalOpen(true)}
-                >
-                  <PlaylistAddOutlined style={{ color: "#45624E",  marginRight: "10px" }}/>
-                  <ListItemText primary="Добавить изображение"/>
-                </ListItemButton>
                 <ListItemButton sx={{pl: 5}} component={NavLink} to="/edit-carousel">
                   <EditNote style={{ color: "#45624E",  marginRight: "10px" }}/>
                   <ListItemText primary="Редактирование каруселя"/>

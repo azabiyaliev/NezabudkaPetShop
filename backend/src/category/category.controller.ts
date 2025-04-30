@@ -15,7 +15,10 @@ import { CategoryService } from './category.service';
 import { CategoryDto } from '../dto/category.dto';
 import { SubcategoryDto } from '../dto/subCategoryDto';
 import { memoryStorage } from 'multer';
-import { ImageProcessorService, ResizeOptions } from '../common/image-processor.service';
+import {
+  ImageProcessorService,
+  ResizeOptions,
+} from '../common/image-processor.service';
 
 // Специфичные настройки для иконок категорий
 const CATEGORY_ICON_OPTIONS: ResizeOptions = {
@@ -23,14 +26,14 @@ const CATEGORY_ICON_OPTIONS: ResizeOptions = {
   height: 200,
   fit: 'contain',
   quality: 90,
-  withoutEnlargement: true
+  withoutEnlargement: true,
 };
 
 @Controller('category')
 export class CategoryController {
   constructor(
     private categoryService: CategoryService,
-    private imageProcessorService: ImageProcessorService
+    private imageProcessorService: ImageProcessorService,
   ) {}
 
   @Post()
@@ -50,7 +53,7 @@ export class CategoryController {
       const iconPath = await this.imageProcessorService.convertToWebP(
         icon,
         './public/category',
-        CATEGORY_ICON_OPTIONS
+        CATEGORY_ICON_OPTIONS,
       );
       categoryDto.icon = iconPath;
     }
@@ -59,7 +62,7 @@ export class CategoryController {
       const imagePath = await this.imageProcessorService.convertToWebP(
         image,
         './public/category',
-        'CATEGORY'
+        'CATEGORY',
       );
       categoryDto.image = imagePath;
     }
@@ -108,7 +111,7 @@ export class CategoryController {
       newIcon = await this.imageProcessorService.convertToWebP(
         iconFile,
         './public/category',
-        CATEGORY_ICON_OPTIONS
+        CATEGORY_ICON_OPTIONS,
       );
     } else if (categoryDto.icon === null || categoryDto.icon === '') {
       newIcon = null;
@@ -118,7 +121,7 @@ export class CategoryController {
       newImage = await this.imageProcessorService.convertToWebP(
         imageFile,
         './public/category',
-        'CATEGORY'
+        'CATEGORY',
       );
     } else if (categoryDto.image === null || categoryDto.image === '') {
       newImage = null;
@@ -169,7 +172,7 @@ export class CategoryController {
         iconPath = await this.imageProcessorService.convertToWebP(
           iconFile,
           './public/category',
-          CATEGORY_ICON_OPTIONS
+          CATEGORY_ICON_OPTIONS,
         );
       }
 
@@ -177,7 +180,7 @@ export class CategoryController {
         imagePath = await this.imageProcessorService.convertToWebP(
           imageFile,
           './public/category',
-          'CATEGORY'
+          'CATEGORY',
         );
       }
 

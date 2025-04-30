@@ -23,7 +23,7 @@ import { ImageProcessorService } from '../common/image-processor.service';
 export class BrandsController {
   constructor(
     private brandsService: BrandsService,
-    private imageProcessorService: ImageProcessorService
+    private imageProcessorService: ImageProcessorService,
   ) {}
 
   @Get()
@@ -53,7 +53,7 @@ export class BrandsController {
       const logoPath = await this.imageProcessorService.convertToWebP(
         file,
         './public/brands',
-        'BRAND_LOGO'
+        'BRAND_LOGO',
       );
       // Передаем обработанный файл в сервис вместе с его путем
       file.filename = logoPath.split('/').pop() || '';
@@ -80,7 +80,7 @@ export class BrandsController {
       const logoPath = await this.imageProcessorService.convertToWebP(
         file,
         './public/brands',
-        'BRAND_LOGO'
+        'BRAND_LOGO',
       );
       // Передаем обработанный файл в сервис вместе с его путем
       file.filename = logoPath.split('/').pop() || '';

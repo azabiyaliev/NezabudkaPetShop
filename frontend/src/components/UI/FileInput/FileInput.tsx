@@ -1,6 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
+import {
+  Button,
+  FormControl,
+  FormHelperText,
+  InputLabel,
+  OutlinedInput,
+} from "@mui/material";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
-import { Box, Button, FormHelperText } from "@mui/material";
+import { useTheme } from '@mui/material/styles';
 
 interface Props {
   name: string;
@@ -25,23 +32,15 @@ const FileInput: React.FC<Props> = ({
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [fileName, setFileName] = useState("");
-  const [touched, setTouched] = useState(false);
+  const theme = useTheme();
 
-  const activateInput = () => {
-    inputRef.current?.click();
-  };
+  const activateInput = () => inputRef.current?.click();
 
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTouched(true);
-
     if (e.target.files && e.target.files[0]) {
-      const selectedFile = e.target.files[0];
-      setFileName(selectedFile.name);
-    } else {
-      setFileName("");
+      setFileName(e.target.files[0].name);
+      onGetFile(e);
     }
-
-    onGetFile(e);
   };
 
   useEffect(() => {
@@ -55,84 +54,50 @@ const FileInput: React.FC<Props> = ({
     }
   }, [file]);
 
-  const finalHelperText = helperText || "Фото обязательно для загрузки";
-
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        gap: 2,
-        width: "100%",
-      }}
-    >
+    <FormControl fullWidth size="small" sx={{ mb: 2 }}>
       <input
-        style={{ display: "none" }}
         type="file"
         name={name}
         ref={inputRef}
         onChange={onFileChange}
+        style={{ display: "none" }}
       />
 
-      <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-        <Box
-          id={id}
-          className={className}
-          onClick={activateInput}
-          sx={{
-            padding: "15px 30px",
-            borderRadius: "20px",
-            border: `1px solid ${error || (touched && !fileName) ? "#FF0000" : "darkgreen"}`,
-            backgroundColor: "white",
-            width: "240px",
-            maxWidth: "100%",
-            cursor: "pointer",
-            userSelect: "none",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-            "@media (max-width: 600px)": {
-              padding: "12px 20px",
-            },
-          }}
-        >
-          {fileName || label}
-        </Box>
+      <InputLabel htmlFor={id}>{label}</InputLabel>
 
-        <Button
-          variant="outlined"
-          onClick={activateInput}
-          sx={{
-            borderColor: error || (touched && !fileName) ? "#FF0000" : "darkgreen",
-            borderRadius: "15px",
-            backgroundColor: "white",
-            padding: "15px 20px",
-            cursor: "pointer",
-            color: error || (touched && !fileName) ? "#FF0000" : "darkgreen",
-            minWidth: "50px",
-            "@media (max-width: 600px)": {
-              padding: "10px 15px",
-            },
-          }}
-        >
-          <AddPhotoAlternateIcon />
-        </Button>
-      </Box>
+      <OutlinedInput
+        id={id}
+        className={className}
+        label={label}
+        readOnly
+        value={fileName}
+        onClick={activateInput}
+        error={error}
+        endAdornment={
+          <Button
+            onClick={(e) => {
+              e.stopPropagation();
+              activateInput();
+            }}
+            sx={{
+              minWidth: "40px",
+              padding: "4px",
+              color: error ? "#FF0000" : "#1976d2",
+            }}
+          >
+            <AddPhotoAlternateIcon sx={{color: "gray"}} />
+          </Button>
+        }
+        sx={{ cursor: "pointer", backgroundColor: "white" }}
+      />
 
-      {(error || (touched && !fileName)) && (
-        <FormHelperText
-          sx={{
-            color: "#FF0000",
-            fontSize: "12px",
-            marginTop: "-10px",
-            marginLeft: "10px",
-            marginBottom: "10px",
-          }}
-        >
-          {finalHelperText}
+      {error && (
+        <FormHelperText sx={{ color: theme.palette.error.main }}>
+          {helperText}
         </FormHelperText>
       )}
-    </Box>
+    </FormControl>
   );
 };
 

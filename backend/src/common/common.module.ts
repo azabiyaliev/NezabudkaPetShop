@@ -5,4 +5,4 @@ import { ImageProcessorService } from './image-processor.service';
   providers: [ImageProcessorService],
   exports: [ImageProcessorService],
 })
-export class CommonModule {} 
+export class CommonModule {}
