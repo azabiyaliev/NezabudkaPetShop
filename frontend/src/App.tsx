@@ -222,7 +222,7 @@ const App = () => {
           <Route path='/favorite-products' element={<FavoriteProduct/>}/>
           <Route path='/my_company' element={<CompanyPage/>}/>
           <Route path='/my_company/:id' element={
-            <ProtectedRoute isAllowed={user && can(["superAin", "admin"])}>
+            <ProtectedRoute isAllowed={user && can(["superAdmin", "admin"])}>
             <CompanyPageFrom/>
             </ProtectedRoute>
           }/>
