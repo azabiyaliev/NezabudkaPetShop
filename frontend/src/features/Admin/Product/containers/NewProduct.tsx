@@ -36,7 +36,7 @@ const NewProduct = () => {
         <CircularProgress />
       ) : (
         <Grid container spacing={2}>
-          <Grid size={4}>
+          <Grid size={4} sx={{ margin: "30px 0"}}>
             <AdminBar />
           </Grid>
           <Grid size={8}>

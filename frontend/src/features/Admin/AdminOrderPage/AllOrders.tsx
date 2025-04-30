@@ -55,7 +55,7 @@ const AllOrders = () => {
   const filteredOrders = orders.filter(order => filterByStatus(order) && filterByTime(order));
 
   return (
-    <Box sx={{display: 'flex' }}>
+    <Box sx={{display: 'flex',  margin: "30px 0" }}>
       <Box sx={{ width: 500, flexShrink: 0, height: '100%' }}>
         <AdminBar />
       </Box>
