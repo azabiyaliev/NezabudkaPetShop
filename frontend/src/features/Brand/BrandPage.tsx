@@ -36,9 +36,14 @@ const BrandPage = () => {
     }
   }, [dispatch, user]);
 
+  const sortedProducts = [...products].sort((a, b) => {
+    if (a.existence === b.existence) return 0;
+    return a.existence ? -1 : 1;
+  });
+
   return brand && (
     <Container>
-      {cart && ( <OneBrand brand={brand} products={products} cart={cart}/>)}
+      {cart && ( <OneBrand brand={brand} products={sortedProducts} cart={cart}/>)}
       {products.length === 0 && (
         <Typography
           level="h2"
