@@ -9,7 +9,8 @@ import {
   getProducts,
   getProductsByBrand,
   getProductsByCategory,
-  getPromotionalProducts, getTopSellingProducts
+  getPromotionalProducts,
+  getTopSellingProducts,
 } from './productsThunk.ts';
 import { RootState } from '../../app/store.ts';
 
@@ -18,6 +19,7 @@ interface ProductsState {
   categoryProducts: ProductResponse[];
   product: ProductResponse | null;
   brands: SubcategoryWithBrand[];
+  brandProducts: ProductResponse[];
   promotionalProducts: ProductResponse[];
   topSellingProducts: ProductResponse[];
   loading: boolean;
@@ -28,6 +30,7 @@ const initialState: ProductsState = {
   brands: [],
   categoryProducts: [],
   products: [],
+  brandProducts: [],
   promotionalProducts: [],
   topSellingProducts: [],
   product: null,
@@ -39,6 +42,7 @@ export const addProductLoading = (state: RootState) => state.products.loading;
 export const selectProductsByCategory = (state: RootState) => state.products.categoryProducts;
 export const selectProducts = (state: RootState) => state.products.products;
 export const selectPromotionalProducts = (state: RootState) => state.products.promotionalProducts;
+export const selectBrandProducts = (state: RootState) => state.products.brandProducts;
 export const selectTopSellingProducts = (state: RootState) => state.products.topSellingProducts;
 export const selectProduct = (state: RootState) => state.products.product;
 
@@ -104,9 +108,9 @@ const productsSlice = createSlice({
         state.loading = true;
       })
       .addCase(getProductsByBrand.fulfilled, (state, {payload: products}) => {
-        state.products = [];
+        state.brandProducts = [];
         state.loading = false;
-        state.products = products;
+        state.brandProducts = products;
       })
       .addCase(getProductsByBrand.rejected, (state) => {
         state.loading = false;
