@@ -69,13 +69,21 @@ const AddNewPhotoForm = () => {
   };
 
   const deletePhoto = () => {
-    setNewPhoto({
-      ...newPhoto,
+    setNewPhoto((prev) => ({
+      ...prev,
       photo: null,
-    });
-  };
+    }));
+    setIsSubmitted(true);
+  }
 
-  const isButtonFormInvalid = Boolean(linkError) || !newPhoto.photo || Boolean(titleError) || Boolean(descError);
+  const isButtonFormInvalid =
+    !newPhoto.link.trim() ||
+    !newPhoto.title.trim() ||
+    !newPhoto.description.trim() ||
+    !newPhoto.photo ||
+    Boolean(linkError) ||
+    Boolean(titleError) ||
+    Boolean(descError);
 
   return (
     <Box

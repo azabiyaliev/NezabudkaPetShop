@@ -95,7 +95,7 @@ const FormEditPhoto: React.FC<FormEditPhotoProps> = ({ photoId }) => {
     !editPhoto.title.trim() ||
     Boolean(title) ||
     !editPhoto.description.trim() ||
-    Boolean(description);
+    Boolean(description) || !editPhoto.photo
 
   const deletePhoto = () => {
     setEditPhoto({
@@ -146,6 +146,8 @@ const FormEditPhoto: React.FC<FormEditPhotoProps> = ({ photoId }) => {
             label="Фото"
             onGetFile={onFileChange}
             file={editPhoto.photo}
+            error={isFormInvalid && !editPhoto.photo}
+            helperText={isFormInvalid && !editPhoto.photo ? 'Фото обязательно для загрузки' : undefined}
           />
 
           <TextField

@@ -7,6 +7,7 @@ import {
   OutlinedInput,
 } from "@mui/material";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
+import { useTheme } from '@mui/material/styles';
 
 interface Props {
   name: string;
@@ -31,6 +32,7 @@ const FileInput: React.FC<Props> = ({
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [fileName, setFileName] = useState("");
+  const theme = useTheme();
 
   const activateInput = () => inputRef.current?.click();
 
@@ -71,6 +73,7 @@ const FileInput: React.FC<Props> = ({
         readOnly
         value={fileName}
         onClick={activateInput}
+        error={error}
         endAdornment={
           <Button
             onClick={(e) => {
@@ -89,7 +92,11 @@ const FileInput: React.FC<Props> = ({
         sx={{ cursor: "pointer", backgroundColor: "white" }}
       />
 
-      {error && <FormHelperText>{helperText}</FormHelperText>}
+      {error && (
+        <FormHelperText sx={{ color: theme.palette.error.main }}>
+          {helperText}
+        </FormHelperText>
+      )}
     </FormControl>
   );
 };
