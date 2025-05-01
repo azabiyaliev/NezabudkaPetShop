@@ -22,7 +22,7 @@ const CartPage = () => {
   }, [dispatch, user]);
 
   useEffect(() => {
-    if (user && (user.role === userRoleClient)) {
+    if (!user) {
       dispatch(setToLocalStorage(cart));
     }
   }, [dispatch, cart, user]);
@@ -34,8 +34,10 @@ const CartPage = () => {
           <Typography
             level="h1"
             sx={{
-              fontSize: "40px",
-              margin: "20px 0",
+              textAlign: 'center',
+              fontWeight: 'bold',
+              fontSize: "25px",
+              marginTop: "15px",
               fontFamily: "Nunito, sans-serif",
             }}
           >

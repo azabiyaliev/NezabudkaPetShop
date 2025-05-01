@@ -62,7 +62,9 @@ const MainToolbar = () => {
   }, [search]);
 
   useEffect(() => {
-    dispatch(getFromLocalStorage());
+    if(!user) {
+      dispatch(getFromLocalStorage());
+    }
     dispatch(fetchSite()).unwrap();
   }, [dispatch]);
 

@@ -71,6 +71,7 @@ const cartSlice = createSlice({
           };
           state.cart.products.push(newItem);
         }
+        localStorage.setItem("cart", JSON.stringify(state.cart));
       }
     },
     productCardToRemoveQuantity: (state, { payload: product }: PayloadAction<ProductResponse>) => {
