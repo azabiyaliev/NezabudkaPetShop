@@ -1,19 +1,17 @@
-import Typography from '@mui/material/Typography';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
 import React, { useState, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
 import { fetchPhoto, updatePhoto } from '../../../store/photoCarousel/photoCarouselThunk.ts';
-import { PhotoCarousel, PhotoForm } from '../../../types';
 import { selectPhotoCarousel } from '../../../store/photoCarousel/photoCarouselSlice.ts';
-import { Box } from '@mui/material';
+import { PhotoCarousel } from '../../../types';
 import { NavLink, useNavigate } from 'react-router-dom';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import FileInput from '../../UI/FileInput/FileInput.tsx';
 import { enqueueSnackbar } from 'notistack';
+import {
+  Box, Button, Paper, Typography, TextField,
+} from '@mui/material';
 import { apiUrl } from '../../../globalConstants.ts';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import CloseIcon from '@mui/icons-material/Close';
-
+import FileInput from '../../UI/FileInput/FileInput.tsx';
 interface FormEditPhotoProps {
   photoId: number;
 }
@@ -67,19 +65,16 @@ const FormEditPhoto: React.FC<FormEditPhotoProps> = ({ photoId }) => {
       setDescription("Поле для описания не может быть пустым");
     }
   };
-
-  const onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void = (
-    e: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, files } = e.target;
 
-    if (files) {
-      setEditPhoto((prevState: PhotoForm) => ({
-        ...prevState,
-        [name]: files[0] || null,
+    if (files && files.length > 0) {
+      setEditPhoto((prev) => ({
+        ...prev,
+        [name]: files[0],
       }));
     }
-  };
+  }
 
   const handlePhotoSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -94,8 +89,13 @@ const FormEditPhoto: React.FC<FormEditPhotoProps> = ({ photoId }) => {
     }
   };
 
-  const isButtonFormInvalid =
-    !editPhoto.link.trim() || Boolean(linkError) || !editPhoto.photo;
+  const isFormInvalid =
+    !editPhoto.link.trim() ||
+    Boolean(linkError) ||
+    !editPhoto.title.trim() ||
+    Boolean(title) ||
+    !editPhoto.description.trim() ||
+    Boolean(description) || !editPhoto.photo
 
   const deletePhoto = () => {
     setEditPhoto({
@@ -103,245 +103,130 @@ const FormEditPhoto: React.FC<FormEditPhotoProps> = ({ photoId }) => {
       photo: null,
     });
   };
-
   return (
-    <div style={{ marginTop: "50px" }}>
-      <Box sx={{
-        marginTop: '50px',
-        marginLeft: "60px",
-        "@media (max-width: 800px)": {
-          padding: 2,
-          marginLeft: "0px",
-        },
-      }}>
-        <NavLink to="/edit-carousel" style={{ color: "#738A6E", textDecoration: "none" }}>
-          <span>
-            <ArrowBackIcon sx={{ width: "20px", marginRight: "10px" }} />Вернуться к карусели
-          </span>
-        </NavLink>
-      </Box>
-      <Box
+    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: { xs: 2, md: 4 } }}>
+      <NavLink to="/edit-carousel" style={{ textDecoration: 'none', color: '#738A6E', alignSelf: 'flex-start' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+          <ArrowBackIcon sx={{ mr: 1 }} />
+          Вернуться к карусели
+        </Box>
+      </NavLink>
+
+      <Paper
+        elevation={3}
         sx={{
-          padding: 4,
-          backgroundColor: '#fff',
-          borderRadius: 2,
-          boxShadow: 3,
+          p: 3,
           width: '100%',
-          maxWidth: '600px',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          flexDirection: 'column',
-          margin: 'auto',
-          "@media (max-width: 600px)": {
-            padding: 2,
-            width: '90%',
-          },
+          maxWidth: 700,
+          borderRadius: 3,
+          backgroundColor: '#fff',
+          boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
         }}
       >
-        <Typography
-          component="h1"
-          variant="h4"
-          sx={{ color: 'black',
-            textAlign: 'center',
-            marginBottom: 3,
-            "@media (max-width: 4500px)": {
-              fontSize: '20px',
-            }
-          }}>
+        <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600 }}>
           Редактировать фото
         </Typography>
 
-        <form onSubmit={handlePhotoSubmit} style={{ width: '100%' }}>
-          <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 3, flexDirection: 'column', alignItems: 'center' }}>
-            <TextField
-              id="outlined-basic"
-              label="Ссылка"
-              name="link"
-              variant="outlined"
-              value={editPhoto.link}
-              onChange={inputChangeHandler}
-              error={Boolean(linkError)}
-              helperText={linkError}
-              sx={{
-                mb: 3,
-                width: '60%',
-                borderRadius: "20px",
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: "20px",
-                  backgroundColor: "white",
-                  transition: "all 0.3s ease",
-                  height: "56px",
-                  "&.Mui-focused": {
-                    borderColor: "green",
-                  },
-                  "& .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "green",
-                    transition: "border-color 0.3s ease",
-                  },
-                  "&:hover .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "darkgreen",
-                  },
-                },
-                "& .MuiInputLabel-root.Mui-focused": {
-                  color: "green",
-                },
-                "@media (max-width: 600px)": {
-                  width: '90%',
-                  padding: '10px',
-                },
-                "@media (max-width: 430px)": {
-                  padding: '5px',
-                  width: '100%',
-                },
-              }}
-            />
+        <form onSubmit={handlePhotoSubmit}>
+          <TextField
+            fullWidth
+            size="small"
+            label="Ссылка"
+            name="link"
+            value={editPhoto.link}
+            onChange={inputChangeHandler}
+            error={Boolean(linkError)}
+            helperText={linkError}
+            sx={{ mb: 2 }}
+          />
 
-            <div style={{ marginBottom: '16px' }}>
-              <FileInput
-                id="photo"
-                name="photo"
-                label="Фото для карусели"
-                onGetFile={onFileChange}
-                file={editPhoto.photo}
-                error={!editPhoto.photo}
-                helperText={!editPhoto.photo ? "Фото обязательно для загрузки" : ""}
+          <FileInput
+            id="photo"
+            name="photo"
+            label="Фото"
+            onGetFile={onFileChange}
+            file={editPhoto.photo}
+            error={isFormInvalid && !editPhoto.photo}
+            helperText={isFormInvalid && !editPhoto.photo ? 'Фото обязательно для загрузки' : undefined}
+          />
+
+          <TextField
+            fullWidth
+            size="small"
+            label="Заголовок"
+            name="title"
+            value={editPhoto.title}
+            onChange={inputChangeHandler}
+            error={Boolean(title)}
+            helperText={title}
+            sx={{ mt: 2, mb: 2 }}
+          />
+
+          <TextField
+            fullWidth
+            size="small"
+            label="Описание"
+            name="description"
+            value={editPhoto.description}
+            onChange={inputChangeHandler}
+            multiline
+            minRows={2}
+            error={Boolean(description)}
+            helperText={description}
+            sx={{ mb: 2 }}
+          />
+
+          {editPhoto.photo && (
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 2 }}>
+              <img
+                src={
+                  editPhoto.photo instanceof File
+                    ? URL.createObjectURL(editPhoto.photo)
+                    : apiUrl + editPhoto.photo
+                }
+                alt="Превью фото"
+                style={{
+                  width: '200px',
+                  height: '100px',
+                  objectFit: 'cover',
+                  borderRadius: '8px',
+                  border: '1px solid #ddd',
+                  marginBottom: '8px',
+                }}
               />
-            </div>
-            <TextField
-              id="outlined-basic"
-              label="Зоголовок"
-              name="title"
-              variant="outlined"
-              value={editPhoto.title}
-              onChange={inputChangeHandler}
-              error={Boolean(title)}
-              helperText={title}
-              sx={{
-                mb: 3,
-                width: '60%',
-                borderRadius: "20px",
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: "20px",
-                  backgroundColor: "white",
-                  transition: "all 0.3s ease",
-                  height: "56px",
-                  "&.Mui-focused": {
-                    borderColor: "green",
-                  },
-                  "& .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "green",
-                    transition: "border-color 0.3s ease",
-                  },
-                  "&:hover .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "darkgreen",
-                  },
-                },
-                "& .MuiInputLabel-root.Mui-focused": {
-                  color: "green",
-                },
-                "@media (max-width: 600px)": {
-                  width: '90%',
-                  padding: '10px',
-                },
-                "@media (max-width: 430px)": {
-                  padding: '5px',
-                  width: '100%',
-                },
-              }}
-            />
+              <CloseIcon
+                onClick={deletePhoto}
+                sx={{
+                  cursor: 'pointer',
+                  color: 'red',
+                  '&:hover': { color: 'darkred' },
+                }}
+              />
+            </Box>
+          )}
 
-            <TextField
-              id="outlined-basic"
-              label="Описание"
-              name="description"
-              variant="outlined"
-              value={editPhoto.description}
-              onChange={inputChangeHandler}
-              error={Boolean(description)}
-              helperText={description}
-              sx={{
-                mb: 3,
-                width: '60%',
-                borderRadius: "20px",
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: "20px",
-                  backgroundColor: "white",
-                  transition: "all 0.3s ease",
-                  height: "56px",
-                  "&.Mui-focused": {
-                    borderColor: "green",
-                  },
-                  "& .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "green",
-                    transition: "border-color 0.3s ease",
-                  },
-                  "&:hover .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "darkgreen",
-                  },
-                },
-                "& .MuiInputLabel-root.Mui-focused": {
-                  color: "green",
-                },
-                "@media (max-width: 600px)": {
-                  width: '90%',
-                  padding: '10px',
-                },
-                "@media (max-width: 430px)": {
-                  padding: '5px',
-                  width: '100%',
-                },
-              }}
-            />
-            {editPhoto.photo && (
-              <Box sx={{
-                display: "flex",
-              }}>
-                <img
-                  style={{
-                    width: "200px",
-                    height: "200px",
-                    textIndent: "-9999px",
-                    display: "block",
-                    objectFit: "contain",
-                  }}
-                  src={
-                    editPhoto.photo instanceof File
-                      ? URL.createObjectURL(editPhoto.photo)
-                      : apiUrl + editPhoto.photo
-                  }
-                  alt="Фото для курсели"
-                />
-                <CloseIcon onClick={() => deletePhoto()}/>
-              </Box>
-            )}
-          </Box>
-
-
-          <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 3 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
             <Button
-              type="submit"
+              disabled={isFormInvalid}
               variant="contained"
-              color="primary"
-              disabled={isButtonFormInvalid}
+              type="submit"
               sx={{
-                backgroundColor: "#FDE910",
-                color: "rgb(52, 51, 50)",
-                fontSize: '16px',
-                padding: '10px 20px',
+                backgroundColor: isFormInvalid ? 'lightgray' : '#FDE910',
+                color: 'rgb(52, 51, 50)',
                 borderRadius: '20px',
-                "@media (max-width: 600px)": {
-                  fontSize: '14px',
-                  padding: '8px 15px',
-                },
+                textTransform: 'none',
+                fontWeight: 600,
+                "&:hover": {
+                  backgroundColor: isFormInvalid ? 'lightgray' : '#e0d809',
+                }
               }}
             >
               Сохранить
             </Button>
           </Box>
         </form>
-      </Box>
-    </div>
+      </Paper>
+    </Box>
   );
 };
 

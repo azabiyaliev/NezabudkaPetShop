@@ -1,13 +1,28 @@
-import { useAppDispatch, useAppSelector } from '../../app/hooks.ts';
-import { selectUser } from '../../store/users/usersSlice.ts';
-import { useEffect, useState } from 'react';
-import { GetClientOrders, GetGuestOrders, transferGuestOrders } from '../../store/orders/ordersThunk.ts';
-import { Alert, CircularProgress, Container, MenuItem, Select, SelectChangeEvent } from '@mui/material';
-import Typography from '@mui/material/Typography';
-import { IOrder } from '../../types';
-import dayjs from 'dayjs';
-import CustomPagination from '../../components/Pagination/Pagination.tsx';
-import ClientOrdersItem from './ClientOrdersItem.tsx';
+import { useAppDispatch, useAppSelector } from "../../app/hooks.ts";
+import { selectUser } from "../../store/users/usersSlice.ts";
+import { useEffect, useState } from "react";
+import {
+  GetClientOrders,
+  GetGuestOrders,
+  transferGuestOrders,
+} from "../../store/orders/ordersThunk.ts";
+import {
+  Alert,
+  Box,
+  CircularProgress,
+  Container,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+} from "@mui/material";
+import Typography from "@mui/material/Typography";
+import { IOrder } from "../../types";
+import dayjs from "dayjs";
+import CustomPagination from "../../components/Pagination/Pagination.tsx";
+import ClientOrdersItem from "./ClientOrdersItem.tsx";
+import { NavLink } from "react-router-dom";
+import { COLORS, FONTS } from "../../globalStyles/stylesObjects.ts";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 const MyOrders = () => {
   const dispatch = useAppDispatch();
@@ -15,29 +30,29 @@ const MyOrders = () => {
   const loading = useAppSelector((state) => state.orders.isLoading);
   const error = useAppSelector((state) => state.orders.isError);
   const user = useAppSelector(selectUser);
-  const guestEmail = localStorage.getItem('guestEmail');
-  const [statusFilter, setStatusFilter] = useState<string>('All');
-  const [timeFilter, setTimeFilter] = useState<string>('All');
+  const guestEmail = localStorage.getItem("guestEmail");
+  const [statusFilter, setStatusFilter] = useState<string>("All");
+  const [timeFilter, setTimeFilter] = useState<string>("All");
 
   useEffect(() => {
     const loadOrders = async () => {
-      if (user?.token) {
+      if (user) {
         await dispatch(GetClientOrders());
 
-        const guestEmail = localStorage.getItem('guestEmail');
+        const guestEmail = localStorage.getItem("guestEmail");
         if (guestEmail && guestEmail === user.email) {
           await dispatch(transferGuestOrders(guestEmail));
-          localStorage.removeItem('guestEmail');
+          localStorage.removeItem("guestEmail");
           await dispatch(GetClientOrders());
         }
       } else {
-        const guestEmail = localStorage.getItem('guestEmail');
+        const guestEmail = localStorage.getItem("guestEmail");
         if (guestEmail) {
           await dispatch(GetGuestOrders(guestEmail));
         }
       }
     };
-    loadOrders()
+    loadOrders();
   }, [dispatch, user]);
 
   const handleStatusFilterChange = (event: SelectChangeEvent) => {
@@ -49,23 +64,25 @@ const MyOrders = () => {
   };
 
   const filterByStatus = (order: IOrder) => {
-    return statusFilter === 'All' || order.status === statusFilter;
+    return statusFilter === "All" || order.status === statusFilter;
   };
 
   const filterByTime = (order: IOrder) => {
     const orderDate = dayjs(order.createdAt);
-    if (timeFilter === 'Today') {
-      return orderDate.isSame(dayjs(), 'day');
+    if (timeFilter === "Today") {
+      return orderDate.isSame(dayjs(), "day");
     }
-    if (timeFilter === 'Last7Days') {
-      return orderDate.isAfter(dayjs().subtract(7, 'day'));
+    if (timeFilter === "Last7Days") {
+      return orderDate.isAfter(dayjs().subtract(7, "day"));
     }
-    if (timeFilter === 'Last30Days') {
-      return orderDate.isAfter(dayjs().subtract(30, 'day'));
+    if (timeFilter === "Last30Days") {
+      return orderDate.isAfter(dayjs().subtract(30, "day"));
     }
     return true;
   };
-  const filteredOrders = orders.filter(order => filterByStatus(order) && filterByTime(order));
+  const filteredOrders = orders.filter(
+    (order) => filterByStatus(order) && filterByTime(order),
+  );
 
   if (loading) {
     return <CircularProgress />;
@@ -74,9 +91,7 @@ const MyOrders = () => {
   if (error) {
     return (
       <Container maxWidth="md" sx={{ py: 4 }}>
-        <Alert severity="error">
-          {error|| 'Ошибка при загрузке заказов'}
-        </Alert>
+        <Alert severity="error">{error || "Ошибка при загрузке заказов"}</Alert>
       </Container>
     );
   }
@@ -93,42 +108,92 @@ const MyOrders = () => {
 
   if (!orders || orders.length === 0) {
     return (
-      <Container maxWidth="md" sx={{ py: 4 }}>
+      <Container>
         <Typography>У вас пока нет заказов.</Typography>
       </Container>
     );
   }
 
   return (
-    <Container maxWidth="md" sx={{ py: 4 }}>
-      <Typography variant="h4" gutterBottom>
+    <Box
+      sx={{
+        my: 5,
+        display: "flex",
+        flexDirection: "column",
+        gap: "20px",
+        alignItems: "center",
+        position: "relative",
+      }}
+    >
+      <NavLink
+        to={`/my_account/users/account/${user?.id}`}
+        style={{
+          position: "absolute",
+          left: 1,
+          textDecoration: "none",
+          color: COLORS.success,
+          fontSize: FONTS.size.lg,
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
+        <ArrowBackIcon sx={{ fontSize: FONTS.size.lg, marginRight: 1 }} />
+        Назад
+      </NavLink>
+      <Typography
+        variant="h4"
+        sx={{
+          "@media (max-width: 480px)": {
+            fontSize: FONTS.size.lg
+          },
+        }}
+      >
         Мои заказы
       </Typography>
 
-      <Select
-        value={statusFilter}
-        onChange={handleStatusFilterChange}
-        sx={{ mb: 3, minWidth: 200 }}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          gap: "20px",
+          alignItems: "center",
+        }}
       >
-        <MenuItem value="All">Все</MenuItem>
-        <MenuItem value="Pending">Pending</MenuItem>
-        <MenuItem value="Confirmed">Confirmed</MenuItem>
-        <MenuItem value="Packed">Packed</MenuItem>
-        <MenuItem value="Shipped">Shipped</MenuItem>
-        <MenuItem value="Delivered">Delivered</MenuItem>
-        <MenuItem value="Returned">Returned</MenuItem>
-      </Select>
+        <Select
+          value={statusFilter}
+          onChange={handleStatusFilterChange}
+          sx={{
+            minWidth: 200,
+            "@media (max-width: 480px)": {
+              minWidth: 120,
+            },
+          }}
+        >
+          <MenuItem value="All">Все</MenuItem>
+          <MenuItem value="Pending">Pending</MenuItem>
+          <MenuItem value="Confirmed">Confirmed</MenuItem>
+          <MenuItem value="Packed">Packed</MenuItem>
+          <MenuItem value="Shipped">Shipped</MenuItem>
+          <MenuItem value="Delivered">Delivered</MenuItem>
+          <MenuItem value="Returned">Returned</MenuItem>
+        </Select>
 
-      <Select
-        value={timeFilter}
-        onChange={handleTimeFilterChange}
-        sx={{ minWidth: 200 }}
-      >
-        <MenuItem value="All">За всё время</MenuItem>
-        <MenuItem value="Today">Сегодня</MenuItem>
-        <MenuItem value="Last7Days">Последние 7 дней</MenuItem>
-        <MenuItem value="Last30Days">Последние 30 дней</MenuItem>
-      </Select>
+        <Select
+          value={timeFilter}
+          onChange={handleTimeFilterChange}
+          sx={{
+            minWidth: 200,
+            "@media (max-width: 480px)": {
+              minWidth: 120,
+            },
+          }}
+        >
+          <MenuItem value="All">За всё время</MenuItem>
+          <MenuItem value="Today">Сегодня</MenuItem>
+          <MenuItem value="Last7Days">Последние 7 дней</MenuItem>
+          <MenuItem value="Last30Days">Последние 30 дней</MenuItem>
+        </Select>
+      </Box>
 
       {loading ? (
         <CircularProgress />
@@ -138,7 +203,7 @@ const MyOrders = () => {
           renderItem={(item) => <ClientOrdersItem key={item.id} order={item} />}
         />
       )}
-    </Container>
+    </Box>
   );
 };
 

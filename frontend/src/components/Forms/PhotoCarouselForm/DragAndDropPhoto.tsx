@@ -10,9 +10,10 @@ import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Swal from 'sweetalert2';
 import { enqueueSnackbar } from 'notistack';
-import { Box } from '@mui/joy';
+import { Box, Typography } from '@mui/joy';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import AdminBar from '../../../features/Admin/AdminProfile/AdminBar.tsx';
+import AddNewPhotoForm from './AddNewPhotoForm.tsx';
 
 const DragAndDropPhoto = () => {
   const photos = useAppSelector(selectPhotoCarousel) || [];
@@ -67,13 +68,15 @@ const DragAndDropPhoto = () => {
         order: index,
         photo: photo.photo,
         link: photo.link,
+        title: photo.title,
+        description: photo.description,
       }))
       .filter(photo => photo.id !== undefined);
 
     try {
       await dispatch(updatePhotoOrders(updatedPhotos)).unwrap();
       navigate('/');
-      enqueueSnackbar('Вы успешно изменили порядок фото в карусели;)', { variant: 'success' });
+      enqueueSnackbar('Вы успешно изменили порядок фото в карусели! 🎉', { variant: 'success' });
     } catch (error) {
       console.error("Ошибка обновления:", error);
     }
@@ -108,14 +111,30 @@ const DragAndDropPhoto = () => {
   };
 
   return (
-    <Box sx={{
-      display: "flex",
-    }}>
+    <Box sx={{ display: "flex" }}>
       <AdminBar />
-      <Box sx={{
-        marginLeft: "20px",
-        width: "90%",
-      }}>
+      <Box sx={{ marginLeft: "20px", width: "90%" }}>
+        <AddNewPhotoForm />
+        <Box
+          sx={{
+            borderTop: "1px solid lightgray",
+            marginTop: "30px",
+            marginBottom: "20px",
+          }}
+        />
+
+        <Typography
+          level="body-sm"
+          sx={{
+            textAlign: "center",
+            color: "gray",
+            marginBottom: "20px",
+            fontSize: "14px",
+          }}
+        >
+          Чтобы изменить порядок фото, просто перетащите их мышкой
+        </Typography>
+
         <Box
           sx={{
             display: "flex",
@@ -137,7 +156,7 @@ const DragAndDropPhoto = () => {
               <Box
                 key={image.id}
                 sx={{
-                  width: "400px",
+                  width: "300px",
                   height: "200px",
                   overflow: "hidden",
                   borderRadius: "8px",
@@ -153,7 +172,7 @@ const DragAndDropPhoto = () => {
                     height: "auto",
                   }
                 }}
-                draggable={true}
+                draggable
                 onDragStart={(e) => dragStart(e, image)}
                 onDragEnd={dragEnd}
                 onDragOver={dragOver}
@@ -194,6 +213,7 @@ const DragAndDropPhoto = () => {
                 >
                   <DeleteIcon style={{ color: "#B00000" }} />
                 </Button>
+
                 <Box
                   component="img"
                   src={`${apiUrl}/${image.photo}`}
@@ -214,11 +234,19 @@ const DragAndDropPhoto = () => {
             <div>Данные не загружены.</div>
           )}
         </Box>
-        <Box sx={{ marginTop: "40px", display: "flex", justifyContent: "center", marginBottom:"50px",
-          "@media (max-width: 550px)": {
-            display:"none"
-          }
-        }}>
+
+        {/* Кнопка сохранения */}
+        <Box
+          sx={{
+            marginTop: "40px",
+            display: "flex",
+            justifyContent: "center",
+            marginBottom: "50px",
+            "@media (max-width: 550px)": {
+              display: "none",
+            }
+          }}
+        >
           <Button
             onClick={handleSave}
             variant="contained"
@@ -228,23 +256,29 @@ const DragAndDropPhoto = () => {
               color: "white",
               marginRight: "20px",
               fontSize: "16px",
-              borderRadius:"20px",
-              "@media (max-width: 550px)": {
-                display:"none"
-              }}}
+              borderRadius: "20px",
+            }}
           >
             Сохранить порядок
           </Button>
         </Box>
-        <div style={{ marginTop: "10px", display: "flex", justifyContent: "center", gap: "20px",marginBottom:"30px" }}>
+
+        <Box
+          sx={{
+            marginTop: "10px",
+            display: "flex",
+            justifyContent: "center",
+            gap: "20px",
+            marginBottom: "30px",
+          }}
+        >
           <Button
             onClick={handleSave}
             variant="contained"
-            color="primary"
             sx={{
-              display:"none",
+              display: "none",
               "@media (max-width: 550px)": {
-                display:"flex",
+                display: "flex",
                 backgroundColor: "#738A6E",
                 color: "white",
                 borderRadius: "50%",
@@ -253,11 +287,12 @@ const DragAndDropPhoto = () => {
                 minWidth: "45px",
                 justifyContent: "center",
                 alignItems: "center",
-              }}}
+              }
+            }}
           >
-            <PublishedWithChangesIcon style={{ width: "25px", height: "25px" }}/>
+            <PublishedWithChangesIcon style={{ width: "25px", height: "25px" }} />
           </Button>
-        </div>
+        </Box>
       </Box>
     </Box>
   );

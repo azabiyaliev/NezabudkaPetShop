@@ -16,13 +16,12 @@ const Carts: React.FC<Props> = ({ products, deleteAllProduct}) => {
       <Box
         sx={{
           border: "1px solid #e5e2dc",
-          width: "700px",
           padding: "2rem",
           borderRadius: "20px",
           marginBottom: "20px",
           "@media (max-width: 820px)": {
             padding: "1rem",
-            width: "600px",
+            width: "100%",
           },
           "@media (max-width: 720px)": {
             width: "100%",
@@ -48,13 +47,6 @@ const Carts: React.FC<Props> = ({ products, deleteAllProduct}) => {
               },
             }}
           >
-            <span
-              style={{
-                marginRight: "10px",
-              }}
-            >
-              1.
-            </span>{" "}
             Корзина
           </Typography>
           <Link
@@ -129,10 +121,11 @@ const Carts: React.FC<Props> = ({ products, deleteAllProduct}) => {
             </Tooltip>
           </Link>
         </Box>
-        {products.map((product) => (
+        {products.map((product, index) => (
           <Cart
             product={product}
             key={product.product.id}
+            isFirst={index === 0}
           />
         ))}
       </Box>

@@ -11,12 +11,9 @@ export class BrandsService {
   constructor(private readonly prisma: PrismaService) {}
 
   async getBrands() {
-    const brands = await this.prisma.brand.findMany({
-      orderBy: {
-        id: 'desc',
-      },
+    return this.prisma.brand.findMany({
+      orderBy: { id: 'desc' },
     });
-    return brands || [];
   }
 
   async getBrand(id: string) {
@@ -30,7 +27,7 @@ export class BrandsService {
     return brand;
   }
 
-  async createBrand(brandDTO: BrandDto, file?: Express.Multer.File) {
+  async createBrand(brandDTO: BrandDto) {
     const { title, description } = brandDTO;
     const brand = await this.prisma.brand.findFirst({
       where: { title },
@@ -40,10 +37,12 @@ export class BrandsService {
         'Данный бренд уже существует и вы не можете повторно его добавить!',
       );
     }
+    const logo =
+      brandDTO.logo === 'null' || brandDTO.logo === '' ? null : brandDTO.logo;
     const newBrand = await this.prisma.brand.create({
       data: {
         title,
-        logo: file && file.filename ? '/brands/' + file.filename : null,
+        logo,
         description: description === '' ? null : description,
       },
     });
@@ -81,8 +80,8 @@ export class BrandsService {
       updateBrand.title = title;
     }
 
-    if (file) {
-      updateBrand.logo = '/brands/' + file?.filename;
+    if (file && brandDTO.logo) {
+      updateBrand.logo = brandDTO.logo;
     } else if (brandDTO.logo === brand.logo) {
       updateBrand.logo = brandDTO.logo;
     } else if (!file || (brandDTO.logo != null && brandDTO.logo === '')) {

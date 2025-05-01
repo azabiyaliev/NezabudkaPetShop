@@ -43,7 +43,9 @@ const initialState: CartState = {
   },
 }
 
-export const cartFromSlice = (state: RootState)=> state.cart.cart;
+const emptyCart = { id: 0, userId: 0, products: [] };
+
+export const cartFromSlice = (state: RootState) => state.cart.cart || emptyCart;
 export const cartErrorFromSlice = (state: RootState)=> state.cart.errors.getCartError;
 export const cartCreateErrorFromSlice = (state: RootState)=> state.cart.errors.createError;
 export const addProductErrorFromSlice = (state: RootState)=> state.cart.errors.addProductError;

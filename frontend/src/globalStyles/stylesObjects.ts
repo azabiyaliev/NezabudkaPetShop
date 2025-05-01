@@ -12,10 +12,12 @@ export const COLORS = {
   background: '#f8f9fa',
   white: '#ffffff',
   black: '#000000',
+  rgbaGrey: 'rgba(241,239,239,0.61)',
 }
 
 //ОТСТУПЫ
 export const SPACING = {
+  exs: '5px',
   xs: '10px',
   sm: '20px',
   md: '25px',

@@ -4,12 +4,13 @@ import {
   addProduct,
   editProduct,
   getAllProductsByCategory,
-  getFilteredProducts,
+  getFilteredProducts, getFilteredProductsWithoutCategory,
   getOneProduct,
   getProducts,
   getProductsByBrand,
   getProductsByCategory,
-  getPromotionalProducts
+  getPromotionalProducts,
+  getTopSellingProducts,
 } from './productsThunk.ts';
 import { RootState } from '../../app/store.ts';
 
@@ -18,7 +19,9 @@ interface ProductsState {
   categoryProducts: ProductResponse[];
   product: ProductResponse | null;
   brands: SubcategoryWithBrand[];
+  brandProducts: ProductResponse[];
   promotionalProducts: ProductResponse[];
+  topSellingProducts: ProductResponse[];
   loading: boolean;
   error: boolean;
 }
@@ -27,7 +30,9 @@ const initialState: ProductsState = {
   brands: [],
   categoryProducts: [],
   products: [],
+  brandProducts: [],
   promotionalProducts: [],
+  topSellingProducts: [],
   product: null,
   loading: false,
   error: false,
@@ -37,6 +42,8 @@ export const addProductLoading = (state: RootState) => state.products.loading;
 export const selectProductsByCategory = (state: RootState) => state.products.categoryProducts;
 export const selectProducts = (state: RootState) => state.products.products;
 export const selectPromotionalProducts = (state: RootState) => state.products.promotionalProducts;
+export const selectBrandProducts = (state: RootState) => state.products.brandProducts;
+export const selectTopSellingProducts = (state: RootState) => state.products.topSellingProducts;
 export const selectProduct = (state: RootState) => state.products.product;
 
 const productsSlice = createSlice({
@@ -101,9 +108,9 @@ const productsSlice = createSlice({
         state.loading = true;
       })
       .addCase(getProductsByBrand.fulfilled, (state, {payload: products}) => {
-        state.products = [];
+        state.brandProducts = [];
         state.loading = false;
-        state.products = products;
+        state.brandProducts = products;
       })
       .addCase(getProductsByBrand.rejected, (state) => {
         state.loading = false;
@@ -130,6 +137,16 @@ const productsSlice = createSlice({
       .addCase(getPromotionalProducts.rejected, (state) => {
         state.loading = false;
       })
+      .addCase(getTopSellingProducts.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getTopSellingProducts.fulfilled, (state, {payload: products}) => {
+        state.loading = false;
+        state.topSellingProducts = products;
+      })
+      .addCase(getTopSellingProducts.rejected, (state) => {
+        state.loading = false;
+      })
       .addCase(getFilteredProducts.pending, (state) => {
         state.loading = true;
         state.error = false;
@@ -142,6 +159,17 @@ const productsSlice = createSlice({
       .addCase(getFilteredProducts.rejected, (state) => {
         state.loading = false;
         state.error = true;
+      })
+      .addCase(getFilteredProductsWithoutCategory.pending, (state) => {
+        state.loading = true;
+        state.error = false;
+      })
+      .addCase(getFilteredProductsWithoutCategory.fulfilled, (state, action) => {
+        state.loading = false;
+        state.products = action.payload;
+      })
+      .addCase(getFilteredProductsWithoutCategory.rejected, (state) => {
+        state.loading = false;
       });
   },
 });

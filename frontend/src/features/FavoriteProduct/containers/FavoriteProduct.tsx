@@ -1,24 +1,26 @@
-import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
-import { useEffect, useState } from "react";
-import { getFavoriteProducts } from "../../../store/favoriteProducts/favoriteProductsThunks.ts";
-import { selectedFavorite } from "../../../store/favoriteProducts/favoriteProductsSlice.ts";
-import { Box, Typography } from "@mui/material";
-import OneProductCard from "../../Product/components/OneProductCard.tsx";
-import { selectUser } from "../../../store/users/usersSlice.ts";
+import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
+import { useEffect, useState } from 'react';
+import { getFavoriteProducts } from '../../../store/favoriteProducts/favoriteProductsThunks.ts';
+import { selectedFavorite } from '../../../store/favoriteProducts/favoriteProductsSlice.ts';
+import { Box, Breadcrumbs, Link, Typography } from '@mui/material';
+import { selectUser } from '../../../store/users/usersSlice.ts';
 import {
   clearLocalFavoriteProducts,
   getLocalFavoriteProducts
 } from '../../../store/favoriteProducts/favoriteProductLocal.ts';
-import axiosApi from "../../../axiosApi.ts";
-import { ProductResponse } from "../../../types";
-import image from "../../../assets/image_transparent.png";
-import { Breadcrumbs, Link } from "@mui/material";
+import axiosApi from '../../../axiosApi.ts';
+import { ProductResponse } from '../../../types';
+import image from '../../../assets/image_transparent.png';
 import { useNavigate } from 'react-router-dom';
-
+import ProductCard from '../../../components/Domain/ProductCard/ProductCard.tsx';
+import { cartFromSlice, getFromLocalStorage } from '../../../store/cart/cartSlice.ts';
+import { userRoleClient } from '../../../globalConstants.ts';
+import { fetchCart } from '../../../store/cart/cartThunk.ts';
 
 const FavoriteProduct = () => {
   const dispatch = useAppDispatch();
   const favorites = useAppSelector(selectedFavorite);
+  const cart = useAppSelector(cartFromSlice);
   const user = useAppSelector(selectUser);
   const [localFavorites, setLocalFavorites] = useState<ProductResponse[]>([]);
   const navigate = useNavigate();
@@ -44,6 +46,15 @@ const FavoriteProduct = () => {
       void fetchLocalFavorites();
     }
   }, [user, dispatch]);
+
+  useEffect(() => {
+    if (user && user.role === userRoleClient) {
+      dispatch(fetchCart()).unwrap();
+    } else {
+      dispatch(getFromLocalStorage());
+    }
+  }, [dispatch, user]);
+
   return (
     <Box>
       <Breadcrumbs aria-label="breadcrumb" sx={{ margin: '20px 0' }}>
@@ -92,7 +103,7 @@ const FavoriteProduct = () => {
           ) : (
             favorites.map((fav) => (
               <Box key={fav.id}>
-                <OneProductCard product={fav.product} />
+                {cart && (<ProductCard product={fav.product} cart={cart} />)}
               </Box>
             ))
           )
@@ -116,7 +127,7 @@ const FavoriteProduct = () => {
         ) : (
           localFavorites.map((item) => (
             <Box key={item.id}>
-              <OneProductCard product={item} />
+              {cart && (<ProductCard product={item} cart={cart} />)}
             </Box>
           ))
         )}

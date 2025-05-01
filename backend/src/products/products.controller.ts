@@ -13,25 +13,30 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
-import { Roles } from '../roles/roles.decorator';
-import { CreateProductsDto } from '../dto/createProductsDto';
-import { RolesGuard } from '../token.auth/token.role.guard';
-import { TokenAuthGuard } from '../token.auth/token-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
+import { memoryStorage } from 'multer';
+import { CreateProductsDto } from '../dto/createProductsDto';
+import { TokenAuthGuard } from '../token.auth/token-auth.guard';
+import { RolesGuard } from '../token.auth/token.role.guard';
+import { Roles } from '../roles/roles.decorator';
+import { ImageProcessorService } from '../common/image-processor.service';
 
 @Controller('products')
 export class ProductsController {
-  constructor(private readonly productsService: ProductsService) {}
+  constructor(
+    private readonly productsService: ProductsService,
+    private readonly imageProcessorService: ImageProcessorService,
+  ) {}
 
-  //GET ALL PRODUCTS
   @Get('catalog')
   async getProducts(
     @Query('search') searchKeyword: string,
     @Query('brand') brand: number,
   ) {
-    return await this.productsService.getAllProducts(searchKeyword, brand);
+    return await this.productsService.getAllProducts(
+      searchKeyword || '',
+      brand || 0,
+    );
   }
 
   @Get('promotional')
@@ -39,7 +44,11 @@ export class ProductsController {
     return await this.productsService.getPromotionalProducts();
   }
 
-  //GET ONE BY ID
+  @Get('selling')
+  async getTopSellingProducts() {
+    return await this.productsService.getTopSellingProducts();
+  }
+
   @Get(':id')
   async getOneProduct(@Param('id') id: string) {
     return await this.productsService.getProductById(Number(id));
@@ -56,21 +65,20 @@ export class ProductsController {
   @Post('create')
   @UseInterceptors(
     FileInterceptor('productPhoto', {
-      storage: diskStorage({
-        destination: './public/productImg',
-        filename: (_req, file, callback) => {
-          const imageFormat = extname(file.originalname);
-          callback(null, `${crypto.randomUUID()}${imageFormat}`);
-        },
-      }),
+      storage: memoryStorage(),
     }),
   )
   async createProduct(
     @Body() productDto: CreateProductsDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    if (file && file.filename) {
-      productDto.productPhoto = '/productImg/' + file.filename;
+    if (file) {
+      const photoPath = await this.imageProcessorService.convertToWebP(
+        file,
+        './public/productImg',
+        'PRODUCT',
+      );
+      productDto.productPhoto = photoPath;
     }
     productDto.productPrice = Number(productDto.productPrice);
     productDto.brandId = Number(productDto.brandId);
@@ -84,13 +92,7 @@ export class ProductsController {
   @Put('update_product_item/:productId')
   @UseInterceptors(
     FileInterceptor('productPhoto', {
-      storage: diskStorage({
-        destination: './public/productImg',
-        filename: (_req, file, callback) => {
-          const imageFormat = extname(file.originalname);
-          callback(null, `${crypto.randomUUID()}${imageFormat}`);
-        },
-      }),
+      storage: memoryStorage(),
     }),
   )
   async updateProductItem(
@@ -102,7 +104,12 @@ export class ProductsController {
       throw new BadRequestException('Необходимо передать данные продукта');
     }
     if (file) {
-      createProductDto.productPhoto = '/productImg/' + file.filename;
+      const photoPath = await this.imageProcessorService.convertToWebP(
+        file,
+        './public/productImg',
+        'PRODUCT',
+      );
+      createProductDto.productPhoto = photoPath;
     }
     return await this.productsService.changeProductInfo(
       Number(productId),
@@ -124,15 +131,12 @@ export class ProductsController {
   }
 
   @Get('productsByCategory/:id')
-  async getProductsByCategory(
-    @Param('id') id: string,
-    @Query() filters: any,
-  ) {
+  async getProductsByCategory(@Param('id') id: string, @Query() filters: any) {
     // Если есть параметры фильтрации, используем метод getFilteredProducts
     if (Object.keys(filters).length > 0) {
       return this.productsService.getFilteredProducts(parseInt(id), filters);
     }
-    
+
     // Иначе используем существующий метод
     return this.productsService.getProductsByCategoryId(parseInt(id));
   }
@@ -140,5 +144,10 @@ export class ProductsController {
   @Get('categories/:categoryId/filter-options')
   async getCategoryFilterOptions(@Param('categoryId') categoryId: string) {
     return this.productsService.getCategoryFilterOptions(parseInt(categoryId));
+  }
+
+  @Post('filter/all')
+  async filterAllProducts(@Body() filters: any) {
+    return await this.productsService.getFilteredProducts(undefined, filters);
   }
 }

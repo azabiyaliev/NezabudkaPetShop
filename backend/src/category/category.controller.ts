@@ -10,29 +10,36 @@ import {
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
+import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { CategoryService } from './category.service';
 import { CategoryDto } from '../dto/category.dto';
 import { SubcategoryDto } from '../dto/subCategoryDto';
-import { AnyFilesInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
-import * as crypto from 'crypto';
+import { memoryStorage } from 'multer';
+import {
+  ImageProcessorService,
+  ResizeOptions,
+} from '../common/image-processor.service';
+
+// Специфичные настройки для иконок категорий
+const CATEGORY_ICON_OPTIONS: ResizeOptions = {
+  width: 200,
+  height: 200,
+  fit: 'contain',
+  quality: 90,
+  withoutEnlargement: true,
+};
 
 @Controller('category')
 export class CategoryController {
-  constructor(private categoryService: CategoryService) {}
+  constructor(
+    private categoryService: CategoryService,
+    private imageProcessorService: ImageProcessorService,
+  ) {}
 
   @Post()
   @UseInterceptors(
     AnyFilesInterceptor({
-      storage: diskStorage({
-        destination: './public/category',
-        filename: (_req, file, callback) => {
-          const imageFormat = extname(file.originalname);
-          const fileName = `${crypto.randomUUID()}${imageFormat}`;
-          callback(null, fileName);
-        },
-      }),
+      storage: memoryStorage(),
     }),
   )
   async createCategory(
@@ -42,13 +49,28 @@ export class CategoryController {
     const icon = files.find((f) => f.fieldname === 'icon');
     const image = files.find((f) => f.fieldname === 'image');
 
-    categoryDto.icon = icon ? `/category/${icon.filename}` : null;
-    categoryDto.image = image ? `/category/${image.filename}` : null;
+    if (icon) {
+      const iconPath = await this.imageProcessorService.convertToWebP(
+        icon,
+        './public/category',
+        CATEGORY_ICON_OPTIONS,
+      );
+      categoryDto.icon = iconPath;
+    }
+
+    if (image) {
+      const imagePath = await this.imageProcessorService.convertToWebP(
+        image,
+        './public/category',
+        'CATEGORY',
+      );
+      categoryDto.image = imagePath;
+    }
 
     const savedCategory = await this.categoryService.createCategory(
       categoryDto,
-      categoryDto.icon,
-      categoryDto.image,
+      categoryDto.icon || null,
+      categoryDto.image || null,
     );
     return savedCategory;
   }
@@ -67,14 +89,7 @@ export class CategoryController {
   @Put(':id')
   @UseInterceptors(
     AnyFilesInterceptor({
-      storage: diskStorage({
-        destination: './public/category',
-        filename: (_req, file, callback) => {
-          const imageFormat = extname(file.originalname);
-          const fileName = `${crypto.randomUUID()}${imageFormat}`;
-          callback(null, fileName);
-        },
-      }),
+      storage: memoryStorage(),
     }),
   )
   async updateCategory(
@@ -93,13 +108,21 @@ export class CategoryController {
     const imageFile = files.find((f) => f.fieldname === 'image');
 
     if (iconFile) {
-      newIcon = `/category/${iconFile.filename}`;
+      newIcon = await this.imageProcessorService.convertToWebP(
+        iconFile,
+        './public/category',
+        CATEGORY_ICON_OPTIONS,
+      );
     } else if (categoryDto.icon === null || categoryDto.icon === '') {
       newIcon = null;
     }
 
     if (imageFile) {
-      newImage = `/category/${imageFile.filename}`;
+      newImage = await this.imageProcessorService.convertToWebP(
+        imageFile,
+        './public/category',
+        'CATEGORY',
+      );
     } else if (categoryDto.image === null || categoryDto.image === '') {
       newImage = null;
     }
@@ -124,14 +147,7 @@ export class CategoryController {
   @Post(':id/subcategories')
   @UseInterceptors(
     AnyFilesInterceptor({
-      storage: diskStorage({
-        destination: './public/category',
-        filename: (_req, file, callback) => {
-          const imageFormat = extname(file.originalname);
-          const fileName = `${crypto.randomUUID()}${imageFormat}`;
-          callback(null, fileName);
-        },
-      }),
+      storage: memoryStorage(),
     }),
   )
   async addSubcategory(
@@ -146,13 +162,32 @@ export class CategoryController {
       const title = (body as Record<string, string>)[
         `subcategories[${i}].title`
       ];
-      const icon = files.find((f) => f.fieldname === `icon_${i}`);
-      const image = files.find((f) => f.fieldname === `image_${i}`);
+      const iconFile = files.find((f) => f.fieldname === `icon_${i}`);
+      const imageFile = files.find((f) => f.fieldname === `image_${i}`);
+
+      let iconPath = null;
+      let imagePath = null;
+
+      if (iconFile) {
+        iconPath = await this.imageProcessorService.convertToWebP(
+          iconFile,
+          './public/category',
+          CATEGORY_ICON_OPTIONS,
+        );
+      }
+
+      if (imageFile) {
+        imagePath = await this.imageProcessorService.convertToWebP(
+          imageFile,
+          './public/category',
+          'CATEGORY',
+        );
+      }
 
       subcategories.push({
         title,
-        icon: icon ? `/category/${icon.filename}` : null,
-        image: image ? `/category/${image.filename}` : null,
+        icon: iconPath,
+        image: imagePath,
       });
 
       i++;

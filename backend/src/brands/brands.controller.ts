@@ -12,21 +12,23 @@ import {
 } from '@nestjs/common';
 import { BrandsService } from './brands.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
+import { memoryStorage } from 'multer';
 import { BrandDto } from '../dto/brands.dto';
 import { TokenAuthGuard } from '../token.auth/token-auth.guard';
 import { RolesGuard } from '../token.auth/token.role.guard';
 import { Roles } from '../roles/roles.decorator';
-import * as crypto from 'crypto';
+import { ImageProcessorService } from '../common/image-processor.service';
 
 @Controller('brands')
 export class BrandsController {
-  constructor(private brandsService: BrandsService) {}
+  constructor(
+    private brandsService: BrandsService,
+    private imageProcessorService: ImageProcessorService,
+  ) {}
 
   @Get()
   async getBrands() {
-    return await this.brandsService.getBrands();
+    return this.brandsService.getBrands();
   }
 
   @Get(':id')
@@ -35,38 +37,35 @@ export class BrandsController {
   }
 
   @UseGuards(TokenAuthGuard, RolesGuard)
-  @Roles('admin')
+  @Roles('admin', 'superAdmin')
   @Post()
   @UseInterceptors(
     FileInterceptor('logo', {
-      storage: diskStorage({
-        destination: './public/brands',
-        filename: (_req, file, callback) => {
-          const imageFormat = extname(file.originalname);
-          callback(null, `${crypto.randomUUID()}${imageFormat}`);
-        },
-      }),
+      storage: memoryStorage(),
     }),
   )
   async createBrand(
     @UploadedFile() file: Express.Multer.File,
     @Body() brandDTO: BrandDto,
   ) {
-    return await this.brandsService.createBrand(brandDTO, file);
+    if (file) {
+      const logoPath = await this.imageProcessorService.convertToWebP(
+        file,
+        './public/brands',
+        'BRAND_LOGO',
+      );
+      file.filename = logoPath.split('/').pop() || '';
+      brandDTO.logo = logoPath;
+    }
+    return await this.brandsService.createBrand(brandDTO);
   }
 
   @UseGuards(TokenAuthGuard, RolesGuard)
-  @Roles('admin')
+  @Roles('admin', 'superAdmin')
   @Patch(':id')
   @UseInterceptors(
     FileInterceptor('logo', {
-      storage: diskStorage({
-        destination: './public/brands',
-        filename: (_req, file, callback) => {
-          const imageFormat = extname(file.originalname);
-          callback(null, `${crypto.randomUUID()}${imageFormat}`);
-        },
-      }),
+      storage: memoryStorage(),
     }),
   )
   async updateBrand(
@@ -74,11 +73,20 @@ export class BrandsController {
     @UploadedFile() file: Express.Multer.File,
     @Body() brandDTO: BrandDto,
   ) {
+    if (file) {
+      const logoPath = await this.imageProcessorService.convertToWebP(
+        file,
+        './public/brands',
+        'BRAND_LOGO',
+      );
+      file.filename = logoPath.split('/').pop() || '';
+      brandDTO.logo = logoPath;
+    }
     return await this.brandsService.updateBrand(id, brandDTO, file);
   }
 
   @UseGuards(TokenAuthGuard, RolesGuard)
-  @Roles('admin')
+  @Roles('admin', 'superAdmin')
   @Delete(':id')
   async deleteBrand(@Param('id') id: string) {
     return await this.brandsService.deleteBrand(id);

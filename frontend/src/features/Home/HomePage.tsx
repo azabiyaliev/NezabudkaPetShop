@@ -12,10 +12,13 @@ import { selectUser } from '../../store/users/usersSlice.ts';
 import { addItem, createCart, deleteItemsCart, fetchCart } from '../../store/cart/cartThunk.ts';
 import { ICartBack, ICartItem } from '../../types';
 import { userRoleClient } from '../../globalConstants.ts';
-import { selectPromotionalProducts } from '../../store/products/productsSlice.ts';
-import { getPromotionalProducts } from '../../store/products/productsThunk.ts';
+import { selectPromotionalProducts, selectTopSellingProducts } from '../../store/products/productsSlice.ts';
+import { getPromotionalProducts, getTopSellingProducts } from '../../store/products/productsThunk.ts';
 import PromotionalProducts from '../Product/components/PromotionalProducts/PromotionalProducts.tsx';
 import theme from '../../globalStyles/globalTheme.ts';
+import { getFavoriteProducts } from '../../store/favoriteProducts/favoriteProductsThunks.ts';
+import TopSellingProducts from '../Product/components/TopSellingProducts/TopSellingProducts.tsx';
+import { FONTS, SPACING } from '../../globalStyles/stylesObjects.ts';
 
 const HomePage = () => {
   const [openCart, setOpenCart] = useState<boolean>(false);
@@ -25,6 +28,7 @@ const HomePage = () => {
   const user = useAppSelector(selectUser);
   const cart = useAppSelector(cartFromSlice);
   const promotionalProducts = useAppSelector(selectPromotionalProducts);
+  const topSellingProducts = useAppSelector(selectTopSellingProducts);
   const createCartError = useAppSelector(cartErrorFromSlice);
   const dispatch = useAppDispatch();
 
@@ -75,6 +79,7 @@ const HomePage = () => {
     const fetchData = async () => {
       await dispatch(getBrands()).unwrap();
       await dispatch(getPromotionalProducts()).unwrap();
+      await dispatch(getTopSellingProducts()).unwrap();
 
       if (user && (user.role === userRoleClient)) {
         await dispatch(createCart()).unwrap();
@@ -118,62 +123,96 @@ const HomePage = () => {
     }
   }, [dispatch, cart, user]);
 
+  useEffect(() => {
+    if (user && user.role === userRoleClient) {
+      dispatch(getFavoriteProducts());
+    }
+  }, [dispatch, user]);
+
+  const sortedProducts = [...topSellingProducts].sort((a, b) => {
+    if (a.existence === b.existence) return 0;
+    return a.existence ? -1 : 1;
+  });
 
   return (
-    <>
-      <Container maxWidth="xl">
-        <CustomCart openCart={openCart} closeCart={closeCart}/>
+    <Container maxWidth="xl">
+      <CustomCart openCart={openCart} closeCart={closeCart}/>
+      <Box sx={{
+        margin: `${SPACING.xxl} 0`,
+      }}>
+        <Typography
+          sx={{
+            fontSize: theme.fonts.size.xxl,
+            fontWeight: FONTS.weight.bold,
+            margin: `${SPACING.md} 0`,
+            color: theme.colors.text,
+            textAlign: "center",
+          }}
+        >
+          Каталог
+        </Typography>
+        <CategoryCard/>
+      </Box>
+
+      {promotionalProducts.length > 0 && (
         <Box sx={{
-          mt: theme.spacing.xxl
+          marginBottom: SPACING.xxl,
         }}>
           <Typography
             sx={{
               fontSize: theme.fonts.size.xxl,
-              mb: 3,
-              fontWeight: theme.fonts.weight.medium,
+              fontWeight: FONTS.weight.bold,
+              margin: `${SPACING.md} 0`,
               color: theme.colors.text,
               textAlign: "center",
             }}
           >
-            Каталог
+            Акции
           </Typography>
-          <CategoryCard/>
+          {cart && (
+            <PromotionalProducts products={promotionalProducts} cart={cart} />
+          )}
         </Box>
+      )}
 
-        {promotionalProducts.length > 0 && (
-          <Box>
-            <Typography
-              sx={{
-                fontSize: "40px",
-                mb: 0.5,
-                color: "rgba(250, 143, 1, 1)",
-                textAlign: "center",
-              }}
-            >
-              Акции
-            </Typography>
-            <PromotionalProducts products={promotionalProducts}/>
-          </Box>
-        )}
+      {topSellingProducts.length > 0 && (
+        <Box sx={{
+          marginBottom: SPACING.xxl,
+        }}>
+          <Typography
+            sx={{
+              fontSize: theme.fonts.size.xxl,
+              fontWeight: FONTS.weight.bold,
+              color: theme.colors.text,
+              textAlign: "center",
+              margin: `${SPACING.md} 0`,
+            }}
+          >
+            Хиты продаж
+          </Typography>
+          {cart && (
+            <TopSellingProducts products={sortedProducts} cart={cart} />
+          )}
+        </Box>
+      )}
 
-        {brands.length > 0 && (
-          <Box sx={{ marginTop: "40px" }}>
-            <Typography
-              sx={{
-                fontSize: "40px",
-                mb: 0.5,
-                color: "rgba(250, 143, 1, 1)",
-                textAlign: "center",
-              }}
-            >
-              Наши бренды
-            </Typography>
-            <BrandForHomePage brands={brands} />
-          </Box>
-        )}
-      </Container>
-    </>
-
+      {brands.length > 0 && (
+        <Box sx={{ marginTop: "40px" }}>
+          <Typography
+            sx={{
+              fontSize: theme.fonts.size.xxl,
+              fontWeight: FONTS.weight.bold,
+              margin: `${SPACING.md} 0`,
+              color: theme.colors.text,
+              textAlign: "center",
+            }}
+          >
+            Наши бренды
+          </Typography>
+          <BrandForHomePage brands={brands} />
+        </Box>
+      )}
+    </Container>
   );
 };
 

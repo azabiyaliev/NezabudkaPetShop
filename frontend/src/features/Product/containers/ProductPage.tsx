@@ -5,13 +5,13 @@ import  { useEffect, useState } from 'react';
 import { getOneProduct } from "../../../store/products/productsThunk.ts";
 import { useParams } from 'react-router-dom';
 import { selectProduct } from '../../../store/products/productsSlice.ts';
-import { apiUrl } from "../../../globalConstants.ts";
+import { apiUrl, userRoleClient } from '../../../globalConstants.ts';
 import HistoryProducts from '../../../components/Domain/HistoryProducts/HistoryProducts.tsx';
 import '../../../components/TextEditor/styles.css'
 import theme from '../../../globalStyles/globalTheme.ts';
 import { ICategories, ProductResponse } from '../../../types';
 import { addItem, fetchCart } from '../../../store/cart/cartThunk.ts';
-import { cartFromSlice, newUserLogin, productCardToAdd } from '../../../store/cart/cartSlice.ts';
+import { cartFromSlice, getFromLocalStorage, newUserLogin, productCardToAdd } from '../../../store/cart/cartSlice.ts';
 import { enqueueSnackbar } from 'notistack';
 import { selectUser } from '../../../store/users/usersSlice.ts';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -47,8 +47,15 @@ const ProductPage = () => {
         product,
       }));
     }
-  }, [id, product]);
+  }, [dispatch, id, product]);
 
+  useEffect(() => {
+    if (user && user.role === userRoleClient) {
+      dispatch(fetchCart());
+    } else {
+      dispatch(getFromLocalStorage());
+    }
+  }, [dispatch, user]);
 
   useEffect(() => {
     if (id) {
@@ -61,11 +68,7 @@ const ProductPage = () => {
 
   useEffect(() => {
     dispatch(fetchDeliveryPage());
-
-    if (user) {
-      dispatch(fetchCart());
-    }
-  }, [dispatch, user]);
+  }, [dispatch]);
 
   useEffect(() => {
     if (cartItem && cartItem.quantity !== quantity) {
@@ -442,7 +445,7 @@ const ProductPage = () => {
         )}
       </Box>
       <Box sx={{ mt: theme.spacing.xxl }}>
-        <HistoryProducts />
+        {cart && (<HistoryProducts cart={cart} />)}
       </Box>
     </div>
   );
