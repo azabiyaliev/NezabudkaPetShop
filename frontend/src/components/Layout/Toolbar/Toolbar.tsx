@@ -22,7 +22,7 @@ import Typography from "@mui/material/Typography";
 import "./Fonts.css";
 import { selectEditSite } from "../../../store/editionSite/editionSiteSlice.ts";
 import { selectUser } from "../../../store/users/usersSlice.ts";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import CustomCart from "../../Domain/CustomCart/CustomCart.tsx";
 import { fetchSite } from "../../../store/editionSite/editionSiteThunk.ts";
 import { selectProducts } from "../../../store/products/productsSlice.ts";
@@ -45,7 +45,6 @@ import Tooltip from "@mui/joy/Tooltip";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import { ClickAwayListener } from "@mui/material";
 import theme from "../../../globalStyles/globalTheme.ts";
-import { motion } from "framer-motion";
 
 
 const MainToolbar = () => {
@@ -61,6 +60,8 @@ const MainToolbar = () => {
   const [debouncedSearch, setDebouncedSearch] = useState<string>("");
   const can = usePermission(user);
   const [focused, setFocused] = useState(false);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const [open, setOpen] = useState(false);
 
 
   useEffect(() => {
@@ -83,12 +84,22 @@ const MainToolbar = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (search) {
-      dispatch(getProducts(debouncedSearch));
+    if (debouncedSearch.trim()) {
+      dispatch(getProducts(debouncedSearch)).unwrap();
     } else {
-      dispatch(getProducts(""));
+      dispatch(getProducts("")).unwrap();
     }
-  }, [dispatch, debouncedSearch, search]);
+  }, [dispatch, debouncedSearch]);
+
+  const filteredProducts = useMemo(() => {
+    if (!debouncedSearch.trim()) {
+      return products;
+    }
+
+    return products.filter((product) =>
+      product.productName.toLowerCase().includes(debouncedSearch.toLowerCase())
+    );
+  }, [debouncedSearch, products]);
 
   const closeCart = () => {
     setOpenCart(false);
@@ -110,9 +121,17 @@ const MainToolbar = () => {
       return acc;
     }, 0);
 
+
+  const escapeRegExp = (string: string) => {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  };
+
   const highlightText = (text: string, search: string) => {
     if (!search) return text;
-    const reg = new RegExp(`(${search})`, 'gi');
+
+    const escapedSearch = escapeRegExp(search);
+    const reg = new RegExp(`(${escapedSearch})`, 'gi');
+
     const parts = text.split(reg);
 
     return parts.map((part, index) =>
@@ -125,6 +144,7 @@ const MainToolbar = () => {
       )
     );
   };
+
 
   return (
     <div>
@@ -248,17 +268,7 @@ const MainToolbar = () => {
                 },
               }}
             >
-              <motion.div
-                layout
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  maxWidth: (focused && window.innerWidth <= 1060) ? "0%" : "100%",
-                  opacity: (focused && window.innerWidth <= 1060) ? 0 : 1,
-                  visibility: (focused && window.innerWidth <= 1060) ? "hidden" : "visible",
-                  transition: "opacity 0.3s ease, visibility 0.3s ease",
-                }}
-              >
+              <div style={{ display: "flex", alignItems: "center" }} >
                 <Box
                   onClick={() => setOpenCategoryMenu(true)}
                   sx={{
@@ -321,7 +331,7 @@ const MainToolbar = () => {
                     </Typography>
                   </div>
                 </NavLink>
-              </motion.div>
+              </div>
 
               {(user && can(["client"])) || !user && !focused ? (
                 <Box
@@ -400,7 +410,7 @@ const MainToolbar = () => {
                   </Box>
                 </Box>
               ) : null}
-              <ClickAwayListener onClickAway={() => { setFocused(false); setSearch(""); }}>
+              <ClickAwayListener onClickAway={() => { setFocused(false); }}>
                 <Box
                   sx={{
                     display: "flex",
@@ -409,7 +419,9 @@ const MainToolbar = () => {
                     position: "relative",
                     width: "100%",
                     maxWidth: focused ? "800px" : "50px",
-
+                    "@media (max-width: 1060px)": {
+                      display: "none",
+                    }
                   }}
                 >
                   <Box
@@ -430,6 +442,8 @@ const MainToolbar = () => {
                       alignItems: "center",
                       "&:focus-within": {
                         cursor: "pointer",
+                        border: `1px solid ${theme.colors.yellow}`,
+                        boxShadow: `0px 0px 10px ${theme.colors.yellow}`,
                         "& .MuiInputBase-root": {
                           display: "block",
                         },
@@ -441,6 +455,7 @@ const MainToolbar = () => {
                     }}
                   >
                     <InputBase
+                      inputRef={inputRef}
                       sx={{
                         position: "absolute",
                         top: 10,
@@ -465,7 +480,10 @@ const MainToolbar = () => {
                       onFocus={() => setFocused(true)}
                     />
                     <IconButton
-                      onClick={() => setFocused(true)}
+                      onClick={() => {
+                        setFocused(true)
+                        inputRef.current?.focus();
+                      }}
                       sx={{
                         boxSizing: "border-box",
                         width: "42.5px",
@@ -499,15 +517,13 @@ const MainToolbar = () => {
                         borderRadius: 1,
                       }}
                     >
-                      {products.length > 0 ? (
-                        products.map((product) => (
+                      {filteredProducts.length > 0 ? (
+                        filteredProducts.map((product) => (
                           <NavLink
                             key={product.id}
                             className="text-decoration-none text-black"
                             to={
-                              user &&
-                              (user.role === userRoleAdmin ||
-                                user.role === userRoleSuperAdmin)
+                              user && can([userRoleAdmin, userRoleSuperAdmin])
                                 ? `/private/edit_product/${product.id}`
                                 : `/product/${product.id}`
                             }
@@ -517,6 +533,7 @@ const MainToolbar = () => {
                               sx={{
                                 padding: theme.spacing.xs,
                                 borderBottom: `1px solid ${theme.colors.background}`,
+                                display: focused ? "block" : "none"
                               }}
                             >
                               <Box
@@ -528,7 +545,7 @@ const MainToolbar = () => {
                           </NavLink>
                         ))
                       ) : (
-                        <Box sx={{ padding: theme.spacing.xs }}>
+                        <Box sx={{ padding: theme.spacing.xs, display: focused ? "block": "none" }}>
                           Товаров не найдено
                         </Box>
                       )}
@@ -929,6 +946,137 @@ const MainToolbar = () => {
                 </Box>
               )}
             </Toolbar>
+            <Box
+              sx={{
+                "@media (max-width: 800px)": {
+                  paddingBottom: "10px",
+                },
+              }}
+            >
+              <Box
+                sx={{
+                  display: "none",
+                  "@media (max-width: 1060px)": {
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  },
+                }}
+              >
+                <ClickAwayListener onClickAway={() => setOpen(false)}>
+                  <Box
+                    sx={{
+                      position: "relative",
+                      display: "flex",
+                      alignItems: "center",
+                      width: "100%",
+                      margin: "10px 40px",
+                      flexDirection: "column",
+                    }}
+                  >
+                    <input
+                      style={{
+                        width: "100%",
+                        padding: "10px 40px 10px 16px",
+                        fontSize: "16px",
+                        color: "#333",
+                        backgroundColor: "white",
+                        border: "2px solid rgb(195, 190, 182)",
+                        borderRadius: "30px",
+                        outline: "none",
+                        transition: "all 0.3s ease-in-out",
+                        boxShadow: "0 4px 10px rgba(91, 113, 51, 0.3)",
+                      }}
+                      placeholder="Поиск товара"
+                      value={search}
+                      onChange={(e) => {
+                        setSearch(e.target.value);
+                        setOpen(true);
+                      }}
+                      onFocus={(e) => {
+                        e.target.style.borderColor = `${theme.colors.yellow}`;
+                        e.target.style.boxShadow = `0px 0px 10px ${theme.colors.yellow}`;
+                        setOpen(true);
+                      }}
+                      onBlur={(e) => {
+                        e.target.style.borderColor = "#475726";
+                        e.target.style.boxShadow = "0 4px 10px rgba(91, 113, 51, 0.3)";
+                      }}
+                    />
+                    <button
+                      style={{
+                        position: "absolute",
+                        top: "10px",
+                        right: "10px",
+                        background: "transparent",
+                        border: "none",
+                        cursor: "pointer",
+                        color: "#8EA58C",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <SearchIcon />
+                    </button>
+
+                    {open && search && (
+                      <Box
+                        sx={{
+                          position: "absolute",
+                          top: "100%",
+                          left: 0,
+                          width: "100%",
+                          maxHeight: 300,
+                          overflowY: "auto",
+                          backgroundColor: "white",
+                          boxShadow: 3,
+                          zIndex: 1000,
+                          marginTop: 1,
+                          borderRadius: 1,
+                          "@media (max-width: 1430px)": {
+                            top: "92%",
+                            left: 12,
+                            width: "98%",
+                          },
+                        }}
+                      >
+                        {products.length > 0 ? (
+                          products.map((product) => (
+                            <NavLink
+                              key={product.id}
+                              className="text-decoration-none text-black"
+                              to={
+                                user &&
+                                (user.role === userRoleAdmin ||
+                                  user.role === userRoleSuperAdmin)
+                                  ? `/private/edit_product/${product.id}`
+                                  : `/product/${product.id}`
+                              }
+                              onClick={() => {
+                                setSearch("");
+                                setOpen(false);
+                              }}
+                            >
+                              <div
+                                style={{
+                                  padding: "10px",
+                                  borderBottom: "1px solid #ddd",
+                                }}
+                              >
+                                {highlightText(product.productName, search)}
+                              </div>
+                            </NavLink>
+                          ))
+                        ) : (
+                          <div style={{ padding: "10px" }}>Товаров не найдено</div>
+                        )}
+                      </Box>
+                    )}
+                  </Box>
+                </ClickAwayListener>
+              </Box>
+            </Box>
           </Box>
         </Container>
       </div>
