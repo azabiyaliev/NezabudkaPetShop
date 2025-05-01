@@ -30,7 +30,7 @@ const ClientList: React.FC<Props> = ({ clients }) => {
 
   return (
     <Box>
-      <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600, mt: 3 }}>
+      <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600, mt: "56px" }}>
         Список клиентов
       </Typography>
 

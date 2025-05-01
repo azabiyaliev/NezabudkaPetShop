@@ -32,6 +32,7 @@ import ListAltOutlinedIcon from '@mui/icons-material/ListAltOutlined';
 import './Admin.css'
 
 import AdminNavItem from './AdminNavItem.tsx';
+import { userRoleAdmin, userRoleSuperAdmin } from '../../../globalConstants.ts';
 
 const AdminBar = () => {
   const company = useAppSelector(selectCompany);
@@ -42,12 +43,27 @@ const AdminBar = () => {
 
   return (
     <div className="admin-bar">
-      {user && can(['admin', 'superAdmin']) && (
+      {user && can([userRoleSuperAdmin, userRoleAdmin]) && (
         <List>
-          <ListItem component={NavLink} to={`/private_account`}>
-            <b className="text-uppercase text-black">Личный кабинет</b>
-          </ListItem>
-          <hr />
+          <>
+            {user && can([userRoleAdmin]) && (
+              <>
+                <ListItem component={NavLink} to={`/private_account`}>
+                  <b className="text-uppercase text-black">Личный кабинет</b>
+                </ListItem>
+                <hr />
+              </>
+            )}
+          </>
+
+          <>
+            {user && can([userRoleSuperAdmin]) && (
+              <>
+                <b className="text-uppercase text-black">{user.firstName} {user.secondName}</b>
+                <hr />
+              </>
+            )}
+          </>
 
           <AdminNavItem
             to={`/private/users/${user.id}`}

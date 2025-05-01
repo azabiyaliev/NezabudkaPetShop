@@ -4,14 +4,14 @@ import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
-import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
+import { useAppDispatch, useAppSelector, usePermission } from '../../../app/hooks.ts';
 import React, { useEffect, useState } from "react";
 import { AdminRefactor } from "../../../types";
 import { fetchUserById, updateUser } from "../../../store/users/usersThunk.ts";
 import { errorUpdate, selectUser } from '../../../store/users/usersSlice.ts';
 import ModalWindowPasswordChange from "../../UI/ModalWindow/ModalWindowPasswordChange.tsx";
 import LockResetIcon from "@mui/icons-material/LockReset";
-import { regPhone } from "../../../globalConstants.ts";
+import { regPhone, userRoleAdmin, userRoleClient, userRoleSuperAdmin } from '../../../globalConstants.ts';
 import { regEmail } from '../EditSiteForm/EditSiteForm.tsx';
 
 const initialState = {
@@ -33,6 +33,7 @@ const UserFormEdition = () => {
   const [phone, setPhone] = useState("");
   const [secondName, setSecondName] = useState("");
   const errorEdit = useAppSelector(errorUpdate)
+  const can = usePermission(user);
 
   useEffect(() => {
     if (!user) {
@@ -159,13 +160,13 @@ const UserFormEdition = () => {
             <PersonIcon sx={{ color: "black" }} />
           </Avatar>
 
-          {user && (user.role === "admin" || user.role === "superAdmin") && (
+          {user && can([userRoleAdmin, userRoleSuperAdmin]) && (
             <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600 }}>
               Редактировать профиль
             </Typography>
           )}
 
-          {user && user.role === "client" && (
+          {user && can([userRoleClient]) && (
             <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600 }}>
               Мои данные
             </Typography>

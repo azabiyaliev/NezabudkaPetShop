@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import  { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { getStatistics } from "../../../store/orders/ordersThunk";
 import ColumnChart from "../../../components/UI/ColumnChart/ColumnChart.tsx";
@@ -99,17 +99,11 @@ const OrderStats = () => {
         display: 'flex',
         flexDirection: 'column',
         gap: 4,
-        minHeight: '100vh'
+        minHeight: '100vh',
+        mt:"40px",
       }}>
-        <Typography
-          variant="h4"
-          component="h1"
-          sx={{
-            mb: 2,
-            fontWeight: 600,
-          }}
-        >
-          Статистика заказов
+        <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600 }}>
+         Статистика заказов
         </Typography>
 
         <Paper
