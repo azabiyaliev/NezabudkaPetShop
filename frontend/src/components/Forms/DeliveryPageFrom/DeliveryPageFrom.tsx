@@ -8,7 +8,7 @@ import { enqueueSnackbar } from 'notistack';
 import { fetchDeliveryPage, updateDeliveryPage } from '../../../store/deliveryPage/deliveryPageThunk.ts';
 import { Box } from '@mui/joy';
 import { Button, Typography } from '@mui/material';
-import TextEditor from '../../TextEditor/TextEditor.tsx';
+import TextEditor, { deliveryPriceInfoTemplate } from '../../TextEditor/TextEditor.tsx';
 import TextField from '@mui/material/TextField';
 import AdminBar from '../../../features/Admin/AdminProfile/AdminBar.tsx';
 
@@ -27,6 +27,7 @@ const DeliveryPageForm = () => {
   const [form, setForm] = useState<DeliveryPageMutation>(initialState);
   const [mapError, setMapError] = useState<string | null>(null);
   const delivery = useAppSelector(selectDelivery);
+  const [checkoutPriceError, setCheckoutPriceError] = useState<string | null>(null);
 
   useEffect(() => {
     dispatch(fetchDeliveryPage())
@@ -53,6 +54,17 @@ const DeliveryPageForm = () => {
   };
 
   const onChangeEditorCheckoutDeliveryPriceInfo = (html: string) => {
+    const priceRegex = /\d+\s*сом/g;
+    const prices = html.match(priceRegex) || [];
+    const hasZeroPrice = prices.some(price => parseInt(price.replace(/\D/g, ''), 10) === 0);
+
+    if (hasZeroPrice) {
+      setCheckoutPriceError("Цена в зоне доставки не может быть равна нулю.");
+      return;
+    } else {
+      setCheckoutPriceError(null);
+    }
+
     setForm((prevState) => ({
       ...prevState,
       checkoutDeliveryPriceInfo: html,
@@ -73,12 +85,38 @@ const DeliveryPageForm = () => {
     }
   };
 
+  const stripHtmlTags = (html: string) => html.replace(/<[^>]*>/g, "").trim();
+  const removeNumbersAndSom = (text: string) =>
+    text.replace(/\d+\s*сом/g, '').replace(/\s+/g, ' ').trim();
+
   const submitHandler = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!delivery?.id) {
       toast.error("Ваш id неверный!");
       return;
     }
+
+    const priceRegex = /\d+\s*сом/g;
+    const prices = form.checkoutDeliveryPriceInfo.match(priceRegex) || [];
+    const hasZeroPrice = prices.some(price => parseInt(price.replace(/\D/g, ''), 10) === 0);
+
+    if (hasZeroPrice) {
+      setCheckoutPriceError("Цена в зоне доставки не может быть равна нулю.");
+      return;
+    } else {
+      setCheckoutPriceError(null);
+    }
+
+    const plainTextCheckoutPriceInfo = removeNumbersAndSom(stripHtmlTags(form.checkoutDeliveryPriceInfo));
+    const plainTextTemplate = removeNumbersAndSom(stripHtmlTags(deliveryPriceInfoTemplate));
+
+    if (plainTextCheckoutPriceInfo !== plainTextTemplate) {
+      setCheckoutPriceError("Пожалуйста, используйте правильный шаблон для информации о цене доставки.");
+      return;
+    } else {
+      setCheckoutPriceError(null);
+    }
+
     try {
       await dispatch(updateDeliveryPage({ id: delivery.id, data: form })).unwrap();
       enqueueSnackbar('Вы успешно отредактировали страницу "Доставка и оплата"!', { variant: 'success' });
@@ -124,7 +162,7 @@ const DeliveryPageForm = () => {
           >
             <Typography
               variant="subtitle1"
-              sx={{ mb: 1, alignSelf: 'flex-start', fontWeight: 500 }}
+              sx={{ alignSelf: 'flex-start', fontWeight: 500 }}
             >
               Введите информацию о доставке:
             </Typography>
@@ -138,7 +176,7 @@ const DeliveryPageForm = () => {
 
             <Typography
               variant="subtitle1"
-              sx={{ mt: 3, mb: 1, alignSelf: 'flex-start', fontWeight: 500 }}
+              sx={{ mb: 1, alignSelf: 'flex-start', fontWeight: 500 }}
             >
               Введите информацию о зонах доставки :
             </Typography>
@@ -152,17 +190,53 @@ const DeliveryPageForm = () => {
 
             <Typography
               variant="subtitle1"
-              sx={{ mt: 3, mb: 1, alignSelf: 'flex-start', fontWeight: 500 }}
+              sx={{ mb: 1, alignSelf: 'flex-start', fontWeight: 500 }}
             >
-              Введите информацию о зонах доставки :
+              Цена за зону доставки
             </Typography>
-
+            <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              gap: '10px'
+            }}>
             <TextEditor
               value={form.checkoutDeliveryPriceInfo}
               onChange={onChangeEditorCheckoutDeliveryPriceInfo}
-              error={!form.checkoutDeliveryPriceInfo}
-              helperText={!form.checkoutDeliveryPriceInfo ? 'Поле обязательно для заполнения' : undefined}
+              error={!!checkoutPriceError}
+              placeholder={deliveryPriceInfoTemplate}
+              helperText={checkoutPriceError || (form.checkoutDeliveryPriceInfo ? undefined : 'Поле обязательно для заполнения')}
             />
+              <Box>
+              <Typography>Шаблон</Typography>
+              <Typography sx={{ color: 'gray', width: '254px' }}>
+                {deliveryPriceInfoTemplate}
+              </Typography>
+              </Box>
+            </Box>
+            {delivery?.map && (
+              <Box
+                sx={{
+                  width: '100%',
+                  height: {
+                    xs: '300px',
+                    md: '400px',
+                  },
+                  borderRadius: '12px',
+                }}
+              >
+
+                <iframe
+                  src={delivery.map}
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  title="Delivery map"
+                />
+              </Box>
+            )}
 
             <TextField
               label="Ссылка на карту"
