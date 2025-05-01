@@ -24,7 +24,6 @@ import MenuIcon from '@mui/icons-material/Menu';
 import CategoryNavMenu from '../../Domain/CategoryNavMenu.tsx';
 import { cartFromSlice, getFromLocalStorage, } from '../../../store/cart/cartSlice.ts';
 import { userRoleAdmin, userRoleClient, userRoleSuperAdmin } from '../../../globalConstants.ts';
-import ReactHtmlParser from 'html-react-parser';
 import IconButton from '@mui/joy/IconButton';
 import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
 import { fetchUserIdBonus } from '../../../store/users/usersThunk.ts';
