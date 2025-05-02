@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Box, Button, Divider, Drawer, List, ListItem, ListItemText, Typography, } from '@mui/material';
+import { Box, Button, Divider, Drawer, List, ListItem, ListItemText, Tooltip, Typography, } from '@mui/material';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector, usePermission } from '../../../app/hooks.ts';
 import { selectUser } from '../../../store/users/usersSlice.ts';
@@ -58,7 +58,7 @@ const ExistsUser = () => {
           alignItems: "center",
           gap: 2,
           "@media (max-width: 900px)": {
-            flexDirection: "row",
+            flexDirection: "column",
           },
         }}
       >
@@ -71,44 +71,76 @@ const ExistsUser = () => {
             alignItems: "center",
             padding: 0,
             "@media (min-width: 900px)": {
-              flexDirection: "row",
-              gap: "8px",
+              flexDirection: "column",
             },
           }}
         >
-          <PermIdentityOutlinedIcon
-            sx={{
-              width: "30px",
-              height: "30px",
-              color: "#343332",
-              "@media (max-width: 1100px)": { color: "#343332" },
-            }}
-          />
-          {user && (
-            <Typography
+          <Tooltip
+            title={
+              user && (
+                <Typography
+                  sx={{
+                    color: "#fff",
+                    fontSize: "16px",
+                    fontWeight: "500",
+                    textTransform: "uppercase",
+                    whiteSpace: "nowrap",
+                    "@media (max-width: 1100px)": {
+                      color: "black",
+                      fontSize: "14px",
+                      marginLeft: 0,
+                    },
+                  }}
+                >
+                  {user.role === "superAdmin" ? (
+                    <span style={{ color: "#343332" }}>Super Admin</span>
+                  ) : user.role === "admin" ? (
+                    <>
+                      <span style={{ color: "#a82626" }}>Admin:</span> {user.firstName}
+                    </>
+                  ) : (
+                    user.firstName
+                  )}
+                </Typography>
+              )
+            }
+          >
+            <PermIdentityOutlinedIcon
               sx={{
-                color: "#343332",
-                fontSize: "16px",
-                fontWeight: "500",
-                textTransform: "uppercase",
-                "@media (max-width: 1100px)": {
-                  color: "black",
-                  fontSize: "14px",
-                  marginLeft: 0,
-                },
+                width: "30px",
+                height: "30px",
+                color: "#fff",
+                "@media (max-width: 1100px)": { color: "#fff" },
               }}
-            >
-              {user.role === "superAdmin" ? (
-                <span style={{ color: "#343332" }}>Super Admin</span>
-              ) : user.role === "admin" ? (
-                <>
-                  <span style={{ color: "#a82626" }}>Admin:</span> {user.firstName}
-                </>
-              ) : (
-                user.firstName
-              )}
-            </Typography>
-          )}
+            />
+          </Tooltip>
+
+          {/*{user && (*/}
+          {/*  <Typography*/}
+          {/*    sx={{*/}
+          {/*      color: "#343332",*/}
+          {/*      fontSize: "16px",*/}
+          {/*      fontWeight: "500",*/}
+          {/*      textTransform: "uppercase",*/}
+          {/*      whiteSpace: "nowrap",*/}
+          {/*      "@media (max-width: 1100px)": {*/}
+          {/*        color: "black",*/}
+          {/*        fontSize: "14px",*/}
+          {/*        marginLeft: 0,*/}
+          {/*      },*/}
+          {/*    }}*/}
+          {/*  >*/}
+          {/*    {user.role === "superAdmin" ? (*/}
+          {/*      <span style={{ color: "#343332" }}>Super Admin</span>*/}
+          {/*    ) : user.role === "admin" ? (*/}
+          {/*      <>*/}
+          {/*        <span style={{ color: "#a82626" }}>Admin:</span> {user.firstName}*/}
+          {/*      </>*/}
+          {/*    ) : (*/}
+          {/*      <></>*/}
+          {/*    )}*/}
+          {/*  </Typography>*/}
+          {/*)}*/}
         </Button>
       </Box>
 

@@ -7,7 +7,6 @@ import {
   MenuItem,
   Typography,
 } from "@mui/material";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
 const UnknownUser = () => {
   const guestEmail = localStorage.getItem('guestEmail');
@@ -53,22 +52,14 @@ const UnknownUser = () => {
             },
           }}
         >
-          <AccountCircleIcon
-            sx={{
-              color: "#343332",
-              width: "30px",
-              height: "30px",
-              "@media (max-width: 1100px)": { color: "#343332" },
-            }}
-          />
           <Typography
             sx={{
-              color: "#343332",
+              color: "#fff",
               fontSize: "16px",
               fontWeight: "500",
               textTransform: "uppercase",
               "@media (max-width: 1100px)": {
-                color: "black",
+                color: "white",
                 fontSize: "14px",
                 marginLeft: 0,
               },
@@ -92,16 +83,23 @@ const UnknownUser = () => {
           vertical: "top",
           horizontal: "center",
         }}
+        sx={{
+          '& .MuiPaper-root': {
+            backgroundColor: 'rgba(0, 0, 0, 0.3)',
+            backdropFilter: 'blur(10px)',
+          },
+        }}
+
       >
-        <MenuItem component={NavLink} to="/login" onClick={handleClose}>
+        <MenuItem sx={{color: '#fff'}} component={NavLink} to="/login" onClick={handleClose}>
           Войти
         </MenuItem>
-        <MenuItem component={NavLink} to="/register" onClick={handleClose}>
+        <MenuItem sx={{color: '#fff'}} component={NavLink} to="/register" onClick={handleClose}>
           Зарегистрироваться
         </MenuItem>
 
         <MenuItem>
-          <NavLink to={`/my_orders?email=${guestEmail}`} className="text-decoration-none text-black">
+          <NavLink to={`/my_orders?email=${guestEmail}`} className="text-decoration-none text-white">
             Мои заказы
           </NavLink>
         </MenuItem>
