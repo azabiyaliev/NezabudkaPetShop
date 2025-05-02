@@ -56,14 +56,32 @@ const BonusProgramForm = () => {
   };
 
   return (
-    <Box sx={{ display: "flex", margin: "30px 0" }}>
-      <Box sx={{ minWidth: 499 }}>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: { xs: 'column', md: 'row' },
+        gap: 2,
+        mt: 4,
+        px: { xs: 2, md: 4 },
+        width: '100%',
+      }}
+    >
+      <Box sx={{ width: { xs: '100%', md: '500px' }, flexShrink: 0 }}>
         <AdminBar />
       </Box>
-
-      <div className="col-9 mt-5" style={{ display: 'flex', justifyContent: 'center' }}>
+      <Box
+        sx={{
+          flexGrow: 1,
+          display: 'flex',
+          justifyContent: 'center',
+        }}
+      >
         <Box sx={{ width: '100%', maxWidth: '800px' }}>
-          <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600 }}>
+          <Typography
+            variant="h6"
+            gutterBottom
+            sx={{ textAlign: 'center', fontWeight: 600 }}
+          >
             Редактирование страницы «Бонусная программа»
           </Typography>
 
@@ -76,7 +94,7 @@ const BonusProgramForm = () => {
               flexDirection: 'column',
               alignItems: 'center',
               width: '100%',
-              mt:5,
+              mt: 5,
             }}
           >
             <Typography
@@ -97,16 +115,21 @@ const BonusProgramForm = () => {
               error={!form.text}
               helperText={!form.text ? 'Поле обязательно для заполнения' : undefined}
             />
+
             <Button
               variant="contained"
               type="submit"
-              sx={{ mt: 3, alignSelf: 'center', backgroundColor: 'darkgreen' }}
+              sx={{
+                mt: 3,
+                alignSelf: 'center',
+                backgroundColor: 'darkgreen',
+              }}
             >
               Сохранить
             </Button>
           </Box>
         </Box>
-      </div>
+      </Box>
     </Box>
   );
 
