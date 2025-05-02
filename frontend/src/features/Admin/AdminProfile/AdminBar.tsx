@@ -127,7 +127,7 @@ const AdminBar = () => {
           {can(['superAdmin']) && (
             <>
               <Divider />
-              <ListSubheader sx={{ bgcolor: 'inherit', fontWeight: 600, pl: 0 }}>Администраторы</ListSubheader>
+              <ListSubheader sx={{ bgcolor: 'inherit', fontWeight: 600, pl: 0,  position: 'static' }}>Администраторы</ListSubheader>
               <AdminNavItem
                 to="/admin-table"
                 icon={<ReorderOutlined sx={iconSx} />}
