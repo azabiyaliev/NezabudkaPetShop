@@ -1,6 +1,6 @@
 import ClientBar from "../../../../components/Domain/Client/ClientBar.tsx";
 import {useAppDispatch, useAppSelector} from "../../../../app/hooks.ts";
-import { Paper, Typography } from "@mui/material";
+import { Box, Paper, Typography } from '@mui/material';
 import {useEffect} from "react";
 import { selectClientInfo } from '../../../../store/clientInfo/clientInfoSlice.ts';
 import { fetchClientInfo } from '../../../../store/clientInfo/clientInfoThunk.ts';
@@ -19,12 +19,25 @@ const ClientProfile = () => {
         <div className="col-3 mt-5 ">
           <ClientBar />
         </div>
-        <div className="col-9">
-          <h2 className="text-uppercase text-center mt-5">Личный кабинет</h2>
-          <Paper sx={{ p: 3, mt: 2 }} elevation={2}>
-            <Typography variant="body1" align="center">
-              {clientInfo?.information || 'Информация отсутствует'}
-            </Typography>
+        <div className="col-9 mt-5">
+          <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600 }}>
+            Личный кабинет
+          </Typography>
+          <Paper
+            sx={{
+              p: 3,
+              mt: 2,
+              width: "800px",
+              mx: "auto",
+              display: "flex",
+              justifyContent: "center"
+            }}
+            elevation={2}
+          >
+            <Box
+              sx={{ textAlign: 'center' }}
+              dangerouslySetInnerHTML={{ __html: clientInfo?.information || '' }}
+            />
           </Paper>
         </div>
       </div>

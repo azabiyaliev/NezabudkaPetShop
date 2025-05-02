@@ -48,7 +48,7 @@ const AdminInfoForm = () => {
     try {
       await dispatch(updateClientInfo({ id: clientInfo.id, data: form })).unwrap();
       enqueueSnackbar('Вы успешно отредактировали личный кабинет для клиентов', { variant: 'success' });
-      navigate(`/admin_info/${clientInfo.id}`);
+      navigate(`/client_info/${clientInfo.id}`);
       await dispatch(fetchCompanyPage())
     } catch (error) {
       console.error(error);
@@ -76,11 +76,18 @@ const AdminInfoForm = () => {
               flexDirection: 'column',
               alignItems: 'center',
               width: '100%',
+              mt:"30px",
             }}
           >
+
             <Typography
-              variant="subtitle1"
-              sx={{ mb: 1, alignSelf: 'flex-start', fontWeight: 500 }}
+              variant="body2"
+              sx={{
+                alignSelf: 'flex-start',
+                color: 'text.secondary',
+                fontWeight: 400,
+                mb: 0.5,
+              }}
             >
               Информация для клиентов:
             </Typography>

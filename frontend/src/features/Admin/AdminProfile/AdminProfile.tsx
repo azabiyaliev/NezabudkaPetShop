@@ -22,19 +22,36 @@ const AdminProfile = () => {
       {user && can([userRoleAdmin]) && (
         <Box sx={{ display: "flex", margin: "30px 0" }}>
           <Box>
-          <AdminBar />
+            <AdminBar />
           </Box>
-          <Box sx={{ marginLeft: "20px" }}>
-            <Paper sx={{ p: 3, mt: 2 }} elevation={2}>
-              <Typography variant="body1" align="center">
-                {adminInfo?.information || 'Информация отсутствует'}
-              </Typography>
+          <Box sx={{ marginLeft: "90px" }}>
+            <Typography
+              variant="h6"
+              gutterBottom
+              sx={{ textAlign: 'center', fontWeight: 600 }}
+            >
+              Личный кабинет
+            </Typography>
+            <Paper
+              sx={{
+                p: 3,
+                mt: 2,
+                width: "800px",
+                mx: "auto",
+                display: "flex",
+                justifyContent: "center"
+              }}
+              elevation={2}
+            >
+              <Box
+                sx={{ textAlign: 'center' }}
+                dangerouslySetInnerHTML={{ __html: adminInfo?.information || '' }}
+              />
             </Paper>
           </Box>
         </Box>
       )}
     </>
-
   );
 };
 

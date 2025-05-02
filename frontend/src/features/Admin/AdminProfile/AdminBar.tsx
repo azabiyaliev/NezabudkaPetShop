@@ -97,22 +97,6 @@ const AdminBar = () => {
             </>
           )}
 
-          {can(['superAdmin']) && (
-            <>
-              <AdminNavItem
-                to={`/admin_info/${adminInfo?.id}`}
-                icon={<EditNoteOutlined sx={iconSx} />}
-                text="Информация для администрации"
-              />
-
-              <AdminNavItem
-                to={`/client_info/${clientInfo?.id}`}
-                icon={<SettingsSuggestOutlined sx={iconSx} />}
-                text="Информация для клиента"
-              />
-            </>
-          )}
-
           <AdminNavItem
             to={`/private/users/${user.id}`}
             icon={<EditNoteOutlined sx={iconSx} />}
@@ -140,6 +124,22 @@ const AdminBar = () => {
             icon={<GroupOutlined sx={iconSx} />}
             text="Клиенты"
           />
+
+          {can(['superAdmin']) && (
+            <>
+              <AdminNavItem
+                to={`/admin_info/${adminInfo?.id}`}
+                icon={<EditNoteOutlined sx={iconSx} />}
+                text="Информация для администрации"
+              />
+
+              <AdminNavItem
+                to={`/client_info/${clientInfo?.id}`}
+                icon={<EditNoteOutlined sx={iconSx} />}
+                text="Информация для клиента"
+              />
+            </>
+          )}
 
           {can(['superAdmin']) && (
             <>
