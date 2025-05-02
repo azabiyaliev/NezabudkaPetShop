@@ -156,7 +156,7 @@ const UserFormEdition = () => {
             position: "relative"
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: "white" }}>
+          <Avatar sx={{ bgcolor: "white" }}>
             <PersonIcon sx={{ color: "black" }} />
           </Avatar>
 

@@ -197,7 +197,7 @@ const Products: React.FC<Props> = ({products}) => {
 
   return (
     <Grid container direction="column" alignItems="center">
-      <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600, mt:"56px", mb:"20px" }}>
+      <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600, mt:3, mb:"20px" }}>
         Список всех товаров
       </Typography>
       <Divider/>

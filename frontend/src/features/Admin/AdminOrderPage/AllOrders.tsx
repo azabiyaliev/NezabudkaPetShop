@@ -62,7 +62,7 @@ const AllOrders = () => {
       </Box>
       <Box>
         <Box>
-          <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600, mt:"56px"}}>
+          <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600,}}>
            Заказы
           </Typography>
 

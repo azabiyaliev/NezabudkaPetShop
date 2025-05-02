@@ -91,7 +91,7 @@ const AddNewPhotoForm = () => {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        padding: { xs: 2, md: 4 },
+        mb:3,
       }}
     >
       <Paper

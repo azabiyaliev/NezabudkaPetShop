@@ -289,7 +289,7 @@ const ProductForm: React.FC<Props> = ({
 
   return (
     <form onSubmit={submitFormHandler}>
-      <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600, mt:"56px" }}>
+      <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600, mt:3 }}>
         {!isProduct ? "Добавление товара" : "Редактирование товара"}
       </Typography>
       <Box

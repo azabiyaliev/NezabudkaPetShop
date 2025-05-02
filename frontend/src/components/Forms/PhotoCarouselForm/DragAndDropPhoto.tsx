@@ -120,7 +120,7 @@ const DragAndDropPhoto = () => {
         <Box
           sx={{
             borderTop: "1px solid lightgray",
-            marginTop: "30px",
+            marginTop: "10px",
             marginBottom: "20px",
           }}
         />
