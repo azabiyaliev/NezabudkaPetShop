@@ -72,7 +72,7 @@ const AdminBar = () => {
               >
                 <ListItemText
                   primary="Личный кабинет"
-                  sx={{ color: 'rgba(46, 46, 46, 0.)' }}
+                  sx={{ color: 'rgba(46, 46, 46, 0.7)' }}
                   primaryTypographyProps={{ fontWeight: 600, fontSize: 14 }}
                 />
               </ListItem>
