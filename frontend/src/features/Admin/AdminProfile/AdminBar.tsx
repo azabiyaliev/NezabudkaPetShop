@@ -115,7 +115,7 @@ const AdminBar = () => {
             <AdminNavItem
               to="/private/order_stats"
               icon={<AutoGraphOutlined sx={iconSx} />}
-              text="Аналитика заказов"
+              text="Статистика заказов"
             />
           )}
           <AdminNavItem
