@@ -17,10 +17,10 @@ const ProductsPage = () => {
 
   return (
     <Grid container spacing={2}>
-      <Grid size={4} sx={{ margin: "30px 0" }}>
+      <Grid size={3} sx={{ margin: "30px 0" }}>
         <AdminBar />
       </Grid>
-      <Grid size={8}>
+      <Grid size={9}>
         {products.length > 0 ? (
           <Products products={products} />
         ) : (

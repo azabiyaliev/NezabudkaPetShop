@@ -111,8 +111,8 @@ const OrderAdminItem: React.FC<Props> = ({ order }) => {
         mb: 2,
         borderRadius: 2,
         width: "100%",
-        minWidth: 350,
-        maxWidth: 500,
+        minWidth: 250,
+        maxWidth: 400,
         display: "flex",
         flexDirection: "column",
       }}

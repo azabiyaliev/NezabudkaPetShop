@@ -18,12 +18,21 @@ const EditionSitePage = () => {
         console.error("Error fetching site data:", error);
       });
   }, [dispatch]);
+
   return (
     <Box sx={{ display: "flex", margin: "30px 0" }}>
-      <Box>
+      <Box sx={{ minWidth: 240 }}>
         <AdminBar />
       </Box>
-      <Box sx={{ flexGrow: 1, pl: 3, pr: 3 }}>
+      <Box
+        sx={{
+          flexGrow: 1,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          ml: 2,
+        }}
+      >
         <EditSiteForm />
       </Box>
     </Box>

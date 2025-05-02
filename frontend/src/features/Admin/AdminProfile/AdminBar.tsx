@@ -2,11 +2,22 @@ import {
   List,
   ListItem,
   ListItemText,
+  ListSubheader,
+  Divider,
 } from '@mui/material';
 import {
   EditNote,
   PlaylistAddOutlined,
   ReorderOutlined,
+  EditNoteOutlined,
+  SettingsSuggestOutlined,
+  CreditScoreOutlined,
+  AutoGraphOutlined,
+  GroupOutlined,
+  CategoryOutlined,
+  BallotOutlined,
+  Diversity2Outlined,
+  ListAltOutlined,
 } from '@mui/icons-material';
 import { NavLink } from 'react-router-dom';
 
@@ -18,21 +29,10 @@ import { selectUser } from '../../../store/users/usersSlice.ts';
 import { selectCompany } from '../../../store/companyPage/compantPageSlice.ts';
 import { selectDelivery } from '../../../store/deliveryPage/deliveryPageSlice.ts';
 import { selectBonusProgram } from '../../../store/bonusProgramPage/bonusProgramPageSlice.ts';
-import EditNoteOutlinedIcon from '@mui/icons-material/EditNoteOutlined';
-import SettingsSuggestOutlinedIcon from '@mui/icons-material/SettingsSuggestOutlined';
-import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
-import CreditScoreOutlinedIcon from '@mui/icons-material/CreditScoreOutlined';
-import AutoGraphOutlinedIcon from '@mui/icons-material/AutoGraphOutlined';
-import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
-import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
-import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
-import BallotOutlinedIcon from '@mui/icons-material/BallotOutlined';
-import Diversity2OutlinedIcon from '@mui/icons-material/Diversity2Outlined';
-import ListAltOutlinedIcon from '@mui/icons-material/ListAltOutlined';
-import './Admin.css'
-
 import AdminNavItem from './AdminNavItem.tsx';
 import { userRoleAdmin, userRoleSuperAdmin } from '../../../globalConstants.ts';
+
+const iconSx = { color: "#45624E", mr: 1 };
 
 const AdminBar = () => {
   const company = useAppSelector(selectCompany);
@@ -42,157 +42,159 @@ const AdminBar = () => {
   const can = usePermission(user);
 
   return (
-    <div className="admin-bar">
+    <div
+      style={{
+        width: 370,
+        padding: '12px 20px',
+        backgroundColor: '#f9f9f9',
+        borderRadius: 8,
+        boxShadow: '0 0 10px rgba(0,0,0,0.05)',
+        height: 'fit-content', // Не тянется на всю высоту
+        maxHeight: '100vh',
+        overflowY: 'auto',
+      }}
+    >
       {user && can([userRoleSuperAdmin, userRoleAdmin]) && (
-        <List>
-          <>
-            {user && can([userRoleAdmin]) && (
-              <>
-                <ListItem component={NavLink} to={`/private_account`}>
-                  <b className="text-uppercase text-black">Личный кабинет</b>
-                </ListItem>
-                <hr />
-              </>
-            )}
-          </>
+        <List
+          subheader={
+            <ListSubheader component="div" sx={{ bgcolor: 'inherit', fontWeight: 700, pl: 0 }}>
+              Панель администратора
+            </ListSubheader>
+          }
+          dense
+        >
+          {can([userRoleAdmin]) && (
+            <>
+              <ListItem
+                component={NavLink}
+                to={`/private_account`}
+                sx={{ py: 0.3 }}
+              >
+                <ListItemText
+                  primary="Личный кабинет"
+                  sx={{ color: "darkgreen" }}
+                  primaryTypographyProps={{ fontWeight: 600, fontSize: 14 }}
+                />
+              </ListItem>
+              <Divider sx={{ my: 0.8 }} />
+            </>
+          )}
 
-          <>
-            {user && can([userRoleSuperAdmin]) && (
-              <>
-                <b className="text-uppercase text-black">{user.firstName} {user.secondName}</b>
-                <hr />
-              </>
-            )}
-          </>
+          {can([userRoleSuperAdmin]) && (
+            <>
+              <ListItemText
+                primary={`${user.firstName} ${user.secondName}`}
+                primaryTypographyProps={{ fontSize: 12, fontWeight: 500 }}
+                sx={{ pl: 1, mb: 0.5 }}
+              />
+              <Divider sx={{ my: 0.8 }} />
+            </>
+          )}
 
           <AdminNavItem
             to={`/private/users/${user.id}`}
-            icon={<EditNoteOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />}
+            icon={<EditNoteOutlined sx={iconSx} />}
             text="Редактирование личного кабинета"
           />
           <AdminNavItem
             to="/edition_site"
-            icon={<SettingsSuggestOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />}
-            text="Редактирование профиля магазина"
+            icon={<SettingsSuggestOutlined sx={iconSx} />}
+            text="Профиль магазина"
           />
           <AdminNavItem
             to="/private/client_orders"
-            icon={<CreditScoreOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />}
-            text="Заказы"
+            icon={<CreditScoreOutlined sx={iconSx} />}
+            text="Заказы клиентов"
           />
           {can(['superAdmin']) && (
             <AdminNavItem
               to="/private/order_stats"
-              icon={<AutoGraphOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />}
-              text="Статистика"
+              icon={<AutoGraphOutlined sx={iconSx} />}
+              text="Аналитика заказов"
             />
           )}
           <AdminNavItem
             to="/private/clients"
-            icon={<GroupOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />}
+            icon={<GroupOutlined sx={iconSx} />}
             text="Клиенты"
           />
 
           {can(['superAdmin']) && (
             <>
-              <ListItem>
-                <AdminPanelSettingsOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
-                <ListItemText primary="Администраторы" />
-              </ListItem>
-              <List component="div" disablePadding>
-                <AdminNavItem
-                  to="/admin-table"
-                  icon={<ReorderOutlined style={{ color: "#45624E", marginRight: "10px" }} />}
-                  text="Список администраторов"
-                />
-                <AdminNavItem
-                  to="/admin-create"
-                  icon={<PlaylistAddOutlined style={{ color: "#45624E", marginRight: "10px" }} />}
-                  text="Создание администратора"
-                />
-              </List>
+              <Divider />
+              <ListSubheader sx={{ bgcolor: 'inherit', fontWeight: 600, pl: 0 }}>Администраторы</ListSubheader>
+              <AdminNavItem
+                to="/admin-table"
+                icon={<ReorderOutlined sx={iconSx} />}
+                text="Список администраторов"
+              />
+              <AdminNavItem
+                to="/admin-create"
+                icon={<PlaylistAddOutlined sx={iconSx} />}
+                text="Создание администратора"
+              />
             </>
           )}
 
-          <ListItem>
-            <ReceiptLongOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
-            <ListItemText primary="Управление контентом" />
-          </ListItem>
-          <List component="div" disablePadding>
-            <AdminNavItem
-              to={`/my_company/${company?.id}`}
-              icon={<EditNote style={{ color: "#45624E", marginRight: "10px" }} />}
-              text='Редактирование страницы "О компании"'
-            />
-            <AdminNavItem
-              to={`/delivery/${delivery?.id}`}
-              icon={<EditNote style={{ color: "#45624E", marginRight: "10px" }} />}
-              text='Редактирование страницы "Доставка и оплата"'
-            />
-            <AdminNavItem
-              to={`/bonus_program/${bonusProgram?.id}`}
-              icon={<EditNote style={{ color: "#45624E", marginRight: "10px" }} />}
-              text='Редактирование страницы "Бонусная программа"'
-            />
-          </List>
+          <Divider />
+          <ListSubheader sx={{ bgcolor: 'inherit', fontWeight: 600, pl: 0 }}>Управление контентом</ListSubheader>
+          <AdminNavItem
+            to={`/my_company/${company?.id}`}
+            icon={<EditNote sx={iconSx} />}
+            text="О компании"
+          />
+          <AdminNavItem
+            to={`/delivery/${delivery?.id}`}
+            icon={<EditNote sx={iconSx} />}
+            text="Доставка и оплата"
+          />
+          <AdminNavItem
+            to={`/bonus_program/${bonusProgram?.id}`}
+            icon={<EditNote sx={iconSx} />}
+            text="Бонусная программа"
+          />
 
-          <ListItem>
-            <CategoryOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
-            <ListItemText primary="Категории" />
-          </ListItem>
-          <List component="div" disablePadding>
-            <AdminNavItem
-              to="/private/manage_categories"
-              icon={<ReorderOutlined style={{ color: "#45624E", marginRight: "10px" }} />}
-              text="Управление категориями"
-            />
-          </List>
+          <Divider />
+          <ListSubheader sx={{ bgcolor: 'inherit', fontWeight: 600, pl: 0 }}>Категории</ListSubheader>
+          <AdminNavItem
+            to="/private/manage_categories"
+            icon={<CategoryOutlined sx={iconSx} />}
+            text="Управление категориями"
+          />
 
-          <ListItem>
-            <Diversity2OutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
-            <ListItemText primary="Карусель" />
-          </ListItem>
-          <List component="div" disablePadding>
-            <AdminNavItem
-              to="/edit-carousel"
-              icon={<EditNote style={{ color: "#45624E", marginRight: "10px" }} />}
-              text="Редактирование карусели"
-            />
-          </List>
+          <Divider />
+          <ListSubheader sx={{ bgcolor: 'inherit', fontWeight: 600, pl: 0 }}>Карусель</ListSubheader>
+          <AdminNavItem
+            to="/edit-carousel"
+            icon={<Diversity2Outlined sx={iconSx} />}
+            text="Редактировать карусель"
+          />
 
-          <ListItem>
-            <BallotOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
-            <ListItemText primary="Бренды" />
-          </ListItem>
-          <List component="div" disablePadding>
-            <AdminNavItem
-              to="/private/brands"
-              icon={<ReorderOutlined style={{ color: "#45624E", marginRight: "10px" }} />}
-              text="Все бренды"
-            />
-            <AdminNavItem
-              to="/private/add_brand"
-              icon={<PlaylistAddOutlined style={{ color: "#45624E", marginRight: "10px" }} />}
-              text="Добавить бренд"
-            />
-          </List>
+          <Divider />
+          <ListSubheader sx={{ bgcolor: 'inherit', fontWeight: 600, pl: 0 }}>Бренды</ListSubheader>
+          <AdminNavItem
+            to="/private/brands"
+            icon={<BallotOutlined sx={iconSx} />}
+            text="Все бренды"
+          />
+          <AdminNavItem
+            to="/private/add_brand"
+            icon={<PlaylistAddOutlined sx={iconSx} />}
+            text="Добавить бренд"
+          />
 
-          <ListItem>
-            <ListAltOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
-            <ListItemText primary="Товары" />
-          </ListItem>
-          <List component="div" disablePadding>
-            <AdminNavItem
-              to="/private/products"
-              icon={<ReorderOutlined style={{ color: "#45624E", marginRight: "10px" }} />}
-              text="Все товары"
-            />
-            <AdminNavItem
-              to="/private/add_product"
-              icon={<PlaylistAddOutlined style={{ color: "#45624E", marginRight: "10px" }} />}
-              text="Добавить товар"
-            />
-          </List>
+          <Divider />
+          <ListSubheader sx={{ bgcolor: 'inherit', fontWeight: 600, pl: 0 }}>Товары</ListSubheader>
+          <AdminNavItem
+            to="/private/products"
+            icon={<ListAltOutlined sx={iconSx} />}
+            text="Все товары"
+          />
+          <AdminNavItem
+            to="/private/add_product"
+            icon={<PlaylistAddOutlined sx={iconSx} />}
+            text="Добавить товар"
+          />
         </List>
       )}
     </div>

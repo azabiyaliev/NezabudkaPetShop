@@ -13,9 +13,9 @@ import AdminBar from '../../../features/Admin/AdminProfile/AdminBar.tsx';
 
 const initialState = {
   text: ""
-}
+};
 
-const CompanyPageFrom = () => {
+const CompanyPageForm = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [form, setForm] = useState<CompanyPageMutation>(initialState);
@@ -28,7 +28,7 @@ const CompanyPageFrom = () => {
         if (company) {
           setForm(company);
         }
-      })
+      });
   }, [dispatch]);
 
   const onChangeEditor = (html: string) => {
@@ -48,7 +48,7 @@ const CompanyPageFrom = () => {
       await dispatch(updateCompanyPage({ id: company.id, data: form })).unwrap();
       enqueueSnackbar('Вы успешно отредактировали страницу "О компании"!', { variant: 'success' });
       navigate(`/my_company`);
-      await dispatch(fetchCompanyPage())
+      await dispatch(fetchCompanyPage());
     } catch (error) {
       console.error(error);
     }
@@ -59,19 +59,20 @@ const CompanyPageFrom = () => {
       sx={{
         display: 'flex',
         flexDirection: { xs: 'column', md: 'row' },
-        gap: 2,
         mt: "30px",
         width: '100%',
       }}
     >
-      <Box sx={{ width: { xs: '100%', md: '500px' }, flexShrink: 0 }}>
+      <Box sx={{ width: { xs: '100%', md: '250px' }, flexShrink: 0 }}>
         <AdminBar />
       </Box>
+
       <Box
         sx={{
           flexGrow: 1,
           display: 'flex',
           justifyContent: 'center',
+          px: 2,
         }}
       >
         <Box sx={{ width: '100%', maxWidth: '800px' }}>
@@ -88,7 +89,7 @@ const CompanyPageFrom = () => {
               flexDirection: 'column',
               alignItems: 'center',
               width: '100%',
-              mt:5,
+              mt: 5,
             }}
           >
             <Typography
@@ -100,7 +101,7 @@ const CompanyPageFrom = () => {
                 mb: 0.5,
               }}
             >
-              Информация  о компании:
+              Информация о компании:
             </Typography>
 
             <TextEditor
@@ -109,6 +110,7 @@ const CompanyPageFrom = () => {
               error={!form.text}
               helperText={!form.text ? 'Поле обязательно для заполнения' : undefined}
             />
+
             <Button
               variant="contained"
               type="submit"
@@ -119,9 +121,8 @@ const CompanyPageFrom = () => {
           </Box>
         </Box>
       </Box>
-
     </Box>
   );
 };
 
-export default CompanyPageFrom;
+export default CompanyPageForm;
