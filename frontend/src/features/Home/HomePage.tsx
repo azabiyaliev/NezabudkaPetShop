@@ -19,6 +19,7 @@ import theme from '../../globalStyles/globalTheme.ts';
 import { getFavoriteProducts } from '../../store/favoriteProducts/favoriteProductsThunks.ts';
 import TopSellingProducts from '../Product/components/TopSellingProducts/TopSellingProducts.tsx';
 import { FONTS, SPACING } from '../../globalStyles/stylesObjects.ts';
+import ContactBlock from '../../components/Domain/ContactBlock/ContactBlock.tsx';
 
 const HomePage = () => {
   const [openCart, setOpenCart] = useState<boolean>(false);
@@ -212,6 +213,18 @@ const HomePage = () => {
           <BrandForHomePage brands={brands} />
         </Box>
       )}
+      <Typography
+        sx={{
+          fontSize: theme.fonts.size.xxl,
+          fontWeight: FONTS.weight.bold,
+          margin: `${SPACING.md} 0`,
+          color: theme.colors.text,
+          textAlign: "center",
+        }}
+      >
+       Контакты
+      </Typography>
+      <ContactBlock/>
     </Container>
   );
 };

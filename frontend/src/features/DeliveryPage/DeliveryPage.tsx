@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 import { selectDelivery } from '../../store/deliveryPage/deliveryPageSlice.ts';
 import { fetchDeliveryPage } from '../../store/deliveryPage/deliveryPageThunk.ts';
 import '../../components/TextEditor/styles.css'
+import theme from '../../globalStyles/globalTheme.ts';
 
 const DeliveryPage = () => {
   const delivery = useAppSelector(selectDelivery);
@@ -20,56 +21,31 @@ const DeliveryPage = () => {
         <ByuerBarTopTollBar />
       </div>
       <div className="col-9 mt-5" style={{ display: 'flex', justifyContent: 'center' }}>
-        <Container maxWidth="md">
-          <Typography
-            variant="h4"
-            sx={{
-              fontWeight: 'bold',
-              mb: 4,
-              textAlign: 'center',
-              color: 'black',
-            }}
-          >
+        <Container>
+          <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600 }}>
             Доставка и оплата
           </Typography>
 
           <Box
             sx={{
-              border: '1px solid #e0e0e0',
-              borderRadius: '16px',
+              borderRadius: '5px',
               padding: 4,
-              backgroundColor: '#fafafa',
-              boxShadow: '0 4px 10px rgba(0, 0, 0, 0.05)',
-              display: 'flex',
-              flexDirection: { xs: 'column', md: 'row' },
-              gap: 4,
+              backgroundColor: theme.colors.rgbaGrey,
             }}
           >
-            {/* Текстовая часть */}
-            <Box sx={{ flex: 1 }}>
-              <div
-                className="quill-content"
-                dangerouslySetInnerHTML={{ __html: delivery?.text || '<p>Информация пока не добавлена.</p>' }}
-                style={{ lineHeight: 1.6, fontSize: '16px', color: '#333', marginBottom: '16px' }}
-              />
-              <div
-                className="quill-content"
-                dangerouslySetInnerHTML={{ __html: delivery?.price || '' }}
-                style={{ lineHeight: 1.6, fontSize: '16px', color: '#333' }}
-              />
-            </Box>
-
             {delivery?.map && (
               <Box
                 sx={{
+                  flex: '0 1 450px',
                   width: '100%',
                   maxWidth: '450px',
                   height: '450px',
-                  flexShrink: 0,
-                  borderRadius: '12px',
+                  borderRadius: '5px',
                   overflow: 'hidden',
                   boxShadow: '0 2px 6px rgba(0, 0, 0, 0.1)',
                   position: 'relative',
+                  order: { xs: 1, md: 2 },
+                  float: "right",
                 }}
               >
                 <iframe
@@ -86,7 +62,19 @@ const DeliveryPage = () => {
                   referrerPolicy="no-referrer-when-downgrade"
                 />
               </Box>
+
             )}
+
+            <div
+              className="quill-content"
+              dangerouslySetInnerHTML={{ __html: delivery?.text || '<p>Информация пока не добавлена.</p>' }}
+              style={{ lineHeight: 1.6, fontSize: '16px', color: '#333', marginBottom: '16px' }}
+            />
+            <div
+              className="quill-content"
+              dangerouslySetInnerHTML={{ __html: delivery?.price || '' }}
+              style={{ lineHeight: 1.6, fontSize: '16px', color: '#333' }}
+            />
           </Box>
         </Container>
       </div>

@@ -4,6 +4,7 @@ import { selectCompany } from '../../store/companyPage/compantPageSlice.ts';
 import { Box, Container, Typography } from '@mui/material';
 import { useEffect } from 'react';
 import { fetchCompanyPage } from '../../store/companyPage/companyPageThunk.ts';
+import theme from '../../globalStyles/globalTheme.ts';
 
 const CompanyPage = () => {
   const company = useAppSelector(selectCompany);
@@ -20,27 +21,17 @@ const CompanyPage = () => {
       </div>
 
       <div className="col-9 mt-5" style={{ display: 'flex', justifyContent: 'center' }}>
-        <Container maxWidth="md">
-          <Typography
-            variant="h4"
-            sx={{
-              fontWeight: 'bold',
-              mb: 4,
-              textAlign: 'center',
-              color: 'black',
-            }}
-          >
+        <Container >
+          <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600 }}>
             О компании
           </Typography>
 
           <Box
             sx={{
-              border: '1px solid #e0e0e0',
-              borderRadius: '16px',
+              borderRadius: '5px',
               padding: 4,
-              backgroundColor: '#fafafa',
-              boxShadow: '0 4px 10px rgba(0, 0, 0, 0.05)',
-              minHeight: '300px',
+              backgroundColor: theme.colors.rgbaGrey,
+              mx: 'auto',
             }}
           >
             <div
