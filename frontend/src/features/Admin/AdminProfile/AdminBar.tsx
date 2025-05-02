@@ -1,6 +1,10 @@
-import { List, ListItem, ListItemButton, ListItemText } from '@mui/material';
-import { NavLink } from 'react-router-dom';
-import { EditNote, PlaylistAddOutlined, ReorderOutlined } from '@mui/icons-material';
+import {
+  List,
+  ListItem,
+  ListItemText,
+  ListSubheader,
+  Divider,
+} from '@mui/material';
 import {
   useAppSelector,
   usePermission,
@@ -9,21 +13,26 @@ import { selectUser } from '../../../store/users/usersSlice.ts';
 import { selectCompany } from '../../../store/companyPage/compantPageSlice.ts';
 import { selectDelivery } from '../../../store/deliveryPage/deliveryPageSlice.ts';
 import { selectBonusProgram } from '../../../store/bonusProgramPage/bonusProgramPageSlice.ts';
-
-import EditNoteOutlinedIcon from '@mui/icons-material/EditNoteOutlined';
-import SettingsSuggestOutlinedIcon from '@mui/icons-material/SettingsSuggestOutlined';
-import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
-import CreditScoreOutlinedIcon from '@mui/icons-material/CreditScoreOutlined';
-import AutoGraphOutlinedIcon from '@mui/icons-material/AutoGraphOutlined';
-import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
-import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
-import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
-import BallotOutlinedIcon from '@mui/icons-material/BallotOutlined';
-import Diversity2OutlinedIcon from '@mui/icons-material/Diversity2Outlined';
-import ListAltOutlinedIcon from '@mui/icons-material/ListAltOutlined';
+import {
+  EditNote,
+  PlaylistAddOutlined,
+  ReorderOutlined,
+  EditNoteOutlined,
+  SettingsSuggestOutlined,
+  CreditScoreOutlined,
+  AutoGraphOutlined,
+  GroupOutlined,
+  CategoryOutlined,
+  BallotOutlined,
+  Diversity2Outlined,
+  ListAltOutlined,
+} from '@mui/icons-material';
+import { NavLink } from 'react-router-dom';
 import { selectAdminInfo } from '../../../store/adminInfo/adminInfoSlice.ts';
 import { selectClientInfo } from "../../../store/clientInfo/clientInfoSlice.ts";
-
+import AdminNavItem from './AdminNavItem.tsx';
+import { userRoleAdmin, userRoleSuperAdmin } from '../../../globalConstants.ts';
+const iconSx = { color: "#45624E", mr: 1 };
 const AdminBar = () => {
   const company = useAppSelector(selectCompany);
   const delivery = useAppSelector(selectDelivery);
@@ -34,140 +43,180 @@ const AdminBar = () => {
   const can = usePermission(user);
 
   return (
-    <div className="admin-bar">
-      {user && can(['admin', 'superAdmin']) && (
-        <List>
-          <ListItem component={NavLink} to={`/private_account`}>
-            <b className="text-uppercase text-black">Личный кабинет</b>
-          </ListItem>
-          <hr />
-          <ListItem component={NavLink} to={`/private/users/${user.id}`}>
-            <EditNoteOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
-            <ListItemText primary="Редактирование личного кабинета" className="text-black" />
-          </ListItem>
-
-          {can(['superAdmin']) && (
+    <div
+      style={{
+        width: 370,
+        padding: '12px 20px',
+        backgroundColor: '#f9f9f9',
+        borderRadius: 8,
+        boxShadow: '0 0 10px rgba(0,0,0,0.05)',
+        height: 'fit-content',
+        maxHeight: '100vh',
+        overflowY: 'auto',
+      }}
+    >
+      {user && can([userRoleSuperAdmin, userRoleAdmin]) && (
+        <List
+          subheader={
+            <ListSubheader
+              component="div"
+              sx={{
+                bgcolor: 'inherit',
+                fontWeight: 700,
+                pl: 0,
+                position: 'static',
+              }}
+            >
+              {can([userRoleSuperAdmin])
+                ? `Панель ${user.firstName} ${user.secondName}`
+                : 'Панель администратора'}
+            </ListSubheader>
+          }
+          dense
+        >
+          {can([userRoleAdmin]) && (
             <>
-              <List component="div" disablePadding>
-                <ListItemButton sx={{ pl: 5 }} component={NavLink} to={`/admin_info/${adminInfo?.id}`}>
-                  <EditNoteOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
-                  <ListItemText primary="Информация для администрации" />
-                </ListItemButton>
-                <ListItemButton sx={{ pl: 5 }} component={NavLink} to={`/client_info/${clientInfo?.id}`}>
-                  <EditNoteOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
-                  <ListItemText primary="Информация для клиентов" />
-                </ListItemButton>
-              </List>
-            </>
-          )}
-          <ListItem component={NavLink} to="/edition_site">
-            <SettingsSuggestOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
-            <ListItemText primary="Редактирование профиля магазина" className="text-black" />
-          </ListItem>
-          <ListItem component={NavLink} to="/private/client_orders">
-            <CreditScoreOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
-            <ListItemText primary="Заказы" className="text-black" />
-          </ListItem>
-          {can(['superAdmin']) && (
-            <ListItem component={NavLink} to="/private/order_stats">
-              <AutoGraphOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
-              <ListItemText primary="Статистика" className="text-black" />
-            </ListItem>
-          )}
-          <ListItem component={NavLink} to="/private/clients">
-            <GroupOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
-            <ListItemText primary="Клиенты" className="text-black" />
-          </ListItem>
-
-          {can(['superAdmin']) && (
-            <>
-              <ListItem>
-                <AdminPanelSettingsOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
-                <ListItemText primary="Администраторы" />
+              <ListItem
+                component={NavLink}
+                to={`/private_account`}
+                sx={{pl: 0}}
+              >
+                <ListItemText
+                  primary="Личный кабинет"
+                  sx={{ color: 'rgba(46, 46, 46, 0.7)' }}
+                  primaryTypographyProps={{ fontWeight: 600, fontSize: 14 }}
+                />
               </ListItem>
-              <List component="div" disablePadding>
-                <ListItemButton sx={{ pl: 5 }} component={NavLink} to={'/admin-table'}>
-                  <ReorderOutlined style={{ color: "#45624E", marginRight: "10px" }} />
-                  <ListItemText primary="Список администраторов" />
-                </ListItemButton>
-                <ListItemButton sx={{ pl: 5 }} component={NavLink} to={'/admin-create'}>
-                  <PlaylistAddOutlined style={{ color: "#45624E", marginRight: "10px" }} />
-                  <ListItemText primary="Создание администратора" />
-                </ListItemButton>
-              </List>
+              <Divider sx={{ my: 0.8 }} />
             </>
           )}
 
-          <ListItem>
-            <ReceiptLongOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
-            <ListItemText primary="Управление контентом" />
-          </ListItem>
-          <List component="div" disablePadding>
-            <ListItemButton sx={{ pl: 5 }} component={NavLink} to={`/my_company/${company?.id}`}>
-              <EditNote style={{ color: "#45624E", marginRight: "10px" }} />
-              <ListItemText primary='Редактирование страницы "О компании"' />
-            </ListItemButton>
-            <ListItemButton sx={{ pl: 5 }} component={NavLink} to={`/delivery/${delivery?.id}`}>
-              <EditNote style={{ color: "#45624E", marginRight: "10px" }} />
-              <ListItemText primary='Редактирование страницы "Доставка и оплата"' />
-            </ListItemButton>
-            <ListItemButton sx={{ pl: 5 }} component={NavLink} to={`/bonus_program/${bonusProgram?.id}`}>
-              <EditNote style={{ color: "#45624E", marginRight: "10px" }} />
-              <ListItemText primary='Редактирование страницы "Бонсуная программа"' />
-            </ListItemButton>
-          </List>
+          {can([userRoleSuperAdmin]) && (
+            <>
+              <Divider sx={{ my: 0.8 }} />
+            </>
+          )}
 
-          <ListItem>
-            <CategoryOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
-            <ListItemText primary="Категории" />
-          </ListItem>
-          <List component="div" disablePadding>
-            <ListItemButton sx={{ pl: 5 }} component={NavLink} to="/private/manage_categories">
-              <ReorderOutlined style={{ color: "#45624E", marginRight: "10px" }} />
-              <ListItemText primary="Управление категориями" />
-            </ListItemButton>
-          </List>
+          {can(['superAdmin']) && (
+            <>
+              <AdminNavItem
+                to={`/admin_info/${adminInfo?.id}`}
+                icon={<EditNoteOutlined sx={iconSx} />}
+                text="Информация для администрации"
+              />
 
-          <ListItem>
-            <Diversity2OutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
-            <ListItemText primary="Карусель" />
-          </ListItem>
-          <List component="div" disablePadding>
-            <ListItemButton sx={{ pl: 5 }} component={NavLink} to="/edit-carousel">
-              <EditNote style={{ color: "#45624E", marginRight: "10px" }} />
-              <ListItemText primary="Редактирование каруселя" />
-            </ListItemButton>
-          </List>
+              <AdminNavItem
+                to={`/client_info/${clientInfo?.id}`}
+                icon={<SettingsSuggestOutlined sx={iconSx} />}
+                text="Информация для клиента"
+              />
+            </>
+          )}
 
-          <ListItem>
-            <BallotOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
-            <ListItemText primary="Бренды" />
-          </ListItem>
-          <List component="div" disablePadding>
-            <ListItemButton sx={{ pl: 5 }} component={NavLink} to="/private/brands">
-              <ReorderOutlined style={{ color: "#45624E", marginRight: "10px" }} />
-              <ListItemText primary="Все бренды" />
-            </ListItemButton>
-            <ListItemButton sx={{ pl: 5 }} component={NavLink} to="/private/add_brand">
-              <PlaylistAddOutlined style={{ color: "#45624E", marginRight: "10px" }} />
-              <ListItemText primary="Добавить бренд" />
-            </ListItemButton>
-          </List>
+          <AdminNavItem
+            to={`/private/users/${user.id}`}
+            icon={<EditNoteOutlined sx={iconSx} />}
+            text="Редактирование личного кабинета"
+          />
+          <AdminNavItem
+            to="/edition_site"
+            icon={<SettingsSuggestOutlined sx={iconSx} />}
+            text="Профиль магазина"
+          />
+          <AdminNavItem
+            to="/private/client_orders"
+            icon={<CreditScoreOutlined sx={iconSx} />}
+            text="Заказы клиентов"
+          />
+          {can(['superAdmin']) && (
+            <AdminNavItem
+              to="/private/order_stats"
+              icon={<AutoGraphOutlined sx={iconSx} />}
+              text="Статистика заказов"
+            />
+          )}
+          <AdminNavItem
+            to="/private/clients"
+            icon={<GroupOutlined sx={iconSx} />}
+            text="Клиенты"
+          />
 
-          <ListItem>
-            <ListAltOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
-            <ListItemText primary="Товары" />
-          </ListItem>
-          <List component="div" disablePadding>
-            <ListItemButton sx={{ pl: 5 }} component={NavLink} to="/private/products">
-              <ReorderOutlined style={{ color: "#45624E", marginRight: "10px" }} />
-              <ListItemText primary="Все товары" />
-            </ListItemButton>
-            <ListItemButton sx={{ pl: 5 }} component={NavLink} to="/private/add_product">
-              <PlaylistAddOutlined style={{ color: "#45624E", marginRight: "10px" }} />
-              <ListItemText primary="Добавить товар" />
-            </ListItemButton>
-          </List>
+          {can(['superAdmin']) && (
+            <>
+              <Divider />
+              <ListSubheader sx={{ bgcolor: 'inherit', fontWeight: 600, pl: 0,  position: 'static' }}>Администраторы</ListSubheader>
+              <AdminNavItem
+                to="/admin-table"
+                icon={<ReorderOutlined sx={iconSx} />}
+                text="Список администраторов"
+              />
+              <AdminNavItem
+                to="/admin-create"
+                icon={<PlaylistAddOutlined sx={iconSx} />}
+                text="Создание администратора"
+              />
+            </>
+          )}
+
+          <Divider />
+          <ListSubheader sx={{ bgcolor: 'inherit', fontWeight: 600, pl: 0,  position: 'static', }}>Управление контентом</ListSubheader>
+          <AdminNavItem
+            to={`/my_company/${company?.id}`}
+            icon={<EditNote sx={iconSx} />}
+            text="О компании"
+          />
+          <AdminNavItem
+            to={`/delivery/${delivery?.id}`}
+            icon={<EditNote sx={iconSx} />}
+            text="Доставка и оплата"
+          />
+          <AdminNavItem
+            to={`/bonus_program/${bonusProgram?.id}`}
+            icon={<EditNote sx={iconSx} />}
+            text="Бонусная программа"
+          />
+
+          <Divider />
+          <ListSubheader sx={{ bgcolor: 'inherit', fontWeight: 600, pl: 0,  position: 'static', }}>Категории</ListSubheader>
+          <AdminNavItem
+            to="/private/manage_categories"
+            icon={<CategoryOutlined sx={iconSx} />}
+            text="Управление категориями"
+          />
+
+          <Divider />
+          <ListSubheader sx={{ bgcolor: 'inherit', fontWeight: 600, pl: 0,  position: 'static', }}>Карусель</ListSubheader>
+          <AdminNavItem
+            to="/edit-carousel"
+            icon={<Diversity2Outlined sx={iconSx} />}
+            text="Редактировать карусель"
+          />
+
+          <Divider />
+          <ListSubheader sx={{ bgcolor: 'inherit', fontWeight: 600, pl: 0,  position: 'static', }}>Бренды</ListSubheader>
+          <AdminNavItem
+            to="/private/brands"
+            icon={<BallotOutlined sx={iconSx} />}
+            text="Все бренды"
+          />
+          <AdminNavItem
+            to="/private/add_brand"
+            icon={<PlaylistAddOutlined sx={iconSx} />}
+            text="Добавить бренд"
+          />
+
+          <Divider />
+          <ListSubheader sx={{ bgcolor: 'inherit', fontWeight: 600, pl: 0,  position: 'static', }}>Товары</ListSubheader>
+          <AdminNavItem
+            to="/private/products"
+            icon={<ListAltOutlined sx={iconSx} />}
+            text="Все товары"
+          />
+          <AdminNavItem
+            to="/private/add_product"
+            icon={<PlaylistAddOutlined sx={iconSx} />}
+            text="Добавить товар"
+          />
         </List>
       )}
     </div>

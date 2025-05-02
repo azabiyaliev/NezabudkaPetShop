@@ -1,9 +1,9 @@
-import { useEffect } from "react";
+import  { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { getStatistics } from "../../../store/orders/ordersThunk";
 import ColumnChart from "../../../components/UI/ColumnChart/ColumnChart.tsx";
 import { DataGrid, gridClasses, GridToolbar } from "@mui/x-data-grid";
-import { Box, CircularProgress, Paper, Stack } from '@mui/material';
+import { Box, CircularProgress, Paper } from '@mui/material';
 import Typography from "@mui/material/Typography";
 import AdminBar from '../AdminProfile/AdminBar.tsx';
 
@@ -89,36 +89,21 @@ const OrderStats = () => {
   ];
 
   return (
-    <Stack
-      direction={{
-        xs: 'column',
-        sm: 'row'
-    }}
-      spacing={{
-        xs: 1,
-        sm: 2,
-        md: 4 }}
-      className='mt-5'>
+    <Box sx={{display: "flex",  margin: "30px 0"}}>
       <Box>
         <AdminBar/>
       </Box>
       <Box sx={{
-        p: 3,
         flex: 1,
         display: 'flex',
         flexDirection: 'column',
         gap: 4,
-        minHeight: '100vh'
+        minHeight: '100vh',
+        mt:"10px",
+        ml:"20px",
       }}>
-        <Typography
-          variant="h4"
-          component="h1"
-          sx={{
-            mb: 2,
-            fontWeight: 600,
-          }}
-        >
-          Статистика заказов
+        <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600 }}>
+         Статистика заказов
         </Typography>
 
         <Paper
@@ -175,7 +160,7 @@ const OrderStats = () => {
           </Box>
         </Paper>
       </Box>
-    </Stack>
+    </Box>
   );
 };
 

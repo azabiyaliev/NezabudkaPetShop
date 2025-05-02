@@ -12,6 +12,18 @@ export const COLORS = {
   background: '#f8f9fa',
   white: '#ffffff',
   black: '#000000',
+  rgbaGrey: 'rgba(241,239,239,0.61)',
+
+  DARK_GREEN: '#34610B',
+  FOREST_GREEN: '#152D00',
+  LIGHT_GREEN: '#92CC5F',
+  PALE_GREEN: '#C2EE9A',
+  OLIVE_GREEN: '#629B2F',
+  BEIGE: '#F3E7D8',
+  CREAM: '#FFF1DF',
+  GRAY_BROWN: '#736E68',
+  DARK_GRAY: '#666461',
+  TAUPE: '#B1A799',
 }
 
 //ОТСТУПЫ

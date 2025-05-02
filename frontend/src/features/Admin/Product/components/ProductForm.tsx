@@ -122,7 +122,7 @@ const ProductForm: React.FC<Props> = ({
         productWeight: editProduct.productWeight ?? 0,
       });
     }
-  }, [editProduct]);
+  }, [editProduct, form.promoPercentage]);
 
   const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -289,13 +289,13 @@ const ProductForm: React.FC<Props> = ({
 
   return (
     <form onSubmit={submitFormHandler}>
-      <Typography variant={"h5"} sx={{ mt: 4, textAlign: "center" }}>
+      <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600, mt:3 }}>
         {!isProduct ? "Добавление товара" : "Редактирование товара"}
       </Typography>
       <Box
         sx={{
           width: "100%",
-          marginTop: 5,
+          marginTop: 1,
           mx: "auto",
           p: 2,
         }}

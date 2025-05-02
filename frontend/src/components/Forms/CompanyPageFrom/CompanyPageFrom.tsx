@@ -13,9 +13,9 @@ import AdminBar from '../../../features/Admin/AdminProfile/AdminBar.tsx';
 
 const initialState = {
   text: ""
-}
+};
 
-const CompanyPageFrom = () => {
+const CompanyPageForm = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [form, setForm] = useState<CompanyPageMutation>(initialState);
@@ -28,7 +28,7 @@ const CompanyPageFrom = () => {
         if (company) {
           setForm(company);
         }
-      })
+      });
   }, [dispatch]);
 
   const onChangeEditor = (html: string) => {
@@ -48,29 +48,35 @@ const CompanyPageFrom = () => {
       await dispatch(updateCompanyPage({ id: company.id, data: form })).unwrap();
       enqueueSnackbar('Вы успешно отредактировали страницу "О компании"!', { variant: 'success' });
       navigate(`/my_company`);
-      await dispatch(fetchCompanyPage())
+      await dispatch(fetchCompanyPage());
     } catch (error) {
       console.error(error);
     }
   };
 
   return (
-    <div className="d-flex ">
-      <div className="col-3 mt-5 ">
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: { xs: 'column', md: 'row' },
+        mt: "30px",
+        width: '100%',
+      }}
+    >
+      <Box sx={{ width: { xs: '100%', md: '250px' }, flexShrink: 0 }}>
         <AdminBar />
-      </div>
-      <div className="col-9 mt-5" style={{ display: 'flex', justifyContent: 'center' }}>
+      </Box>
+
+      <Box
+        sx={{
+          flexGrow: 1,
+          display: 'flex',
+          justifyContent: 'center',
+          px: 2,
+        }}
+      >
         <Box sx={{ width: '100%', maxWidth: '800px' }}>
-          <Typography
-            variant="h4"
-            sx={{
-              textAlign: "center",
-              mt: 4,
-              mb: 3,
-              fontWeight: "bold",
-              color: "black",
-            }}
-          >
+          <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600 }}>
             Редактирование страницы «О компании»
           </Typography>
 
@@ -83,13 +89,19 @@ const CompanyPageFrom = () => {
               flexDirection: 'column',
               alignItems: 'center',
               width: '100%',
+              mt: 5,
             }}
           >
             <Typography
-              variant="subtitle1"
-              sx={{ mb: 1, alignSelf: 'flex-start', fontWeight: 500, ml:3}}
+              variant="body2"
+              sx={{
+                alignSelf: 'flex-start',
+                color: 'text.secondary',
+                fontWeight: 400,
+                mb: 0.5,
+              }}
             >
-              Введите информацию о компании:
+              Информация о компании:
             </Typography>
 
             <TextEditor
@@ -98,6 +110,7 @@ const CompanyPageFrom = () => {
               error={!form.text}
               helperText={!form.text ? 'Поле обязательно для заполнения' : undefined}
             />
+
             <Button
               variant="contained"
               type="submit"
@@ -107,10 +120,9 @@ const CompanyPageFrom = () => {
             </Button>
           </Box>
         </Box>
-      </div>
-
-    </div>
+      </Box>
+    </Box>
   );
 };
 
-export default CompanyPageFrom;
+export default CompanyPageForm;

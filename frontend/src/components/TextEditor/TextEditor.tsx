@@ -10,9 +10,16 @@ interface Props {
   error?: boolean;
   helperText?: string;
   placeholder?: string;
+  validateDeliveryPriceInfo?: string;
 }
 
-const TextEditor: React.FC<Props> = ({ value, onChange, error = false, helperText, placeholder = "Введите описание" }) => {
+export const deliveryPriceInfoTemplate =
+  "Ленинский – 0 сом " +
+  "Первомайский - 0 сом " +
+  "Свердловский – 0 сом " +
+  "Октябрьский - 0 сом"
+
+const TextEditor: React.FC<Props> = ({ value, onChange, error = false, helperText, placeholder = "Введите описание", validateDeliveryPriceInfo = deliveryPriceInfoTemplate }) => {
   const quillRef = useRef<HTMLDivElement | null>(null);
   const editorInstance = useRef<Quill | null>(null);
   const lastSetValue = useRef<string>("");
@@ -66,6 +73,8 @@ const TextEditor: React.FC<Props> = ({ value, onChange, error = false, helperTex
       lastSetValue.current = value;
     }
   }, [value]);
+
+  if (validateDeliveryPriceInfo !== deliveryPriceInfoTemplate) return helperText ? <Typography variant="body2" color="error" sx={{ mt: 1, ml: 1 }}>{helperText}</Typography> : null;
 
   return (
     <Box>

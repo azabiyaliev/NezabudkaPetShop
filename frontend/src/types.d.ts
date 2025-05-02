@@ -367,12 +367,14 @@ export interface DeliveryPage{
   text: string;
   price: string;
   map: string;
+  checkoutDeliveryPriceInfo: string;
 }
 
 export interface DeliveryPageMutation{
   text: string;
   price: string;
   map: string;
+  checkoutDeliveryPriceInfo: string;
 }
 
 export interface AdminInfo{
