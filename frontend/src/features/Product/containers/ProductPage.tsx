@@ -1,6 +1,6 @@
 import { Box, Typography, CardMedia, Button, Breadcrumbs } from '@mui/material';
 import "../css/product.css";
-import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
+import { useAppDispatch, useAppSelector, usePermission } from "../../../app/hooks.ts";
 import  { useEffect, useState } from 'react';
 import { getOneProduct } from "../../../store/products/productsThunk.ts";
 import { useParams } from 'react-router-dom';
@@ -16,16 +16,21 @@ import { enqueueSnackbar } from 'notistack';
 import { selectUser } from '../../../store/users/usersSlice.ts';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import { addFavoriteProduct, removeFavoriteProduct } from '../../../store/favoriteProducts/favoriteProductLocal.ts';
 import {
-  addFavoriteProducts,
+  addFavoriteProduct,
+  getLocalFavoriteProducts,
+  removeFavoriteProduct
+} from "../../../store/favoriteProducts/favoriteProductLocal.ts";
+import {
+  addFavoriteProducts, getFavoriteProducts,
   removeFavoriteProductThunk
-} from '../../../store/favoriteProducts/favoriteProductsThunks.ts';
+} from "../../../store/favoriteProducts/favoriteProductsThunks.ts";
 import { selectDelivery } from '../../../store/deliveryPage/deliveryPageSlice.ts';
 import { fetchDeliveryPage } from '../../../store/deliveryPage/deliveryPageThunk.ts';
 import { Link as MuiLink } from '@mui/material';
 import { Link as RouterLink } from "react-router-dom";
 import { addProductToHistory } from '../../../store/historyProduct/historyProductSlice.ts';
+import { selectedFavorite } from "../../../store/favoriteProducts/favoriteProductsSlice.ts";
 
 const ProductPage = () => {
   const dispatch = useAppDispatch();
@@ -37,8 +42,10 @@ const ProductPage = () => {
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const [tab, setTab] = useState<"description" | "delivery">("description");
   const selectDeliveryInfo = useAppSelector(selectDelivery)
+  const favoriteProducts = useAppSelector(selectedFavorite);
   const isAddToCartDisabled = !product?.existence;
   const cartItem = cart?.products.find(item => item.product?.id === product?.id);
+  const can = usePermission(user)
 
   useEffect(() => {
     if (id && product && product.id && product.productName) {
@@ -50,12 +57,13 @@ const ProductPage = () => {
   }, [dispatch, id, product]);
 
   useEffect(() => {
-    if (user && user.role === userRoleClient) {
+    if (user && can([userRoleClient])) {
       dispatch(fetchCart());
+      dispatch(getFavoriteProducts());
     } else {
       dispatch(getFromLocalStorage());
     }
-  }, [dispatch, user]);
+  }, [dispatch, user, can]);
 
   useEffect(() => {
     if (id) {
@@ -65,6 +73,14 @@ const ProductPage = () => {
       }
     }
   }, [dispatch, id]);
+
+  useEffect(() => {
+    const isFav = user
+      ? favoriteProducts.some((fav) => fav.product.id === product?.id)
+      : getLocalFavoriteProducts().includes(Number(product?.id));
+
+    setIsFavorite(isFav);
+  }, [user, favoriteProducts, product?.id]);
 
   useEffect(() => {
     dispatch(fetchDeliveryPage());
@@ -108,36 +124,32 @@ const ProductPage = () => {
     }
   };
 
-  const toggleFavorite = () => {
+  const toggleFavorite = async (id: number) => {
     const newValue = !isFavorite;
     setIsFavorite(newValue);
 
-    if (!user) {
+    if (user && can([userRoleClient])) {
       if (newValue) {
-        if (product.id !== undefined) {
-          addFavoriteProduct(product.id);
-        }
+        await dispatch(addFavoriteProducts(id));
+        await dispatch(getFavoriteProducts());
         enqueueSnackbar("Добавлено в избранное", { variant: "success" });
       } else {
-        if (product.id !== undefined) {
-        removeFavoriteProduct(product.id);
-        }
+        await dispatch(removeFavoriteProductThunk(id));
+        await dispatch(getFavoriteProducts());
         enqueueSnackbar("Удалено из избранного", { variant: "info" });
       }
     } else {
       if (newValue) {
-        if (product.id !== undefined) {
-          dispatch(addFavoriteProducts(product.id));
-        }
+        addFavoriteProduct(id);
         enqueueSnackbar("Добавлено в избранное", { variant: "success" });
       } else {
-        if (product.id !== undefined) {
-          dispatch(removeFavoriteProductThunk(product.id));
-        }
+        removeFavoriteProduct(id);
         enqueueSnackbar("Удалено из избранного", { variant: "info" });
       }
     }
   };
+
+
   const getBreadcrumbs = (category: ICategories) => {
     const crumbs: { title: string; path: string }[] = [];
     let current: ICategories | null | undefined = category;
@@ -372,7 +384,7 @@ const ProductPage = () => {
                 </Button>
 
                 <Button
-                  onClick={toggleFavorite}
+                  onClick={() => toggleFavorite(product.id)}
                   sx={{
                     width: "46px",
                     height: "46px",

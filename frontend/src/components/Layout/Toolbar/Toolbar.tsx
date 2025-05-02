@@ -36,6 +36,7 @@ import { getLocalFavoriteProducts } from '../../../store/favoriteProducts/favori
 const MainToolbar = () => {
   const [openCart, setOpenCart] = useState<boolean>(false);
   const [openCategoryMenu, setOpenCategoryMenu] = useState<boolean>(false);
+  const [favoriteCount, setFavoriteCount] = useState<number>(0);
   const user = useAppSelector(selectUser);
   const site = useAppSelector(selectEditSite);
   const cart = useAppSelector(cartFromSlice);
@@ -46,6 +47,31 @@ const MainToolbar = () => {
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState<string>("");
   const can = usePermission(user);
+
+  useEffect(() => {
+    if (user && can([userRoleClient])) {
+      setFavoriteCount(favoriteProducts.length);
+      return;
+    }
+
+
+    const update = () => {
+      setFavoriteCount(getLocalFavoriteProducts().length);
+    };
+
+    update();
+
+    const interval = setInterval(update, 500);
+    window.addEventListener("storage", update);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("storage", update);
+    };
+  }, [favoriteProducts, user, can]);
+
+
+
 
   useEffect(() => {
     if (user?.id) {
@@ -94,7 +120,6 @@ const MainToolbar = () => {
       return acc;
     }, 0);
 
-  const favorite = getLocalFavoriteProducts().length;
 
   return (
     <div>
@@ -583,8 +608,7 @@ const MainToolbar = () => {
                           }}
                         />
                         <Badge
-                          badgeContent={user && user.role === userRoleClient ?
-                            favoriteProducts.length : favorite}
+                          badgeContent={favoriteCount}
                           overlap="circular"
                           color="warning"
                           sx={{
@@ -686,8 +710,7 @@ const MainToolbar = () => {
                         style={{ textDecoration: "none" }}
                       >
                         <Badge
-                          badgeContent={user && user.role === userRoleClient ?
-                            favoriteProducts.length : favorite}
+                          badgeContent={favoriteCount}
                           overlap="circular"
                           color="warning"
                         >
