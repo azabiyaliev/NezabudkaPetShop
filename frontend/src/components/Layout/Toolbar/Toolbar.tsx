@@ -5,8 +5,8 @@ import ExistsUser from './ExistsUser.tsx';
 import UnknownUser from './UnknownUser.tsx';
 import logo from '../../../assets/logo-nezabudka.png';
 import backImage from '../../../assets/фон.png';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import FavoriteIcon from '@mui/icons-material/Favorite';
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import Typography from '@mui/material/Typography';
 import './Fonts.css';
 import { selectEditSite } from '../../../store/editionSite/editionSiteSlice.ts';
@@ -409,7 +409,7 @@ const MainToolbar = () => {
                     marginRight: "10px",
                     position: "relative",
                     width: "100%",
-                    maxWidth: focused ? "800px" : "50px",
+                    maxWidth: focused ? "500px" : "50px",
                     "@media (max-width: 1060px)": {
                       display: "none",
                     }
@@ -545,6 +545,7 @@ const MainToolbar = () => {
                 </Box>
               </ClickAwayListener>
 
+              {/*Toolbar*/}
               <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
                 {(user && can(["client"])) || !user ? (
                   <Box
@@ -553,7 +554,7 @@ const MainToolbar = () => {
                       justifyContent: "space-between",
                     }}
                   >
-                    <Box sx={{ display: "flex", gap: "15px" }}>
+                    <Box sx={{ display: "flex", gap: "10px" }}>
                       <Box
                         component={NavLink}
                         to="/delivery"
@@ -561,8 +562,8 @@ const MainToolbar = () => {
                           display: "none",
                           "@media (max-width: 1100px)": {
                             borderRadius: "10px",
-                            backgroundColor: "#FDE910",
-                            padding: "10px 20px",
+                            backgroundColor: "transparent",
+                            padding: "10px 0 10px 20px",
                             display: "inline",
                           },
                           "@media (max-width: 900px)": {
@@ -571,56 +572,76 @@ const MainToolbar = () => {
                           },
                         }}
                       >
+                        <Tooltip
+                          sx={{
+                            backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                            backdropFilter: 'blur(10px)',
+                          }}
+                          title='Информация о доставке'>
                         <LocalShippingIcon
                           sx={{
-                            color: "#333",
+                            color: "#fff",
+                            fontSize: { xs: "20px", sm: "24px", md: '30px' },
                             "@media (max-width: 500px)": {
                               fontSize: "20px",
                             },
                           }}
                         />
+                        </Tooltip>
                       </Box>
+                      {/*Cart*/}
                       <Box
                         onClick={() => setOpenCart(true)}
                         sx={{
-                          backgroundColor: "#FDE910",
-                          padding: { xs: "10px", sm: "10px", md: "7px 20px" },
+                          backgroundColor: "transparent",
+                          padding: { xs: "10px", sm: "10px", md: "7px" },
                           borderRadius: { xs: "50%", md: "10px" },
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
                           cursor: "pointer",
                           transition: "background 0.3s ease",
-                          position: "relative",
                         }}
                       >
-                        <ShoppingCartIcon
-                          sx={{
-                            color: "rgb(52, 51, 50)",
-                            "@media (max-width: 500px)": {
-                              fontSize: "20px",
-                            },
-                          }}
-                        />
                         <Badge
                           badgeContent={sum}
                           overlap="circular"
                           color="warning"
                           sx={{
-                            position: user ? "absolute" : "static",
-                            top: user ? "10px" : undefined,
-                            right: user ? "17px" : undefined,
-                            backgroundColor: user ? "olive" : undefined,
+                            backgroundColor: user ? "transparent" : undefined,
+                            "& .MuiBadge-badge": {
+                              top: "-3px",
+                              right: "-4px",
+                            },
                           }}
-                        />
+                        >
+                          <Tooltip
+                            sx={{
+                              backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                              backdropFilter: 'blur(10px)',
+                            }}
+                            title='Корзина'>
+                          <AddShoppingCartIcon
+                            sx={{
+                              color: "#fff",
+                              fontSize: { xs: "20px", sm: "24px", md: '30px' },
+                              '&:hover': {
+                                color: theme.colors.yellow,
+                              },
+                            }}
+                          />
+                          </Tooltip>
+                        </Badge>
                       </Box>
+                      {/*Cart*/}
 
+                      {/*Favorites*/}
                       <Box
                         component={NavLink}
                         to="/favorite-products"
                         sx={{
-                          backgroundColor: "#FDE910",
-                          padding: { xs: "10px", sm: "10px", md: "7px 20px" },
+                          backgroundColor: "transparent",
+                          padding: { xs: "10px", sm: "10px", md: "7px" },
                           borderRadius: { xs: "50%", md: "10px" },
                           display: "flex",
                           alignItems: "center",
@@ -630,37 +651,80 @@ const MainToolbar = () => {
                           position: "relative",
                         }}
                       >
-                        <FavoriteIcon
-                          sx={{
-                            color: "rgb(52, 51, 50)",
-                            "@media (max-width: 500px)": {
-                              fontSize: "20px",
-                            },
-                          }}
-                        />
                         <Badge
                           badgeContent={user && user.role === userRoleClient ?
                             favoriteProducts.length : favorite}
                           overlap="circular"
                           color="warning"
                           sx={{
-                            position: user ? "absolute" : "static",
-                            top: user ? "10px" : undefined,
-                            right: user ? "17px" : undefined,
-                            backgroundColor: user ? "olive" : undefined,
+                            backgroundColor: user ? "transparent" : undefined,
+                            "& .MuiBadge-badge": {
+                              top: "-3px",
+                              right: "-4px",
+                            },
                           }}
-                        />
+                        >
+                          <Tooltip
+                            sx={{
+                              backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                              backdropFilter: 'blur(10px)',
+                            }}
+                            title='Избранное'>
+                          <FavoriteBorderIcon
+                            sx={{
+                              color: "#fff",
+                              fontSize: { xs: "20px", sm: "24px", md: '30px' },
+                              "@media (max-width: 500px)": {
+                                fontSize: "20px",
+                              },
+                              '&:hover': {
+                                color: theme.colors.yellow,
+                              },
+                            }}
+                          />
+                          </Tooltip>
+                        </Badge>
                       </Box>
+                      {/*Favorites*/}
 
-                      <Tooltip title="Мои бонусы">
+                      {/*Bonus*/}
+                      <Tooltip
+                        sx={{
+                          backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                          backdropFilter: 'blur(10px)',
+                        }}
+                        title={
+                        <Box sx={{ textAlign: "center", padding: "10px", maxWidth: "300px" }}>
+                          <Typography
+                            sx={{
+                              fontWeight: "bold",
+                              fontSize: "16px",
+                              marginBottom: "5px",
+                              color: "#fff",
+                            }}
+                          >
+                            Мои бонусы
+                          </Typography>
+                          <Typography
+                            sx={{
+                              fontSize: "14px",
+                              color: "#fff",
+                            }}
+                          >
+                            Вы можете получить бонусы за каждый оформленный заказ и в дальнейшем
+                            использовать накопленные бонусы для покупки товара.
+                          </Typography>
+                        </Box>
+                      }
+                      >
                         <NavLink
                           to={`/my_account/users/account/${user?.id}`}
                           style={{ textDecoration: "none" }}
                         >
                           <Box
                             sx={{
-                              backgroundColor: "#FDE910",
-                              padding: "10px 20px",
+                              backgroundColor: "transparent",
+                              padding: "10px",
                               borderRadius: "10px",
                               display: { xs: "none", md: "flex" },
                               alignItems: "center",
@@ -670,16 +734,32 @@ const MainToolbar = () => {
                               color: "#333",
                             }}
                           >
+                            <Badge
+                              badgeContent={user?.bonus}
+                              overlap="circular"
+                              color="warning"
+                              sx={{
+                                backgroundColor: user ? "transparent" : undefined,
+                                "& .MuiBadge-badge": {
+                                  top: "-3px",
+                                  right: "-1px",
+                                },
+                              }}
+                            >
                             <CurrencyExchangeIcon
                               sx={{
-                                color: "rgb(52, 51, 50)",
+                                color: "#fff",
                                 marginRight: user?.bonus ? "10px" : 0,
+                                '&:hover': {
+                                  color: theme.colors.yellow,
+                                },
                               }}
                             />
-                            {user?.bonus}
+                            </Badge>
                           </Box>
                         </NavLink>
                       </Tooltip>
+                    {/*  Bonus*/}
                     </Box>
 
                     <Box
@@ -757,7 +837,7 @@ const MainToolbar = () => {
                               gap: "8px",
                             }}
                           >
-                            <FavoriteIcon
+                            <FavoriteBorderIcon
                               sx={{
                                 width: "27px",
                                 height: "27px",
@@ -840,8 +920,8 @@ const MainToolbar = () => {
                   <Box
                     sx={{
                       display: { xs: "none", md: "flex" },
-                      backgroundColor: "#FDE910",
-                      padding: "7px 20px",
+                      backgroundColor: "transparent",
+                      padding: "7px 20px 7px 0",
                       borderRadius: "10px",
                       alignItems: "center",
                     }}
@@ -850,6 +930,7 @@ const MainToolbar = () => {
                   </Box>
                 </Box>
               </Box>
+              {/*Toolbar*/}
 
               {user && can(["admin", "superAdmin"]) && (
                 <Box
