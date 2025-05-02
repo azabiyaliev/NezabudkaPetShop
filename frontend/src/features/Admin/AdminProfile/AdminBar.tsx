@@ -49,7 +49,7 @@ const AdminBar = () => {
         backgroundColor: '#f9f9f9',
         borderRadius: 8,
         boxShadow: '0 0 10px rgba(0,0,0,0.05)',
-        height: 'fit-content', // Не тянется на всю высоту
+        height: 'fit-content',
         maxHeight: '100vh',
         overflowY: 'auto',
       }}
@@ -58,7 +58,7 @@ const AdminBar = () => {
         <List
           subheader={
             <ListSubheader component="div" sx={{ bgcolor: 'inherit', fontWeight: 700, pl: 0 }}>
-              Панель администратора
+              {can([userRoleSuperAdmin]) ? `Панель ${user.firstName} ${user.secondName} ` : 'Панель администратора'}
             </ListSubheader>
           }
           dense
@@ -82,11 +82,6 @@ const AdminBar = () => {
 
           {can([userRoleSuperAdmin]) && (
             <>
-              <ListItemText
-                primary={`${user.firstName} ${user.secondName}`}
-                primaryTypographyProps={{ fontSize: 12, fontWeight: 500 }}
-                sx={{ pl: 1, mb: 0.5 }}
-              />
               <Divider sx={{ my: 0.8 }} />
             </>
           )}
