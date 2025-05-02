@@ -195,7 +195,7 @@ const ManageCategories = () => {
   return (
     <>
       <Box sx={{ display: "flex", flexDirection: "column" }}>
-        <Typography variant="h4" textAlign="center" sx={{ mt: 2 }}>
+        <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600, mt:2 }}>
           Управление категориями
         </Typography>
 

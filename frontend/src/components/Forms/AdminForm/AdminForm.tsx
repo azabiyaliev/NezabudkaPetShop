@@ -162,10 +162,10 @@ const AdminForm = () => {
         borderRadius: 4,
         maxWidth: 900,
         mx: 'auto',
-        mt: 4,
       }}
     >
-      <Typography variant="h5" textAlign="center" fontWeight="bold" mb={6}>
+
+      <Typography  gutterBottom sx={{ textAlign: 'center', fontWeight: 600, fontSize:"22px" }}>
         {isEdit ? 'Редактирование администратора' : 'Создание администратора'}
       </Typography>
 

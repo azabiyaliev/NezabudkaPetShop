@@ -17,11 +17,11 @@ const AdminTable = () => {
   }, [dispatch]);
 
   return (
-    <Grid container spacing={2}>
-      <Grid size={3}>
+    <Grid container spacing={2} sx={{margin: "30px 0"}}>
+      <Grid size={4}>
         <AdminBar/>
       </Grid>
-      <Grid size={9}>
+      <Grid size={8}>
         {products.length > 0 ? <AdminList admins={admins} /> :  <Typography level="h2" sx={{ fontSize: 'xl', mb: 0.5 }}>
           Админов пока нет
         </Typography>

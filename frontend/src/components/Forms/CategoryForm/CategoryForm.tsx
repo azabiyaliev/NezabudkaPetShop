@@ -73,8 +73,8 @@ const CategoryForm: React.FC<Props> = ({ onSubmit }) => {
   };
 
   return (
-    <Paper elevation={3} sx={{ p: 4, borderRadius: 3, maxWidth: 800, margin: "30px auto" }}>
-      <Typography variant="h5" gutterBottom fontWeight={600}>
+    <Paper elevation={3} sx={{ p: 4, borderRadius: 3, maxWidth: 800, margin: "10px auto" }}>
+      <Typography  gutterBottom sx={{ textAlign: 'start', fontWeight: 600, mb:"10px" }}>
         Добавить новую категорию
       </Typography>
 

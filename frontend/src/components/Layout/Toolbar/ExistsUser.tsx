@@ -146,14 +146,31 @@ const ExistsUser = () => {
 
           {user && can(["admin", "superAdmin"]) && (
             <List>
-              <ListItem
-                component={NavLink}
-                to={`/private_account`}
-                onClick={toggleDrawer(false)}
-              >
-                <HomeOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
-                <ListItemText primary="Личный кабинет" className="text-black" />
-              </ListItem>
+              {can(["admin"]) && (
+                <>
+                  <ListItem
+                    component={NavLink}
+                    to={`/private_account`}
+                    onClick={toggleDrawer(false)}
+                  >
+                    <HomeOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
+                    <ListItemText primary="Личный кабинет" className="text-black" />
+                  </ListItem>
+                </>
+              )}
+              {can(["superAdmin"]) && (
+                <>
+                  <ListItem
+                    component={NavLink}
+                    to={`/private/order_stats`}
+                    onClick={toggleDrawer(false)}
+                  >
+                    <HomeOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
+                    <ListItemText primary="Личный кабинет" className="text-black" />
+                  </ListItem>
+                </>
+              )}
+
               {can(["superAdmin"]) && (
                 <>
                   <ListItem component={NavLink} to={`/admin-table`} onClick={toggleDrawer(false)}>

@@ -51,10 +51,11 @@ const LoginUser = () => {
       const loggedInUser = await dispatch(login(form)).unwrap();
       dispatch(clearCart())
       if (
-        loggedInUser.user.role === userRoleAdmin ||
-        loggedInUser.user.role === userRoleSuperAdmin
+        loggedInUser.user.role === userRoleAdmin
       ) {
         navigate("/private_account");
+      } else if ( loggedInUser.user.role === userRoleSuperAdmin ){
+        navigate("/private/order_stats");
       } else {
         navigate("/");
       }

@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
 import { selectUser } from "../../../store/users/usersSlice.ts";
 import { fetchUserById } from "../../../store/users/usersThunk.ts";
-import Typography from '@mui/joy/Typography';
+import { Box } from '@mui/material';
 
 const AdminEditProfile = () => {
   const dispatch = useAppDispatch();
@@ -19,21 +19,14 @@ const AdminEditProfile = () => {
   }, [dispatch, user, id]);
 
   return (
-    <div className="d-flex ">
-      <div className="col-3 ">
-        <AdminBar/>
-      </div>
-      <div className="col-9">
-        <Typography
-          level="h2"
-          component="h1"
-          sx={{textAlign: "center", margin: "30px 0"}}
-        >
-          Редактирование личного кабинета
-        </Typography>
-        <UserFormEdition/>
-      </div>
-    </div>
+    <Box sx={{ display: "flex", margin: "30px 0" }}>
+      <Box>
+        <AdminBar />
+      </Box>
+      <Box sx={{ flexGrow: 1, pl: 3, pr: 3 }}>
+        <UserFormEdition />
+      </Box>
+    </Box>
   );
 };
 

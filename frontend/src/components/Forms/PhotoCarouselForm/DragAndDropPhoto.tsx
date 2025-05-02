@@ -111,187 +111,192 @@ const DragAndDropPhoto = () => {
   };
 
   return (
-    <Box sx={{ display: "flex" }}>
-      <AdminBar />
-      <Box sx={{ marginLeft: "20px", width: "90%" }}>
-        <AddNewPhotoForm />
-        <Box
-          sx={{
-            borderTop: "1px solid lightgray",
-            marginTop: "30px",
-            marginBottom: "20px",
-          }}
-        />
+    <Box sx={{ display: "flex", margin: "30px 0" }}>
+      <Box sx={{ minWidth: 250 }}>
+        <AdminBar />
+      </Box>
 
-        <Typography
-          level="body-sm"
-          sx={{
-            textAlign: "center",
-            color: "gray",
-            marginBottom: "20px",
-            fontSize: "14px",
-          }}
-        >
-          Чтобы изменить порядок фото, просто перетащите их мышкой
-        </Typography>
+      <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center" }}>
+        <Box sx={{ width: "100%", maxWidth: "900px", px: 2 }}>
+          <AddNewPhotoForm />
 
-        <Box
-          sx={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: "50px",
-            marginTop: "40px",
-            justifyContent: "center",
-            "@media (max-width: 900px)": {
-              flexDirection: "column",
-              alignItems: "center",
-              gap: "20px",
-            }
-          }}
-        >
-          {isLoading ? (
-            <div>Загрузка...</div>
-          ) : Array.isArray(photos) ? (
-            photos.map((image, index) => (
-              <Box
-                key={image.id}
-                sx={{
-                  width: "300px",
-                  height: "200px",
-                  overflow: "hidden",
-                  borderRadius: "8px",
-                  border: "1px solid #ccc",
-                  boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  cursor: "grab",
-                  position: "relative",
-                  "@media (max-width: 420px)": {
-                    width: "auto",
-                    height: "auto",
-                  }
-                }}
-                draggable
-                onDragStart={(e) => dragStart(e, image)}
-                onDragEnd={dragEnd}
-                onDragOver={dragOver}
-                onDrop={(e) => drop(e, image)}
-              >
-                <Button
-                  onClick={() => navigate(`/photos/${image.id}`)}
-                  sx={{
-                    position: 'absolute',
-                    top: 7,
-                    right: 10,
-                    backgroundColor: "#FDE910",
-                    borderRadius: "50%",
-                    width: "30px",
-                    height: "30px",
-                    minWidth: "30px",
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}
-                >
-                  <ModeEditIcon style={{ color: "rgb(52, 51, 50)" }} />
-                </Button>
-
-                <Button
-                  onClick={() => handleDeleteClick(image.id)}
-                  sx={{
-                    position: 'absolute',
-                    top: 7,
-                    left: 10,
-                    width: "30px",
-                    height: "30px",
-                    minWidth: "30px",
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}
-                >
-                  <DeleteIcon style={{ color: "#B00000" }} />
-                </Button>
-
-                <Box
-                  component="img"
-                  src={`${apiUrl}/${image.photo}`}
-                  alt={`Slide ${index}`}
-                  sx={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                    "@media (max-width: 420px)": {
-                      width: "100%",
-                      height: "auto",
-                    }
-                  }}
-                />
-              </Box>
-            ))
-          ) : (
-            <div>Данные не загружены.</div>
-          )}
-        </Box>
-
-        {/* Кнопка сохранения */}
-        <Box
-          sx={{
-            marginTop: "40px",
-            display: "flex",
-            justifyContent: "center",
-            marginBottom: "50px",
-            "@media (max-width: 550px)": {
-              display: "none",
-            }
-          }}
-        >
-          <Button
-            onClick={handleSave}
-            variant="contained"
-            color="primary"
+          <Box
             sx={{
-              backgroundColor: "#738A6E",
-              color: "white",
-              marginRight: "20px",
-              fontSize: "16px",
-              borderRadius: "20px",
+              borderTop: "1px solid lightgray",
+              marginTop: "10px",
+              marginBottom: "20px",
+            }}
+          />
+
+          <Typography
+            level="body-sm"
+            sx={{
+              textAlign: "center",
+              color: "gray",
+              marginBottom: "20px",
+              fontSize: "14px",
             }}
           >
-            Сохранить порядок
-          </Button>
-        </Box>
+            Чтобы изменить порядок фото, просто перетащите их мышкой
+          </Typography>
 
-        <Box
-          sx={{
-            marginTop: "10px",
-            display: "flex",
-            justifyContent: "center",
-            gap: "20px",
-            marginBottom: "30px",
-          }}
-        >
-          <Button
-            onClick={handleSave}
-            variant="contained"
+          <Box
             sx={{
-              display: "none",
-              "@media (max-width: 550px)": {
-                display: "flex",
-                backgroundColor: "#738A6E",
-                color: "white",
-                borderRadius: "50%",
-                width: "45px",
-                height: "45px",
-                minWidth: "45px",
-                justifyContent: "center",
+              display: "flex",
+              flexWrap: "wrap",
+              gap: "50px",
+              marginTop: "40px",
+              justifyContent: "center",
+              "@media (max-width: 900px)": {
+                flexDirection: "column",
                 alignItems: "center",
+                gap: "20px",
               }
             }}
           >
-            <PublishedWithChangesIcon style={{ width: "25px", height: "25px" }} />
-          </Button>
+            {isLoading ? (
+              <div>Загрузка...</div>
+            ) : Array.isArray(photos) ? (
+              photos.map((image, index) => (
+                <Box
+                  key={image.id}
+                  sx={{
+                    width: "250px",
+                    height: "150px",
+                    overflow: "hidden",
+                    borderRadius: "8px",
+                    border: "1px solid #ccc",
+                    boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    cursor: "grab",
+                    position: "relative",
+                    "@media (max-width: 420px)": {
+                      width: "auto",
+                      height: "auto",
+                    }
+                  }}
+                  draggable
+                  onDragStart={(e) => dragStart(e, image)}
+                  onDragEnd={dragEnd}
+                  onDragOver={dragOver}
+                  onDrop={(e) => drop(e, image)}
+                >
+                  <Button
+                    onClick={() => navigate(`/photos/${image.id}`)}
+                    sx={{
+                      position: 'absolute',
+                      top: 7,
+                      right: 10,
+                      backgroundColor: "#FDE910",
+                      borderRadius: "50%",
+                      width: "30px",
+                      height: "30px",
+                      minWidth: "30px",
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <ModeEditIcon style={{ color: "rgb(52, 51, 50)" }} />
+                  </Button>
+
+                  <Button
+                    onClick={() => handleDeleteClick(image.id)}
+                    sx={{
+                      position: 'absolute',
+                      top: 7,
+                      left: 10,
+                      width: "30px",
+                      height: "30px",
+                      minWidth: "30px",
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <DeleteIcon style={{ color: "#B00000" }} />
+                  </Button>
+
+                  <Box
+                    component="img"
+                    src={`${apiUrl}/${image.photo}`}
+                    alt={`Slide ${index}`}
+                    sx={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      "@media (max-width: 420px)": {
+                        width: "100%",
+                        height: "auto",
+                      }
+                    }}
+                  />
+                </Box>
+              ))
+            ) : (
+              <div>Данные не загружены.</div>
+            )}
+          </Box>
+
+          <Box
+            sx={{
+              marginTop: "40px",
+              display: "flex",
+              justifyContent: "center",
+              marginBottom: "50px",
+              "@media (max-width: 550px)": {
+                display: "none",
+              }
+            }}
+          >
+            <Button
+              onClick={handleSave}
+              variant="contained"
+              color="primary"
+              sx={{
+                backgroundColor: "#738A6E",
+                color: "white",
+                marginRight: "20px",
+                fontSize: "16px",
+                borderRadius: "20px",
+              }}
+            >
+              Сохранить порядок
+            </Button>
+          </Box>
+
+          <Box
+            sx={{
+              marginTop: "10px",
+              display: "flex",
+              justifyContent: "center",
+              gap: "20px",
+              marginBottom: "30px",
+            }}
+          >
+            <Button
+              onClick={handleSave}
+              variant="contained"
+              sx={{
+                display: "none",
+                "@media (max-width: 550px)": {
+                  display: "flex",
+                  backgroundColor: "#738A6E",
+                  color: "white",
+                  borderRadius: "50%",
+                  width: "45px",
+                  height: "45px",
+                  minWidth: "45px",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }
+              }}
+            >
+              <PublishedWithChangesIcon style={{ width: "25px", height: "25px" }} />
+            </Button>
+          </Box>
         </Box>
       </Box>
     </Box>

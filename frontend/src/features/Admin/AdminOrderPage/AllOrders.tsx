@@ -56,14 +56,14 @@ const AllOrders = () => {
   );
 
   return (
-    <Box sx={{ display: "flex", gap: "100px" }} className="mt-5">
-      <Box>
+    <Box sx={{display: 'flex',  margin: "30px 0" }}>
+      <Box sx={{ width: 500, flexShrink: 0, height: '100%' }}>
         <AdminBar />
       </Box>
       <Box>
-        <Box sx={{display: 'flex', gap: '20px', alignItems: 'center', flexDirection: 'column'}}>
-          <Typography variant="h4" sx={{ mb: 2 }}>
-            Заказы
+        <Box>
+          <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600,}}>
+           Заказы
           </Typography>
 
           <Box sx={{display: 'flex', gap: '20px', alignItems: 'baseline', justifyContent: 'center'}}>

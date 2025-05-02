@@ -25,7 +25,7 @@ const NewCategory = () => {
 
   return (
     <>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '30px 0'}}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', }}>
         <CategoryForm onSubmit={onSubmit}/>
       </Box>
       <ToastContainer/>

@@ -30,7 +30,7 @@ const NewProduct = () => {
   return (
     <>
         <Grid container spacing={2}>
-          <Grid size={3}>
+          <Grid size={3} sx={{ margin: "30px 0"}}>
             <AdminBar />
           </Grid>
           <Grid size={9}>

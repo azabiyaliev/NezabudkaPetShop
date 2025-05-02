@@ -56,22 +56,30 @@ const BonusProgramForm = () => {
   };
 
   return (
-    <div className="d-flex">
-      <div className="col-3 mt-5">
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: { xs: 'column', md: 'row' },
+        gap: 2,
+        mt: "30px",
+        width: '100%',
+      }}
+    >
+      <Box sx={{ width: { xs: '100%', md: '500px' }, flexShrink: 0 }}>
         <AdminBar />
-      </div>
-
-      <div className="col-9 mt-5" style={{ display: 'flex', justifyContent: 'center' }}>
+      </Box>
+      <Box
+        sx={{
+          flexGrow: 1,
+          display: 'flex',
+          justifyContent: 'center',
+        }}
+      >
         <Box sx={{ width: '100%', maxWidth: '800px' }}>
           <Typography
-            variant="h4"
-            sx={{
-              textAlign: 'center',
-              mt: 4,
-              mb: 3,
-              fontWeight: 'bold',
-              color: 'black',
-            }}
+            variant="h6"
+            gutterBottom
+            sx={{ textAlign: 'center', fontWeight: 600 }}
           >
             Редактирование страницы «Бонусная программа»
           </Typography>
@@ -85,13 +93,19 @@ const BonusProgramForm = () => {
               flexDirection: 'column',
               alignItems: 'center',
               width: '100%',
+              mt: 5,
             }}
           >
             <Typography
-              variant="subtitle1"
-              sx={{ mb: 1, alignSelf: 'flex-start', fontWeight: 500 }}
+              variant="body2"
+              sx={{
+                alignSelf: 'flex-start',
+                color: 'text.secondary',
+                fontWeight: 400,
+                mb: 0.5,
+              }}
             >
-              Введите информацию о бонусной программе:
+              Информация о бонусной программе:
             </Typography>
 
             <TextEditor
@@ -100,17 +114,22 @@ const BonusProgramForm = () => {
               error={!form.text}
               helperText={!form.text ? 'Поле обязательно для заполнения' : undefined}
             />
+
             <Button
               variant="contained"
               type="submit"
-              sx={{ mt: 3, alignSelf: 'center', backgroundColor: 'darkgreen' }}
+              sx={{
+                mt: 3,
+                alignSelf: 'center',
+                backgroundColor: 'darkgreen',
+              }}
             >
               Сохранить
             </Button>
           </Box>
         </Box>
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 
 };

@@ -34,7 +34,10 @@ const NewBrandPage = () => {
       }}
     >
       <AdminBar />
-      <BrandForm addNewBrand={addNewBrand} isLoading={loading} brandError={addError} />
+      <Box sx={{ml:"100px"}}>
+        <BrandForm addNewBrand={addNewBrand} isLoading={loading} brandError={addError} />
+      </Box>
+
     </Box>
   );
 };

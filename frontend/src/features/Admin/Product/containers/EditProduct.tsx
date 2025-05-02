@@ -43,10 +43,10 @@ const EditProduct = () => {
   return (
     <>
         <Grid container spacing={2}>
-          <Grid size={3}>
+          <Grid size={4}>
             <AdminBar />
           </Grid>
-          <Grid size={9}>
+          <Grid size={8}>
             {product !== null && (
               <ProductForm
                 onSubmit={onSubmitForm}

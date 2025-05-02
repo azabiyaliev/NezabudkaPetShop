@@ -18,18 +18,17 @@ const BrandsPage = () => {
   return (
     <Box sx={{ display: "flex", margin: "30px 0" }}>
       <AdminBar />
-      <Box
-        sx={{
-          marginLeft: "20px",
-        }}
-      >
-        {brands.length > 0 ? (
-          <Brands brands={brands} />
-        ) : (
-          <Typography level="h2" sx={{ fontSize: "xl", mb: 0.5 }}>
-            Брендов пока нет!
-          </Typography>
-        )}
+
+      <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center" }}>
+        <Box sx={{ maxWidth: 800, width: "100%", px: 2 }}>
+          {brands.length > 0 ? (
+            <Brands brands={brands} />
+          ) : (
+            <Typography level="h2" sx={{ fontSize: "xl", mb: 0.5, textAlign: "center" }}>
+              Брендов пока нет!
+            </Typography>
+          )}
+        </Box>
       </Box>
     </Box>
   );

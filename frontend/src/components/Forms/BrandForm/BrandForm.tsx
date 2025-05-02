@@ -1,10 +1,9 @@
 import Sheet from '@mui/joy/Sheet';
-import Typography from '@mui/joy/Typography';
 import FormControl from '@mui/joy/FormControl';
 import React, { useState } from 'react';
 import { BrandError, IBrandForm } from '../../../types';
 import FileInputForBrand from '../../Domain/Brand/FileInputForBrand/FileInputForBrand.tsx';
-import { Alert, Button } from '@mui/material';
+import { Alert, Button, Typography } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import ButtonSpinner from '../../UI/ButtonSpinner/ButtonSpinner.tsx';
 import { apiUrl } from '../../../globalConstants.ts';
@@ -95,9 +94,6 @@ const BrandForm: React.FC<Props> = ({
           sx={{
             width: 800,
             mx: "auto",
-            my: 4,
-            py: 3,
-            px: 2,
             display: "flex",
             flexDirection: "column",
             gap: 2,
@@ -108,11 +104,7 @@ const BrandForm: React.FC<Props> = ({
           variant="outlined"
         >
           <div>
-            <Typography
-              level="h2"
-              component="h1"
-              sx={{ textAlign: "center", margin: "10px 0" }}
-            >
+            <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600 }}>
               {!isBrand ? "Добавление нового" : "Редактирование"} бренда
             </Typography>
           </div>

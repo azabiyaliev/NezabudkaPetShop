@@ -1,17 +1,17 @@
-import { Avatar, Box, Button, Container } from "@mui/material";
+import { Avatar, Box, Button } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
-import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
+import { useAppDispatch, useAppSelector, usePermission } from '../../../app/hooks.ts';
 import React, { useEffect, useState } from "react";
 import { AdminRefactor } from "../../../types";
 import { fetchUserById, updateUser } from "../../../store/users/usersThunk.ts";
 import { errorUpdate, selectUser } from '../../../store/users/usersSlice.ts';
 import ModalWindowPasswordChange from "../../UI/ModalWindow/ModalWindowPasswordChange.tsx";
 import LockResetIcon from "@mui/icons-material/LockReset";
-import { regPhone } from "../../../globalConstants.ts";
+import { regPhone, userRoleAdmin, userRoleClient, userRoleSuperAdmin } from '../../../globalConstants.ts';
 import { regEmail } from '../EditSiteForm/EditSiteForm.tsx';
 
 const initialState = {
@@ -33,6 +33,7 @@ const UserFormEdition = () => {
   const [phone, setPhone] = useState("");
   const [secondName, setSecondName] = useState("");
   const errorEdit = useAppSelector(errorUpdate)
+  const can = usePermission(user);
 
   useEffect(() => {
     if (!user) {
@@ -147,27 +148,26 @@ const UserFormEdition = () => {
 
   return (
     <div>
-      <Container component="main" maxWidth="lg" sx={{ position: "relative" }}>
         <Box
           sx={{
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            padding: 4,
+            position: "relative"
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: "white" }}>
+          <Avatar sx={{ bgcolor: "white" }}>
             <PersonIcon sx={{ color: "black" }} />
           </Avatar>
 
-          {user && user.role === "admin" && (
-            <Typography component="h1" variant="h5" sx={{ color: "black" }}>
+          {user && can([userRoleAdmin, userRoleSuperAdmin]) && (
+            <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600 }}>
               Редактировать профиль
             </Typography>
           )}
 
-          {user && user.role === "client" && (
-            <Typography component="h1" variant="h5" sx={{ color: "black" }}>
+          {user && can([userRoleClient]) && (
+            <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600 }}>
               Мои данные
             </Typography>
           )}
@@ -313,8 +313,6 @@ const UserFormEdition = () => {
             Сменить пароль
           </Button>
         </Box>
-      </Container>
-
       <ModalWindowPasswordChange open={open} setOpen={setOpen} />
       <ToastContainer />
     </div>
