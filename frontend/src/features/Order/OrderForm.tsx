@@ -16,6 +16,7 @@ import { userRoleClient } from '../../globalConstants.ts';
 import { enqueueSnackbar } from 'notistack';
 import { selectDelivery } from '../../store/deliveryPage/deliveryPageSlice.ts';
 import { fetchDeliveryPage } from '../../store/deliveryPage/deliveryPageThunk.ts';
+import { SPACING } from '../../globalStyles/stylesObjects.ts';
 
 export enum PaymentMethod {
   ByCash = 'ByCash',
@@ -251,70 +252,35 @@ try {
   )
 
   return (
-    <form onSubmit={handleSubmit} style={{ marginTop: "25px"}}>
+    <form onSubmit={handleSubmit} style={{ marginTop: "25px" }}>
       <Box sx={{
         display: 'flex',
-        justifyContent: 'space-between',
+        justifyContent: 'space-around',
         gap: '20px',
-        '@media (max-width: 1024px)': {
+        '@media (max-width: 950px)': {
           flexDirection: 'column',
           gap: '15px'
         }
       }}>
-        <Grid sx={{
-          '@media (max-width: 1513px)': {
-            width: 'auto'
-          },
-          '@media (max-width: 1024px)': {
-            width: '100%',
-            minWidth: '100%'
-          }
-        }}>
+        <Box>
+          <Carts products={carts.products} deleteAllProduct={() => deleteAllProducts()}/>
           <Box sx={{
-            border: '1px solid #e5e2dc',
-            borderRadius: '20px',
-            padding: '20px',
-            boxSizing: 'border-box'
+            border: "1px solid #e5e2dc",
+            padding: SPACING.xs,
+            borderRadius: "20px",
+            marginBottom: "20px",
           }}>
-            <Typography variant="h5" sx={{
-              marginBottom: '20px',
-              fontWeight: 'bold',
-              '@media (max-width: 600px)': {
-                fontSize: '1.2rem'
-              }
-            }}>
-              Заказ
-            </Typography>
-
-            <Box sx={{
-              overflowY: 'auto',
-              maxHeight: '700px',
-              paddingRight: '5px',
-              '@media (max-width: 1513px)': {
-                maxHeight: '710px'
-              }
-            }}>
-              <Carts products={carts.products} deleteAllProduct={() => deleteAllProducts()}/>
-            </Box>
-
-            <Box sx={{
-              borderTop: '1px solid #e5e2dc',
-              paddingTop: '15px',
-              marginTop: '15px'
-            }}>
-              <TotalPrice
-                products={carts.products}
-                bonusUsed={form.bonusUsed || 0}
-              />
-            </Box>
-
+            <TotalPrice
+              products={carts.products}
+              bonusUsed={form.bonusUsed || 0}
+            />
             <Box>
               {user && user.role === "client" && (
                 <Box sx={{
                   border: '1px solid #e5e2dc',
                   borderRadius: '10px',
-                  padding: '15px',
-                  margin: '15px 0'
+                  padding: SPACING.md,
+                  margin: `${SPACING.xs}px 0`
                 }}>
                   <Typography sx={{
                     fontSize: "16px",
@@ -348,7 +314,7 @@ try {
 
               {(!user || user.role !== "client") && (
                 <Typography sx={{
-                  margin: '15px 0',
+                  paddingLeft: SPACING.xs,
                   '@media (max-width: 600px)': {
                     fontSize: '0.9rem'
                   }
@@ -381,308 +347,332 @@ try {
               </Button>
             </Box>
           </Box>
-        </Grid>
-
+        </Box>
         <Box sx={{
-          marginBottom: '50px',
-          '@media (max-width: 1024px)': {
-            width: '100%',
-            minWidth: '100%'
-          }
+          marginBottom: '50px'
         }}>
           <Box sx={{
-            border: '1px solid #e5e2dc',
-            borderRadius: '20px',
-            padding: '20px',
-            marginBottom: '20px'
-          }}>
-            <Typography variant="h5" sx={{
-              marginBottom: '20px',
-              fontWeight: 'bold',
-              '@media (max-width: 600px)': {
-                fontSize: '1.2rem'
-              }
-            }}>
-              Персональные данные
-            </Typography>
-
-            <Grid spacing={2}>
-              <Grid>
-                <TextField
-                  fullWidth
-                  label="Имя"
-                  name="guestName"
-                  value={form.guestName}
-                  onChange={handleChange}
-                  style={{ marginBottom: '15px' }}
-                />
-              </Grid>
-              <Grid>
-                <TextField
-                  fullWidth
-                  label="Фамилия"
-                  name="guestLastName"
-                  value={form.guestLastName}
-                  onChange={handleChange}
-                  style={{ marginBottom: '15px' }}
-                />
-              </Grid>
-              <Grid>
-                <TextField
-                  fullWidth
-                  label="Телефон"
-                  name="guestPhone"
-                  value={form.guestPhone}
-                  onChange={handleChange}
-                  error={Boolean(incorrectFormatPhone)}
-                  placeholder="+996"
-                  style={{ marginBottom: '15px' }}
-                />
-              </Grid>
-              <Grid>
-                <TextField
-                  fullWidth
-                  label="Эл. адрес"
-                  name="guestEmail"
-                  value={form.guestEmail}
-                  onChange={handleChange}
-                  error={Boolean(incorrectFormatEmail)}
-                  style={{ marginBottom: '15px' }}
-                />
-              </Grid>
-              {form.deliveryMethod === 'Delivery' && (
-                <Grid>
-                  <TextField
-                    fullWidth
-                    label="Адрес"
-                    name="address"
-                    value={form.address}
-                    onChange={handleChange}
-                    error={Boolean(incorrectFormatAddress)}
-                  />
-                </Grid>
-              )}
-            </Grid>
-          </Box>
-
-          <Box sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            gap: '20px',
-            margin: '20px 0',
-            flexWrap: 'wrap',
-            '@media (max-width: 768px)': {
-              flexDirection: 'column',
-              gap: '15px'
+            marginBottom: '50px',
+            '@media (max-width: 1024px)': {
+              width: '100%',
+              minWidth: '100%'
             }
           }}>
             <Box sx={{
               border: '1px solid #e5e2dc',
               borderRadius: '20px',
               padding: '20px',
-              flex: 1,
-              minWidth: '300px',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-              backgroundColor: '#fff',
-              '@media (max-width: 768px)': {
-                width: '100%'
-              }
+              marginBottom: '20px'
             }}>
-              <Typography variant="h6" sx={{
+              <Typography variant="h5" sx={{
                 marginBottom: '20px',
-                fontWeight: '600',
-                color: '#333',
+                fontWeight: 'bold',
                 '@media (max-width: 600px)': {
-                  fontSize: '1rem',
-                  marginBottom: '15px'
+                  fontSize: '1.2rem'
                 }
               }}>
-                Способ Доставки
+                Персональные данные
               </Typography>
-              <Box sx={{
-                display: 'flex',
-                gap: '12px',
-                '@media (max-width: 400px)': {
-                  flexDirection: 'column'
-                }
-              }}>
-                <Button
-                  onClick={() => handleDeliveryMethodChange(DeliveryMethod.Delivery)}
-                  sx={{
-                    backgroundColor: form.deliveryMethod === DeliveryMethod.Delivery ? "#5F8B4C" : "transparent",
-                    color: form.deliveryMethod === DeliveryMethod.Delivery ? "white" : "#5F8B4C",
-                    border: "1px solid #5F8B4C",
-                    borderRadius: '12px',
-                    padding: '8px 16px',
-                    textTransform: 'none',
-                    fontSize: '15px',
-                    fontWeight: '500',
-                    flex: 1,
-                    minWidth: '120px',
-                    '&:hover': {
-                      backgroundColor: form.deliveryMethod === DeliveryMethod.Delivery ? "#4a6d3a" : "rgba(95, 139, 76, 0.1)",
-                    },
-                    transition: 'all 0.2s ease',
-                    '@media (max-width: 400px)': {
-                      width: '100%'
-                    }
-                  }}
-                >
-                  Доставка
-                </Button>
-                <Button
-                  onClick={() => handleDeliveryMethodChange(DeliveryMethod.PickUp)}
-                  sx={{
-                    backgroundColor: form.deliveryMethod === DeliveryMethod.PickUp ? "#5F8B4C" : "transparent",
-                    color: form.deliveryMethod === DeliveryMethod.PickUp ? "white" : "#5F8B4C",
-                    border: "1px solid #5F8B4C",
-                    borderRadius: '12px',
-                    padding: '8px 16px',
-                    textTransform: 'none',
-                    fontSize: '15px',
-                    fontWeight: '500',
-                    flex: 1,
-                    minWidth: '120px',
-                    '&:hover': {
-                      backgroundColor: form.deliveryMethod === DeliveryMethod.PickUp ? "#4a6d3a" : "rgba(95, 139, 76, 0.1)",
-                    },
-                    transition: 'all 0.2s ease',
-                    '@media (max-width: 400px)': {
-                      width: '100%'
-                    }
-                  }}
-                >
-                  Самовывоз
-                </Button>
-              </Box>
+
+              <Grid spacing={2}>
+                <Grid>
+                  <TextField
+                    fullWidth
+                    label="Имя"
+                    name="guestName"
+                    value={form.guestName}
+                    onChange={handleChange}
+                    style={{ marginBottom: '15px' }}
+                  />
+                </Grid>
+                <Grid>
+                  <TextField
+                    fullWidth
+                    label="Фамилия"
+                    name="guestLastName"
+                    value={form.guestLastName}
+                    onChange={handleChange}
+                    style={{ marginBottom: '15px' }}
+                  />
+                </Grid>
+                <Grid>
+                  <TextField
+                    fullWidth
+                    label="Телефон"
+                    name="guestPhone"
+                    value={form.guestPhone}
+                    onChange={handleChange}
+                    error={Boolean(incorrectFormatPhone)}
+                    placeholder="+996"
+                    style={{ marginBottom: '15px' }}
+                  />
+                </Grid>
+                <Grid>
+                  <TextField
+                    fullWidth
+                    label="Эл. адрес"
+                    name="guestEmail"
+                    value={form.guestEmail}
+                    onChange={handleChange}
+                    error={Boolean(incorrectFormatEmail)}
+                    style={{ marginBottom: '15px' }}
+                  />
+                </Grid>
+                {form.deliveryMethod === 'Delivery' && (
+                  <Grid>
+                    <TextField
+                      fullWidth
+                      label="Адрес"
+                      name="address"
+                      value={form.address}
+                      onChange={handleChange}
+                      error={Boolean(incorrectFormatAddress)}
+                    />
+                  </Grid>
+                )}
+              </Grid>
             </Box>
 
             <Box sx={{
-              border: '1px solid #e5e2dc',
-              borderRadius: '20px',
-              padding: '20px',
-              flex: 1,
-              minWidth: '300px',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-              backgroundColor: '#fff',
+              display: 'flex',
+              justifyContent: 'space-between',
+              gap: '20px',
+              margin: '20px 0',
+              flexWrap: 'wrap',
               '@media (max-width: 768px)': {
-                width: '100%'
+                flexDirection: 'column',
+                gap: '15px'
               }
             }}>
-              <Typography variant="h6" sx={{
-                marginBottom: '20px',
-                fontWeight: '600',
-                color: '#333',
-                '@media (max-width: 600px)': {
-                  fontSize: '1rem',
-                  marginBottom: '15px'
-                }
-              }}>
-                Способ Оплаты
-              </Typography>
               <Box sx={{
-                display: 'flex',
-                gap: '12px',
-                '@media (max-width: 400px)': {
-                  flexDirection: 'column'
+                border: '1px solid #e5e2dc',
+                borderRadius: '20px',
+                padding: '20px',
+                flex: 1,
+                minWidth: '300px',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+                backgroundColor: '#fff',
+                '@media (max-width: 768px)': {
+                  width: '100%'
                 }
               }}>
-                <Button
-                  onClick={() => handlePaymentMethodChange(PaymentMethod.ByCard)}
-                  sx={{
-                    backgroundColor: form.paymentMethod === PaymentMethod.ByCard ? "#5F8B4C" : "transparent",
-                    color: form.paymentMethod === PaymentMethod.ByCard ? "white" : "#5F8B4C",
-                    border: "1px solid #5F8B4C",
-                    borderRadius: '12px',
-                    padding: '8px 16px',
-                    textTransform: 'none',
-                    fontSize: '15px',
-                    fontWeight: '500',
-                    flex: 1,
-                    minWidth: '120px',
-                    '&:hover': {
-                      backgroundColor: form.paymentMethod === PaymentMethod.ByCard ? "#4a6d3a" : "rgba(95, 139, 76, 0.1)",
-                    },
-                    transition: 'all 0.2s ease',
-                    '@media (max-width: 400px)': {
-                      width: '100%'
-                    }
-                  }}
-                >
-                  Картой
-                </Button>
-                <Button
-                  onClick={() => handlePaymentMethodChange(PaymentMethod.ByCash)}
-                  sx={{
-                    backgroundColor: form.paymentMethod === PaymentMethod.ByCash ? "#5F8B4C" : "transparent",
-                    color: form.paymentMethod === PaymentMethod.ByCash ? "white" : "#5F8B4C",
-                    border: "1px solid #5F8B4C",
-                    borderRadius: '12px',
-                    padding: '8px 16px',
-                    textTransform: 'none',
-                    fontSize: '15px',
-                    fontWeight: '500',
-                    flex: 1,
-                    minWidth: '120px',
-                    '&:hover': {
-                      backgroundColor: form.paymentMethod === PaymentMethod.ByCash ? "#4a6d3a" : "rgba(95, 139, 76, 0.1)",
-                    },
-                    transition: 'all 0.2s ease',
-                    '@media (max-width: 400px)': {
-                      width: '100%'
-                    }
-                  }}
-                >
-                  Наличными
-                </Button>
+                <Typography variant="h6" sx={{
+                  marginBottom: '20px',
+                  fontWeight: '600',
+                  color: '#333',
+                  '@media (max-width: 600px)': {
+                    fontSize: '1rem',
+                    marginBottom: '15px'
+                  }
+                }}>
+                  Способ Доставки
+                </Typography>
+                <Box sx={{
+                  display: 'flex',
+                  gap: '12px',
+                  '@media (max-width: 400px)': {
+                    flexDirection: 'column'
+                  }
+                }}>
+                  <Button
+                    onClick={() => handleDeliveryMethodChange(DeliveryMethod.Delivery)}
+                    sx={{
+                      backgroundColor: form.deliveryMethod === DeliveryMethod.Delivery ? "#5F8B4C" : "transparent",
+                      color: form.deliveryMethod === DeliveryMethod.Delivery ? "white" : "#5F8B4C",
+                      border: "1px solid #5F8B4C",
+                      borderRadius: '12px',
+                      padding: '8px 16px',
+                      textTransform: 'none',
+                      fontSize: '15px',
+                      fontWeight: '500',
+                      flex: 1,
+                      minWidth: '120px',
+                      '&:hover': {
+                        backgroundColor: form.deliveryMethod === DeliveryMethod.Delivery ? "#4a6d3a" : "rgba(95, 139, 76, 0.1)",
+                      },
+                      transition: 'all 0.2s ease',
+                      '@media (max-width: 400px)': {
+                        width: '100%'
+                      }
+                    }}
+                  >
+                    Доставка
+                  </Button>
+                  <Button
+                    onClick={() => handleDeliveryMethodChange(DeliveryMethod.PickUp)}
+                    sx={{
+                      backgroundColor: form.deliveryMethod === DeliveryMethod.PickUp ? "#5F8B4C" : "transparent",
+                      color: form.deliveryMethod === DeliveryMethod.PickUp ? "white" : "#5F8B4C",
+                      border: "1px solid #5F8B4C",
+                      borderRadius: '12px',
+                      padding: '8px 16px',
+                      textTransform: 'none',
+                      fontSize: '15px',
+                      fontWeight: '500',
+                      flex: 1,
+                      minWidth: '120px',
+                      '&:hover': {
+                        backgroundColor: form.deliveryMethod === DeliveryMethod.PickUp ? "#4a6d3a" : "rgba(95, 139, 76, 0.1)",
+                      },
+                      transition: 'all 0.2s ease',
+                      '@media (max-width: 400px)': {
+                        width: '100%'
+                      }
+                    }}
+                  >
+                    Самовывоз
+                  </Button>
+                </Box>
+              </Box>
+
+              <Box sx={{
+                border: '1px solid #e5e2dc',
+                borderRadius: '20px',
+                padding: '20px',
+                flex: 1,
+                minWidth: '300px',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+                backgroundColor: '#fff',
+                '@media (max-width: 768px)': {
+                  width: '100%'
+                }
+              }}>
+                <Typography variant="h6" sx={{
+                  marginBottom: '20px',
+                  fontWeight: '600',
+                  color: '#333',
+                  '@media (max-width: 600px)': {
+                    fontSize: '1rem',
+                    marginBottom: '15px'
+                  }
+                }}>
+                  Способ Оплаты
+                </Typography>
+                <Box sx={{
+                  display: 'flex',
+                  gap: '12px',
+                  '@media (max-width: 400px)': {
+                    flexDirection: 'column'
+                  }
+                }}>
+                  <Button
+                    onClick={() => handlePaymentMethodChange(PaymentMethod.ByCard)}
+                    sx={{
+                      backgroundColor: form.paymentMethod === PaymentMethod.ByCard ? "#5F8B4C" : "transparent",
+                      color: form.paymentMethod === PaymentMethod.ByCard ? "white" : "#5F8B4C",
+                      border: "1px solid #5F8B4C",
+                      borderRadius: '12px',
+                      padding: '8px 16px',
+                      textTransform: 'none',
+                      fontSize: '15px',
+                      fontWeight: '500',
+                      flex: 1,
+                      minWidth: '120px',
+                      '&:hover': {
+                        backgroundColor: form.paymentMethod === PaymentMethod.ByCard ? "#4a6d3a" : "rgba(95, 139, 76, 0.1)",
+                      },
+                      transition: 'all 0.2s ease',
+                      '@media (max-width: 400px)': {
+                        width: '100%'
+                      }
+                    }}
+                  >
+                    Картой
+                  </Button>
+                  <Button
+                    onClick={() => handlePaymentMethodChange(PaymentMethod.ByCash)}
+                    sx={{
+                      backgroundColor: form.paymentMethod === PaymentMethod.ByCash ? "#5F8B4C" : "transparent",
+                      color: form.paymentMethod === PaymentMethod.ByCash ? "white" : "#5F8B4C",
+                      border: "1px solid #5F8B4C",
+                      borderRadius: '12px',
+                      padding: '8px 16px',
+                      textTransform: 'none',
+                      fontSize: '15px',
+                      fontWeight: '500',
+                      flex: 1,
+                      minWidth: '120px',
+                      '&:hover': {
+                        backgroundColor: form.paymentMethod === PaymentMethod.ByCash ? "#4a6d3a" : "rgba(95, 139, 76, 0.1)",
+                      },
+                      transition: 'all 0.2s ease',
+                      '@media (max-width: 400px)': {
+                        width: '100%'
+                      }
+                    }}
+                  >
+                    Наличными
+                  </Button>
+                </Box>
               </Box>
             </Box>
-          </Box>
-          {delivery?.map && (
-            <Box
-              sx={{
-                width: '100%',
-                height: {
-                  xs: '300px',
-                  md: '400px',
-                },
-                borderRadius: '12px',
-              }}
-            >
-
-              <Paper
-                elevation={3}
+            {delivery?.map && (
+              <Box
                 sx={{
-                  p: 2,
-                  backgroundColor: '#fafafa',
-                  borderRadius: 2,
+                  width: '100%',
+                  height: {
+                    xs: '300px',
+                    md: '400px',
+                  },
+                  borderRadius: '12px',
                 }}
               >
-                <div
-                  className="quill-content"
-                  dangerouslySetInnerHTML={{
-                    __html:
-                      delivery?.checkoutDeliveryPriceInfo ||
-                      '<p>Информация пока не добавлена. <a href="/delivery">Ознакомьтесь с информацией здесь.</a></p>',
-                  }}
-                  style={{
-                    fontSize: '16px',
-                    color: '#333',
-                  }}
-                />
-              </Paper>
 
-              <iframe
-                src={delivery.map}
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen
-                loading="lazy"
-                title="Delivery map"
-              />
-            </Box>
-          )}
+                <Paper
+                  elevation={3}
+                  sx={{
+                    p: 2,
+                    backgroundColor: '#fafafa',
+                    borderRadius: 2,
+                    marginBottom: '20px',
+                  }}
+                >
+                  <div
+                    className="quill-content"
+                    dangerouslySetInnerHTML={{
+                      __html:
+                        delivery?.checkoutDeliveryPriceInfo ||
+                        '<p> <a href="/delivery">Ознакомьтесь с информацией о зонах доставки здесь.</a></p>',
+                    }}
+                    style={{
+                      fontSize: '16px',
+                      color: '#333',
+                    }}
+                  />
+                </Paper>
+
+                <Box
+                  sx={{
+                    width: '100%',
+                    maxWidth: '650px',
+                    height: '450px',
+                    flexShrink: 0,
+                    borderRadius: '12px',
+                    overflow: 'hidden',
+                    boxShadow: '0 2px 6px rgba(0, 0, 0, 0.1)',
+                    position: 'relative',
+                    '@media (max-width: 900px)': {
+                      height: '350px',
+                    }
+                  }}
+                >
+                  <iframe
+                    src={delivery.map}
+                    width="650px"
+                    height="600px"
+                    style={{
+                      position: 'absolute',
+                      top: '-70px',
+                      border: 0,
+                    }}
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                  />
+                </Box>
+              </Box>
+            )}
+          </Box>
         </Box>
       </Box>
     </form>

@@ -4,6 +4,7 @@ import { ICartItem } from '../../../../../types';
 import React from 'react';
 import Cart from '../../Basket/Carts/Cart/Cart.tsx';
 import Tooltip from '@mui/joy/Tooltip';
+import { FONTS, SPACING } from '../../../../../globalStyles/stylesObjects.ts';
 
 interface Props {
   products: ICartItem[];
@@ -16,11 +17,10 @@ const Carts: React.FC<Props> = ({ products, deleteAllProduct}) => {
       <Box
         sx={{
           border: "1px solid #e5e2dc",
-          padding: "2rem",
+          padding: SPACING.md,
           borderRadius: "20px",
           marginBottom: "20px",
           "@media (max-width: 820px)": {
-            padding: "1rem",
             width: "100%",
           },
           "@media (max-width: 720px)": {
@@ -37,22 +37,21 @@ const Carts: React.FC<Props> = ({ products, deleteAllProduct}) => {
           }}
         >
           <Typography
-            level="h2"
+            level="h1"
             sx={{
-              fontSize: "25px",
-              mb: 0.5,
-              fontFamily: "Nunito, sans-serif",
+              fontSize: FONTS.size.xl,
+              mb: SPACING.xs,
+              fontWeight: FONTS.weight.bold,
               "@media (max-width: 560px)": {
                 fontSize: "20px",
               },
             }}
           >
-            Корзина
+            Заказ
           </Typography>
           <Link
             onClick={() => deleteAllProduct()}
             sx={{
-              fontFamily: "Nunito, sans-serif",
               color: "#8c867f",
               "&:hover": {
                 textDecoration: "none",
@@ -84,7 +83,6 @@ const Carts: React.FC<Props> = ({ products, deleteAllProduct}) => {
             onClick={() => deleteAllProduct()}
             sx={{
               display: "none",
-              fontFamily: "Nunito, sans-serif",
               color: "#8c867f",
               "&:hover": {
                 textDecoration: "none",
@@ -121,13 +119,24 @@ const Carts: React.FC<Props> = ({ products, deleteAllProduct}) => {
             </Tooltip>
           </Link>
         </Box>
-        {products.map((product, index) => (
-          <Cart
-            product={product}
-            key={product.product.id}
-            isFirst={index === 0}
-          />
-        ))}
+        <Box
+          sx={{
+            maxHeight: '60vh',
+            overflowY: 'auto',
+            mt: SPACING.exs,
+            "@media (max-width: 560px)": {
+              maxHeight: '50vh',
+            },
+          }}
+        >
+          {products.map((product, index) => (
+            <Cart
+              product={product}
+              key={product.product.id}
+              isFirst={index === 0}
+            />
+          ))}
+        </Box>
       </Box>
     </>
   );

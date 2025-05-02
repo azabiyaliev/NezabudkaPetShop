@@ -1,23 +1,15 @@
-import React, { useState } from "react";
-import {
-  Avatar,
-  Box,
-  Button,
-  Container,
-  TextField,
-  Typography,
-} from "@mui/material";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
-import { NavLink, useNavigate } from "react-router-dom";
-import Grid from "@mui/material/Grid2";
-import { RegisterMutation } from "../../../types";
+import React, { useState } from 'react';
+import { Avatar, Box, Button, Container, TextField, Typography, } from '@mui/material';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
+import { NavLink, useNavigate } from 'react-router-dom';
+import Grid from '@mui/material/Grid2';
+import { RegisterMutation } from '../../../types';
 import { selectUserError } from '../../../store/users/usersSlice.ts';
-import { register } from "../../../store/users/usersThunk.ts";
-import "react-toastify/dist/ReactToastify.css";
+import { register } from '../../../store/users/usersThunk.ts';
+import 'react-toastify/dist/ReactToastify.css';
 import { regEmail, regPhone } from '../../../globalConstants.ts';
 import { enqueueSnackbar } from 'notistack';
-import { clearCart } from '../../../store/cart/cartSlice.ts';
 
 
 const initialState = {
@@ -57,7 +49,6 @@ const RegisterUser = () => {
     e.preventDefault();
     try {
     const response = await dispatch(register(form)).unwrap();
-      dispatch(clearCart())
       setForm({
         firstName: "",
         secondName: "",

@@ -85,7 +85,7 @@ const CustomCart: React.FC<Props> = ({ openCart, closeCart }) => {
         >
           <Box sx={{ position: 'sticky', top: 0, zIndex: 2, backgroundColor: 'white', pb: 2 }}>
             <Box sx={{ position: 'relative', pb: 1 }}>
-              <DialogTitle sx={{ fontFamily: "Nunito, sans-serif", fontWeight: 600 }}>
+              <DialogTitle sx={{ fontWeight: 600 }}>
                 {cart && cart.products.length > 0 ? (
                   <>
                     В корзине <b>{amount}</b>{" "}
@@ -121,7 +121,6 @@ const CustomCart: React.FC<Props> = ({ openCart, closeCart }) => {
                   sx={{
                     fontSize: "xl",
                     margin: "20px auto",
-                    fontFamily: "Nunito, sans-serif",
                     fontWeight: 600,
                   }}
                 >
@@ -142,11 +141,10 @@ const CustomCart: React.FC<Props> = ({ openCart, closeCart }) => {
           </Box>
 
           {cart && cart.products.length > 0 && (
-            <Box sx={{ pt: 2, borderTop: '1px solid #eee' }}>
+            <Box sx={{ pt: 2, borderTop: '1px solid #eee', marginTop: '10px' }}>
               <Typography
                 level="h2"
                 sx={{
-                  fontFamily: "Nunito, sans-serif",
                   fontSize: "xl",
                   mb: SPACING.xs,
                   display: "flex",
@@ -169,7 +167,6 @@ const CustomCart: React.FC<Props> = ({ openCart, closeCart }) => {
                 sx={{
                   backgroundColor: "#237803",
                   borderRadius: "50px",
-                  fontFamily: "Nunito, sans-serif",
                   color: "white",
                   fontWeight: 600,
                   padding: "13px",

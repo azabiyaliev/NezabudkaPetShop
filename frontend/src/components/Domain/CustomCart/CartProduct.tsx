@@ -47,6 +47,7 @@ const CartProduct: React.FC<Props> = ({ productCart, closeCart }) => {
           alignItems: 'center',
           justifyContent: 'center',
           flexShrink: 0,
+          marginBottom: '5px',
         }}
       >
         <Link
@@ -77,7 +78,6 @@ const CartProduct: React.FC<Props> = ({ productCart, closeCart }) => {
         >
           <Typography
             sx={{
-              fontFamily: 'Nunito, sans-serif',
               fontWeight: 600,
               display: '-webkit-box',
               WebkitLineClamp: 3,
@@ -92,7 +92,7 @@ const CartProduct: React.FC<Props> = ({ productCart, closeCart }) => {
         </Link>
         <Typography
           level="body-sm"
-          sx={{ marginTop: '5px', fontFamily: 'Nunito, sans-serif' }}
+          sx={{ marginTop: '5px' }}
         >
           {productCart.quantity} x{' '}
           <span
