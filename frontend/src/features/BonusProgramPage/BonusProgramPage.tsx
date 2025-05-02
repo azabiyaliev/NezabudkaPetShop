@@ -4,10 +4,14 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks.ts';
 import { useEffect } from 'react';
 import { selectBonusProgram } from '../../store/bonusProgramPage/bonusProgramPageSlice.ts';
 import { fetchBonusPage } from '../../store/bonusProgramPage/bonusProgramPageThunk.ts';
+import theme from '../../globalStyles/globalTheme.ts';
+import { selectUser } from '../../store/users/usersSlice.ts';
+import { Link } from "react-router-dom";
 
 const BonusProgramPage = () => {
   const bonusProgram = useAppSelector(selectBonusProgram);
   const dispatch = useAppDispatch();
+  const user = useAppSelector(selectUser);
 
   useEffect(() => {
     dispatch(fetchBonusPage()).unwrap();
@@ -20,37 +24,44 @@ const BonusProgramPage = () => {
       </div>
 
       <div className="col-9 mt-5" style={{ display: 'flex', justifyContent: 'center' }}>
-        <Container maxWidth="md">
-          <Typography
-            variant="h4"
-            sx={{
-              fontWeight: 'bold',
-              mb: 4,
-              textAlign: 'center',
-              color: 'balck',
-            }}
-          >
+        <Container>
+          <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600 }}>
             Бонусная программа
           </Typography>
 
-          <Box
-            sx={{
-              border: '1px solid #e0e0e0',
-              borderRadius: '16px',
+            <Box
+              sx={{
+              borderRadius: '5px',
               padding: 4,
-              backgroundColor: '#fafafa',
-              boxShadow: '0 4px 10px rgba(0, 0, 0, 0.05)',
+              backgroundColor: theme.colors.rgbaGrey,
+              mx: 'auto',
             }}
-          >
+            >
             <div
               dangerouslySetInnerHTML={{ __html: bonusProgram?.text || '<p>Информация пока не добавлена.</p>' }}
               style={{
                 lineHeight: 1.6,
                 fontSize: '16px',
-                color: '#333',
+                color: theme.colors.text,
                 marginBottom: '16px',
               }}
             />
+              {!user && (
+                <Box
+                  sx={{
+                    mt: 4,
+                    borderRadius: '5px',
+                    mb: 3,
+                    color: theme.colors.DARK_GREEN,
+                  }}
+                >
+                  <Typography sx={{ fontWeight: 500 }}>
+                    Чтобы получать и использовать бонусы, вам необходимо{' '}
+                    <Link to="/login" style={{ color: theme.colors.DARK_GREEN, textDecoration: 'underline' }}>войти</Link> или{' '}
+                    <Link to="/register" style={{ color: theme.colors.DARK_GREEN, textDecoration: 'underline' }}>зарегистрироваться</Link>.
+                  </Typography>
+                </Box>
+              )}
           </Box>
         </Container>
       </div>
