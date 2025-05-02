@@ -68,11 +68,11 @@ const AdminBar = () => {
               <ListItem
                 component={NavLink}
                 to={`/private_account`}
-                sx={{ py: 0.3 }}
+                sx={{pl: 0}}
               >
                 <ListItemText
                   primary="Личный кабинет"
-                  sx={{ color: "darkgreen" }}
+                  sx={{ color: 'rgba(46, 46, 46, 0.)' }}
                   primaryTypographyProps={{ fontWeight: 600, fontSize: 14 }}
                 />
               </ListItem>
