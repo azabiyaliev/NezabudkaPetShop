@@ -42,6 +42,20 @@ enum Role {
   superAdmin
 }
 
+model adminInfo {
+  id          Int    @id @default(autoincrement())
+  information String @default("")
+
+  @@map("adminInfo")
+}
+
+model clientInfo {
+  id          Int    @id @default(autoincrement())
+  information String @default("")
+
+  @@map("clientInfo")
+}
+
 model PasswordReset {
   id         Int      @id @default(autoincrement())
   userId     Int

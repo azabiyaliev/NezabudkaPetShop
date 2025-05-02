@@ -6,6 +6,14 @@ import {
   Divider,
 } from '@mui/material';
 import {
+  useAppSelector,
+  usePermission,
+} from '../../../app/hooks.ts';
+import { selectUser } from '../../../store/users/usersSlice.ts';
+import { selectCompany } from '../../../store/companyPage/compantPageSlice.ts';
+import { selectDelivery } from '../../../store/deliveryPage/deliveryPageSlice.ts';
+import { selectBonusProgram } from '../../../store/bonusProgramPage/bonusProgramPageSlice.ts';
+import {
   EditNote,
   PlaylistAddOutlined,
   ReorderOutlined,
@@ -20,24 +28,17 @@ import {
   ListAltOutlined,
 } from '@mui/icons-material';
 import { NavLink } from 'react-router-dom';
-
-import {
-  useAppSelector,
-  usePermission,
-} from '../../../app/hooks.ts';
-import { selectUser } from '../../../store/users/usersSlice.ts';
-import { selectCompany } from '../../../store/companyPage/compantPageSlice.ts';
-import { selectDelivery } from '../../../store/deliveryPage/deliveryPageSlice.ts';
-import { selectBonusProgram } from '../../../store/bonusProgramPage/bonusProgramPageSlice.ts';
+import { selectAdminInfo } from '../../../store/adminInfo/adminInfoSlice.ts';
+import { selectClientInfo } from "../../../store/clientInfo/clientInfoSlice.ts";
 import AdminNavItem from './AdminNavItem.tsx';
 import { userRoleAdmin, userRoleSuperAdmin } from '../../../globalConstants.ts';
-
 const iconSx = { color: "#45624E", mr: 1 };
-
 const AdminBar = () => {
   const company = useAppSelector(selectCompany);
   const delivery = useAppSelector(selectDelivery);
   const bonusProgram = useAppSelector(selectBonusProgram);
+  const adminInfo = useAppSelector(selectAdminInfo);
+  const clientInfo = useAppSelector(selectClientInfo);
   const user = useAppSelector(selectUser);
   const can = usePermission(user);
 
@@ -123,6 +124,22 @@ const AdminBar = () => {
             icon={<GroupOutlined sx={iconSx} />}
             text="Клиенты"
           />
+
+          {can(['superAdmin']) && (
+            <>
+              <AdminNavItem
+                to={`/admin_info/${adminInfo?.id}`}
+                icon={<EditNoteOutlined sx={iconSx} />}
+                text="Информация для администрации"
+              />
+
+              <AdminNavItem
+                to={`/client_info/${clientInfo?.id}`}
+                icon={<EditNoteOutlined sx={iconSx} />}
+                text="Информация для клиента"
+              />
+            </>
+          )}
 
           {can(['superAdmin']) && (
             <>

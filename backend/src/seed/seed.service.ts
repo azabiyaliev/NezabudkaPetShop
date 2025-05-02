@@ -505,7 +505,8 @@ export class SeedService {
         const randomManufacturer =
           manufacturers[Math.floor(Math.random() * manufacturers.length)];
         const randomAge = ages[Math.floor(Math.random() * ages.length)];
-        const randomTopSelling = topSelling[Math.floor(Math.random() * topSelling.length)];
+        const randomTopSelling =
+          topSelling[Math.floor(Math.random() * topSelling.length)];
 
         const existence = Math.random() > 0.1; // 90% товаров в наличии
         const onSale = Math.random() > 0.8; // 20% товаров на акции
@@ -681,6 +682,20 @@ export class SeedService {
         bonusUsage: Math.floor(Math.random() * 5000),
         canceledOrderCount: Math.floor(Math.random() * 500),
         totalOrders: Math.floor(Math.random() * 100000) + 30000,
+      },
+    });
+
+    await this.prisma.adminInfo.create({
+      data: {
+        information:
+            'Добро пожаловать в зоомагазин "Незабудка"!\n\nМы рады видеть вас среди наших клиентов. Здесь вы найдете всё необходимое для здоровья и счастья вашего питомца. Мы заботимся о каждом хвостике и предлагаем только лучшие товары и сервис. Спасибо, что выбрали нас!',
+      },
+    });
+
+    await this.prisma.clientInfo.create({
+      data: {
+        information:
+            'Добро пожаловать в зоомагазин "Незабудка"!\n\nМы рады видеть вас среди наших клиентов. Здесь вы найдете всё необходимое для здоровья и счастья вашего питомца. Мы заботимся о каждом хвостике и предлагаем только лучшие товары и сервис. Спасибо, что выбрали нас!',
       },
     });
 

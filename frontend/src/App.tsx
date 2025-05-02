@@ -45,6 +45,8 @@ import MyOrders from './features/Order/MyOrders.tsx';
 import AddAdmin from './features/Admin/AddAdmin/AddAdmin.tsx';
 import ErrorPage from './components/ErrorPage/ErrorPage.tsx';
 import SwiperCarousel from './components/UI/Carousel/SwiperCarousel.tsx';
+import AdminInfoForm from './components/Forms/AdminInfoForm/AdminInfoFrom.tsx';
+import ClientInfoForm from './components/Forms/ClientInfoForm/ClientInfoForm.tsx';
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -239,6 +241,16 @@ const App = () => {
             </ProtectedRoute>
           }/>
           <Route path='/contacts' element={<ContactPage/>}/>
+          <Route path='/admin_info/:id' element={
+            <ProtectedRoute isAllowed={user && can(["superAdmin"])}>
+              <AdminInfoForm/>
+            </ProtectedRoute>
+          }/>
+          <Route path='/client_info/:id' element={
+            <ProtectedRoute isAllowed={user && can(["superAdmin"])}>
+              <ClientInfoForm/>
+            </ProtectedRoute>
+          }/>
         </Routes>
       </Layout>
     </div>
