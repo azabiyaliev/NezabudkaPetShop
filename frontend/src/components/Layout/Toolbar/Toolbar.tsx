@@ -718,7 +718,7 @@ const MainToolbar = () => {
                       }
                       >
                         <NavLink
-                          to='/bonus_program'
+                          to={ user ? `/my_account/users/account/${user?.id}` : '/bonus_program'}
                           style={{ textDecoration: "none" }}
                         >
                           <Box
