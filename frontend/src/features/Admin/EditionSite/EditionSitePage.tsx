@@ -28,9 +28,6 @@ const EditionSitePage = () => {
         sx={{
           flexGrow: 1,
           display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          ml: 2,
         }}
       >
         <EditSiteForm />

@@ -94,13 +94,13 @@ const OrderStats = () => {
         <AdminBar/>
       </Box>
       <Box sx={{
-        p: 3,
         flex: 1,
         display: 'flex',
         flexDirection: 'column',
         gap: 4,
         minHeight: '100vh',
-        mt:"40px",
+        mt:"10px",
+        ml:"20px",
       }}>
         <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600 }}>
          Статистика заказов

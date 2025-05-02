@@ -67,7 +67,7 @@ const AdminList: React.FC<Props> = ({ admins }) => {
 
   return (
     <Grid container direction="column" alignItems="center">
-      <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600, mt: "56px" }}>
+      <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600, mt: "10px" }}>
         Список администраторов
       </Typography>
       <Divider />

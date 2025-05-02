@@ -162,7 +162,6 @@ const AdminForm = () => {
         borderRadius: 4,
         maxWidth: 900,
         mx: 'auto',
-        mt: 5,
       }}
     >
 
