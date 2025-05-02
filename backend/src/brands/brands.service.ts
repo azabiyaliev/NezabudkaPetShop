@@ -11,8 +11,8 @@ export class BrandsService {
   constructor(private readonly prisma: PrismaService) {}
 
   async getBrands() {
-    return await this.prisma.brand.findMany({
-      orderBy: { title: 'asc' },
+    return this.prisma.brand.findMany({
+      orderBy: { id: 'desc' },
     });
   }
 
@@ -27,7 +27,7 @@ export class BrandsService {
     return brand;
   }
 
-  async createBrand(brandDTO: BrandDto, file?: Express.Multer.File) {
+  async createBrand(brandDTO: BrandDto) {
     const { title, description } = brandDTO;
     const brand = await this.prisma.brand.findFirst({
       where: { title },
@@ -37,10 +37,12 @@ export class BrandsService {
         'Данный бренд уже существует и вы не можете повторно его добавить!',
       );
     }
+    const logo =
+      brandDTO.logo === 'null' || brandDTO.logo === '' ? null : brandDTO.logo;
     const newBrand = await this.prisma.brand.create({
       data: {
         title,
-        logo: brandDTO.logo || null,
+        logo,
         description: description === '' ? null : description,
       },
     });

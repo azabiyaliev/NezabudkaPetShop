@@ -18,6 +18,7 @@ import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettin
 import AutoGraphOutlinedIcon from '@mui/icons-material/AutoGraphOutlined';
 import { logout } from '../../../store/users/usersThunk.ts';
 import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
+import { clearCart } from '../../../store/cart/cartSlice.ts';
 
 const ExistsUser = () => {
   const addError = useAppSelector(addErrorFromSlice);
@@ -34,6 +35,7 @@ const ExistsUser = () => {
   const userLogout = async () => {
     try {
       await dispatch(logout()).unwrap();
+      dispatch(clearCart())
       navigate("/", { replace: true });
     } catch (e) {
       console.error("Ошибка при выходе:", e);

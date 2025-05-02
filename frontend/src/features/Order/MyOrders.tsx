@@ -36,7 +36,7 @@ const MyOrders = () => {
 
   useEffect(() => {
     const loadOrders = async () => {
-      if (user?.token) {
+      if (user) {
         await dispatch(GetClientOrders());
 
         const guestEmail = localStorage.getItem("guestEmail");

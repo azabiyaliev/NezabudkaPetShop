@@ -1,4 +1,4 @@
-import { Box, Collapse, Container, ListItemButton, Typography } from '@mui/material';
+import { Box, Collapse, ListItemButton, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
 import { getProducts, getProductsByCategory, } from '../../../store/products/productsThunk.ts';
@@ -69,6 +69,11 @@ const AllProductsCardsPage = () => {
   const handleSelectCategory = (id: number) => {
     navigate(`/all-products/${id}`);
   };
+
+  const sortedProducts = [...products].sort((a, b) => {
+    if (a.existence === b.existence) return 0;
+    return a.existence ? -1 : 1;
+  });
 
   const renderCategories = (categories: (ICategories | Subcategory)[], depth = 0) => {
     const items = [];
@@ -238,32 +243,51 @@ const AllProductsCardsPage = () => {
   return (
       <Grid container spacing={2} sx={{mt: 4}}>
         <Grid size={3}>
-          <Box  sx={{
-            backgroundColor: COLORS.background,
-            borderRadius: 2,
-            p: SPACING.sm,
-          }}>
-            <Typography
-              variant="h6"
-              sx={{
-                mb: 2,
-                fontWeight: FONTS.weight.medium,
-                color: COLORS.text,
-                textAlign: 'center',
-              }}
-            >
-              {(() => {
-                if (!id) return 'Все товары';
+          <Box
+            sx={{
+              position: 'sticky',
+              top: 0,
+              height: '100vh',
+              overflowY: 'auto',
+              overflowX: 'hidden',
+              paddingRight: '8px',
+              scrollbarWidth: 'thin',
+              '&::-webkit-scrollbar': {
+                width: '6px',
+              },
+              '&::-webkit-scrollbar-thumb': {
+                borderRadius: '4px',
+              },
+            }}
+          >
+            <Box  sx={{
+              backgroundColor: COLORS.background,
+              borderRadius: 2,
+              p: SPACING.sm,
+            }}>
+              <Typography
+                variant="h6"
+                sx={{
+                  mb: 2,
+                  fontWeight: FONTS.weight.medium,
+                  color: COLORS.text,
+                  textAlign: 'center',
+                }}
+              >
+                {(() => {
+                  if (!id) return 'Все товары';
 
-                const category = categories.find((cat) => cat.id === selectedId);
-                const parent = categories.find((cat) =>
-                  cat.subcategories?.some((sub) => sub.id === selectedId)
-                );
-                return (parent || category)?.title || 'Категории';
-              })()}
-            </Typography>
-            {renderCategories(categories)}</Box>
-          <Filters />
+                  const category = categories.find((cat) => cat.id === selectedId);
+                  const parent = categories.find((cat) =>
+                    cat.subcategories?.some((sub) => sub.id === selectedId)
+                  );
+                  return (parent || category)?.title || 'Категории';
+                })()}
+              </Typography>
+              {renderCategories(categories)}
+            </Box>
+            <Filters />
+          </Box>
         </Grid>
         <Grid size={9}>
           {id && (() => {
@@ -315,7 +339,7 @@ const AllProductsCardsPage = () => {
             </Typography>
           ) : (
             <CustomPagination
-              items={products}
+              items={sortedProducts}
               columns={4}
               renderItem={(product) => (
                 <ProductCard product={product} key={product.id} cart={cart} />

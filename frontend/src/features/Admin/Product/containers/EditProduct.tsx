@@ -1,9 +1,6 @@
 import { useAppDispatch, useAppSelector, usePermission } from '../../../../app/hooks.ts';
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  addProductLoading,
-  selectProduct,
-} from "../../../../store/products/productsSlice.ts";
+import { selectProduct } from "../../../../store/products/productsSlice.ts";
 import { selectUser } from "../../../../store/users/usersSlice.ts";
 import { ProductRequest } from "../../../../types";
 import {
@@ -11,7 +8,6 @@ import {
   getOneProductForEdit,
 } from '../../../../store/products/productsThunk.ts';
 import { toast } from "react-toastify";
-import { CircularProgress } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import AdminBar from "../../AdminProfile/AdminBar.tsx";
 import ProductForm from "../components/ProductForm.tsx";
@@ -21,7 +17,6 @@ import { userRoleAdmin, userRoleSuperAdmin } from '../../../../globalConstants.t
 const EditProduct = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const loading = useAppSelector(addProductLoading);
   const user = useAppSelector(selectUser);
   const product = useAppSelector(selectProduct);
   const { id } = useParams();
@@ -47,9 +42,6 @@ const EditProduct = () => {
 
   return (
     <>
-      {loading ? (
-        <CircularProgress />
-      ) : (
         <Grid container spacing={2}>
           <Grid size={4}>
             <AdminBar />
@@ -64,7 +56,6 @@ const EditProduct = () => {
             )}
           </Grid>
         </Grid>
-      )}
     </>
   );
 };

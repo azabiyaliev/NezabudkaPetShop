@@ -1,7 +1,7 @@
 import React, { FormEvent, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../app/hooks.ts';
 import { checkoutAuthUserOrder } from '../../store/orders/ordersThunk.ts';
-import { Box, Button, TextField } from '@mui/material';
+import { Box, Button, Paper, TextField } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import { toast } from 'react-toastify';
 import { NavLink, useNavigate } from 'react-router-dom';
@@ -54,7 +54,6 @@ const OrderForm = () => {
     items: [],
   });
   const delivery = useAppSelector(selectDelivery);
-  const [deliveryZone, setDeliveryZone] = useState('Центр');
 
   useEffect(() => {
     if (user) {
@@ -182,7 +181,9 @@ try {
     ...form,
   };
   await dispatch(checkoutAuthUserOrder(orderData)).unwrap();
-  toast.success("Заказ успешно оформлен!");
+  enqueueSnackbar("Заказ успешно оформлен!", {
+    variant: "success",
+  });
   if (!orderData.userId) {
     dispatch(clearCart())
   } else {
@@ -242,21 +243,150 @@ try {
       enqueueSnackbar("Корзина успешно очищена!", { variant: "success" });
     };
 
+  const disabledButton = Boolean(
+    !form.guestEmail ||
+    !form.guestPhone ||
+    !form.guestName ||
+    (form.deliveryMethod !== DeliveryMethod.PickUp && !form.address)
+  )
+
   return (
-    <form onSubmit={handleSubmit} style={{ marginTop: "35px" }}>
+    <form onSubmit={handleSubmit} style={{ marginTop: "25px"}}>
       <Box sx={{
         display: 'flex',
         justifyContent: 'space-between',
         gap: '20px',
-        flexWrap: 'wrap',
-        '@media (max-width: 900px)': {
-          flexDirection: 'column'
+        '@media (max-width: 1024px)': {
+          flexDirection: 'column',
+          gap: '15px'
         }
       }}>
+        <Grid sx={{
+          '@media (max-width: 1513px)': {
+            width: 'auto'
+          },
+          '@media (max-width: 1024px)': {
+            width: '100%',
+            minWidth: '100%'
+          }
+        }}>
+          <Box sx={{
+            border: '1px solid #e5e2dc',
+            borderRadius: '20px',
+            padding: '20px',
+            boxSizing: 'border-box'
+          }}>
+            <Typography variant="h5" sx={{
+              marginBottom: '20px',
+              fontWeight: 'bold',
+              '@media (max-width: 600px)': {
+                fontSize: '1.2rem'
+              }
+            }}>
+              Заказ
+            </Typography>
+
+            <Box sx={{
+              overflowY: 'auto',
+              maxHeight: '700px',
+              paddingRight: '5px',
+              '@media (max-width: 1513px)': {
+                maxHeight: '710px'
+              }
+            }}>
+              <Carts products={carts.products} deleteAllProduct={() => deleteAllProducts()}/>
+            </Box>
+
+            <Box sx={{
+              borderTop: '1px solid #e5e2dc',
+              paddingTop: '15px',
+              marginTop: '15px'
+            }}>
+              <TotalPrice
+                products={carts.products}
+                bonusUsed={form.bonusUsed || 0}
+              />
+            </Box>
+
+            <Box>
+              {user && user.role === "client" && (
+                <Box sx={{
+                  border: '1px solid #e5e2dc',
+                  borderRadius: '10px',
+                  padding: '15px',
+                  margin: '15px 0'
+                }}>
+                  <Typography sx={{
+                    fontSize: "16px",
+                    marginBottom: '10px',
+                    '@media (max-width: 600px)': {
+                      fontSize: '0.9rem'
+                    }
+                  }}>
+                    Использовать бонусы:
+                  </Typography>
+                  <TextField
+                    fullWidth
+                    label="Сколько бонусов использовать"
+                    type="number"
+                    value={form.bonusUsed}
+                    onChange={handleBonusChange}
+                    inputProps={{ min: 0, max: maxBonusesToUse }}
+                    disabled={isBonusInputDisabled}
+                    style={{ marginBottom: '10px' }}
+                    size="small"
+                  />
+                  <Typography sx={{
+                    '@media (max-width: 600px)': {
+                      fontSize: '0.9rem'
+                    }
+                  }}>
+                    Ваши бонусы: {availableBonuses} (Вы можете потратить до {maxBonusesToUse})
+                  </Typography>
+                </Box>
+              )}
+
+              {(!user || user.role !== "client") && (
+                <Typography sx={{
+                  margin: '15px 0',
+                  '@media (max-width: 600px)': {
+                    fontSize: '0.9rem'
+                  }
+                }}>
+                  <NavLink to="/register" style={{ color: "black" }}>
+                    Зарегистрируйтесь, чтобы получить бонусы
+                  </NavLink>
+                </Typography>
+              )}
+
+              <Button
+                type="submit"
+                variant="contained"
+                fullWidth
+                disabled={disabledButton}
+                sx={{
+                  marginTop: '20px',
+                  padding: '10px',
+                  backgroundColor: '#FF9900',
+                  fontWeight: 'bold',
+                  '@media (max-width: 600px)': {
+                    padding: '8px'
+                  },
+                  '&:hover': {
+                    backgroundColor: '#e68a00'
+                  }
+                }}
+              >
+                Оформить заказ
+              </Button>
+            </Box>
+          </Box>
+        </Grid>
+
         <Box sx={{
-          flex: 1,
-          minWidth: '400px',
-          '@media (max-width: 600px)': {
+          marginBottom: '50px',
+          '@media (max-width: 1024px)': {
+            width: '100%',
             minWidth: '100%'
           }
         }}>
@@ -269,15 +399,15 @@ try {
             <Typography variant="h5" sx={{
               marginBottom: '20px',
               fontWeight: 'bold',
-              '@media (max-width: 414px)': {
+              '@media (max-width: 600px)': {
                 fontSize: '1.2rem'
               }
             }}>
               Персональные данные
             </Typography>
 
-            <Grid container spacing={2}>
-              <Grid style={{ width: '100%' }}>
+            <Grid spacing={2}>
+              <Grid>
                 <TextField
                   fullWidth
                   label="Имя"
@@ -287,7 +417,7 @@ try {
                   style={{ marginBottom: '15px' }}
                 />
               </Grid>
-              <Grid style={{ width: '100%' }}>
+              <Grid>
                 <TextField
                   fullWidth
                   label="Фамилия"
@@ -297,7 +427,7 @@ try {
                   style={{ marginBottom: '15px' }}
                 />
               </Grid>
-              <Grid style={{ width: '100%' }}>
+              <Grid>
                 <TextField
                   fullWidth
                   label="Телефон"
@@ -309,7 +439,7 @@ try {
                   style={{ marginBottom: '15px' }}
                 />
               </Grid>
-              <Grid style={{ width: '100%' }}>
+              <Grid>
                 <TextField
                   fullWidth
                   label="Эл. адрес"
@@ -321,10 +451,10 @@ try {
                 />
               </Grid>
               {form.deliveryMethod === 'Delivery' && (
-                <Grid style={{ width: '100%' }}>
+                <Grid>
                   <TextField
                     fullWidth
-                    label="Адрес (для доставки курьером и ТК)"
+                    label="Адрес"
                     name="address"
                     value={form.address}
                     onChange={handleChange}
@@ -337,27 +467,24 @@ try {
 
           <Box sx={{
             display: 'flex',
-            justifyContent: 'center',
+            justifyContent: 'space-between',
             gap: '20px',
             margin: '20px 0',
+            flexWrap: 'wrap',
             '@media (max-width: 768px)': {
               flexDirection: 'column',
-              alignItems: 'center'
-            },
-            '@media (max-width: 414px)': {
-              gap: '10px'
+              gap: '15px'
             }
           }}>
             <Box sx={{
               border: '1px solid #e5e2dc',
               borderRadius: '20px',
-              padding: '25px',
+              padding: '20px',
               flex: 1,
-              maxWidth: '400px',
+              minWidth: '300px',
               boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
               backgroundColor: '#fff',
               '@media (max-width: 768px)': {
-                maxWidth: '100%',
                 width: '100%'
               }
             }}>
@@ -365,8 +492,9 @@ try {
                 marginBottom: '20px',
                 fontWeight: '600',
                 color: '#333',
-                '@media (max-width: 414px)': {
-                  fontSize: '1rem'
+                '@media (max-width: 600px)': {
+                  fontSize: '1rem',
+                  marginBottom: '15px'
                 }
               }}>
                 Способ Доставки
@@ -374,7 +502,7 @@ try {
               <Box sx={{
                 display: 'flex',
                 gap: '12px',
-                '@media (max-width: 360px)': {
+                '@media (max-width: 400px)': {
                   flexDirection: 'column'
                 }
               }}>
@@ -390,11 +518,12 @@ try {
                     fontSize: '15px',
                     fontWeight: '500',
                     flex: 1,
+                    minWidth: '120px',
                     '&:hover': {
                       backgroundColor: form.deliveryMethod === DeliveryMethod.Delivery ? "#4a6d3a" : "rgba(95, 139, 76, 0.1)",
                     },
                     transition: 'all 0.2s ease',
-                    '@media (max-width: 360px)': {
+                    '@media (max-width: 400px)': {
                       width: '100%'
                     }
                   }}
@@ -413,11 +542,12 @@ try {
                     fontSize: '15px',
                     fontWeight: '500',
                     flex: 1,
+                    minWidth: '120px',
                     '&:hover': {
                       backgroundColor: form.deliveryMethod === DeliveryMethod.PickUp ? "#4a6d3a" : "rgba(95, 139, 76, 0.1)",
                     },
                     transition: 'all 0.2s ease',
-                    '@media (max-width: 360px)': {
+                    '@media (max-width: 400px)': {
                       width: '100%'
                     }
                   }}
@@ -430,13 +560,12 @@ try {
             <Box sx={{
               border: '1px solid #e5e2dc',
               borderRadius: '20px',
-              padding: '25px',
+              padding: '20px',
               flex: 1,
-              maxWidth: '400px',
+              minWidth: '300px',
               boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
               backgroundColor: '#fff',
               '@media (max-width: 768px)': {
-                maxWidth: '100%',
                 width: '100%'
               }
             }}>
@@ -444,8 +573,9 @@ try {
                 marginBottom: '20px',
                 fontWeight: '600',
                 color: '#333',
-                '@media (max-width: 414px)': {
-                  fontSize: '1rem'
+                '@media (max-width: 600px)': {
+                  fontSize: '1rem',
+                  marginBottom: '15px'
                 }
               }}>
                 Способ Оплаты
@@ -453,7 +583,7 @@ try {
               <Box sx={{
                 display: 'flex',
                 gap: '12px',
-                '@media (max-width: 360px)': {
+                '@media (max-width: 400px)': {
                   flexDirection: 'column'
                 }
               }}>
@@ -469,11 +599,12 @@ try {
                     fontSize: '15px',
                     fontWeight: '500',
                     flex: 1,
+                    minWidth: '120px',
                     '&:hover': {
                       backgroundColor: form.paymentMethod === PaymentMethod.ByCard ? "#4a6d3a" : "rgba(95, 139, 76, 0.1)",
                     },
                     transition: 'all 0.2s ease',
-                    '@media (max-width: 360px)': {
+                    '@media (max-width: 400px)': {
                       width: '100%'
                     }
                   }}
@@ -492,11 +623,12 @@ try {
                     fontSize: '15px',
                     fontWeight: '500',
                     flex: 1,
+                    minWidth: '120px',
                     '&:hover': {
                       backgroundColor: form.paymentMethod === PaymentMethod.ByCash ? "#4a6d3a" : "rgba(95, 139, 76, 0.1)",
                     },
                     transition: 'all 0.2s ease',
-                    '@media (max-width: 360px)': {
+                    '@media (max-width: 400px)': {
                       width: '100%'
                     }
                   }}
@@ -515,9 +647,31 @@ try {
                   md: '400px',
                 },
                 borderRadius: '12px',
-                my: 3,
               }}
             >
+
+              <Paper
+                elevation={3}
+                sx={{
+                  p: 2,
+                  backgroundColor: '#fafafa',
+                  borderRadius: 2,
+                }}
+              >
+                <div
+                  className="quill-content"
+                  dangerouslySetInnerHTML={{
+                    __html:
+                      delivery?.checkoutDeliveryPriceInfo ||
+                      '<p>Информация пока не добавлена. <a href="/delivery">Ознакомьтесь с информацией здесь.</a></p>',
+                  }}
+                  style={{
+                    fontSize: '16px',
+                    color: '#333',
+                  }}
+                />
+              </Paper>
+
               <iframe
                 src={delivery.map}
                 width="100%"
@@ -529,126 +683,6 @@ try {
               />
             </Box>
           )}
-        </Box>
-
-        <Box sx={{
-          minWidth: '300px',
-          '@media (max-width: 900px)': {
-            width: '100%',
-            minWidth: '100%'
-          }
-        }}>
-          <Box sx={{
-            border: '1px solid #e5e2dc',
-            borderRadius: '20px',
-            padding: '20px'
-          }}>
-            <Typography variant="h5" sx={{
-              marginBottom: '20px',
-              fontWeight: 'bold',
-              '@media (max-width: 414px)': {
-                fontSize: '1.2rem'
-              }
-            }}>
-              Заказ
-            </Typography>
-
-            <Box sx={{
-              overflowY: 'auto',
-              maxHeight: '400px',
-              "@media (max-width: 820px)": {
-                padding: "1rem",
-                width: "100%",
-              },
-              "@media (max-width: 720px)": {
-                width: "100%",
-              },
-            }}>
-            <Carts products={carts.products} deleteAllProduct={() => deleteAllProducts()}/>
-            </Box>
-
-            {user && user.role === "client" && (
-              <Box sx={{
-                border: '1px solid #e5e2dc',
-                borderRadius: '10px',
-                padding: '15px',
-                margin: '15px 0'
-              }}>
-                <Typography sx={{
-                  fontSize: "16px",
-                  marginBottom: '10px',
-                  '@media (max-width: 414px)': {
-                    fontSize: '0.9rem'
-                  }
-                }}>
-                  Использовать бонусы:
-                </Typography>
-                <TextField
-                  fullWidth
-                  label="Сколько бонусов использовать"
-                  type="number"
-                  value={form.bonusUsed}
-                  onChange={handleBonusChange}
-                  inputProps={{ min: 0, max: maxBonusesToUse }}
-                  disabled={isBonusInputDisabled}
-                  style={{ marginBottom: '10px' }}
-                />
-                <Typography sx={{
-                  '@media (max-width: 414px)': {
-                    fontSize: '0.9rem'
-                  }
-                }}>
-                  Ваши бонусы: {availableBonuses} (Вы можете потратить до {maxBonusesToUse})
-                </Typography>
-              </Box>
-            )}
-
-            {(!user || user.role !== "client") && (
-              <Typography sx={{
-                margin: '15px 0',
-                '@media (max-width: 414px)': {
-                  fontSize: '0.9rem'
-                }
-              }}>
-                <NavLink to="/register" style={{ color: "black" }}>
-                  Зарегистрируйтесь, чтобы получить бонусы
-                </NavLink>
-              </Typography>
-            )}
-
-            <div style={{
-              borderTop: '1px solid #e5e2dc',
-              paddingTop: '15px',
-              marginTop: '15px'
-            }}>
-              <TotalPrice
-                products={carts.products}
-                bonusUsed={form.bonusUsed || 0}
-                deliveryZone={deliveryZone}
-                deliveryMethod={form.deliveryMethod}
-                onDeliveryZoneChange={setDeliveryZone}
-              />
-            </div>
-
-            <div>
-              <Button
-                type="submit"
-                variant="contained"
-                fullWidth
-                sx={{
-                  marginTop: '20px',
-                  padding: '10px',
-                  backgroundColor: '#FF9900',
-                  fontWeight: 'bold',
-                  '@media (max-width: 414px)': {
-                    fontSize: '0.9rem'
-                  }
-                }}
-              >
-                Оформить заказ
-              </Button>
-            </div>
-          </Box>
         </Box>
       </Box>
     </form>

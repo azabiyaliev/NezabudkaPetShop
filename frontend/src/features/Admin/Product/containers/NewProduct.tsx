@@ -1,10 +1,8 @@
 import { useAppDispatch, useAppSelector, usePermission } from '../../../../app/hooks.ts';
 import { useNavigate } from "react-router-dom";
-import { addProductLoading } from "../../../../store/products/productsSlice.ts";
 import { addProduct } from "../../../../store/products/productsThunk.ts";
 import { ProductRequest } from "../../../../types";
 import { toast } from "react-toastify";
-import { CircularProgress } from "@mui/material";
 import ProductForm from "../components/ProductForm.tsx";
 import { selectUser } from "../../../../store/users/usersSlice.ts";
 import Grid from "@mui/material/Grid2";
@@ -14,7 +12,6 @@ import { userRoleAdmin, userRoleSuperAdmin } from '../../../../globalConstants.t
 const NewProduct = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const loading = useAppSelector(addProductLoading);
   const user = useAppSelector(selectUser);
   const can = usePermission(user);
 
@@ -32,9 +29,6 @@ const NewProduct = () => {
 
   return (
     <>
-      {loading ? (
-        <CircularProgress />
-      ) : (
         <Grid container spacing={2}>
           <Grid size={4} sx={{ margin: "30px 0"}}>
             <AdminBar />
@@ -43,7 +37,6 @@ const NewProduct = () => {
             <ProductForm onSubmit={onSubmitForm} />
           </Grid>
         </Grid>
-      )}
     </>
   );
 };

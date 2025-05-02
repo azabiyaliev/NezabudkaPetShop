@@ -122,7 +122,7 @@ const ProductForm: React.FC<Props> = ({
         productWeight: editProduct.productWeight ?? 0,
       });
     }
-  }, [editProduct]);
+  }, [editProduct, form.promoPercentage]);
 
   const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

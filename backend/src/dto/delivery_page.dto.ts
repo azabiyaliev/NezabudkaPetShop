@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class DeliveryPagedDto {
   @IsOptional()
@@ -15,4 +15,7 @@ export class DeliveryPagedDto {
     message: 'map Поле для ccылки на картк обязательно к заполнению',
   })
   map!: string;
+  @IsString()
+  @IsNotEmpty()
+  checkoutDeliveryPriceInfo!: string;
 }

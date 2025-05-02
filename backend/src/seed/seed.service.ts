@@ -481,6 +481,7 @@ export class SeedService {
     ];
     const ages = ['Взрослый', 'Щенок/Котенок', 'Пожилой', 'Все возрасты'];
     const weights = [0.5, 1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20];
+    const topSelling = [1, 20, 105, 35, 99, 19, 88, 55, 75];
 
     const products = [];
     for (const subCategory of subCategories) {
@@ -504,6 +505,7 @@ export class SeedService {
         const randomManufacturer =
           manufacturers[Math.floor(Math.random() * manufacturers.length)];
         const randomAge = ages[Math.floor(Math.random() * ages.length)];
+        const randomTopSelling = topSelling[Math.floor(Math.random() * topSelling.length)];
 
         const existence = Math.random() > 0.1; // 90% товаров в наличии
         const onSale = Math.random() > 0.8; // 20% товаров на акции
@@ -548,6 +550,7 @@ export class SeedService {
           productWeight: randomWeight,
           productManufacturer: randomManufacturer,
           productAge: randomAge,
+          orderedProductsStats: randomTopSelling,
         };
 
         if (onSale && startDateSales && endDateSales) {

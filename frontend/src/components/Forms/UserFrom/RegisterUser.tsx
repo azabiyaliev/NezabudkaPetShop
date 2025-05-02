@@ -17,6 +17,7 @@ import { register } from "../../../store/users/usersThunk.ts";
 import "react-toastify/dist/ReactToastify.css";
 import { regEmail, regPhone } from '../../../globalConstants.ts';
 import { enqueueSnackbar } from 'notistack';
+import { clearCart } from '../../../store/cart/cartSlice.ts';
 
 
 const initialState = {
@@ -56,6 +57,7 @@ const RegisterUser = () => {
     e.preventDefault();
     try {
     const response = await dispatch(register(form)).unwrap();
+      dispatch(clearCart())
       setForm({
         firstName: "",
         secondName: "",

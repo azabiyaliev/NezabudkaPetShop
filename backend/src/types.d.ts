@@ -28,4 +28,5 @@ export interface ProductData {
   endDateSales?: Date;
   promoPrice?: number;
   promoPercentage?: number;
+  orderedProductsStats?: number;
 }
