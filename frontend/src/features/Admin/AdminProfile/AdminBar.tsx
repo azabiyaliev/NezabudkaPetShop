@@ -57,8 +57,18 @@ const AdminBar = () => {
       {user && can([userRoleSuperAdmin, userRoleAdmin]) && (
         <List
           subheader={
-            <ListSubheader component="div" sx={{ bgcolor: 'inherit', fontWeight: 700, pl: 0 }}>
-              {can([userRoleSuperAdmin]) ? `Панель ${user.firstName} ${user.secondName} ` : 'Панель администратора'}
+            <ListSubheader
+              component="div"
+              sx={{
+                bgcolor: 'inherit',
+                fontWeight: 700,
+                pl: 0,
+                position: 'static',
+              }}
+            >
+              {can([userRoleSuperAdmin])
+                ? `Панель ${user.firstName} ${user.secondName}`
+                : 'Панель администратора'}
             </ListSubheader>
           }
           dense
@@ -132,7 +142,7 @@ const AdminBar = () => {
           )}
 
           <Divider />
-          <ListSubheader sx={{ bgcolor: 'inherit', fontWeight: 600, pl: 0 }}>Управление контентом</ListSubheader>
+          <ListSubheader sx={{ bgcolor: 'inherit', fontWeight: 600, pl: 0,  position: 'static', }}>Управление контентом</ListSubheader>
           <AdminNavItem
             to={`/my_company/${company?.id}`}
             icon={<EditNote sx={iconSx} />}
@@ -150,7 +160,7 @@ const AdminBar = () => {
           />
 
           <Divider />
-          <ListSubheader sx={{ bgcolor: 'inherit', fontWeight: 600, pl: 0 }}>Категории</ListSubheader>
+          <ListSubheader sx={{ bgcolor: 'inherit', fontWeight: 600, pl: 0,  position: 'static', }}>Категории</ListSubheader>
           <AdminNavItem
             to="/private/manage_categories"
             icon={<CategoryOutlined sx={iconSx} />}
@@ -158,7 +168,7 @@ const AdminBar = () => {
           />
 
           <Divider />
-          <ListSubheader sx={{ bgcolor: 'inherit', fontWeight: 600, pl: 0 }}>Карусель</ListSubheader>
+          <ListSubheader sx={{ bgcolor: 'inherit', fontWeight: 600, pl: 0,  position: 'static', }}>Карусель</ListSubheader>
           <AdminNavItem
             to="/edit-carousel"
             icon={<Diversity2Outlined sx={iconSx} />}
@@ -166,7 +176,7 @@ const AdminBar = () => {
           />
 
           <Divider />
-          <ListSubheader sx={{ bgcolor: 'inherit', fontWeight: 600, pl: 0 }}>Бренды</ListSubheader>
+          <ListSubheader sx={{ bgcolor: 'inherit', fontWeight: 600, pl: 0,  position: 'static', }}>Бренды</ListSubheader>
           <AdminNavItem
             to="/private/brands"
             icon={<BallotOutlined sx={iconSx} />}
@@ -179,7 +189,7 @@ const AdminBar = () => {
           />
 
           <Divider />
-          <ListSubheader sx={{ bgcolor: 'inherit', fontWeight: 600, pl: 0 }}>Товары</ListSubheader>
+          <ListSubheader sx={{ bgcolor: 'inherit', fontWeight: 600, pl: 0,  position: 'static', }}>Товары</ListSubheader>
           <AdminNavItem
             to="/private/products"
             icon={<ListAltOutlined sx={iconSx} />}
