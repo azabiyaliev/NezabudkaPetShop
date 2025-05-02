@@ -133,8 +133,7 @@ const DeliveryPageForm = () => {
         display: 'flex',
         flexDirection: { xs: 'column', md: 'row' },
         gap: 2,
-        mt: 4,
-        px: { xs: 2, md: 4 },
+        mt: "30px",
         width: '100%',
       }}
     >
