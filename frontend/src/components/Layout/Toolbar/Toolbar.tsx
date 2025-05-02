@@ -37,6 +37,7 @@ import theme from "../../../globalStyles/globalTheme.ts";
 const MainToolbar = () => {
   const [openCart, setOpenCart] = useState<boolean>(false);
   const [openCategoryMenu, setOpenCategoryMenu] = useState<boolean>(false);
+  const [favoriteCount, setFavoriteCount] = useState<number>(0);
   const user = useAppSelector(selectUser);
   const site = useAppSelector(selectEditSite);
   const cart = useAppSelector(cartFromSlice);
@@ -50,6 +51,31 @@ const MainToolbar = () => {
   const [focused, setFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [open, setOpen] = useState(false);
+
+
+  useEffect(() => {
+    if (user && can([userRoleClient])) {
+      setFavoriteCount(favoriteProducts.length);
+      return;
+    }
+
+
+    const update = () => {
+      setFavoriteCount(getLocalFavoriteProducts().length);
+    };
+
+    update();
+
+    const interval = setInterval(update, 500);
+    window.addEventListener("storage", update);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("storage", update);
+    };
+  }, [favoriteProducts, user, can]);
+
+
 
 
   useEffect(() => {
@@ -111,7 +137,6 @@ const MainToolbar = () => {
       return acc;
     }, 0);
 
-  const favorite = getLocalFavoriteProducts().length;
 
   const escapeRegExp = (string: string) => {
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -639,8 +664,7 @@ const MainToolbar = () => {
                           }}
                         />
                         <Badge
-                          badgeContent={user && user.role === userRoleClient ?
-                            favoriteProducts.length : favorite}
+                          badgeContent={favoriteCount}
                           overlap="circular"
                           color="warning"
                           sx={{
@@ -742,8 +766,7 @@ const MainToolbar = () => {
                         style={{ textDecoration: "none" }}
                       >
                         <Badge
-                          badgeContent={user && user.role === userRoleClient ?
-                            favoriteProducts.length : favorite}
+                          badgeContent={favoriteCount}
                           overlap="circular"
                           color="warning"
                         >

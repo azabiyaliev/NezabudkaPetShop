@@ -15,12 +15,12 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { COLORS, FONTS, SPACING } from '../../../globalStyles/stylesObjects.ts';
 import { Tooltip } from '@mui/joy';
 import dayjs from 'dayjs';
-import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
+import { useAppDispatch, useAppSelector, usePermission } from "../../../app/hooks.ts";
 import { enqueueSnackbar } from 'notistack';
 import {
-  addFavoriteProducts,
+  addFavoriteProducts, getFavoriteProducts,
   removeFavoriteProductThunk
-} from '../../../store/favoriteProducts/favoriteProductsThunks.ts';
+} from "../../../store/favoriteProducts/favoriteProductsThunks.ts";
 import { addItem, fetchCart } from '../../../store/cart/cartThunk.ts';
 import { newUserLogin, productCardToAdd } from '../../../store/cart/cartSlice.ts';
 import { selectUser } from '../../../store/users/usersSlice.ts';
@@ -39,17 +39,20 @@ const ProductCard:React.FC<Props> = ({ product, cart }) => {
   const favoriteProducts = useAppSelector(selectedFavorite);
   const topSellingProducts = useAppSelector(selectTopSellingProducts);
   const dispatch = useAppDispatch();
+  const can = usePermission(user);
 
-  const toggleFavorite = (id: number) => {
+  const toggleFavorite = async (id: number) => {
     const newValue = !isFavorite;
     setIsFavorite(newValue);
 
-    if (user && user.role === userRoleClient) {
+    if (user && can([userRoleClient])) {
       if (newValue) {
-        dispatch(addFavoriteProducts(id));
+        await dispatch(addFavoriteProducts(id));
+        await dispatch(getFavoriteProducts());
         enqueueSnackbar("Добавлено в избранное", { variant: "success" });
       } else {
-        dispatch(removeFavoriteProductThunk(id));
+        await dispatch(removeFavoriteProductThunk(id));
+        await dispatch(getFavoriteProducts());
         enqueueSnackbar("Удалено из избранного", { variant: "info" });
       }
     } else {
@@ -160,7 +163,7 @@ const ProductCard:React.FC<Props> = ({ product, cart }) => {
       )}
 
       <Box sx={{ position: 'absolute', top: 8, right: 8, zIndex: 2 }}>
-        {user && (user.role === userRoleAdmin || user.role === userRoleSuperAdmin) ?
+        {user && (can([userRoleAdmin, userRoleSuperAdmin])) ?
           <Tooltip
             title={'Вы не можете добавлять товар в избранные'}
             placement="bottom-start"
