@@ -78,7 +78,7 @@ const CartProduct: React.FC<Props> = ({ productCart, closeCart }) => {
         >
           <Typography
             sx={{
-              fontWeight: 600,
+              // fontWeight: 600,
               display: '-webkit-box',
               WebkitLineClamp: 3,
               WebkitBoxOrient: 'vertical',
