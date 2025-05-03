@@ -17,7 +17,6 @@ export interface ProductData {
   productPrice: number;
   productDescription: string;
   brandId: number;
-  categoryId: number;
   productPhoto: string;
   existence: boolean;
   sales: boolean;
