@@ -4,7 +4,6 @@ import { Box, Paper, Typography } from "@mui/material";
 import { useEffect } from "react";
 import { selectClientInfo } from "../../../../store/clientInfo/clientInfoSlice.ts";
 import { fetchClientInfo } from "../../../../store/clientInfo/clientInfoThunk.ts";
-import { COLORS } from "../../../../globalStyles/stylesObjects.ts";
 
 const ClientProfile = () => {
   const dispatch = useAppDispatch();
@@ -24,20 +23,6 @@ const ClientProfile = () => {
         }}
       >
         <Box sx={{ flex: { md: "0 0 25%" }, mt: 4 }}>
-          <Typography
-            variant="h6"
-            gutterBottom
-            sx={{
-              textAlign: "center",
-              fontWeight: 600,
-              paddingBottom: 2,
-              "@media (max-width: 900px)": {
-                borderBottom: `1px solid ${COLORS.DARK_GREEN}`,
-              },
-            }}
-          >
-            Мой аккаунт
-          </Typography>
           <ClientBar />
         </Box>
 

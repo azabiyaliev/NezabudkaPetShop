@@ -5,6 +5,7 @@ import { selectUser } from "../../../../store/users/usersSlice.ts";
 import { fetchUserById } from "../../../../store/users/usersThunk.ts";
 import UserFormEdition from "../../../../components/Forms/UserFormEdition/UserFormEdition.tsx";
 import ClientBar from "../../../../components/Domain/Client/ClientBar.tsx";
+import { Box } from '@mui/material';
 
 const ClientEditProfile = () => {
   const dispatch = useAppDispatch();
@@ -18,14 +19,40 @@ const ClientEditProfile = () => {
   }, [dispatch, id, user]);
 
   return (
-    <div className="d-flex ">
-      <div className="col-3 mt-5 ">
-        {user && user.role === "client" && <ClientBar/>}
-      </div>
-      <div className="col-9">
-        <UserFormEdition/>
-      </div>
-    </div>
+    <Box
+      sx={{
+        display: 'flex',
+        gap: 2,
+        mt: 5,
+        flexDirection: 'column',
+        '@media (min-width: 900px)': {
+          flexDirection: 'row',
+        },
+      }}
+    >
+      {user && user.role === 'client' && (
+        <Box
+          sx={{
+            width: '100%',
+            '@media (min-width: 900px)': {
+              width: '30%',
+            },
+          }}
+        >
+          <ClientBar />
+        </Box>
+      )}
+      <Box
+        sx={{
+          width: '100%',
+          '@media (min-width: 900px)': {
+            width: '68%',
+          },
+        }}
+      >
+        <UserFormEdition />
+      </Box>
+    </Box>
   );
 };
 
