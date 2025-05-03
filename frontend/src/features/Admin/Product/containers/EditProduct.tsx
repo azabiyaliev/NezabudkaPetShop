@@ -21,7 +21,6 @@ const EditProduct = () => {
   const product = useAppSelector(selectProduct);
   const { id } = useParams();
   const can = usePermission(user);
-
   useEffect(() => {
     if (id) dispatch(getOneProductForEdit(Number(id))).unwrap();
   }, [dispatch, id]);
@@ -48,11 +47,14 @@ const EditProduct = () => {
           </Grid>
           <Grid size={8}>
             {product !== null && (
-              <ProductForm
-                onSubmit={onSubmitForm}
-                editProduct={product}
-                isProduct
-              />
+                <ProductForm
+                  onSubmit={onSubmitForm}
+                  editProduct={{
+                    ...product,
+                    categoryId: product.productCategory?.map((pc) => pc.category?.id).filter((id): id is number => typeof id === 'number') ?? [],
+                  }}
+                  isProduct
+                />
             )}
           </Grid>
         </Grid>
