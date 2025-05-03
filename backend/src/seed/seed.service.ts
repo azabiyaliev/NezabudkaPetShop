@@ -13,7 +13,6 @@ import { ProductData } from '../types';
 @Injectable()
 export class SeedService {
   constructor(private prisma: PrismaService) {}
-
   async seed() {
     const tablesToClear = [
       'productCategory',
@@ -25,6 +24,7 @@ export class SeedService {
       'orderItem',
       'order',
       'statistic',
+      'productUpdateHistory',
       'products',
       'siteEdition',
       'photoByCarousel',

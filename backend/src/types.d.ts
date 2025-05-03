@@ -29,3 +29,24 @@ export interface ProductData {
   promoPercentage?: number;
   orderedProductsStats?: number;
 }
+
+export interface RawProduct {
+  productName: string;
+  productPhoto?: string;
+  productPrice: number;
+  productDescription?: string;
+  brandTitle?: string | null;
+  categoryTitle?: string | null;
+  existence?: boolean;
+  sales?: boolean;
+  promoPercentage?: number | null;
+  promoPrice?: number | null;
+  productComment?: string;
+  productWeight?: number | null;
+  productSize?: string | null;
+  productAge?: string | null;
+  productFeedClass?: string | null;
+  productManufacturer?: string | null;
+  startDateSales?: string;
+  endDateSales?: string;
+}

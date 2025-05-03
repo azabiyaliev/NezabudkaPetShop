@@ -142,9 +142,10 @@ model Products {
   brand                Brand?      @relation(fields: [brandId], references: [id])
   orderedProductsStats Int         @default(0) @map("ordered_products_stats")
 
-  reviews         Review[]
-  Favorite        Favorite[]
-  CartItem        CartItem[]
+  reviews              Review[]
+  Favorite             Favorite[]
+  CartItem             CartItem[]
+  ProductUpdateHistory ProductUpdateHistory[]
   productCategory ProductCategory[]
 
   @@map("products")
@@ -320,4 +321,27 @@ model DeliveryPage {
   checkoutDeliveryPriceInfo String? @map("checkout_delivery_page_info")
 
   @@map("deliveryPage")
+}
+
+model IntegrationLog {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  requestBody Json
+  status      String
+  error       String?
+
+  @@map("integration_logs")
+}
+
+model ProductUpdateHistory {
+  id        Int      @id @default(autoincrement())
+  productId Int
+  fieldName String
+  oldValue  String
+  newValue  String
+  updatedAt DateTime @default(now())
+
+  product Products @relation(fields: [productId], references: [id])
+
+  @@map("product_update_history")
 }
