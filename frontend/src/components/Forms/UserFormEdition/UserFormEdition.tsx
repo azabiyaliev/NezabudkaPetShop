@@ -271,7 +271,7 @@ const UserFormEdition = () => {
                 mt: 5,
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                '@media (max-width: 410px)': {
+                '@media (max-width: 500px)': {
                   flexDirection: 'column',
                   alignItems: 'stretch',
                 },
@@ -285,7 +285,7 @@ const UserFormEdition = () => {
                   sx={{
                     backgroundColor: "#FFEB3B",
                     color: "black",
-                    '@media (max-width: 410px)': {
+                    '@media (max-width: 500px)': {
                       mb: 2
                     },
                   }}
@@ -302,7 +302,7 @@ const UserFormEdition = () => {
                   sx={{
                     backgroundColor: "#FFEB3B",
                     color: "black",
-                    '@media (max-width: 410px)': {
+                    '@media (max-width: 500px)': {
                       mb: 2
                     },
                   }}

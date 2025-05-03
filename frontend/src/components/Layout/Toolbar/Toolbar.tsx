@@ -909,7 +909,7 @@ const MainToolbar = () => {
                       }}
                     >
                       <NavLink
-                        to="/edition_site"
+                        to="/private/edition_site"
                         style={{ textDecoration: "none" }}
                       >
                         <Box

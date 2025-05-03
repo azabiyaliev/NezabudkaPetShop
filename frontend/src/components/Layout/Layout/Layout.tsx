@@ -5,9 +5,10 @@ import Footer from "../Footer/Footer.tsx";
 
 interface LayoutProps extends PropsWithChildren {
   beforeContainer?: React.ReactNode;
+  isWide?: boolean;
 }
 
-const Layout: React.FC<LayoutProps> = ({ children, beforeContainer }) => {
+const Layout: React.FC<LayoutProps> = ({ children, beforeContainer, isWide }) => {
   return (
     <Box
       sx={{
@@ -26,9 +27,19 @@ const Layout: React.FC<LayoutProps> = ({ children, beforeContainer }) => {
           marginBottom:"100px"
         }}
       >
-        <Container maxWidth="xl">
-          {children}
-        </Container>
+        {isWide ? (
+          <Box
+            sx={{
+              maxWidth: "100%",
+              padding: "0 20px",
+              boxSizing: "border-box",
+            }}
+          >
+            {children}
+          </Box>
+        ) : (
+          <Container maxWidth="xl">{children}</Container>
+        )}
       </main>
       <footer>
         <Footer />

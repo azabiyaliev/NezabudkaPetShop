@@ -66,9 +66,11 @@ const App = () => {
 
   if (!meChecked) return null;
 
+  const isWide = can([userRoleAdmin, userRoleSuperAdmin]) && location.pathname.startsWith("/private");
+
   return (
     <div>
-      <Layout beforeContainer={location.pathname === "/" ? <SwiperCarousel /> : null}>
+      <Layout beforeContainer={location.pathname === "/" ? <SwiperCarousel /> : null} isWide={isWide}>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/register" element={<RegisterUser />} />
@@ -82,7 +84,7 @@ const App = () => {
             }
           />
           <Route path ="/my_orders" element={<MyOrders /> } />
-          <Route path="/edit-carousel" element={<DragAndDropPhoto />} />
+          <Route path="/private/edit-carousel" element={<DragAndDropPhoto />} />
           <Route path="/photos/:id" element={<Photo/>}/>
           <Route path="/change-password" element={<RestorationPasswordFrom/>}/>
           <Route
@@ -152,7 +154,7 @@ const App = () => {
             }
           />
           <Route
-            path="/edition_site"
+            path="/private/edition_site"
             element={
               <ProtectedRoute isAllowed={user && can(["admin", "superAdmin"])}>
                 <EditionSitePage />
@@ -223,30 +225,30 @@ const App = () => {
           }/>
           <Route path='/favorite-products' element={<FavoriteProduct/>}/>
           <Route path='/my_company' element={<CompanyPage/>}/>
-          <Route path='/my_company/:id' element={
+          <Route path='/private/my_company/:id' element={
             <ProtectedRoute isAllowed={user && can(["superAdmin", "admin"])}>
             <CompanyPageFrom/>
             </ProtectedRoute>
           }/>
           <Route path='/bonus_program' element={<BonusProgramPage/>}/>
-          <Route path='/bonus_program/:id' element={
+          <Route path='/private/bonus_program/:id' element={
             <ProtectedRoute isAllowed={user && can(["superAdmin", "admin"])}>
             <BonusProgramForm/>
             </ProtectedRoute>
           }/>
           <Route path='/delivery' element={<DeliveryPage/>}/>
-          <Route path='/delivery/:id' element={
+          <Route path='/private/delivery/:id' element={
             <ProtectedRoute isAllowed={user && can(["superAdmin", "admin"])}>
               <DeliveryPageForm/>
             </ProtectedRoute>
           }/>
           <Route path='/contacts' element={<ContactPage/>}/>
-          <Route path='/admin_info/:id' element={
+          <Route path='/private/admin_info/:id' element={
             <ProtectedRoute isAllowed={user && can(["superAdmin"])}>
               <AdminInfoForm/>
             </ProtectedRoute>
           }/>
-          <Route path='/client_info/:id' element={
+          <Route path='/private/client_info/:id' element={
             <ProtectedRoute isAllowed={user && can(["superAdmin"])}>
               <ClientInfoForm/>
             </ProtectedRoute>
