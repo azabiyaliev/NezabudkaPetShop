@@ -160,7 +160,16 @@ export class IntegrationService {
                 productAge: product.productAge,
                 productFeedClass: product.productFeedClass,
                 productManufacturer: product.productManufacturer,
-                categoryId,
+                productCategory: categoryId
+                  ? {
+                      deleteMany: {},
+                      create: [
+                        {
+                          category: { connect: { id: categoryId } },
+                        },
+                      ],
+                    }
+                  : undefined,
               },
             });
 
@@ -213,7 +222,15 @@ export class IntegrationService {
             productFeedClass: product.productFeedClass,
             productManufacturer: product.productManufacturer,
             brandId,
-            categoryId,
+            productCategory: categoryId
+              ? {
+                  create: [
+                    {
+                      category: { connect: { id: categoryId } },
+                    },
+                  ],
+                }
+              : undefined,
           },
         });
 
