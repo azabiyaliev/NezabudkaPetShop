@@ -74,6 +74,9 @@ const ProductForm: React.FC<Props> = ({
   const [weightError, setWeightError] = useState("");
   const [feedClassError, setFeedClassError] = useState("");
   const [manufacturerError, setManufacturerError] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+
+
   useEffect(() => {
     dispatch(getBrands()).unwrap();
     dispatch(fetchCategoriesThunk()).unwrap();
@@ -122,10 +125,6 @@ const ProductForm: React.FC<Props> = ({
       }));
     }
   };
-
-
-
-
 
   const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -379,51 +378,98 @@ const ProductForm: React.FC<Props> = ({
               <FormControl fullWidth>
                 <InputLabel id="categoryId">Категория</InputLabel>
                 <Select
-                  labelId="categoryId"
-                  id="categoryId"
-                  multiple
-                  value={form.categoryId}
-                  name="categoryId"
-                  label="Категория"
-                  onChange={(e) => {
-                    const value = Array.isArray(e.target.value) ? e.target.value : [];
-                    setForm((prev) => ({
-                      ...prev,
-                      categoryId: value,
-                    }));
-                  }}
-                  renderValue={(selected) =>
-                    selected
-                      .map(id => {
-                        const parent = categories.find(cat =>
-                          cat.subcategories?.some(sub => sub.id === id)
-                        );
-                        const sub = parent?.subcategories?.find(sub => sub.id === id);
-                        return parent && sub ? `${parent.title} → ${sub.title}` : sub?.title;
-                      })
-                      .join(', ')
-                  }
-                  MenuProps={{
-                    PaperProps: {
-                      style: {
-                        maxHeight: 300,
-                      },
-                    },
-                  }}
-                >
-                  {categories.flatMap(parent => {
-                    const group = [
-                      <ListSubheader key={`header-${parent.id}`}>{parent.title}</ListSubheader>,
-                      ...(parent.subcategories ?? []).map(sub => (
-                        <MenuItem key={sub.id} value={sub.id}>
-                          <Checkbox checked={form.categoryId.includes(sub.id)} />
-                          {sub.title}
+                multiple
+                value={form.categoryId}
+                onChange={(e) => {
+                  const value = Array.isArray(e.target.value) ? e.target.value : [];
+                  setForm((prev) => ({
+                    ...prev,
+                    categoryId: value,
+                  }));
+                }}
+                renderValue={(selected) =>
+                  selected
+                    .map(id => {
+                      const parent = categories.find(cat => cat.id === id);
+                      if (parent) return parent.title;
+
+                      const parentWithSub = categories.find(cat =>
+                        cat.subcategories?.some(sub => sub.id === id)
+                      );
+                      const sub = parentWithSub?.subcategories?.find(sub => sub.id === id);
+                      return parentWithSub && sub
+                        ? `${parentWithSub.title} → ${sub.title}`
+                        : sub?.title || '';
+                    })
+                    .join(', ')
+                }
+                MenuProps={{
+                  PaperProps: {
+                    style: { maxHeight: 300 },
+                  },
+                }}
+              >
+                  <MenuItem disableRipple disableGutters>
+                    <TextField
+                      placeholder="Поиск..."
+                      fullWidth
+                      size="small"
+                      autoFocus
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}
+                      onClick={(e) => e.stopPropagation()}
+                      onKeyDown={(e) => e.stopPropagation()}
+                      sx={{
+                        backgroundColor: '#fff',
+                      }}
+                    />
+                  </MenuItem>
+
+                {categories.flatMap(parent => {
+                  const matchesParent = parent.title.toLowerCase().includes(searchTerm);
+                  const filteredSubs = (parent.subcategories ?? []).filter(sub =>
+                    sub.title.toLowerCase().includes(searchTerm)
+                  );
+
+                  const result: React.ReactNode[] = [];
+
+                  if (matchesParent || filteredSubs.length > 0) {
+                    const showSubcategories = filteredSubs.length > 0;
+
+                    if (matchesParent || showSubcategories) {
+                      result.push(
+                        <ListSubheader key={`group-${parent.id}`}>
+                          {parent.title}
+                        </ListSubheader>
+                      );
+                    }
+
+                    if (matchesParent) {
+                      result.push(
+                        <MenuItem key={`parent-${parent.id}`} value={parent.id}>
+                          <Checkbox checked={form.categoryId.includes(parent.id)} />
+                          <Typography fontWeight="bold">{parent.title}</Typography>
                         </MenuItem>
-                      )),
-                    ];
-                    return group;
-                  })}
-                </Select>
+                      );
+                    }
+
+                    if (filteredSubs.length > 0) {
+                      result.push(
+                        ...filteredSubs.map(sub => (
+                          <MenuItem key={sub.id} value={sub.id}>
+                            <Checkbox checked={form.categoryId.includes(sub.id)} />
+                            {sub.title}
+                          </MenuItem>
+                        ))
+                      );
+                    }
+                  }
+
+                  return result;
+                })}
+              </Select>
+
+
               </FormControl>
             </Grid>
           )}
