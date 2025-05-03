@@ -1,24 +1,40 @@
-import { useState } from 'react';
-import { Box, Button, Divider, Drawer, List, ListItem, ListItemText, Tooltip, Typography, } from '@mui/material';
-import { NavLink, useNavigate } from 'react-router-dom';
-import { useAppDispatch, useAppSelector, usePermission } from '../../../app/hooks.ts';
-import { selectUser } from '../../../store/users/usersSlice.ts';
-import { addErrorFromSlice, clearError, } from '../../../store/brands/brandsSlice.ts';
-import PermIdentityOutlinedIcon from '@mui/icons-material/PermIdentityOutlined';
-import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
-import CreditScoreOutlinedIcon from '@mui/icons-material/CreditScoreOutlined';
-import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
-import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
-import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
-import FavoriteOutlinedIcon from '@mui/icons-material/FavoriteOutlined';
-import LocalMallOutlinedIcon from '@mui/icons-material/LocalMallOutlined';
-import BallotOutlinedIcon from '@mui/icons-material/BallotOutlined';
-import ListAltOutlinedIcon from '@mui/icons-material/ListAltOutlined';
-import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
-import AutoGraphOutlinedIcon from '@mui/icons-material/AutoGraphOutlined';
-import { logout } from '../../../store/users/usersThunk.ts';
-import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
-import { clearCart } from '../../../store/cart/cartSlice.ts';
+import { useState } from "react";
+import {
+  Box,
+  Button,
+  Divider,
+  Drawer,
+  List,
+  ListItem,
+  ListItemText, Tooltip,
+  Typography,
+} from '@mui/material';
+import { NavLink, useNavigate } from "react-router-dom";
+import {
+  useAppDispatch,
+  useAppSelector,
+  usePermission,
+} from "../../../app/hooks.ts";
+import { selectUser } from "../../../store/users/usersSlice.ts";
+import {
+  addErrorFromSlice,
+  clearError,
+} from "../../../store/brands/brandsSlice.ts";
+import PermIdentityOutlinedIcon from "@mui/icons-material/PermIdentityOutlined";
+import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
+import CreditScoreOutlinedIcon from "@mui/icons-material/CreditScoreOutlined";
+import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined";
+import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
+import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
+import FavoriteOutlinedIcon from "@mui/icons-material/FavoriteOutlined";
+import LocalMallOutlinedIcon from "@mui/icons-material/LocalMallOutlined";
+import BallotOutlinedIcon from "@mui/icons-material/BallotOutlined";
+import ListAltOutlinedIcon from "@mui/icons-material/ListAltOutlined";
+import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
+import AutoGraphOutlinedIcon from "@mui/icons-material/AutoGraphOutlined";
+import { logout } from "../../../store/users/usersThunk.ts";
+import CategoryOutlinedIcon from "@mui/icons-material/CategoryOutlined";
+import { clearCart } from "../../../store/cart/cartSlice.ts";
 
 const ExistsUser = () => {
   const addError = useAppSelector(addErrorFromSlice);
@@ -35,7 +51,7 @@ const ExistsUser = () => {
   const userLogout = async () => {
     try {
       await dispatch(logout()).unwrap();
-      dispatch(clearCart())
+      dispatch(clearCart());
       navigate("/", { replace: true });
     } catch (e) {
       console.error("Ошибка при выходе:", e);
@@ -75,72 +91,76 @@ const ExistsUser = () => {
             },
           }}
         >
-          <Tooltip
-            title={
-              user && (
-                <Typography
-                  sx={{
-                    color: "#fff",
-                    fontSize: "16px",
-                    fontWeight: "500",
-                    textTransform: "uppercase",
-                    whiteSpace: "nowrap",
-                    "@media (max-width: 1100px)": {
-                      color: "black",
-                      fontSize: "14px",
-                      marginLeft: 0,
-                    },
-                  }}
-                >
-                  {user.role === "superAdmin" ? (
-                    <span style={{ color: "#343332" }}>Super Admin</span>
-                  ) : user.role === "admin" ? (
-                    <>
-                      <span style={{ color: "#a82626" }}>Admin:</span> {user.firstName}
-                    </>
-                  ) : (
-                    user.firstName
-                  )}
-                </Typography>
-              )
-            }
+          <Box
+            sx={{
+              display: {
+                xs: "flex",
+                md: "none",
+              },
+              alignItems: "center",
+              flexDirection: "column",
+            }}
           >
             <PermIdentityOutlinedIcon
               sx={{
                 width: "30px",
                 height: "30px",
-                color: "#fff",
-                "@media (max-width: 1100px)": { color: "#fff" },
+                color: "#000",
               }}
             />
-          </Tooltip>
+            <Typography
+              sx={{
+                color: "#white",
+                fontSize: "14px",
+                fontWeight: 500,
+                textTransform: "uppercase",
+              }}
+            >
+              {user?.role === "superAdmin" ? (
+                <span style={{ color: "#343332" }}>Super Admin</span>
+              ) : user?.role === "admin" ? (
+                <>
+                  <span style={{ color: "#a82626" }}>Admin:</span> {user.firstName}
+                </>
+              ) : (
+                user?.firstName
+              )}
+            </Typography>
+          </Box>
 
-          {/*{user && (*/}
-          {/*  <Typography*/}
-          {/*    sx={{*/}
-          {/*      color: "#343332",*/}
-          {/*      fontSize: "16px",*/}
-          {/*      fontWeight: "500",*/}
-          {/*      textTransform: "uppercase",*/}
-          {/*      whiteSpace: "nowrap",*/}
-          {/*      "@media (max-width: 1100px)": {*/}
-          {/*        color: "black",*/}
-          {/*        fontSize: "14px",*/}
-          {/*        marginLeft: 0,*/}
-          {/*      },*/}
-          {/*    }}*/}
-          {/*  >*/}
-          {/*    {user.role === "superAdmin" ? (*/}
-          {/*      <span style={{ color: "#343332" }}>Super Admin</span>*/}
-          {/*    ) : user.role === "admin" ? (*/}
-          {/*      <>*/}
-          {/*        <span style={{ color: "#a82626" }}>Admin:</span> {user.firstName}*/}
-          {/*      </>*/}
-          {/*    ) : (*/}
-          {/*      <></>*/}
-          {/*    )}*/}
-          {/*  </Typography>*/}
-          {/*)}*/}
+          <Box
+            sx={{
+              display: {
+                xs: "none",
+                md: "flex",
+                alignItems: "center",
+                gap: "8px",
+                flexDirection: "column",
+              },
+            }}
+          >
+            <Tooltip
+              title={
+                user?.role === "superAdmin" ? (
+                  <span style={{ color: "#343332" }}>Super Admin</span>
+                ) : user?.role === "admin" ? (
+                  <>
+                    <span style={{ color: "#a82626" }}>Admin:</span> {user.firstName}
+                  </>
+                ) : (
+                  user?.firstName
+                )
+              }
+            >
+              <PermIdentityOutlinedIcon
+                sx={{
+                  width: "30px",
+                  height: "30px",
+                  color: "#fff",
+                }}
+              />
+            </Tooltip>
+          </Box>
         </Button>
       </Box>
 
@@ -185,8 +205,13 @@ const ExistsUser = () => {
                     to={`/private_account`}
                     onClick={toggleDrawer(false)}
                   >
-                    <HomeOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
-                    <ListItemText primary="Личный кабинет" className="text-black" />
+                    <HomeOutlinedIcon
+                      style={{ color: "#45624E", marginRight: "10px" }}
+                    />
+                    <ListItemText
+                      primary="Личный кабинет"
+                      className="text-black"
+                    />
                   </ListItem>
                 </>
               )}
@@ -197,21 +222,44 @@ const ExistsUser = () => {
                     to={`/private/order_stats`}
                     onClick={toggleDrawer(false)}
                   >
-                    <HomeOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
-                    <ListItemText primary="Личный кабинет" className="text-black" />
+                    <HomeOutlinedIcon
+                      style={{ color: "#45624E", marginRight: "10px" }}
+                    />
+                    <ListItemText
+                      primary="Личный кабинет"
+                      className="text-black"
+                    />
                   </ListItem>
                 </>
               )}
 
               {can(["superAdmin"]) && (
                 <>
-                  <ListItem component={NavLink} to={`/admin-table`} onClick={toggleDrawer(false)}>
-                    <AdminPanelSettingsOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
-                    <ListItemText primary="Администраторы" className="text-black" />
+                  <ListItem
+                    component={NavLink}
+                    to={`/admin-table`}
+                    onClick={toggleDrawer(false)}
+                  >
+                    <AdminPanelSettingsOutlinedIcon
+                      style={{ color: "#45624E", marginRight: "10px" }}
+                    />
+                    <ListItemText
+                      primary="Администраторы"
+                      className="text-black"
+                    />
                   </ListItem>
-                  <ListItem component={NavLink} to={'/private/order_stats'} onClick={toggleDrawer(false)}>
-                    <AutoGraphOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
-                    <ListItemText primary="Статистика заказов" className="text-black"/>
+                  <ListItem
+                    component={NavLink}
+                    to={"/private/order_stats"}
+                    onClick={toggleDrawer(false)}
+                  >
+                    <AutoGraphOutlinedIcon
+                      style={{ color: "#45624E", marginRight: "10px" }}
+                    />
+                    <ListItemText
+                      primary="Статистика заказов"
+                      className="text-black"
+                    />
                   </ListItem>
                 </>
               )}
@@ -220,7 +268,9 @@ const ExistsUser = () => {
                 to="/private/client_orders"
                 onClick={toggleDrawer(false)}
               >
-                <CreditScoreOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
+                <CreditScoreOutlinedIcon
+                  style={{ color: "#45624E", marginRight: "10px" }}
+                />
                 <ListItemText primary="Заказы" className="text-black" />
               </ListItem>
               <ListItem
@@ -228,7 +278,9 @@ const ExistsUser = () => {
                 to="/private/clients"
                 onClick={toggleDrawer(false)}
               >
-                <GroupOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
+                <GroupOutlinedIcon
+                  style={{ color: "#45624E", marginRight: "10px" }}
+                />
                 <ListItemText primary="Клиенты" className="text-black" />
               </ListItem>
               <ListItem
@@ -236,7 +288,9 @@ const ExistsUser = () => {
                 to="/private/brands"
                 onClick={() => toggleBrand(false)}
               >
-                <BallotOutlinedIcon style={{ color: "#45624E",  marginRight: "10px" }}/>
+                <BallotOutlinedIcon
+                  style={{ color: "#45624E", marginRight: "10px" }}
+                />
                 <ListItemText primary="Бренды" className="text-black" />
               </ListItem>
               <ListItem
@@ -244,7 +298,9 @@ const ExistsUser = () => {
                 to="/private/products"
                 onClick={toggleDrawer(false)}
               >
-                <ListAltOutlinedIcon style={{ color: "#45624E",  marginRight: "10px" }}/>
+                <ListAltOutlinedIcon
+                  style={{ color: "#45624E", marginRight: "10px" }}
+                />
                 <ListItemText primary="Товары" className="text-black" />
               </ListItem>
               <ListItem
@@ -252,7 +308,9 @@ const ExistsUser = () => {
                 to="/private/manage_categories"
                 onClick={toggleDrawer(false)}
               >
-                <CategoryOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }}/>
+                <CategoryOutlinedIcon
+                  style={{ color: "#45624E", marginRight: "10px" }}
+                />
                 <ListItemText primary="Категории" className="text-black" />
               </ListItem>
             </List>
@@ -265,7 +323,9 @@ const ExistsUser = () => {
                 to={`/my_account/users/account/${user?.id}`}
                 onClick={toggleDrawer(false)}
               >
-                <HomeOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
+                <HomeOutlinedIcon
+                  style={{ color: "#45624E", marginRight: "10px" }}
+                />
                 <ListItemText primary="Личный кабинет" className="text-black" />
               </ListItem>
               <ListItem
@@ -273,7 +333,9 @@ const ExistsUser = () => {
                 to="/my_orders"
                 onClick={toggleDrawer(false)}
               >
-                <LocalMallOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
+                <LocalMallOutlinedIcon
+                  style={{ color: "#45624E", marginRight: "10px" }}
+                />
                 <ListItemText primary="Мои Заказы" className="text-black" />
               </ListItem>
               <ListItem
@@ -281,7 +343,9 @@ const ExistsUser = () => {
                 to="/my_cart"
                 onClick={toggleDrawer(false)}
               >
-                <ShoppingCartOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
+                <ShoppingCartOutlinedIcon
+                  style={{ color: "#45624E", marginRight: "10px" }}
+                />
                 <ListItemText primary="Корзина" className="text-black" />
               </ListItem>
               <ListItem
@@ -289,7 +353,9 @@ const ExistsUser = () => {
                 to="favorite-products"
                 onClick={toggleDrawer(false)}
               >
-                <FavoriteOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
+                <FavoriteOutlinedIcon
+                  style={{ color: "#45624E", marginRight: "10px" }}
+                />
                 <ListItemText primary="Избранные" className="text-black" />
               </ListItem>
             </List>
@@ -308,7 +374,9 @@ const ExistsUser = () => {
               cursor: "pointer",
             }}
           >
-            <LogoutOutlinedIcon style={{ color: "#45624E", marginRight: "10px" }} />
+            <LogoutOutlinedIcon
+              style={{ color: "#45624E", marginRight: "10px" }}
+            />
             <ListItemText primary="Выйти" className="text-black" />
           </ListItem>
         </Box>

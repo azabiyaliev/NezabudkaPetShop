@@ -7,6 +7,8 @@ import {
   MenuItem,
   Typography,
 } from "@mui/material";
+import { COLORS } from '../../../globalStyles/stylesObjects.ts';
+import PermIdentityOutlinedIcon from '@mui/icons-material/PermIdentityOutlined';
 
 const UnknownUser = () => {
   const guestEmail = localStorage.getItem('guestEmail');
@@ -52,14 +54,24 @@ const UnknownUser = () => {
             },
           }}
         >
+          <PermIdentityOutlinedIcon
+            sx={{
+              width: "30px",
+              height: "30px",
+              color: "#fff",
+              "@media (max-width: 900px)": {
+                color: "#000",
+              },
+            }}
+          />
           <Typography
             sx={{
               color: "#fff",
               fontSize: "16px",
               fontWeight: "500",
               textTransform: "uppercase",
-              "@media (max-width: 1100px)": {
-                color: "white",
+              "@media (max-width: 900px)": {
+                color: `${COLORS.black}`,
                 fontSize: "14px",
                 marginLeft: 0,
               },
