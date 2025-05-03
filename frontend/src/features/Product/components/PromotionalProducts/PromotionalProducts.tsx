@@ -18,7 +18,6 @@ const PromotionalProducts: React.FC<Props> = ({ products, cart }) => {
     <Box
       sx={{
         width: '100%',
-        // maxWidth: '1200px',
         margin: '0 auto',
         padding: '20px 0',
         position: 'relative',
@@ -67,7 +66,6 @@ const PromotionalProducts: React.FC<Props> = ({ products, cart }) => {
           600: { slidesPerView: 2 },
           1200: { slidesPerView: 3 },
           1350: { slidesPerView: 4 },
-
         }}
         loop={true}
         grabCursor={true}

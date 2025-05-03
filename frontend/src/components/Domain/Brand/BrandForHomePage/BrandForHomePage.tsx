@@ -19,7 +19,6 @@ const BrandForHomePage:React.FC<Props> = ({brands}) => {
     <Box
       sx={{
         width: "100%",
-        // maxWidth: "1200px",
         margin: "0 auto",
         padding: "20px 0",
         "& .swiper-pagination-bullet": {

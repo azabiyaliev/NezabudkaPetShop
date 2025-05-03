@@ -48,7 +48,6 @@ const LoginUser = () => {
     e.preventDefault();
     try {
       const loggedInUser = await dispatch(login(form)).unwrap();
-      // dispatch(clearCart())
       if (
         loggedInUser.user.role === userRoleAdmin
       ) {
