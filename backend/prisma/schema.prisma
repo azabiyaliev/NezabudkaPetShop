@@ -104,14 +104,14 @@ model PhotoByCarousel {
 }
 
 model Category {
-  id            Int        @id @default(autoincrement())
-  title         String
-  parentId      Int?       @map("parent_id")
-  parent        Category?  @relation("CategorySubcategories", fields: [parentId], references: [id])
-  subcategories Category[] @relation("CategorySubcategories")
-  products      Products[]
-  icon          String?
-  image         String?
+  id              Int               @id @default(autoincrement())
+  title           String
+  parentId        Int?              @map("parent_id")
+  parent          Category?         @relation("CategorySubcategories", fields: [parentId], references: [id])
+  subcategories   Category[]        @relation("CategorySubcategories")
+  icon            String?
+  image           String?
+  productCategory ProductCategory[]
 
   @@map("categories")
 }
@@ -140,15 +140,23 @@ model Products {
   items                OrderItem[]
   brandId              Int?        @map("brand_id")
   brand                Brand?      @relation(fields: [brandId], references: [id])
-  categoryId           Int?        @map("category_id")
-  category             Category?   @relation(fields: [categoryId], references: [id])
   orderedProductsStats Int         @default(0) @map("ordered_products_stats")
 
-  reviews  Review[]
-  Favorite Favorite[]
-  CartItem CartItem[]
+  reviews         Review[]
+  Favorite        Favorite[]
+  CartItem        CartItem[]
+  productCategory ProductCategory[]
 
   @@map("products")
+}
+
+model ProductCategory {
+  productId  Int
+  categoryId Int
+  product    Products @relation(fields: [productId], references: [id])
+  category   Category @relation(fields: [categoryId], references: [id])
+
+  @@id([productId, categoryId])
 }
 
 model Order {
