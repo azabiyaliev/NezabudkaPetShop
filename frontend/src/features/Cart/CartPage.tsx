@@ -1,6 +1,5 @@
 import { Box } from '@mui/joy';
 import { useAppDispatch, useAppSelector } from '../../app/hooks.ts';
-import { Container } from '@mui/material';
 import image from '../../assets/image_transparent.png';
 import Typography from '@mui/joy/Typography';
 import OrderForm from '../Order/OrderForm.tsx';
@@ -9,6 +8,7 @@ import { selectUser } from '../../store/users/usersSlice.ts';
 import { fetchCart } from '../../store/cart/cartThunk.ts';
 import { useEffect } from 'react';
 import { userRoleClient } from '../../globalConstants.ts';
+import { FONTS, SPACING } from '../../globalStyles/stylesObjects.ts';
 
 const CartPage = () => {
   const user = useAppSelector(selectUser);
@@ -28,7 +28,7 @@ const CartPage = () => {
   }, [dispatch, cart, user]);
 
   return (
-    <Container maxWidth="xl">
+    <>
       {cart && cart.products.length > 0 ? (
         <>
           <Typography
@@ -36,25 +36,13 @@ const CartPage = () => {
             sx={{
               textAlign: 'center',
               fontWeight: 'bold',
-              fontSize: "25px",
-              marginTop: "15px",
-              fontFamily: "Nunito, sans-serif",
+              fontSize: FONTS.size.xxl,
+              margin: SPACING.lg,
             }}
           >
             Оформление заказа
           </Typography>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-around",
-              flexWrap: "wrap",
-            }}
-          >
-            <Box>
-              <OrderForm/>
-            </Box>
-
-          </Box>
+          <OrderForm/>
         </>
       ) : (
         <Box
@@ -68,7 +56,6 @@ const CartPage = () => {
             level="h1"
             sx={{
               marginTop: "10px",
-              fontFamily: "Nunito, sans-serif",
               fontWeight: 600,
             }}
           >
@@ -78,7 +65,6 @@ const CartPage = () => {
             sx={{
               marginTop: "20px",
               color: "#706e6a",
-              fontFamily: "Nunito, sans-serif",
               fontSize: "18px",
             }}
           >
@@ -86,7 +72,7 @@ const CartPage = () => {
           </Typography>
         </Box>
       )}
-    </Container>
+    </>
   );
 };
 

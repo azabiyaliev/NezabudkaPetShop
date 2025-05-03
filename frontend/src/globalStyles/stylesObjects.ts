@@ -14,6 +14,8 @@ export const COLORS = {
   black: '#000000',
   rgbaGrey: 'rgba(241,239,239,0.61)',
 
+
+  BORDER_CART: 'rgba(102,100,97,0.61)',
   DARK_GREEN: '#34610B',
   FOREST_GREEN: '#152D00',
   LIGHT_GREEN: '#92CC5F',

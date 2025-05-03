@@ -5,6 +5,7 @@ import Typography from '@mui/joy/Typography';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import { useAppSelector } from '../../../../../app/hooks.ts';
 import { selectUser } from '../../../../../store/users/usersSlice.ts';
+import { SPACING } from '../../../../../globalStyles/stylesObjects.ts';
 
 interface Props {
   products: ICartItem[];
@@ -40,8 +41,7 @@ const TotalPrice: React.FC<Props> = ({ products, bonusUsed }) => {
   return (
     <Box
       sx={{
-        padding: "15px",
-        borderRadius: "20px",
+        padding: SPACING.xs,
         "@media (max-width: 720px)": {
           width: "520px",
         },
@@ -60,10 +60,8 @@ const TotalPrice: React.FC<Props> = ({ products, bonusUsed }) => {
         },
       }}
     >
-
       <Typography
         sx={{
-          fontFamily: "Nunito, sans-serif",
           fontSize: "20px",
           display: "flex",
           justifyContent: "space-between",
@@ -81,13 +79,12 @@ const TotalPrice: React.FC<Props> = ({ products, bonusUsed }) => {
             fontWeight: "bold",
           }}
         >
-          {finalTotalPrice.toLocaleString()} сом
+          {finalTotalPrice.toLocaleString('ru-RU').replace(/,/g, ' ')} сом
         </span>
       </Typography>
       <Box
         sx={{
           borderTop: "1px solid lightgray",
-          margin: "20px 0",
         }}
       >
         <List aria-labelledby="decorated-list-demo">
@@ -118,7 +115,6 @@ const TotalPrice: React.FC<Props> = ({ products, bonusUsed }) => {
             <Typography
               sx={{
                 width: "100%",
-                fontFamily: "Nunito, sans-serif",
                 fontSize: "18px",
                 display: "flex",
                 justifyContent: "space-between",
@@ -135,7 +131,7 @@ const TotalPrice: React.FC<Props> = ({ products, bonusUsed }) => {
                   fontWeight: "bold",
                 }}
               >
-                {totalPriceProduct.toLocaleString()} сом
+                {totalPriceProduct.toLocaleString('ru-RU').replace(/,/g, ' ')} сом
               </span>
             </Typography>
           </ListItem>
@@ -164,7 +160,6 @@ const TotalPrice: React.FC<Props> = ({ products, bonusUsed }) => {
             <Typography
               sx={{
                 width: "100%",
-                fontFamily: "Nunito, sans-serif",
                 fontSize: "18px",
                 display: "flex",
                 justifyContent: "space-between",
@@ -181,12 +176,12 @@ const TotalPrice: React.FC<Props> = ({ products, bonusUsed }) => {
                   fontWeight: "bold",
                 }}
               >
-                 {bonusToReceive.toLocaleString()} бонусов
+                 {bonusToReceive.toLocaleString('ru-RU').replace(/,/g, ' ')} бонусов
               </span>
             </Typography>
           </ListItem>
 
-          {user?.role === "client" && bonusUsed > 0&& (
+          {user?.role === "client" && bonusUsed > 0 && (
             <ListItem>
               <ListItemDecorator
                 sx={{
@@ -200,7 +195,6 @@ const TotalPrice: React.FC<Props> = ({ products, bonusUsed }) => {
               <Typography
                 sx={{
                   width: "100%",
-                  fontFamily: "Nunito, sans-serif",
                   fontSize: "18px",
                   display: "flex",
                   justifyContent: "space-between",
@@ -217,7 +211,7 @@ const TotalPrice: React.FC<Props> = ({ products, bonusUsed }) => {
                     fontWeight: "bold",
                   }}
                 >
-                  -{bonusUsed.toLocaleString()} бонусов
+                  -{bonusUsed.toLocaleString('ru-RU').replace(/,/g, ' ')} бонусов
                 </span>
               </Typography>
             </ListItem>

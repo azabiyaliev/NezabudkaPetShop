@@ -96,7 +96,7 @@ export class ProductsService {
       orderBy: {
         orderedProductsStats: 'desc',
       },
-      take: 8,
+      take: 10,
       include: {
         brand: true,
         category: true,

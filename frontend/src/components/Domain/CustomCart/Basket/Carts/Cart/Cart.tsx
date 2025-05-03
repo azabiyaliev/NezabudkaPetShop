@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from '@mui/joy';
+import { Box, Typography } from '@mui/joy';
 import { ICartItem, ProductResponse } from '../../../../../../types';
 import React from 'react';
 import { apiUrl, userRoleClient } from '../../../../../../globalConstants.ts';
@@ -66,223 +66,282 @@ const Cart: React.FC<Props> = ({ product, isFirst }) => {
   };
 
   return (
-    <Box
-      sx={{
-        margin: "10px 0",
-        display: "flex",
-        alignItems: "center",
-        flexWrap: "wrap",
-        justifyContent: "space-between",
-        borderTop: isFirst ? "none" : `1px solid ${COLORS.background}`,
-        pt: SPACING.sm,
-      }}
-    >
+    <Box>
       <Box
         sx={{
+          margin: "10px 0",
           display: "flex",
-          alignItems: "center",
-          width: "350px",
-          p: 0,
-          "@media (max-width: 850px)": {
-            width: "300px",
-          },
-          "@media (max-width: 825px)": {
-            marginRight: "10px",
-          },
-          "@media (max-width: 720px)": {
-            width: "100%",
-          },
-          "@media (max-width: 570px)": {
-            alignItems: "start",
+          flexWrap: "wrap",
+          justifyContent: "space-between",
+          borderTop: isFirst ? "none" : `1px solid ${COLORS.BORDER_CART}`,
+          mr: SPACING.sm,
+          pt: SPACING.sm,
+          pp: SPACING.sm,
+          '@media (max-width: 780px)': {
+            flexWrap: "nowrap",
           },
         }}
       >
         <Box
           sx={{
-            marginRight: "25px",
-            display: "inline-block",
-            "& img": {
-              width: "80px",
-              height: "90px",
-              objectFit: "cover",
+            display: "flex",
+            alignItems: "center",
+            p: 0,
+            "@media (max-width: 1250px)": {
+              alignItems: "start",
             },
-            "@media (max-width: 720px)": {
-              "& img": {
-                borderTopLeftRadius: "20px",
-                borderBottomLeftRadius: "20px",
-              },
-            },
-            "@media (max-width: 570px)": {
+          }}
+        >
+          <Box
+            sx={{
+              marginRight: SPACING.sm,
+              display: "inline-block",
               "& img": {
                 width: "100px",
                 height: "110px",
-                margin: "20% 10px",
-                borderRadius: "20px",
-              },
-              marginRight: "10px",
-            },
-          }}
-        >
-          <img
-            src={apiUrl + product.product.productPhoto}
-            alt={product.product.productName}
-          />
-        </Box>
-        <Box
-          sx={{
-            width: "100%",
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          <Link
-            to={`/product/${product.product.id}`}
-            style={{
-              textDecoration: 'none',
-            }}
-          >
-            <Typography
-              level="h4"
-              sx={{
-                fontSize: "lg",
-                mb: 0.5,
-                fontFamily: "Nunito, sans-serif",
-                wordWrap: "break-word",
-                '&:hover': {
-                  color: COLORS.primary,
-                },
-                "@media (max-width: 570px)": {
-                  mb: 0,
-                  mt: 1.5,
-                  fontSize: "md",
-                  textAlign: "center",
-                },
-              }}
-            >
-              {product.product.productName}
-            </Typography>
-          </Link>
-          <Typography
-            level="h3"
-            sx={{
-              fontSize: "lg",
-              mb: 0.5,
-              fontFamily: "Nunito, sans-serif",
-              width: "110px",
-              display: "none",
-              color: "rgba(250, 179, 1, 1)",
-              marginTop: "10px",
-              "@media (max-width: 720px)": {
-                display: "block",
-              },
-              "@media (max-width: 570px)": {
-                mb: 0,
-                fontSize: "md",
-                textAlign: "center",
-                width: "100%",
+                objectFit: "cover",
               },
             }}
           >
-            {product.product.productPrice.toLocaleString()} сом
-          </Typography>
+            <img
+              src={apiUrl + product.product.productPhoto}
+              alt={product.product.productName}
+            />
+          </Box>
           <Box
             sx={{
-              width: "100px",
-              marginRight: "5px",
-              display: "none",
-              "@media (max-width: 570px)": {
-                display: "block",
-                margin: "0 auto",
+              width: "100%",
+              display: "flex",
+              flexDirection: "column",
+              '@media (max-width: 800px)': {
+                width: '70%',
               },
             }}
           >
-            <Box
-              sx={{
+            <Box>
+              <Link
+                to={`/product/${product.product.id}`}
+                style={{
+                  textDecoration: 'none',
+                }}
+              >
+                <Typography
+                  sx={{
+                    fontSize: "lg",
+                    mb: 0.5,
+                    wordWrap: "break-word",
+                    marginTop: '25px',
+                    '&:hover': {
+                      color: COLORS.primary,
+                    },
+                    "@media (max-width: 1250px)": {
+                      marginTop: '25px',
+                    },
+                    "@media (max-width: 570px)": {
+                      marginTop: '25px',
+                      fontSize: "md",
+                      textAlign: "center",
+                    },
+                  }}
+                >
+                  {product.product.productName}
+                </Typography>
+              </Link>
+            </Box>
+            <Box sx={{
+              display: "flex",
+              alignItems: "center",
+              "@media (max-width: 1250px)": {
+                display: "none",
+              },
+              '@media (max-width: 950px)': {
                 display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 1,
-                pt: 2,
-                mb: 2,
-              }}
-            >
-              <IconButton
+              },
+              "@media (max-width: 685px)": {
+                display: "none",
+              },
+            }}>
+              <Box
                 sx={{
-                  borderRadius: "50%",
-                  backgroundColor: product.quantity <= 1 ? "lightgray" : "rgb(112,168,71)",
-                  border: "transparent",
-                  "&:hover": {
-                    backgroundColor: product.quantity <= 1 ? "lightgray" : "#237803",
-                  },
+                  marginRight: "10px",
                 }}
-                size="sm"
-                variant="outlined"
-                onClick={() => removeQuantity(product.product)}
-                disabled={product.quantity <= 1}
               >
-                <Remove sx={{ color: "white" }} />
-              </IconButton>
-              <Typography
-                textColor="text.secondary"
-                sx={{ fontWeight: "md", fontFamily: "Nunito, sans-serif" }}
-              >
-                {product.quantity}
-              </Typography>
-              <IconButton
+                <Typography
+                  level="h3"
+                  sx={{
+                    fontSize: "lg",
+                    mb: 0.5,
+                    width: "110px",
+                    color: `${COLORS.yellow}`,
+                  }}
+                >
+                  {product.product.productPrice.toLocaleString('ru-RU').replace(/,/g, ' ')} сом
+                </Typography>
+              </Box>
+              <Box
                 sx={{
-                  borderRadius: "50%",
-                  backgroundColor: "rgb(112,168,71)",
-                  border: "transparent",
-                  "&:hover": {
-                    backgroundColor: "#237803",
-                  },
+                  width: "100px",
+                  marginRight: SPACING.lg,
                 }}
-                size="sm"
-                variant="outlined"
-                onClick={() => addQuantity(product.product)}
               >
-                <Add sx={{ color: "white" }} />
-              </IconButton>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 1,
+                    pt: 2,
+                    mb: 2,
+                  }}
+                >
+                  <IconButton
+                    sx={{
+                      borderRadius: "50%",
+                      backgroundColor: product.quantity <= 1 ? "lightgray" : "rgb(112,168,71)",
+                      border: "transparent",
+                      "&:hover": {
+                        backgroundColor: product.quantity <= 1 ? "lightgray" : "#237803",
+                      },
+                    }}
+                    size="sm"
+                    variant="outlined"
+                    onClick={() => removeQuantity(product.product)}
+                    disabled={product.quantity <= 1}
+                  >
+                    <Remove sx={{ color: "white" }} />
+                  </IconButton>
+                  <Typography
+                    textColor="text.secondary"
+                    sx={{ fontWeight: "md" }}
+                  >
+                    {product.quantity}
+                  </Typography>
+                  <IconButton
+                    sx={{
+                      borderRadius: "50%",
+                      backgroundColor: "rgb(112,168,71)",
+                      border: "transparent",
+                      "&:hover": {
+                        backgroundColor: "#237803",
+                      },
+                    }}
+                    size="sm"
+                    variant="outlined"
+                    onClick={() => addQuantity(product.product)}
+                  >
+                    <Add sx={{ color: "white" }} />
+                  </IconButton>
+                </Box>
+              </Box>
+              <Box
+                sx={{
+                  marginRight: "10px",
+                }}
+              >
+                <Typography
+                  level="h3"
+                  sx={{
+                    fontSize: "lg",
+                    mb: 0.5,
+                    width: "110px",
+                    color: `${COLORS.yellow}`,
+                  }}
+                >
+                  {(product.product.productPrice * product.quantity).toLocaleString('ru-RU').replace(/,/g, ' ')} сом
+                </Typography>
+              </Box>
             </Box>
           </Box>
-        </Box>
-        <Box
-          sx={{
-            display: "none",
-            "@media (max-width: 570px)": {
-              display: "block",
+          <Box sx={{
+            display: 'none',
+            "@media (max-width: 1250px)": {
+              display: 'block',
             },
-          }}
-        >
-          <svg
-            onClick={() => deleteProductFromCart(product.product.id)}
-            style={{
-              fill: "#737373",
-              width: "15px",
-              height: "15px",
-              margin: "15px 0 0 10px",
-              cursor: "pointer",
+            '@media (max-width: 950px)': {
+              display: "none",
+            },
+          }}>
+            <IconButton
+              sx={{
+                marginRight: "5px",
+              }}
+              variant="plain"
+              type="button"
+              onClick={() => deleteProductFromCart(product.product.id)}
+            >
+              <svg
+                style={{
+                  fill: "#737373",
+                  width: "15px",
+                  height: "15px",
+                }}
+                xmlns="http://www.w3.org/2000/svg"
+                x="0px"
+                y="0px"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+              >
+                <path d="M 4.7070312 3.2929688 L 3.2929688 4.7070312 L 10.585938 12 L 3.2929688 19.292969 L 4.7070312 20.707031 L 12 13.414062 L 19.292969 20.707031 L 20.707031 19.292969 L 13.414062 12 L 20.707031 4.7070312 L 19.292969 3.2929688 L 12 10.585938 L 4.7070312 3.2929688 z"></path>
+              </svg>
+            </IconButton>
+          </Box>
+        </Box>
+        <Box sx={{
+          "@media (max-width: 1250px)": {
+            display: 'none',
+          },
+          '@media (max-width: 950px)': {
+            display: "block",
+          },
+        }}>
+          <IconButton
+            sx={{
+              marginRight: "5px",
             }}
-            xmlns="http://www.w3.org/2000/svg"
-            x="0px"
-            y="0px"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
+            variant="plain"
+            type="button"
+            onClick={() => deleteProductFromCart(product.product.id)}
           >
-            <path d="M 4.7070312 3.2929688 L 3.2929688 4.7070312 L 10.585938 12 L 3.2929688 19.292969 L 4.7070312 20.707031 L 12 13.414062 L 19.292969 20.707031 L 20.707031 19.292969 L 13.414062 12 L 20.707031 4.7070312 L 19.292969 3.2929688 L 12 10.585938 L 4.7070312 3.2929688 z"></path>
-          </svg>
+            <svg
+              style={{
+                fill: "#737373",
+                width: "15px",
+                height: "15px",
+              }}
+              xmlns="http://www.w3.org/2000/svg"
+              x="0px"
+              y="0px"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+            >
+              <path d="M 4.7070312 3.2929688 L 3.2929688 4.7070312 L 10.585938 12 L 3.2929688 19.292969 L 4.7070312 20.707031 L 12 13.414062 L 19.292969 20.707031 L 20.707031 19.292969 L 13.414062 12 L 20.707031 4.7070312 L 19.292969 3.2929688 L 12 10.585938 L 4.7070312 3.2929688 z"></path>
+            </svg>
+          </IconButton>
         </Box>
       </Box>
-      <Box
-        sx={{
+
+      <Box sx={{
+        display: "none",
+        alignItems: "center",
+        justifyContent: 'space-around',
+        '@media (max-width: 1250px)': {
           display: "flex",
-          alignItems: "center",
-        }}
-      >
+        },
+        '@media (max-width: 950px)': {
+          display: "none",
+        },
+        "@media (max-width: 685px)": {
+          display: "flex",
+        },
+      }}>
         <Box
           sx={{
             marginRight: "10px",
+            "@media (max-width: 470px)": {
+              marginRight: "5px",
+            },
           }}
         >
           <Typography
@@ -290,23 +349,20 @@ const Cart: React.FC<Props> = ({ product, isFirst }) => {
             sx={{
               fontSize: "lg",
               mb: 0.5,
-              fontFamily: "Nunito, sans-serif",
               width: "110px",
-              "@media (max-width: 720px)": {
-                display: "none",
+              color: `${COLORS.yellow}`,
+              "@media (max-width: 470px)": {
+                width: "100px",
               },
             }}
           >
-            {product.product.productPrice.toLocaleString()} сом
+            {product.product.productPrice.toLocaleString('ru-RU').replace(/,/g, ' ')} сом
           </Typography>
         </Box>
         <Box
           sx={{
             width: "100px",
             marginRight: "5px",
-            "@media (max-width: 570px)": {
-              display: "none",
-            },
           }}
         >
           <Box
@@ -360,35 +416,21 @@ const Cart: React.FC<Props> = ({ product, isFirst }) => {
         </Box>
         <Box
           sx={{
-            "@media (max-width: 570px)": {
-              display: "none",
-            },
+            marginRight: "10px",
           }}
         >
-          <Button
+          <Typography
+            level="h3"
             sx={{
-              marginRight: "5px",
+              fontSize: "lg",
+              mb: 0.5,
+              ml: '25px',
+              width: "110px",
+              color: `${COLORS.yellow}`,
             }}
-            variant="plain"
-            type="button"
-            onClick={() => deleteProductFromCart(product.product.id)}
           >
-            <svg
-              style={{
-                fill: "#737373",
-                width: "15px",
-                height: "15px",
-              }}
-              xmlns="http://www.w3.org/2000/svg"
-              x="0px"
-              y="0px"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-            >
-              <path d="M 4.7070312 3.2929688 L 3.2929688 4.7070312 L 10.585938 12 L 3.2929688 19.292969 L 4.7070312 20.707031 L 12 13.414062 L 19.292969 20.707031 L 20.707031 19.292969 L 13.414062 12 L 20.707031 4.7070312 L 19.292969 3.2929688 L 12 10.585938 L 4.7070312 3.2929688 z"></path>
-            </svg>
-          </Button>
+            {(product.product.productPrice * product.quantity).toLocaleString('ru-RU').replace(/,/g, ' ')} сом
+          </Typography>
         </Box>
       </Box>
     </Box>

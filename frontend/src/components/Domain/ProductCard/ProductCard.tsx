@@ -153,8 +153,15 @@ const ProductCard:React.FC<Props> = ({ product, cart }) => {
         </Tooltip>
       )}
 
-      {isTopSellingProduct && (
+      {isTopSellingProduct && !product.sales && (
         <Box sx={{
+          position: 'absolute',
+          top: 15,
+          left: 8,
+          padding: `${SPACING.exs} ${SPACING.xs}`,
+          borderRadius: '5px',
+          cursor: 'pointer',
+          zIndex: 2,
           textTransform: 'uppercase',
           color: COLORS.yellow,
         }}>

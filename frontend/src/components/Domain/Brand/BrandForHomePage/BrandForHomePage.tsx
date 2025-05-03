@@ -19,7 +19,6 @@ const BrandForHomePage:React.FC<Props> = ({brands}) => {
     <Box
       sx={{
         width: "100%",
-        maxWidth: "1200px",
         margin: "0 auto",
         padding: "20px 0",
         "& .swiper-pagination-bullet": {
@@ -51,6 +50,7 @@ const BrandForHomePage:React.FC<Props> = ({brands}) => {
           850: { slidesPerView: 5 },
           900: { slidesPerView: 6 },
           1200: { slidesPerView: 8 },
+          1450: { slidesPerView: 9 },
         }}
         navigation
         pagination={{

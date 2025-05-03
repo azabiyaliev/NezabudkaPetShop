@@ -18,7 +18,6 @@ const PromotionalProducts: React.FC<Props> = ({ products, cart }) => {
     <Box
       sx={{
         width: '100%',
-        maxWidth: '1200px',
         margin: '0 auto',
         padding: '20px 0',
         position: 'relative',
@@ -61,11 +60,12 @@ const PromotionalProducts: React.FC<Props> = ({ products, cart }) => {
       <Swiper
         modules={[Pagination, Navigation, Autoplay]}
         spaceBetween={6}
-        slidesPerView={3}
+        slidesPerView={4}
         breakpoints={{
           0: { slidesPerView: 1 },
-          800: { slidesPerView: 2 },
+          600: { slidesPerView: 2 },
           1200: { slidesPerView: 3 },
+          1350: { slidesPerView: 4 },
         }}
         loop={true}
         grabCursor={true}
