@@ -16,6 +16,7 @@ export class SeedService {
 
   async seed() {
     const tablesToClear = [
+      'productCategory',
       'cartItem',
       'cart',
       'favorite',
@@ -544,7 +545,6 @@ export class SeedService {
           productPrice: randomPrice,
           productDescription: `${subCategory.title}. ${randomDescription}`,
           brandId: randomBrand.id,
-          categoryId: subCategory.id,
           productPhoto: randomPhoto,
           existence,
           sales: onSale,
@@ -562,7 +562,18 @@ export class SeedService {
         }
 
         const product = await this.prisma.products.create({
-          data: productData,
+          data: {
+            ...productData,
+            productCategory: {
+              create: [
+                {
+                  category: {
+                    connect: { id: subCategory.id },
+                  },
+                },
+              ],
+            },
+          },
         });
         products.push(product);
       }
@@ -688,14 +699,14 @@ export class SeedService {
     await this.prisma.adminInfo.create({
       data: {
         information:
-            'Добро пожаловать в зоомагазин "Незабудка"!\n\nМы рады видеть вас среди наших клиентов. Здесь вы найдете всё необходимое для здоровья и счастья вашего питомца. Мы заботимся о каждом хвостике и предлагаем только лучшие товары и сервис. Спасибо, что выбрали нас!',
+          'Добро пожаловать в зоомагазин "Незабудка"!\n\nМы рады видеть вас среди наших клиентов. Здесь вы найдете всё необходимое для здоровья и счастья вашего питомца. Мы заботимся о каждом хвостике и предлагаем только лучшие товары и сервис. Спасибо, что выбрали нас!',
       },
     });
 
     await this.prisma.clientInfo.create({
       data: {
         information:
-            'Добро пожаловать в зоомагазин "Незабудка"!\n\nМы рады видеть вас среди наших клиентов. Здесь вы найдете всё необходимое для здоровья и счастья вашего питомца. Мы заботимся о каждом хвостике и предлагаем только лучшие товары и сервис. Спасибо, что выбрали нас!',
+          'Добро пожаловать в зоомагазин "Незабудка"!\n\nМы рады видеть вас среди наших клиентов. Здесь вы найдете всё необходимое для здоровья и счастья вашего питомца. Мы заботимся о каждом хвостике и предлагаем только лучшие товары и сервис. Спасибо, что выбрали нас!',
       },
     });
 
