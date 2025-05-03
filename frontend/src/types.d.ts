@@ -180,8 +180,7 @@ export interface ProductRequest {
   existence?: boolean;
   sales?: boolean;
   brandId?: string;
-  categoryId: string;
-  subcategoryId?: string;
+  categoryId: number[];
   id?: number;
   category?: ICategories;
   startDateSales?: Date | null | string;
@@ -190,6 +189,7 @@ export interface ProductRequest {
   promoPercentage?: number;
   brand?: IBrand;
 }
+
 
 export interface ICartBack {
   id: number,
@@ -251,11 +251,22 @@ export interface ProductResponse {
   productDescription: string;
   existence: boolean;
   sales: boolean;
-  categoryId: string;
   brandId: string;
   brand: IBrand;
   reviews: [];
-  category: ICategories;
+  categoryId: number[];
+  subcategoryId?: string[];
+  productCategory: {
+    category: {
+      id: number;
+      title: string;
+      parentId?: number;
+      parent?: {
+        id: number;
+        title: string;
+      };
+    };
+  }[];
   startDateSales?: string;
   endDateSales?: string;
   orderedProductsStats: number;
