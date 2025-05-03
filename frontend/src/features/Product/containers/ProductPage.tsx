@@ -164,8 +164,10 @@ const ProductPage = () => {
 
     return crumbs;
   };
+  const breadcrumbs = product.productCategory?.[0]?.category
+    ? getBreadcrumbs(product.productCategory[0].category)
+    : [];
 
-  const breadcrumbs = product.category ? getBreadcrumbs(product.category) : [];
 
   return (
     <div>
@@ -299,7 +301,18 @@ const ProductPage = () => {
                   { label: 'Вес', value: product.productWeight ? `${product.productWeight} кг` : 'не указано' },
                   { label: 'Форма выпуска', value: product.productSize ?? 'не указано' },
                   { label: 'Возраст животного', value: product.productAge ?? 'не указано' },
-                  { label: 'Категория', value: product.category?.title ?? 'не указано' },
+                  {
+                    label: 'Категории',
+                    value: product.productCategory.length
+                      ? product.productCategory
+                        .map(({ category }) =>
+                          category.parent
+                            ? `${category.parent.title} → ${category.title}`
+                            : category.title
+                        )
+                        .join(', ')
+                      : 'не указано'
+                  }
                 ].map(({ label, value }, idx) => {
                   const isMissing = value === 'не указано';
                   return (

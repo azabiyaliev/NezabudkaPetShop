@@ -35,10 +35,14 @@ export class ProductsService {
             },
           },
           {
-            category: {
-              title: {
-                contains: searchKeyword,
-                mode: 'insensitive',
+            productCategory: {
+              some: {
+                category: {
+                  title: {
+                    contains: searchKeyword,
+                    mode: 'insensitive',
+                  },
+                },
               },
             },
           },
@@ -54,15 +58,19 @@ export class ProductsService {
       },
       include: {
         brand: true,
-        category: {
-          select: {
-            id: true,
-            title: true,
-            parentId: true,
-            parent: {
+        productCategory: {
+          include: {
+            category: {
               select: {
                 id: true,
                 title: true,
+                parentId: true,
+                parent: {
+                  select: {
+                    id: true,
+                    title: true,
+                  },
+                },
               },
             },
           },
@@ -81,8 +89,20 @@ export class ProductsService {
   async getPromotionalProducts() {
     const products = await this.prismaService.products.findMany({
       where: { sales: true },
-      include: { brand: true, category: true },
+      include: {
+        brand: true,
+        productCategory: {
+          include: {
+            category: {
+              include: {
+                parent: true,
+              },
+            },
+          },
+        },
+      },
     });
+
     return products || [];
   }
 
@@ -99,9 +119,18 @@ export class ProductsService {
       take: 10,
       include: {
         brand: true,
-        category: true,
+        productCategory: {
+          include: {
+            category: {
+              include: {
+                parent: true,
+              },
+            },
+          },
+        },
       },
     });
+
     return products || [];
   }
 
@@ -126,15 +155,15 @@ export class ProductsService {
       promoPercentage,
     } = createProductsDto;
 
-    if (!categoryId) {
+    if (!categoryId || categoryId.length === 0) {
       throw new BadRequestException({
-        message: 'Заполните поле Категории товара',
+        message: 'Заполните хотя бы одну категорию товара',
       });
     }
 
     if (!productPhoto) {
       throw new BadRequestException({
-        message: 'Поле с изображением товара не должно быть пустым ',
+        message: 'Поле с изображением товара не должно быть пустым',
       });
     }
 
@@ -157,38 +186,40 @@ export class ProductsService {
         productWeight: Number(productWeight) || null,
         productAge,
         brandId: Number(brandId) || null,
-        categoryId: Number(categoryId),
         productPrice: price,
         promoPrice: promoFinalPrice,
-        promoPercentage: Number(promoPercentage),
+        promoPercentage: promo,
         sales,
         existence: existence === 'true',
         startDateSales,
         endDateSales,
+        productCategory: {
+          create: categoryId.map((id: number) => ({
+            category: { connect: { id } },
+          })),
+        },
       },
-      select: {
-        id: true,
-        productName: true,
-        productPhoto: true,
-        productDescription: true,
+      include: {
         brand: true,
-        category: true,
-        sales: true,
-        existence: true,
-        startDateSales: true,
-        endDateSales: true,
-        productSize: true,
-        productManufacturer: true,
-        productFeedClass: true,
-        productWeight: true,
-        productAge: true,
+        productCategory: {
+          include: {
+            category: {
+              select: {
+                id: true,
+                title: true,
+              },
+            },
+          },
+        },
       },
     });
+
     if (!newProduct) {
       throw new BadRequestException({
         message: 'Не удалось добавить товар в каталог товаров',
       });
     }
+
     return newProduct;
   }
 
@@ -200,9 +231,13 @@ export class ProductsService {
       },
       include: {
         brand: true,
-        category: {
+        productCategory: {
           include: {
-            parent: true,
+            category: {
+              include: {
+                parent: true,
+              },
+            },
           },
         },
         reviews: {
@@ -230,17 +265,17 @@ export class ProductsService {
         },
       },
     });
+
     if (!oneProduct) {
       throw new BadRequestException('Товар не найден');
     }
+
     return oneProduct;
   }
 
   async getOneProductForEdit(id: number) {
     const oneProduct = await this.prismaService.products.findUnique({
-      where: {
-        id,
-      },
+      where: { id },
       select: {
         id: true,
         productName: true,
@@ -252,7 +287,15 @@ export class ProductsService {
         productAge: true,
         productPhoto: true,
         brandId: true,
-        categoryId: true,
+        productCategory: {
+          select: {
+            category: {
+              select: {
+                id: true,
+              },
+            },
+          },
+        },
         productPrice: true,
         sales: true,
         existence: true,
@@ -297,27 +340,21 @@ export class ProductsService {
     if (file) {
       photo = '/products/' + file.filename;
     }
-    const productId = await this.prismaService.products.findUnique({
-      where: {
-        id,
-      },
+
+    const productExists = await this.prismaService.products.findUnique({
+      where: { id },
     });
-    if (!productId) {
+    if (!productExists) {
       throw new NotFoundException('Товар не найден');
     }
 
     const price = Number(productPrice);
     const promo = Number(promoPercentage);
-
     const promoFinalPrice =
-      sales && promoPercentage
-        ? Math.round(price - (price * promo) / 100)
-        : null;
+      sales && promo ? Math.round(price - (price * promo) / 100) : null;
 
-    const changedProduct = await this.prismaService.products.update({
-      where: {
-        id,
-      },
+    return this.prismaService.products.update({
+      where: { id },
       data: {
         productName,
         productDescription,
@@ -325,50 +362,36 @@ export class ProductsService {
         promoPrice: promoFinalPrice,
         productPhoto: photo,
         brandId: Number(brandId),
-        categoryId: Number(categoryId),
         existence: existence === 'true',
-        sales: sales ? sales : false,
+        sales: sales ?? false,
         startDateSales: sales ? startDateSales : null,
         endDateSales: sales ? endDateSales : null,
-        productWeight:
-          productWeight === undefined || productWeight === null
-            ? null
-            : Number(productWeight),
+        productWeight: productWeight ? Number(productWeight) : null,
         productAge: productAge === 'null' ? null : productAge,
         productSize: productSize === 'null' ? null : productSize,
         productManufacturer:
           productManufacturer === 'null' ? null : productManufacturer,
         productFeedClass: productFeedClass === 'null' ? null : productFeedClass,
-        promoPercentage: Number(promoPercentage),
+        promoPercentage: promo,
+
+        productCategory: {
+          deleteMany: {},
+          create: categoryId.map((categoryId) => ({
+            category: { connect: { id: categoryId } },
+          })),
+        },
       },
-      select: {
-        id: true,
-        productName: true,
-        productPhoto: true,
-        productPrice: true,
-        productDescription: true,
-        brandId: true,
-        categoryId: true,
+      include: {
         brand: true,
-        category: true,
-        sales: true,
-        existence: true,
-        startDateSales: true,
-        endDateSales: true,
-        productSize: true,
-        productManufacturer: true,
-        productFeedClass: true,
-        productWeight: true,
-        productAge: true,
-        promoPercentage: true,
-        promoPrice: true,
+        productCategory: {
+          include: {
+            category: {
+              select: { id: true, title: true },
+            },
+          },
+        },
       },
     });
-
-    if (!changedProduct) {
-      throw new BadRequestException('Продукт не найден');
-    }
-    return changedProduct;
   }
 
   //FOR ADMIN
@@ -392,24 +415,23 @@ export class ProductsService {
   }
 
   async getCategoryFilterOptions(categoryId: number) {
-    // Получаем все товары из категории
-    const products = await this.prismaService.products.findMany({
-      where: {
-        OR: [
-          { categoryId },
-          {
-            category: {
-              parentId: categoryId,
+    const productsWithCategory =
+      await this.prismaService.productCategory.findMany({
+        where: {
+          categoryId,
+        },
+        include: {
+          product: {
+            include: {
+              brand: true,
             },
           },
-        ],
-      },
-      include: {
-        brand: true,
-      },
-    });
+        },
+      });
 
-    if (!products || products.length === 0) {
+    const products = productsWithCategory.map((entry) => entry.product);
+
+    if (products.length === 0) {
       return {
         brands: [],
         sizes: [],
@@ -420,7 +442,6 @@ export class ProductsService {
       };
     }
 
-    // Извлекаем уникальные значения для всех атрибутов
     const brands = [
       ...new Set(
         products.filter((p) => p.brand?.title).map((p) => p.brand!.title),
@@ -454,7 +475,6 @@ export class ProductsService {
       ),
     ];
 
-    // Находим минимальную и максимальную цену
     const prices = products.map((p) => p.productPrice);
     const minPrice = prices.length > 0 ? Math.min(...prices) : 0;
     const maxPrice = prices.length > 0 ? Math.max(...prices) : 5000;
@@ -477,8 +497,14 @@ export class ProductsService {
     const subcategories = await this.prismaService.category.findMany({
       where: { parentId: id },
       include: {
-        products: {
-          include: { brand: true },
+        productCategory: {
+          include: {
+            product: {
+              include: {
+                brand: true,
+              },
+            },
+          },
         },
       },
     });
@@ -488,9 +514,10 @@ export class ProductsService {
       title: sub.title,
       brands: Array.from(
         new Map(
-          sub.products
-            .filter((p) => p.brand)
-            .map((p) => [p.brand!.id, p.brand]),
+          sub.productCategory
+            .map((pc) => pc.product?.brand)
+            .filter((brand) => brand)
+            .map((brand) => [brand!.id, brand!]),
         ).values(),
       ),
     }));
@@ -505,44 +532,54 @@ export class ProductsService {
       throw new Error('Категория не найдена');
     }
 
-    let products;
+    let categoryIds: number[] = [];
 
     if (!category.parentId) {
+      // Родительская категория: найти все подкатегории
       const subcategories = await this.prismaService.category.findMany({
         where: { parentId: id },
         select: { id: true },
       });
 
-      const subcategoryId = subcategories.map((cat) => cat.id);
-
-      subcategoryId.push(id);
-
-      products = await this.prismaService.products.findMany({
-        where: {
-          categoryId: { in: subcategoryId },
-        },
-        include: {
-          category: {
-            include: {
-              parent: true,
-            },
-          },
-        },
-      });
+      categoryIds = subcategories.map((cat) => cat.id);
+      categoryIds.push(id);
     } else {
-      products = await this.prismaService.products.findMany({
-        where: { categoryId: id },
-        include: {
-          category: {
-            include: {
-              parent: true,
-            },
-          },
-        },
-      });
+      // Обычная категория
+      categoryIds = [id];
     }
 
-    return products;
+    const productCategories = await this.prismaService.productCategory.findMany(
+      {
+        where: {
+          categoryId: { in: categoryIds },
+        },
+        include: {
+          product: {
+            include: {
+              brand: true,
+              productCategory: {
+                include: {
+                  category: {
+                    include: { parent: true },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    );
+
+    const uniqueProducts = new Map<
+      number,
+      (typeof productCategories)[0]['product']
+    >();
+
+    for (const pc of productCategories) {
+      uniqueProducts.set(pc.product.id, pc.product);
+    }
+
+    return Array.from(uniqueProducts.values());
   }
 
   async getFilteredProducts(
@@ -562,99 +599,88 @@ export class ProductsService {
       sales,
     } = filters;
 
-    const whereConditions: Record<string, unknown> = {};
+    const whereConditions: Record<string, any> = {
+      ...(existence === 'true' || existence === true
+        ? { existence: true }
+        : {}),
+      ...(sales === 'true' || sales === true ? { sales: true } : {}),
+      ...(brands
+        ? {
+            brand: {
+              title: {
+                in: Array.isArray(brands) ? brands : [brands],
+              },
+            },
+          }
+        : {}),
+      ...(sizes
+        ? {
+            productSize: {
+              in: Array.isArray(sizes) ? sizes : [sizes],
+            },
+          }
+        : {}),
+      ...(ages
+        ? {
+            productAge: {
+              in: Array.isArray(ages) ? ages : [ages],
+            },
+          }
+        : {}),
+      ...(weights
+        ? {
+            productWeight: {
+              in: (Array.isArray(weights) ? weights : [weights]).map(Number),
+            },
+          }
+        : {}),
+      ...(foodClasses
+        ? {
+            productFeedClass: {
+              in: Array.isArray(foodClasses) ? foodClasses : [foodClasses],
+            },
+          }
+        : {}),
+      ...(manufacturers
+        ? {
+            productManufacturer: {
+              in: Array.isArray(manufacturers)
+                ? manufacturers
+                : [manufacturers],
+            },
+          }
+        : {}),
+      ...(minPrice || maxPrice
+        ? {
+            productPrice: {
+              ...(minPrice ? { gte: Number(minPrice) } : {}),
+              ...(maxPrice ? { lte: Number(maxPrice) } : {}),
+            },
+          }
+        : {}),
+    };
 
-    if (categoryId) {
-      whereConditions.OR = [
-        { categoryId },
-        {
-          category: {
-            parentId: categoryId,
-          },
-        },
-      ];
-    }
-
-    if (brands) {
-      const brandValues = Array.isArray(brands) ? brands : [brands];
-      whereConditions.brand = {
-        title: {
-          in: brandValues,
-        },
-      };
-    }
-
-    if (sizes) {
-      const sizeValues = Array.isArray(sizes) ? sizes : [sizes];
-      whereConditions.productSize = {
-        in: sizeValues,
-      };
-    }
-
-    if (ages) {
-      const ageValues = Array.isArray(ages) ? ages : [ages];
-      whereConditions.productAge = {
-        in: ageValues,
-      };
-    }
-
-    if (weights) {
-      const weightValues = Array.isArray(weights)
-        ? (weights as (number | string)[]).map(Number)
-        : [Number(weights)];
-      whereConditions.productWeight = {
-        in: weightValues,
-      };
-    }
-
-    if (foodClasses) {
-      const foodClassValues = Array.isArray(foodClasses)
-        ? foodClasses
-        : [foodClasses];
-      whereConditions.productFeedClass = {
-        in: foodClassValues,
-      };
-    }
-
-    if (manufacturers) {
-      const manufacturerValues = Array.isArray(manufacturers)
-        ? manufacturers
-        : [manufacturers];
-      whereConditions.productManufacturer = {
-        in: manufacturerValues,
-      };
-    }
-
-    if (minPrice || maxPrice) {
-      whereConditions.productPrice = {};
-
-      if (minPrice) {
-        (whereConditions.productPrice as Record<string, number>).gte =
-          Number(minPrice);
-      }
-
-      if (maxPrice) {
-        (whereConditions.productPrice as Record<string, number>).lte =
-          Number(maxPrice);
-      }
-    }
-
-    if (existence === 'true' || existence === true) {
-      whereConditions.existence = true;
-    }
-
-    if (sales === 'true' || sales === true) {
-      whereConditions.sales = true;
-    }
-
-    const filteredProducts = await this.prismaService.products.findMany({
-      where: whereConditions,
+    return this.prismaService.products.findMany({
+      where: {
+        ...whereConditions,
+        ...(categoryId
+          ? {
+              productCategory: {
+                some: {
+                  categoryId: categoryId,
+                },
+              },
+            }
+          : {}),
+      },
       include: {
         brand: true,
-        category: true,
+        productCategory: {
+          include: {
+            category: true,
+          },
+        },
       },
     });
-
-    return filteredProducts;
   }
 }

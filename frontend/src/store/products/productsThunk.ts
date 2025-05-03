@@ -30,11 +30,17 @@ export const addProduct = createAsyncThunk<
           formData.append(key, value, value.name);
         } else if (typeof value === "boolean") {
           formData.append(key, value ? "true" : "false");
+        } else if (Array.isArray(value)) {
+          value.forEach((v) => {
+            formData.append(key, String(v));
+          });
         } else {
           formData.append(key, String(value));
         }
       }
     });
+
+
     await axiosApi.post("products/create", formData);
   } catch (error) {
     if (
@@ -55,28 +61,37 @@ export const editProduct = createAsyncThunk<
   const formData = new FormData();
 
   const keys = Object.keys(product).filter(
-    (key) => !["id"].includes(key),
+    (key) => !["id", "productCategory"].includes(key),
   ) as (keyof ProductRequest)[];
 
   keys.forEach((key) => {
     const value = product[key];
+
     if (
       value !== undefined &&
       value !== null &&
       value !== "" &&
       !(typeof value === "boolean" && !value)
     ) {
-      if (key === "productPhoto") {
-        if (value instanceof File) {
-          formData.append('productPhoto', value, value.name);
-        }
+      if (typeof value === "string" && key === "productPhoto") {
+        return;
+      }
+
+      if (value instanceof File) {
+        formData.append(key, value, value.name);
       } else if (typeof value === "boolean") {
         formData.append(key, value ? "true" : "false");
+      } else if (Array.isArray(value)) {
+        value.forEach((v) => {
+          formData.append(key, String(v));
+        });
       } else {
         formData.append(key, String(value));
       }
     }
   });
+
+
   await axiosApi.put(`products/update_product_item/${product.id}`, formData);
 });
 
@@ -162,7 +177,7 @@ export const getProductsByCategory = createAsyncThunk<ProductResponse[], number>
 
 export const getFilteredProducts = createAsyncThunk<
   ProductResponse[],
-  { categoryId?: number; filters: Record<string, any> }
+  { categoryId?: number; filters: Record<string, string | number | boolean | (string | number)[]> }
 >(
   "products/getFilteredProducts",
   async ({ categoryId, filters }) => {
@@ -195,7 +210,7 @@ export const getFilteredProducts = createAsyncThunk<
 
 export const getFilteredProductsWithoutCategory = createAsyncThunk(
   'products/getFilteredProductsWithoutCategory',
-  async (filters: Record<string, any>, thunkAPI) => {
+  async (filters: Record<string, string | number | boolean | (string | number)[]>, thunkAPI) => {
     try {
       const response = await axiosApi.post('/products/filter/all', filters);
       return response.data;

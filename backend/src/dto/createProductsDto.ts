@@ -1,4 +1,6 @@
 import {
+  ArrayNotEmpty,
+  IsArray,
   IsBoolean,
   IsDate,
   IsNotEmpty,
@@ -22,13 +24,12 @@ export class CreateProductsDto {
   @IsString()
   productDescription!: string;
 
-  @IsNotEmpty()
-  @IsNumberString()
-  categoryId!: number;
-
-  @IsOptional()
-  @IsNumberString()
-  subcategoryId?: number;
+  @IsArray()
+  @ArrayNotEmpty()
+  @Transform(({ value }) =>
+    Array.isArray(value) ? value.map(Number) : [Number(value)],
+  )
+  categoryId!: number[];
 
   @IsOptional()
   @IsNumberString()

@@ -1,5 +1,5 @@
-import { ProductResponse } from '../../../../types';
-import React from 'react';
+import { ProductResponse } from "../../../../types";
+import React from "react";
 import ClearIcon from '@mui/icons-material/Clear';
 import EditIcon from '@mui/icons-material/Edit';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
@@ -29,6 +29,7 @@ const Products: React.FC<Props> = ({products}) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const can = usePermission(user);
+
 
     const productDelete = async (id: number) => {
     if (user && can([userRoleAdmin, userRoleSuperAdmin])) {
@@ -116,16 +117,12 @@ const Products: React.FC<Props> = ({products}) => {
     {
       field: 'category',
       headerName: 'Категория',
-      width: 100,
+      width: 200,
       editable: false,
-      valueGetter: (_value, row: ProductResponse) => row.category.parentId ? row.category.parent && row.category.parent.title : row.category.title,
-    },
-    {
-      field: 'subcategory',
-      headerName: 'Подкатегория',
-      width: 100,
-      editable: false,
-      valueGetter: (_value, row: ProductResponse) => row.category.parentId ? row.category.title : null,
+      valueGetter: (_val, row: ProductResponse) => {
+        const category = row.productCategory?.[0]?.category;
+        return category?.parentId ? category?.parent?.title ?? '—' : category?.title ?? '—';
+      },
     },
     {
       field: 'existence',

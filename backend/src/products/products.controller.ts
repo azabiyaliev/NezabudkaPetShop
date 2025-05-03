@@ -82,7 +82,9 @@ export class ProductsController {
     }
     productDto.productPrice = Number(productDto.productPrice);
     productDto.brandId = Number(productDto.brandId);
-    productDto.categoryId = Number(productDto.categoryId);
+    productDto.categoryId = Array.isArray(productDto.categoryId)
+      ? productDto.categoryId.map(Number)
+      : [Number(productDto.categoryId)];
     return await this.productsService.addProduct(productDto);
   }
 
