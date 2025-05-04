@@ -139,13 +139,13 @@ const HomePage = () => {
     <Container maxWidth="xl">
       <CustomCart openCart={openCart} closeCart={closeCart}/>
       <Box sx={{
-        margin: `${SPACING.xxl} 0`,
+        marginTop:theme.spacing.main_spacing,
       }}>
         <Typography
           sx={{
-            fontSize: theme.fonts.size.xxl,
+            fontSize: theme.fonts.size.xxxl,
             fontWeight: FONTS.weight.bold,
-            margin: `${SPACING.md} 0`,
+            margin: `${SPACING.xxl} 0`,
             color: theme.colors.text,
             textAlign: "center",
           }}
@@ -156,37 +156,45 @@ const HomePage = () => {
       </Box>
 
       {promotionalProducts.length > 0 && (
-        <Box sx={{
-          marginBottom: SPACING.xxl,
-        }}>
-          <Typography
-            sx={{
-              fontSize: theme.fonts.size.xxl,
-              fontWeight: FONTS.weight.bold,
-              margin: `${SPACING.md} 0`,
-              color: theme.colors.text,
-              textAlign: "center",
-            }}
-          >
-            Акции
-          </Typography>
-          {cart && (
-            <PromotionalProducts products={promotionalProducts} cart={cart} />
-          )}
+        <Box
+          sx={{
+            marginTop:theme.spacing.huge,
+            width: '100vw',
+            marginLeft: 'calc(-50vw + 50%)',
+            backgroundColor: theme.colors.rgbaGrey,
+            paddingTop: theme.spacing.main_spacing,
+            paddingBottom: theme.spacing.xxxl,
+          }}
+        >
+          <Container maxWidth="xl">
+            <Typography
+              sx={{
+                fontSize: theme.fonts.size.xxxl,
+                fontWeight: FONTS.weight.bold,
+                color: theme.colors.text,
+                textAlign: "center",
+              }}
+            >
+              Акции
+            </Typography>
+            {cart && (
+              <PromotionalProducts products={promotionalProducts} cart={cart} />
+            )}
+          </Container>
         </Box>
       )}
 
       {topSellingProducts.length > 0 && (
         <Box sx={{
-          marginBottom: SPACING.xxl,
+          marginTop:theme.spacing.main_spacing,
         }}>
           <Typography
             sx={{
-              fontSize: theme.fonts.size.xxl,
+              fontSize: theme.fonts.size.xxxl,
               fontWeight: FONTS.weight.bold,
               color: theme.colors.text,
               textAlign: "center",
-              margin: `${SPACING.md} 0`,
+              marginBottom: theme.spacing.md
             }}
           >
             Хиты продаж
@@ -198,26 +206,41 @@ const HomePage = () => {
       )}
 
       {brands.length > 0 && (
-        <Box sx={{ marginTop: "40px" }}>
-          <Typography
-            sx={{
-              fontSize: theme.fonts.size.xxl,
-              fontWeight: FONTS.weight.bold,
-              margin: `${SPACING.md} 0`,
-              color: theme.colors.text,
-              textAlign: "center",
-            }}
-          >
-            Наши бренды
-          </Typography>
-          <BrandForHomePage brands={brands} />
+        <Box
+          sx={{
+            marginTop:theme.spacing.sixty,
+            width: '100vw',
+            marginLeft: 'calc(-50vw + 50%)',
+            backgroundColor: theme.colors.rgbaGrey,
+            paddingTop: theme.spacing.main_spacing,
+            paddingBottom: theme.spacing.huge
+          }}
+        >
+          <Container maxWidth="xl">
+            <Typography
+              sx={{
+                fontSize: theme.fonts.size.xxxl,
+                fontWeight: FONTS.weight.bold,
+                marginBottom: theme.spacing.xl,
+                color: theme.colors.text,
+                textAlign: "center",
+              }}
+            >
+              Наши бренды
+            </Typography>
+            <BrandForHomePage brands={brands} />
+          </Container>
         </Box>
       )}
+      <Box sx={{
+        marginTop: theme.spacing.main_spacing,
+      }}>
       <Typography
         sx={{
-          fontSize: theme.fonts.size.xxl,
+          fontSize: theme.fonts.size.xxxl,
           fontWeight: FONTS.weight.bold,
-          margin: `${SPACING.md} 0`,
+          marginTop: `${SPACING.main_spacing} 0`,
+          paddingBottom:theme.spacing.sm,
           color: theme.colors.text,
           textAlign: "center",
         }}
@@ -225,6 +248,7 @@ const HomePage = () => {
        Контакты
       </Typography>
       <ContactBlock/>
+      </Box>
     </Container>
   );
 };

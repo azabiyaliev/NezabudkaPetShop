@@ -37,7 +37,11 @@ export const SPACING = {
   lg: '35px',
   xl: '40px',
   xxl: '50px',
-}
+  xxxl: '70px',
+  huge: '80px',
+  main_spacing: '100px',
+  sixty: '60px',
+};
 
 // РАЗМЕР/ЖИРНОСТЬ ТЕКСТА
 export const FONTS = {
@@ -48,11 +52,13 @@ export const FONTS = {
     lg: '20px',
     xl: '24px',
     xxl: '30px',
+    xxxl: '40px',
   },
   weight: {
     normal: 400,
     medium: 600,
     bold: 700,
+    big_weight: 900,
   }
 }
 
