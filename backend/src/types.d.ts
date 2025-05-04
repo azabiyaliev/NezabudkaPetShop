@@ -50,3 +50,10 @@ export interface RawProduct {
   startDateSales?: string;
   endDateSales?: string;
 }
+
+interface RecaptchaReq extends Request {
+  body: {
+    recaptchaToken: string;
+    [key: string];
+  };
+}

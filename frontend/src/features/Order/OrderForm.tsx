@@ -1,4 +1,4 @@
-import React, { FormEvent, useEffect, useState } from 'react';
+import React, { FormEvent, useEffect, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../app/hooks.ts';
 import { checkoutAuthUserOrder } from '../../store/orders/ordersThunk.ts';
 import { Box, Button, Paper, TextField } from '@mui/material';
@@ -17,6 +17,7 @@ import { enqueueSnackbar } from 'notistack';
 import { selectDelivery } from '../../store/deliveryPage/deliveryPageSlice.ts';
 import { fetchDeliveryPage } from '../../store/deliveryPage/deliveryPageThunk.ts';
 import { SPACING } from '../../globalStyles/stylesObjects.ts';
+import ReCAPTCHA from 'react-google-recaptcha';
 
 export enum PaymentMethod {
   ByCash = 'ByCash',
@@ -53,8 +54,11 @@ const OrderForm = () => {
     bonusUsed: 0,
     deliveryMethod: DeliveryMethod.Delivery,
     items: [],
+    recaptchaToken: ""
   });
   const delivery = useAppSelector(selectDelivery);
+  const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
 
   useEffect(() => {
     if (user) {
@@ -153,6 +157,11 @@ const OrderForm = () => {
   };
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    if (!user && !recaptchaToken) {
+      enqueueSnackbar("Пожалуйста, подтвердите что вы не робот", { variant: 'error' });
+      return;
+    }
+
     if (
       !regEmail.test(form.guestEmail) &&
       !regPhone.test(form.guestPhone) &&
@@ -180,11 +189,18 @@ const OrderForm = () => {
 try {
   const orderData = {
     ...form,
+    recaptchaToken: recaptchaToken || "",
   };
   await dispatch(checkoutAuthUserOrder(orderData)).unwrap();
   enqueueSnackbar("Заказ успешно оформлен!", {
     variant: "success",
   });
+  if (!recaptchaToken) {
+    enqueueSnackbar("Пожалуйста, подтвердите что вы не робот", { variant: 'error' });
+    recaptchaRef.current?.reset();
+    setRecaptchaToken(null);
+    return;
+  }
   if (!orderData.userId) {
     dispatch(clearCart())
   } else {
@@ -248,7 +264,8 @@ try {
     !form.guestEmail ||
     !form.guestPhone ||
     !form.guestName ||
-    (form.deliveryMethod !== DeliveryMethod.PickUp && !form.address)
+    (form.deliveryMethod !== DeliveryMethod.PickUp && !form.address) ||
+    recaptchaRef === null
   )
 
   return (
@@ -324,6 +341,14 @@ try {
                   </NavLink>
                 </Typography>
               )}
+
+              <Box sx={{ my: 2, display: 'flex', justifyContent: 'center' }}>
+                <ReCAPTCHA
+                  ref={recaptchaRef}
+                  sitekey={import.meta.env.VITE_REACT_APP_RECAPTCHA_SITE_KEY}
+                  onChange={(token) => setRecaptchaToken(token)}
+                />
+              </Box>
 
               <Button
                 type="submit"

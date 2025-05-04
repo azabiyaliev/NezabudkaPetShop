@@ -17,6 +17,7 @@ import { FacebookUserDto } from '../dto/facebook-user.dto';
 import { GoogleUserDto } from '../dto/google-user.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuthRequest } from '../types';
+import { RecaptchaGuard } from '../recaptcha/recaptcha.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -25,6 +26,7 @@ export class AuthController {
     private prisma: PrismaService,
   ) {}
 
+  @UseGuards(RecaptchaGuard)
   @Post('register')
   async register(
     @Body() registerDto: RegisterDto,

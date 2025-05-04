@@ -1,4 +1,4 @@
-import { IsEnum, IsNotEmpty, IsOptional, Matches } from 'class-validator';
+import {IsEnum, IsNotEmpty, IsOptional, IsString, Matches} from 'class-validator';
 import { Role } from '@prisma/client';
 
 export class RegisterDto {
@@ -23,6 +23,9 @@ export class RegisterDto {
   role?: Role;
   @IsOptional()
   bonus?: number;
+
+  @IsString()
+  recaptchaToken!: string;
 }
 
 export class LoginDto {

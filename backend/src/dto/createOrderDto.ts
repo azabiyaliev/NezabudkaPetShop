@@ -75,4 +75,7 @@ export class CreateOrderDto {
   @IsOptional()
   @IsBoolean()
   useBonus?: boolean;
+
+  @IsString()
+  recaptchaToken!: string;
 }
