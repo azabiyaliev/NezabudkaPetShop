@@ -2,6 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { IOrder, OrderMutation, OrderStats } from '../../types';
 import axiosApi from '../../axiosApi.ts';
 import { RootState } from '../../app/store.ts';
+import { isAxiosError } from 'axios';
 
 export const getAllOrders = createAsyncThunk<IOrder[], void>(
   'orders/getAllOrders',
@@ -53,18 +54,23 @@ export const getStatistics = createAsyncThunk<OrderStats, void>(
 
 export const checkoutAuthUserOrder = createAsyncThunk<void, OrderMutation, {state: RootState}>(
   'orders/checkoutAuthUserOrder',
-  async(order, {getState, }) => {
+  async(order, {getState, rejectWithValue
+   }) => {
     try {
       const token = getState().users.user?.token;
       console.log('Отправка заказа:', order);
       if (token) {
-       await axiosApi.post('orders/checkout', order)
+       await axiosApi.post('orders/checkout', {...order, recaptchaToken: order.recaptchaToken})
       } else if(!token) {
-        await axiosApi.post('orders/guest-checkout', order);
+        await axiosApi.post('orders/guest-checkout', {...order, recaptchaToken: order.recaptchaToken});
         localStorage.setItem('guestEmail', order.guestEmail);
       }
     } catch(e) {
-      console.log('Ошибка оформления заказа:', e);
+      if (isAxiosError(e)) {
+        return rejectWithValue(e.response?.data?.message || 'Неизвестная ошибка');
+      }
+      throw e;
+
     }
   }
 )

@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import googleOauthConfig from '../configs/google-oauth.config';
 import facebookOauthConfig from '../configs/facebook-oauth.config';
 import { PrismaModule } from '../prisma/prisma.module';
+import { RecaptchaService } from '../recaptcha/recaptcha.service';
 
 @Module({
   imports: [
@@ -13,7 +14,7 @@ import { PrismaModule } from '../prisma/prisma.module';
     ConfigModule.forFeature(facebookOauthConfig),
   ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, RecaptchaService],
   exports: [AuthService],
 })
 export class AuthModule {}

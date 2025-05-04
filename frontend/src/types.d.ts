@@ -6,6 +6,7 @@ export interface RegisterMutation {
   phone: string;
   bonus?: number
   guestEmail?: string;
+  recaptchaToken: string;
 }
 
 export interface LogInMutation {
@@ -321,6 +322,7 @@ export interface OrderMutation {
   deliveryMethod: string;
   userId: string;
   items: ICartMutation[];
+  recaptchaToken: string;
 }
 
 export interface OrderItem {
