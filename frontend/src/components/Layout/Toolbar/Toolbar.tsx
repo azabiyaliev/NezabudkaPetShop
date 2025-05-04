@@ -172,7 +172,7 @@ const MainToolbar = () => {
         }}
       >
         {(!user || (user.role !== "admin" && user.role !== "superAdmin")) && (
-          <Container>
+          <Container  maxWidth="xl">
             <Box
               sx={{
                 display: "flex",

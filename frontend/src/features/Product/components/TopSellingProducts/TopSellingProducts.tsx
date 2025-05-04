@@ -14,7 +14,6 @@ const TopSellingProducts:React.FC<Props> = ({ products, cart }) => {
       flexWrap: 'wrap',
       justifyContent: 'space-between',
       alignItems: 'center',
-      padding: '20px 0',
       "@media (max-width: 666px)": {
         justifyContent: 'center',
       },
