@@ -1,9 +1,9 @@
 import ClientBar from "../../../../components/Domain/Client/ClientBar.tsx";
-import {useAppDispatch, useAppSelector} from "../../../../app/hooks.ts";
-import { Box, Paper, Typography } from '@mui/material';
-import {useEffect} from "react";
-import { selectClientInfo } from '../../../../store/clientInfo/clientInfoSlice.ts';
-import { fetchClientInfo } from '../../../../store/clientInfo/clientInfoThunk.ts';
+import { useAppDispatch, useAppSelector } from "../../../../app/hooks.ts";
+import { Box, Paper, Typography } from "@mui/material";
+import { useEffect } from "react";
+import { selectClientInfo } from "../../../../store/clientInfo/clientInfoSlice.ts";
+import { fetchClientInfo } from "../../../../store/clientInfo/clientInfoThunk.ts";
 
 const ClientProfile = () => {
   const dispatch = useAppDispatch();
@@ -14,34 +14,48 @@ const ClientProfile = () => {
   }, [dispatch]);
 
   return (
-    <div>
-      <div className="d-flex ">
-        <div className="col-3 mt-5 ">
+    <>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: { xs: "column", md: "row" },
+          gap: 2,
+        }}
+      >
+        <Box sx={{ flex: { md: "0 0 25%" }, mt: 4 }}>
           <ClientBar />
-        </div>
-        <div className="col-9 mt-5">
-          <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600 }}>
+        </Box>
+
+        <Box sx={{ flex: 1, mt: { xs: 0, md: 5 } }}>
+          <Typography
+            variant="h6"
+            gutterBottom
+            sx={{ textAlign: "center", fontWeight: 600 }}
+          >
             Личный кабинет
           </Typography>
+
           <Paper
+            elevation={2}
             sx={{
               p: 3,
               mt: 2,
-              width: "800px",
+              width: "100%",
               mx: "auto",
               display: "flex",
-              justifyContent: "center"
+              justifyContent: "center",
             }}
-            elevation={2}
           >
             <Box
-              sx={{ textAlign: 'center' }}
-              dangerouslySetInnerHTML={{ __html: clientInfo?.information || '' }}
+              sx={{ textAlign: "center" }}
+              dangerouslySetInnerHTML={{
+                __html: clientInfo?.information || "",
+              }}
             />
           </Paper>
-        </div>
-      </div>
-    </div>
+        </Box>
+      </Box>
+    </>
   );
 };
 

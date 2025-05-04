@@ -1,20 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import { Box } from '@mui/joy';
-import { Button, Typography } from '@mui/material';
-import TextEditor from '../../TextEditor/TextEditor.tsx';
-import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
-import { useNavigate } from 'react-router-dom';
-import { AdminInfoMutation } from '../../../types';
-import { fetchCompanyPage } from '../../../store/companyPage/companyPageThunk.ts';
-import { toast } from 'react-toastify';
-import { enqueueSnackbar } from 'notistack';
-import AdminBar from '../../../features/Admin/AdminProfile/AdminBar.tsx';
-import { selectAdminInfo } from '../../../store/adminInfo/adminInfoSlice.ts';
-import { fetchAdminInfo, updateAdminInfo } from '../../../store/adminInfo/adminInfoThunk.ts';
+import React, { useEffect, useState } from "react";
+import { Box } from "@mui/joy";
+import { Button, Typography } from "@mui/material";
+import TextEditor from "../../TextEditor/TextEditor.tsx";
+import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
+import { useNavigate } from "react-router-dom";
+import { AdminInfoMutation } from "../../../types";
+import { fetchCompanyPage } from "../../../store/companyPage/companyPageThunk.ts";
+import { toast } from "react-toastify";
+import { enqueueSnackbar } from "notistack";
+import AdminBar from "../../../features/Admin/AdminProfile/AdminBar.tsx";
+import { selectAdminInfo } from "../../../store/adminInfo/adminInfoSlice.ts";
+import {
+  fetchAdminInfo,
+  updateAdminInfo,
+} from "../../../store/adminInfo/adminInfoThunk.ts";
 
 const initialState = {
-  information: ""
-}
+  information: "",
+};
 
 const AdminInfoForm = () => {
   const dispatch = useAppDispatch();
@@ -29,7 +32,7 @@ const AdminInfoForm = () => {
         if (admin) {
           setForm(admin);
         }
-      })
+      });
   }, [dispatch]);
 
   const onChangeEditor = (html: string) => {
@@ -46,24 +49,49 @@ const AdminInfoForm = () => {
       return;
     }
     try {
-      await dispatch(updateAdminInfo({ id: adminInfo.id, data: form })).unwrap();
-      enqueueSnackbar('Вы успешно отредактировали личный кабинет для администрации', { variant: 'success' });
-      navigate(`/admin_info/${adminInfo.id}`);
-      await dispatch(fetchCompanyPage())
+      await dispatch(
+        updateAdminInfo({ id: adminInfo.id, data: form }),
+      ).unwrap();
+      enqueueSnackbar(
+        "Вы успешно отредактировали личный кабинет для администрации",
+        { variant: "success" },
+      );
+      navigate(`/private/admin_info/${adminInfo.id}`);
+      await dispatch(fetchCompanyPage());
     } catch (error) {
       console.error(error);
     }
   };
 
   return (
-    <div className="d-flex">
-      <div className="col-3 mt-5">
-        <AdminBar />
-      </div>
+    <Box
+      sx={{
+        display: "flex",
+        margin: "30px 0",
+        "@media (max-width: 900px)": {
+          flexWrap: "wrap",
+        },
+      }}
+    >
+      <AdminBar />
 
-      <div className="col-9 mt-5" style={{ display: 'flex', justifyContent: 'center' }}>
-        <Box sx={{ width: '100%', maxWidth: '800px' }}>
-          <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600 }}>
+      <Box
+        sx={{
+          flexGrow: 1,
+          display: "flex",
+          justifyContent: "center",
+          marginLeft: 5,
+          "@media (max-width: 900px)": {
+            marginLeft: 0,
+          },
+        }}
+      >
+        <Box sx={{ width: "100%", maxWidth: "800px" }}>
+          <Typography
+            variant="h6"
+            gutterBottom
+            sx={{ textAlign: "center", fontWeight: 600 }}
+          >
             Редактирование личного кабинета для администариции
           </Typography>
 
@@ -72,18 +100,18 @@ const AdminInfoForm = () => {
             noValidate
             onSubmit={submitHandler}
             sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              width: '100%',
-              mt:"30px"
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              width: "100%",
+              mt: "30px",
             }}
           >
             <Typography
               variant="body2"
               sx={{
-                alignSelf: 'flex-start',
-                color: 'text.secondary',
+                alignSelf: "flex-start",
+                color: "text.secondary",
                 fontWeight: 400,
                 mb: 0.5,
               }}
@@ -95,21 +123,24 @@ const AdminInfoForm = () => {
               value={form.information}
               onChange={onChangeEditor}
               error={!form.information}
-              helperText={!form.information ? 'Поле обязательно для заполнения' : undefined}
+              helperText={
+                !form.information
+                  ? "Поле обязательно для заполнения"
+                  : undefined
+              }
             />
             <Button
               variant="contained"
               type="submit"
-              sx={{ mt: 3, alignSelf: 'center', backgroundColor: 'darkgreen' }}
+              sx={{ mt: 3, alignSelf: "center", backgroundColor: "darkgreen" }}
             >
               Сохранить
             </Button>
           </Box>
         </Box>
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
-
 };
 
 export default AdminInfoForm;

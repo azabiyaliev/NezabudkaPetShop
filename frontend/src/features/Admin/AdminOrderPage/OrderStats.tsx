@@ -1,11 +1,11 @@
-import  { useEffect } from "react";
+import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { getStatistics } from "../../../store/orders/ordersThunk";
 import ColumnChart from "../../../components/UI/ColumnChart/ColumnChart.tsx";
 import { DataGrid, gridClasses, GridToolbar } from "@mui/x-data-grid";
-import { Box, CircularProgress, Paper } from '@mui/material';
+import { Box, CircularProgress, Paper } from "@mui/material";
 import Typography from "@mui/material/Typography";
-import AdminBar from '../AdminProfile/AdminBar.tsx';
+import AdminBar from "../AdminProfile/AdminBar.tsx";
 
 const OrderStats = () => {
   const dispatch = useAppDispatch();
@@ -89,21 +89,34 @@ const OrderStats = () => {
   ];
 
   return (
-    <Box sx={{display: "flex",  margin: "30px 0"}}>
-      <Box>
-        <AdminBar/>
-      </Box>
-      <Box sx={{
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 4,
-        minHeight: '100vh',
-        mt:"10px",
-        ml:"20px",
-      }}>
-        <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600 }}>
-         Статистика заказов
+    <Box
+      sx={{
+        display: "flex",
+        margin: "30px 0",
+        "@media (max-width: 900px)": {
+          flexWrap: "wrap",
+        },
+      }}
+    >
+      <AdminBar />
+      <Box
+        sx={{
+          flex: 1,
+          flexShrink: 1,
+          display: "flex",
+          flexDirection: "column",
+          gap: 4,
+          minHeight: "100vh",
+          mt: "10px",
+          ml: "20px",
+        }}
+      >
+        <Typography
+          variant="h6"
+          gutterBottom
+          sx={{ textAlign: "center", fontWeight: 600 }}
+        >
+          Статистика заказов
         </Typography>
 
         <Paper
@@ -112,9 +125,10 @@ const OrderStats = () => {
             p: 2,
             borderRadius: "12px",
             flex: 1,
-            minHeight: '400px',
-            display: 'flex',
-            flexDirection: 'column'
+            minHeight: "400px",
+            display: "flex",
+            flexDirection: "column",
+            width: "100%",
           }}
         >
           <Box sx={{ flex: 1, minHeight: 0 }}>
@@ -128,9 +142,9 @@ const OrderStats = () => {
             borderRadius: "12px",
             overflow: "hidden",
             flex: 1,
-            minHeight: '400px',
-            display: 'flex',
-            flexDirection: 'column'
+            minHeight: "400px",
+            display: "flex",
+            flexDirection: "column",
           }}
         >
           <Box sx={{ flex: 1, minHeight: 0 }}>
@@ -151,10 +165,10 @@ const OrderStats = () => {
                   p: 2,
                   pb: 0,
                 },
-                height: '100%',
-                '& .MuiDataGrid-virtualScroller': {
-                  minHeight: '300px'
-                }
+                height: "100%",
+                "& .MuiDataGrid-virtualScroller": {
+                  minHeight: "300px",
+                },
               }}
             />
           </Box>

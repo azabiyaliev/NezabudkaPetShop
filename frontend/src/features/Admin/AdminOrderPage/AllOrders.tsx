@@ -56,17 +56,43 @@ const AllOrders = () => {
   );
 
   return (
-    <Box sx={{display: 'flex',  margin: "30px 0" }}>
-      <Box sx={{ width: 500, flexShrink: 0, height: '100%' }}>
+    <Box
+      sx={{
+        display: "flex",
+        margin: "30px 0",
+        "@media (max-width: 900px)": {
+          flexDirection: "column",
+        },
+      }}
+    >
+      <Box sx={{  flexShrink: 0, height: "100%",
+        "@media (max-width: 900px)": {
+          width: "100%",
+        },}}>
         <AdminBar />
       </Box>
-      <Box>
+      <Box sx={{display: 'flex', justifyContent: 'center', flexDirection: 'column', marginLeft: 5}}>
         <Box>
-          <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600,}}>
-           Заказы
+          <Typography
+            variant="h6"
+            gutterBottom
+            sx={{ textAlign: "center", fontWeight: 600 }}
+          >
+            Заказы
           </Typography>
 
-          <Box sx={{display: 'flex', gap: '20px', alignItems: 'baseline', justifyContent: 'center'}}>
+          <Box
+            sx={{
+              display: "flex",
+              gap: "20px",
+              alignItems: "baseline",
+              justifyContent: "center",
+              "@media (max-width: 500px)": {
+                flexDirection: "column",
+                alignItems: "center",
+              },
+            }}
+          >
             <Select
               value={statusFilter}
               onChange={handleStatusFilterChange}
@@ -107,7 +133,6 @@ const AllOrders = () => {
             columns={2}
           />
         )}
-
       </Box>
     </Box>
   );

@@ -119,7 +119,10 @@ const EditSiteForm = () => {
   return (
     <Container component="main">
       <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center",  position: "relative" }}>
-        <Typography level="h4" gutterBottom sx={{ textAlign: 'center', fontWeight: 600, }}>
+        <Typography level="h4" gutterBottom sx={{ textAlign: 'center', fontWeight: 600,
+          "@media (max-width: 900px)": {
+            mt: 5,
+          },}}>
           Редактирование информации о магазине 'Незабудка'
         </Typography>
         <Box component="form" noValidate onSubmit={submitHandler} sx={{ mt: 3, display: "flex", flexDirection: "column", alignItems: "center", }} width="70%">

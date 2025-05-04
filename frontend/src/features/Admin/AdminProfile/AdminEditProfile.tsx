@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
 import { selectUser } from "../../../store/users/usersSlice.ts";
 import { fetchUserById } from "../../../store/users/usersThunk.ts";
-import { Box } from '@mui/material';
+import { Box } from "@mui/material";
 
 const AdminEditProfile = () => {
   const dispatch = useAppDispatch();
@@ -19,11 +19,24 @@ const AdminEditProfile = () => {
   }, [dispatch, user, id]);
 
   return (
-    <Box sx={{ display: "flex", margin: "30px 0" }}>
-      <Box>
+    <Box
+      sx={{
+        display: "flex",
+        margin: "30px 0",
+        "@media (max-width: 900px)": {
+          flexWrap: "wrap",
+        },
+      }}
+    >
+      <Box
+        sx={{
+        '@media (max-width: 900px)': {
+          width: '100%',
+        },
+      }}>
         <AdminBar />
       </Box>
-      <Box sx={{ flexGrow: 1, pl: 3, pr: 3 }}>
+      <Box sx={{ flexGrow: 1, pl: 3, pr: 3, maxWidth: 1200,   mx: "auto", }}>
         <UserFormEdition />
       </Box>
     </Box>

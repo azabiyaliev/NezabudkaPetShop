@@ -105,7 +105,7 @@ const FormEditPhoto: React.FC<FormEditPhotoProps> = ({ photoId }) => {
   };
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: { xs: 2, md: 4 } }}>
-      <NavLink to="/edit-carousel" style={{ textDecoration: 'none', color: '#738A6E', alignSelf: 'flex-start' }}>
+      <NavLink to="/private/edit-carousel" style={{ textDecoration: 'none', color: '#738A6E', alignSelf: 'flex-start' }}>
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
           <ArrowBackIcon sx={{ mr: 1 }} />
           Вернуться к карусели

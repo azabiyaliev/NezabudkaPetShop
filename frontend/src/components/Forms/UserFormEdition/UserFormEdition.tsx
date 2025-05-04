@@ -147,7 +147,7 @@ const UserFormEdition = () => {
     Boolean(secondName)
 
   return (
-    <div>
+    <>
         <Box
           sx={{
             display: "flex",
@@ -212,6 +212,7 @@ const UserFormEdition = () => {
                   sx={{
                     backgroundColor: "white",
                     borderRadius: "7px",
+                    mb: 5,
                   }}
                   error={!!getFieldError("secondName") || Boolean(secondName)}
                   helperText={getFieldError("secondName") || secondName}
@@ -233,6 +234,7 @@ const UserFormEdition = () => {
                   sx={{
                     backgroundColor: "white",
                     borderRadius: "7px",
+                    mb: 2
                   }}
                   error={!!getFieldError("email") || Boolean(email)}
                   helperText={getFieldError("email") || email}
@@ -262,60 +264,70 @@ const UserFormEdition = () => {
               </div>
             </div>
 
-            {user && user.role === "admin" && (
-              <Button
-                type="submit"
-                disabled={isButtonFormInvalid}
-                variant="contained"
-                sx={{
-                  mt: 3,
-                  mb: 2,
-                  backgroundColor: "#FFEB3B",
-                  color: "black",
-                }}
-              >
-                Cохранить изменения
-              </Button>
-            )}
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                mt: 5,
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                '@media (max-width: 500px)': {
+                  flexDirection: 'column',
+                  alignItems: 'stretch',
+                },
+              }}
+            >
+              {user && user.role === "admin" && (
+                <Button
+                  type="submit"
+                  disabled={isButtonFormInvalid}
+                  variant="contained"
+                  sx={{
+                    backgroundColor: "#FFEB3B",
+                    color: "black",
+                    '@media (max-width: 500px)': {
+                      mb: 2
+                    },
+                  }}
+                >
+                  Cохранить изменения
+                </Button>
+              )}
 
-            {user && user.role === "client" && (
+              {user && user.role === "client" && (
+                <Button
+                  type="submit"
+                  disabled={isButtonFormInvalid}
+                  variant="contained"
+                  sx={{
+                    backgroundColor: "#FFEB3B",
+                    color: "black",
+                    '@media (max-width: 500px)': {
+                      mb: 2
+                    },
+                  }}
+                >
+                  Изменить данные
+                </Button>
+              )}
               <Button
-                type="submit"
-                disabled={isButtonFormInvalid}
+                type="button"
                 variant="contained"
                 sx={{
-                  mt: 3,
-                  mb: 2,
-                  backgroundColor: "#FFEB3B",
+                  backgroundColor: "rgb(255, 247, 204)",
                   color: "black",
                 }}
+                onClick={handlePasswordChangeOpen}
               >
-                Изменить данные
+                <LockResetIcon style={{ paddingRight: "8px" }} />
+                Сменить пароль
               </Button>
-            )}
           </Box>
-
-          <Button
-            type="button"
-            variant="contained"
-            sx={{
-              position: "absolute",
-              top: 16,
-              right: 16,
-              backgroundColor: "rgb(255, 247, 204)",
-              color: "black",
-              marginTop: "20px",
-              marginRight: "40px",
-            }}
-            onClick={handlePasswordChangeOpen}
-          >
-            <LockResetIcon style={{ paddingRight: "8px" }} />
-            Сменить пароль
-          </Button>
+          </Box>
         </Box>
       <ModalWindowPasswordChange open={open} setOpen={setOpen} />
       <ToastContainer />
-    </div>
+    </>
   );
 };
 

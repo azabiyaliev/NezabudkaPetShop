@@ -3,7 +3,7 @@ import {
   ListItem,
   ListItemText,
   ListSubheader,
-  Divider,
+  Divider, Box,
 } from '@mui/material';
 import {
   useAppSelector,
@@ -43,16 +43,24 @@ const AdminBar = () => {
   const can = usePermission(user);
 
   return (
-    <div
-      style={{
+    <Box
+      sx={{
         width: 370,
         padding: '12px 20px',
         backgroundColor: '#f9f9f9',
-        borderRadius: 8,
+        borderRadius: 2,
         boxShadow: '0 0 10px rgba(0,0,0,0.05)',
         height: 'fit-content',
         maxHeight: '100vh',
         overflowY: 'auto',
+        '@media (max-width: 900px)': {
+          width: '100%',
+          padding: '16px',
+          borderRadius: 1,
+          height: 'auto',
+          maxHeight: 'none',
+          overflowY: 'visible',
+        },
       }}
     >
       {user && can([userRoleSuperAdmin, userRoleAdmin]) && (
@@ -103,7 +111,7 @@ const AdminBar = () => {
             text="Редактирование личного кабинета"
           />
           <AdminNavItem
-            to="/edition_site"
+            to="/private/edition_site"
             icon={<SettingsSuggestOutlined sx={iconSx} />}
             text="Профиль магазина"
           />
@@ -128,13 +136,13 @@ const AdminBar = () => {
           {can(['superAdmin']) && (
             <>
               <AdminNavItem
-                to={`/admin_info/${adminInfo?.id}`}
+                to={`/private/admin_info/${adminInfo?.id}`}
                 icon={<EditNoteOutlined sx={iconSx} />}
                 text="Информация для администрации"
               />
 
               <AdminNavItem
-                to={`/client_info/${clientInfo?.id}`}
+                to={`/private/client_info/${clientInfo?.id}`}
                 icon={<EditNoteOutlined sx={iconSx} />}
                 text="Информация для клиента"
               />
@@ -146,12 +154,12 @@ const AdminBar = () => {
               <Divider />
               <ListSubheader sx={{ bgcolor: 'inherit', fontWeight: 600, pl: 0,  position: 'static' }}>Администраторы</ListSubheader>
               <AdminNavItem
-                to="/admin-table"
+                to="/private/admin-table"
                 icon={<ReorderOutlined sx={iconSx} />}
                 text="Список администраторов"
               />
               <AdminNavItem
-                to="/admin-create"
+                to="/private/admin-create"
                 icon={<PlaylistAddOutlined sx={iconSx} />}
                 text="Создание администратора"
               />
@@ -161,17 +169,17 @@ const AdminBar = () => {
           <Divider />
           <ListSubheader sx={{ bgcolor: 'inherit', fontWeight: 600, pl: 0,  position: 'static', }}>Управление контентом</ListSubheader>
           <AdminNavItem
-            to={`/my_company/${company?.id}`}
+            to={`/private/my_company/${company?.id}`}
             icon={<EditNote sx={iconSx} />}
             text="О компании"
           />
           <AdminNavItem
-            to={`/delivery/${delivery?.id}`}
+            to={`/private/delivery/${delivery?.id}`}
             icon={<EditNote sx={iconSx} />}
             text="Доставка и оплата"
           />
           <AdminNavItem
-            to={`/bonus_program/${bonusProgram?.id}`}
+            to={`/private/bonus_program/${bonusProgram?.id}`}
             icon={<EditNote sx={iconSx} />}
             text="Бонусная программа"
           />
@@ -187,7 +195,7 @@ const AdminBar = () => {
           <Divider />
           <ListSubheader sx={{ bgcolor: 'inherit', fontWeight: 600, pl: 0,  position: 'static', }}>Карусель</ListSubheader>
           <AdminNavItem
-            to="/edit-carousel"
+            to="/private/edit-carousel"
             icon={<Diversity2Outlined sx={iconSx} />}
             text="Редактировать карусель"
           />
@@ -219,7 +227,7 @@ const AdminBar = () => {
           />
         </List>
       )}
-    </div>
+    </Box>
   );
 };
 

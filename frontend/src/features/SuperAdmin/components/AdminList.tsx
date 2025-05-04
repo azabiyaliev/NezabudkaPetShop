@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { Divider, IconButton, Typography } from "@mui/material";
+import { Box, Divider, IconButton, Typography } from '@mui/material';
 import Grid from "@mui/material/Grid2";
 import { ruRU } from "@mui/x-data-grid/locales";
 import { useNavigate } from "react-router-dom";
@@ -55,7 +55,7 @@ const AdminList: React.FC<Props> = ({ admins }) => {
             <DeleteSweepOutlinedIcon />
           </IconButton>
           <IconButton
-            onClick={() => navigate(`/admin-edit/${params.row.id}`)}
+            onClick={() => navigate(`/private/admin-edit/${params.row.id}`)}
             color="primary"
           >
             <EditNoteOutlinedIcon fontSize="medium" />
@@ -71,7 +71,7 @@ const AdminList: React.FC<Props> = ({ admins }) => {
         Список администраторов
       </Typography>
       <Divider />
-      <Grid width="100%">
+      <Box sx={{ width: "100%", overflowX: "auto",}}>
         <DataGrid
           getRowId={(row) => row.id!}
           rows={admins}
@@ -115,7 +115,7 @@ const AdminList: React.FC<Props> = ({ admins }) => {
             },
           }}
         />
-      </Grid>
+      </Box>
     </Grid>
   );
 };

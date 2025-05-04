@@ -31,10 +31,13 @@ const NewBrandPage = () => {
       sx={{
         display: "flex",
         margin: "30px 0",
+        "@media (max-width: 900px)": {
+          flexWrap: "wrap",
+        },
       }}
     >
       <AdminBar />
-      <Box sx={{ml:"100px"}}>
+      <Box sx={{ml:"100px", mx: "auto",}}>
         <BrandForm addNewBrand={addNewBrand} isLoading={loading} brandError={addError} />
       </Box>
 

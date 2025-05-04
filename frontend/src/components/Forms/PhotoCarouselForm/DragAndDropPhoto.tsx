@@ -1,19 +1,26 @@
-import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
-import { selectPhotoCarousel, updatePhotoOrder } from '../../../store/photoCarousel/photoCarouselSlice.ts';
-import { apiUrl } from '../../../globalConstants.ts';
-import { Button } from '@mui/material';
-import { DragEvent, useEffect, useState } from 'react';
-import { PhotoCarousel } from '../../../types';
-import { useNavigate } from 'react-router-dom';
-import { deletePhoto, fetchPhoto, updatePhotoOrders } from '../../../store/photoCarousel/photoCarouselThunk.ts';
-import ModeEditIcon from '@mui/icons-material/ModeEdit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import Swal from 'sweetalert2';
-import { enqueueSnackbar } from 'notistack';
-import { Box, Typography } from '@mui/joy';
-import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
-import AdminBar from '../../../features/Admin/AdminProfile/AdminBar.tsx';
-import AddNewPhotoForm from './AddNewPhotoForm.tsx';
+import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
+import {
+  selectPhotoCarousel,
+  updatePhotoOrder,
+} from "../../../store/photoCarousel/photoCarouselSlice.ts";
+import { apiUrl } from "../../../globalConstants.ts";
+import { Button } from "@mui/material";
+import { DragEvent, useEffect, useState } from "react";
+import { PhotoCarousel } from "../../../types";
+import { useNavigate } from "react-router-dom";
+import {
+  deletePhoto,
+  fetchPhoto,
+  updatePhotoOrders,
+} from "../../../store/photoCarousel/photoCarouselThunk.ts";
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import Swal from "sweetalert2";
+import { enqueueSnackbar } from "notistack";
+import { Box, Typography } from "@mui/joy";
+import PublishedWithChangesIcon from "@mui/icons-material/PublishedWithChanges";
+import AdminBar from "../../../features/Admin/AdminProfile/AdminBar.tsx";
+import AddNewPhotoForm from "./AddNewPhotoForm.tsx";
 
 const DragAndDropPhoto = () => {
   const photos = useAppSelector(selectPhotoCarousel) || [];
@@ -50,10 +57,17 @@ const DragAndDropPhoto = () => {
     const target = e.target as HTMLElement;
     if (currentPhoto && targetImage.id !== currentPhoto.id) {
       const updatedPhotos = [...photos];
-      const currentIndex = updatedPhotos.findIndex((photo) => photo.id === currentPhoto.id);
-      const targetIndex = updatedPhotos.findIndex((photo) => photo.id === targetImage.id);
+      const currentIndex = updatedPhotos.findIndex(
+        (photo) => photo.id === currentPhoto.id,
+      );
+      const targetIndex = updatedPhotos.findIndex(
+        (photo) => photo.id === targetImage.id,
+      );
 
-      [updatedPhotos[currentIndex], updatedPhotos[targetIndex]] = [updatedPhotos[targetIndex], updatedPhotos[currentIndex]];
+      [updatedPhotos[currentIndex], updatedPhotos[targetIndex]] = [
+        updatedPhotos[targetIndex],
+        updatedPhotos[currentIndex],
+      ];
 
       dispatch(updatePhotoOrder(updatedPhotos));
     }
@@ -71,12 +85,14 @@ const DragAndDropPhoto = () => {
         title: photo.title,
         description: photo.description,
       }))
-      .filter(photo => photo.id !== undefined);
+      .filter((photo) => photo.id !== undefined);
 
     try {
       await dispatch(updatePhotoOrders(updatedPhotos)).unwrap();
-      navigate('/');
-      enqueueSnackbar('Вы успешно изменили порядок фото в карусели! 🎉', { variant: 'success' });
+      navigate("/");
+      enqueueSnackbar("Вы успешно изменили порядок фото в карусели! 🎉", {
+        variant: "success",
+      });
     } catch (error) {
       console.error("Ошибка обновления:", error);
     }
@@ -92,7 +108,7 @@ const DragAndDropPhoto = () => {
         confirmButtonColor: "#d33",
         cancelButtonColor: "#3085d6",
         confirmButtonText: "Удалить",
-        cancelButtonText: "Отмена"
+        cancelButtonText: "Отмена",
       });
 
       if (result.isConfirmed) {
@@ -111,11 +127,17 @@ const DragAndDropPhoto = () => {
   };
 
   return (
-    <Box sx={{ display: "flex", margin: "30px 0" }}>
-      <Box sx={{ minWidth: 250 }}>
-        <AdminBar />
-      </Box>
-
+    <Box
+      sx={{
+        display: "flex",
+        margin: "30px 0",
+        "@media (max-width: 900px)": {
+          flexWrap: "wrap",
+        },
+      }}
+    >
+      <AdminBar />
+      
       <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center" }}>
         <Box sx={{ width: "100%", maxWidth: "900px", px: 2 }}>
           <AddNewPhotoForm />
@@ -151,7 +173,7 @@ const DragAndDropPhoto = () => {
                 flexDirection: "column",
                 alignItems: "center",
                 gap: "20px",
-              }
+              },
             }}
           >
             {isLoading ? (
@@ -175,7 +197,7 @@ const DragAndDropPhoto = () => {
                     "@media (max-width: 420px)": {
                       width: "auto",
                       height: "auto",
-                    }
+                    },
                   }}
                   draggable
                   onDragStart={(e) => dragStart(e, image)}
@@ -186,7 +208,7 @@ const DragAndDropPhoto = () => {
                   <Button
                     onClick={() => navigate(`/photos/${image.id}`)}
                     sx={{
-                      position: 'absolute',
+                      position: "absolute",
                       top: 7,
                       right: 10,
                       backgroundColor: "#FDE910",
@@ -194,9 +216,9 @@ const DragAndDropPhoto = () => {
                       width: "30px",
                       height: "30px",
                       minWidth: "30px",
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
                     }}
                   >
                     <ModeEditIcon style={{ color: "rgb(52, 51, 50)" }} />
@@ -205,15 +227,15 @@ const DragAndDropPhoto = () => {
                   <Button
                     onClick={() => handleDeleteClick(image.id)}
                     sx={{
-                      position: 'absolute',
+                      position: "absolute",
                       top: 7,
                       left: 10,
                       width: "30px",
                       height: "30px",
                       minWidth: "30px",
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
                     }}
                   >
                     <DeleteIcon style={{ color: "#B00000" }} />
@@ -230,7 +252,7 @@ const DragAndDropPhoto = () => {
                       "@media (max-width: 420px)": {
                         width: "100%",
                         height: "auto",
-                      }
+                      },
                     }}
                   />
                 </Box>
@@ -248,7 +270,7 @@ const DragAndDropPhoto = () => {
               marginBottom: "50px",
               "@media (max-width: 550px)": {
                 display: "none",
-              }
+              },
             }}
           >
             <Button
@@ -291,10 +313,12 @@ const DragAndDropPhoto = () => {
                   minWidth: "45px",
                   justifyContent: "center",
                   alignItems: "center",
-                }
+                },
               }}
             >
-              <PublishedWithChangesIcon style={{ width: "25px", height: "25px" }} />
+              <PublishedWithChangesIcon
+                style={{ width: "25px", height: "25px" }}
+              />
             </Button>
           </Box>
         </Box>

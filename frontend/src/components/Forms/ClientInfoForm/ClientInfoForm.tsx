@@ -56,12 +56,29 @@ const AdminInfoForm = () => {
   };
 
   return (
-    <div className="d-flex">
-      <div className="col-3 mt-5">
-        <AdminBar />
-      </div>
+    <Box
+      sx={{
+        display: "flex",
+        margin: "30px 0",
+        "@media (max-width: 900px)": {
+          flexWrap: "wrap",
+        },
+      }}
+    >
+      <AdminBar />
 
-      <div className="col-9 mt-5" style={{ display: 'flex', justifyContent: 'center' }}>
+
+      <Box
+        sx={{
+          flexGrow: 1,
+          display: "flex",
+          justifyContent: "center",
+          marginLeft: 5,
+          "@media (max-width: 900px)": {
+            marginLeft: 0,
+          },
+        }}
+      >
         <Box sx={{ width: '100%', maxWidth: '800px' }}>
           <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600 }}>
             Редактирование личного кабинета для клиентов
@@ -107,8 +124,8 @@ const AdminInfoForm = () => {
             </Button>
           </Box>
         </Box>
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 
 };
