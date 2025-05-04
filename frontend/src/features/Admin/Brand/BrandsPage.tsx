@@ -16,15 +16,36 @@ const BrandsPage = () => {
   }, [dispatch]);
 
   return (
-    <Box sx={{ display: "flex", margin: "30px 0" }}>
+    <Box
+      sx={{
+        display: "flex",
+        margin: "30px 0",
+        "@media (max-width: 900px)": {
+          flexWrap: "wrap",
+        },
+      }}
+    >
       <AdminBar />
 
       <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center" }}>
-        <Box sx={{ maxWidth: 800, width: "100%", px: 2 }}>
+        <Box
+          sx={{
+            maxWidth: 800,
+            width: "100%",
+            px: 2,
+            mt: 2,
+            "@media (max-width: 900px)": {
+              width: 'auto',
+            },
+          }}
+        >
           {brands.length > 0 ? (
             <Brands brands={brands} />
           ) : (
-            <Typography level="h2" sx={{ fontSize: "xl", mb: 0.5, textAlign: "center" }}>
+            <Typography
+              level="h2"
+              sx={{ fontSize: "xl", mb: 0.5, textAlign: "center" }}
+            >
               Брендов пока нет!
             </Typography>
           )}

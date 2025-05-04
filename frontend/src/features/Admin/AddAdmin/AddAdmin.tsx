@@ -8,6 +8,10 @@ const AddAdmin = () => {
       sx={{
         display: "flex",
         margin: "30px 0",
+        "@media (max-width: 900px)": {
+          flexWrap: "wrap",
+          flexDirection: "column",
+        },
       }}
     >
       <AdminBar />

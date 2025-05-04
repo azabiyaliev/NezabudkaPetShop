@@ -198,22 +198,22 @@ const App = () => {
           <Route path="/brand/:id" element={<BrandPage />} />
           <Route path="/all-products" element={<AllProductsCardsPage />} />
           <Route path="/all-products/:id" element={<AllProductsCardsPage />} />
-          <Route path="/admin-create" element={
+          <Route path="/private/admin-create" element={
             <ProtectedRoute isAllowed={user && can(["superAdmin"])}>
               <AddAdmin/>
             </ProtectedRoute>
           }/>
-          <Route path="/admin-edit/:id" element={
+          <Route path="/private/admin-edit/:id" element={
             <ProtectedRoute isAllowed={user && can(["superAdmin"])}>
               <AdminForm/>
             </ProtectedRoute>
           } />
-          <Route path="/admin/statistic" element={
+          <Route path="/private/admin/statistic" element={
             <ProtectedRoute isAllowed={user && can(['superAdmin'])}>
               <OrderStats />
             </ProtectedRoute>
           }/>
-          <Route path='/admin-table' element={
+          <Route path='/private/admin-table' element={
             <ProtectedRoute isAllowed={user && can(["superAdmin"])}>
               <AdminTable/>
             </ProtectedRoute>

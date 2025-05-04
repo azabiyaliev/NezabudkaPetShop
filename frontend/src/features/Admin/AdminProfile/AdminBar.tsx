@@ -136,13 +136,13 @@ const AdminBar = () => {
           {can(['superAdmin']) && (
             <>
               <AdminNavItem
-                to={`/admin_info/${adminInfo?.id}`}
+                to={`/private/admin_info/${adminInfo?.id}`}
                 icon={<EditNoteOutlined sx={iconSx} />}
                 text="Информация для администрации"
               />
 
               <AdminNavItem
-                to={`/client_info/${clientInfo?.id}`}
+                to={`/private/client_info/${clientInfo?.id}`}
                 icon={<EditNoteOutlined sx={iconSx} />}
                 text="Информация для клиента"
               />
@@ -154,12 +154,12 @@ const AdminBar = () => {
               <Divider />
               <ListSubheader sx={{ bgcolor: 'inherit', fontWeight: 600, pl: 0,  position: 'static' }}>Администраторы</ListSubheader>
               <AdminNavItem
-                to="/admin-table"
+                to="/private/admin-table"
                 icon={<ReorderOutlined sx={iconSx} />}
                 text="Список администраторов"
               />
               <AdminNavItem
-                to="/admin-create"
+                to="/private/admin-create"
                 icon={<PlaylistAddOutlined sx={iconSx} />}
                 text="Создание администратора"
               />

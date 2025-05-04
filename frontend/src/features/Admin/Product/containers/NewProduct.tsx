@@ -5,9 +5,9 @@ import { ProductRequest } from "../../../../types";
 import { toast } from "react-toastify";
 import ProductForm from "../components/ProductForm.tsx";
 import { selectUser } from "../../../../store/users/usersSlice.ts";
-import Grid from "@mui/material/Grid2";
 import AdminBar from "../../AdminProfile/AdminBar.tsx";
 import { userRoleAdmin, userRoleSuperAdmin } from '../../../../globalConstants.ts';
+import { Box } from '@mui/material';
 
 const NewProduct = () => {
   const dispatch = useAppDispatch();
@@ -29,14 +29,27 @@ const NewProduct = () => {
 
   return (
     <>
-        <Grid container spacing={2}>
-          <Grid size={3} sx={{ margin: "30px 0"}}>
-            <AdminBar />
-          </Grid>
-          <Grid size={9}>
+        <Box
+          sx={{
+          display: "flex",
+          margin: "30px 0",
+          "@media (max-width: 900px)": {
+            flexWrap: "wrap",
+          },
+        }}>
+          <AdminBar />
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              ml: 2,
+            }}
+          >
             <ProductForm onSubmit={onSubmitForm} />
-          </Grid>
-        </Grid>
+          </Box>
+        </Box>
     </>
   );
 };

@@ -18,7 +18,11 @@ const Brands: React.FC<Props> = ({ brands }) => {
     <Table
       aria-label="table with ellipsis texts"
       noWrap
-      sx={{ mx: "auto", width: 850, textAlign: "center" }}
+      sx={{
+        mx: "auto",
+        maxWidth: 850,
+        textAlign: "center",
+      }}
     >
       <thead>
         <tr>

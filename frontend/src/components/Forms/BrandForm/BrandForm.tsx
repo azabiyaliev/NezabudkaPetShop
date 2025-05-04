@@ -92,7 +92,7 @@ const BrandForm: React.FC<Props> = ({
       <main>
         <Sheet
           sx={{
-            width: 800,
+            maxWidth: 800,
             mx: "auto",
             display: "flex",
             flexDirection: "column",

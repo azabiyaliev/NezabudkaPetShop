@@ -61,12 +61,13 @@ const CompanyPageForm = () => {
         flexDirection: { xs: 'column', md: 'row' },
         mt: "30px",
         width: '100%',
+        "@media (max-width: 900px)": {
+          flexWrap: "wrap",
+          flexDirection: "column",
+        },
       }}
     >
-      <Box sx={{ width: { xs: '100%', md: '250px' }, flexShrink: 0 }}>
-        <AdminBar />
-      </Box>
-
+      <AdminBar />
       <Box
         sx={{
           flexGrow: 1,

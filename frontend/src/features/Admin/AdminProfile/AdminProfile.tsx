@@ -1,11 +1,15 @@
 import AdminBar from "./AdminBar.tsx";
-import { useAppDispatch, useAppSelector, usePermission } from '../../../app/hooks.ts';
-import { selectUser } from '../../../store/users/usersSlice.ts';
-import { userRoleAdmin } from '../../../globalConstants.ts';
-import { selectAdminInfo } from '../../../store/adminInfo/adminInfoSlice.ts';
-import { useEffect } from 'react';
-import { fetchAdminInfo } from '../../../store/adminInfo/adminInfoThunk.ts';
-import { Paper, Typography, Box } from '@mui/material';
+import {
+  useAppDispatch,
+  useAppSelector,
+  usePermission,
+} from "../../../app/hooks.ts";
+import { selectUser } from "../../../store/users/usersSlice.ts";
+import { userRoleAdmin } from "../../../globalConstants.ts";
+import { selectAdminInfo } from "../../../store/adminInfo/adminInfoSlice.ts";
+import { useEffect } from "react";
+import { fetchAdminInfo } from "../../../store/adminInfo/adminInfoThunk.ts";
+import { Paper, Typography, Box } from "@mui/material";
 
 const AdminProfile = () => {
   const user = useAppSelector(selectUser);
@@ -20,15 +24,21 @@ const AdminProfile = () => {
   return (
     <>
       {user && can([userRoleAdmin]) && (
-        <Box sx={{ display: "flex", margin: "30px 0" }}>
-          <Box>
-            <AdminBar />
-          </Box>
+        <Box
+          sx={{
+            display: "flex",
+            margin: "30px 0",
+            "@media (max-width: 900px)": {
+              flexWrap: "wrap",
+            },
+          }}
+        >
+          <AdminBar />
           <Box sx={{ marginLeft: "90px" }}>
             <Typography
               variant="h6"
               gutterBottom
-              sx={{ textAlign: 'center', fontWeight: 600 }}
+              sx={{ textAlign: "center", fontWeight: 600 }}
             >
               Личный кабинет
             </Typography>
@@ -36,16 +46,19 @@ const AdminProfile = () => {
               sx={{
                 p: 3,
                 mt: 2,
-                width: "800px",
                 mx: "auto",
+                width: "100%",
+                maxWidth: "800px",
                 display: "flex",
-                justifyContent: "center"
+                justifyContent: "center",
               }}
               elevation={2}
             >
               <Box
-                sx={{ textAlign: 'center' }}
-                dangerouslySetInnerHTML={{ __html: adminInfo?.information || '' }}
+                sx={{ textAlign: "center" }}
+                dangerouslySetInnerHTML={{
+                  __html: adminInfo?.information || "",
+                }}
               />
             </Paper>
           </Box>

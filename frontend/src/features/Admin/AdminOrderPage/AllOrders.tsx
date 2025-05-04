@@ -65,13 +65,13 @@ const AllOrders = () => {
         },
       }}
     >
-      <Box sx={{ width: 500, flexShrink: 0, height: "100%",
+      <Box sx={{  flexShrink: 0, height: "100%",
         "@media (max-width: 900px)": {
           width: "100%",
         },}}>
         <AdminBar />
       </Box>
-      <Box>
+      <Box sx={{display: 'flex', justifyContent: 'center', flexDirection: 'column', marginLeft: 5}}>
         <Box>
           <Typography
             variant="h6"

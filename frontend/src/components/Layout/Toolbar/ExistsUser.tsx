@@ -237,7 +237,7 @@ const ExistsUser = () => {
                 <>
                   <ListItem
                     component={NavLink}
-                    to={`/admin-table`}
+                    to={`/private/admin-table`}
                     onClick={toggleDrawer(false)}
                   >
                     <AdminPanelSettingsOutlinedIcon

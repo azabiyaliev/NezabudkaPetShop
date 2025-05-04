@@ -108,7 +108,7 @@ const AdminForm = () => {
       if (isEdit) {
         await dispatch(updateAdmin({ id: Number(id), adminData })).unwrap();
         toast.success('Админ успешно обновлён!', { position: 'bottom-left' });
-        navigate('/admin-table');
+        navigate('/private/admin-table');
       } else {
         await dispatch(createAdmin(adminData)).unwrap();
         toast.success('Админ успешно создан!', { position: 'bottom-left' });

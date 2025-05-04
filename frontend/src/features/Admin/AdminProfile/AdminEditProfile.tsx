@@ -36,7 +36,7 @@ const AdminEditProfile = () => {
       }}>
         <AdminBar />
       </Box>
-      <Box sx={{ flexGrow: 1, pl: 3, pr: 3 }}>
+      <Box sx={{ flexGrow: 1, pl: 3, pr: 3, maxWidth: 1200,   mx: "auto", }}>
         <UserFormEdition />
       </Box>
     </Box>
