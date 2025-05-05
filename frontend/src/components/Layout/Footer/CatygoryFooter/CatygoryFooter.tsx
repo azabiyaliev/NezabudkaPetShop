@@ -4,6 +4,7 @@ import { fetchCategoriesThunk } from '../../../../store/categories/categoriesThu
 import { selectCategories } from '../../../../store/categories/categoriesSlice.ts';
 import { Box } from '@mui/joy';
 import { NavLink } from 'react-router-dom';
+import theme from '../../../../globalStyles/globalTheme.ts';
 
 const CatygoryFooter = () => {
   const dispatch = useAppDispatch()
@@ -15,7 +16,7 @@ const CatygoryFooter = () => {
 
   return (
     <Box sx={{ textAlign: "left" }}>
-      <p style={{ color: "lightgray", fontSize: "14px", marginBottom: "8px" }}>
+      <p style={{ color: theme.colors.rgbaGrey, fontSize: "14px", marginBottom: "8px", fontWeight:theme.fonts.weight.medium }}>
        Каталог
       </p>
       <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
@@ -30,9 +31,10 @@ const CatygoryFooter = () => {
             <NavLink
               to={`/all-products/${cat.id}`}
               style={{
-                color: "white",
+                color: theme.colors.white,
                 textDecoration: "none",
                 transition: "color 0.3s",
+                fontSize: "14px"
               }}
               className={({ isActive }) =>
                 isActive ? "active-category" : ""
@@ -42,9 +44,6 @@ const CatygoryFooter = () => {
                 component="span"
                 sx={{
                   cursor: "pointer",
-                  "&:hover": {
-                    color: "yellow",
-                  },
                 }}
               >
                 {cat.title}

@@ -1,10 +1,11 @@
 import { Box } from "@mui/material";
 import { NavLink } from 'react-router-dom';
+import theme from "../../../../globalStyles/globalTheme";
 
 const BuyerBlockFooter = () => {
   return (
     <Box sx={{ textAlign: "left" }}>
-      <p style={{ color: "lightgray", fontSize: "14px", marginBottom: "8px" }}>
+      <p style={{ color: theme.colors.rgbaGrey, fontSize: "14px", marginBottom: "8px", fontWeight:theme.fonts.weight.medium }}>
         Покупателям
       </p>
       <Box component="ul" sx={{ listStyle: "none", padding: 0, margin: 0 }}>
@@ -18,12 +19,11 @@ const BuyerBlockFooter = () => {
             <NavLink
               to={item.to}
               style={{
-                color: "white",
+                color: theme.colors.white,
                 textDecoration: "none",
                 transition: "color 0.3s",
+                fontSize: "14px",
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "yellow")}
-              onMouseLeave={(e) => (e.currentTarget.style.color = "white")}
             >
               {item.label}
             </NavLink>

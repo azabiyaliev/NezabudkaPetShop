@@ -27,6 +27,7 @@ export const COLORS = {
   GRAY_BROWN: '#736E68',
   DARK_GRAY: '#666461',
   TAUPE: '#B1A799',
+  FOOTER_COLOR:"rgba(0, 0, 0, 0.87)",
 }
 
 //ОТСТУПЫ
