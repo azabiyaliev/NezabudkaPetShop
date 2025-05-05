@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 import { getBrands } from '../../../store/brands/brandsThunk.ts';
 import Typography from '@mui/joy/Typography';
 import Brands from '../../../components/Domain/Brand/Brands/Brands.tsx';
+import { SPACING } from '../../../globalStyles/stylesObjects.ts';
 
 const BrandsPage = () => {
   const brands = useAppSelector(brandsFromSlice);
@@ -31,7 +32,7 @@ const BrandsPage = () => {
       </Box>
       <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center" }}>
         {brands.length > 0 ? (
-          <Box sx={{ width: "90%", maxWidth: 1100 }}>
+          <Box sx={{ width: "90%", maxWidth: 1100, mt: SPACING.xl }}>
             <Brands brands={brands}/>
           </Box>
         ) : (

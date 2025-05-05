@@ -3,7 +3,7 @@ import FormControl from '@mui/joy/FormControl';
 import React, { useState } from 'react';
 import { BrandError, IBrandForm } from '../../../types';
 import FileInputForBrand from '../../Domain/Brand/FileInputForBrand/FileInputForBrand.tsx';
-import { Alert, Button, Typography } from '@mui/material';
+import { Alert, Button } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import ButtonSpinner from '../../UI/ButtonSpinner/ButtonSpinner.tsx';
 import { apiUrl } from '../../../globalConstants.ts';
@@ -86,13 +86,14 @@ const BrandForm: React.FC<Props> = ({
     <form
       onSubmit={onSubmit}
       style={{
-        marginLeft: '30px'
+        margin: '0 30px'
       }}
     >
       <main>
         <Sheet
           sx={{
-            maxWidth: 800,
+            maxWidth: 1200,
+            padding: '30px 20px',
             mx: "auto",
             display: "flex",
             flexDirection: "column",
@@ -103,11 +104,6 @@ const BrandForm: React.FC<Props> = ({
           }}
           variant="outlined"
         >
-          <div>
-            <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600 }}>
-              {!isBrand ? "Добавление нового" : "Редактирование"} бренда
-            </Typography>
-          </div>
           {brandError && brandError.errors ?
             <Alert severity="error" sx={{ width: "100%" }}>
               {brandError.errors.title}
