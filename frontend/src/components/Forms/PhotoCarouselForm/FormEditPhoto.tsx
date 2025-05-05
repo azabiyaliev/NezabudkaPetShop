@@ -81,7 +81,7 @@ const FormEditPhoto: React.FC<FormEditPhotoProps> = ({ photoId }) => {
 
     try {
       await dispatch(updatePhoto({ photo: editPhoto })).unwrap();
-      navigate('/edit-carousel');
+      navigate('/private/edit-carousel');
       enqueueSnackbar('Вы отредатировали фото для карусели;)', { variant: 'success' });
     } catch (error) {
       console.error('Ошибка обновления фото:', error);

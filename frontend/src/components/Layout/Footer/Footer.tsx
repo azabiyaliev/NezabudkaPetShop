@@ -1,113 +1,111 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Container, Typography } from '@mui/material';
 import logo from "../../../assets/logo-nezabudka.png";
 import { useAppDispatch } from "../../../app/hooks.ts";
-import  { useEffect } from 'react';
-import { fetchSite } from '../../../store/editionSite/editionSiteThunk.ts';
-import { NavLink } from 'react-router-dom';
-import CatygoryFooter from './CatygoryFooter/CatygoryFooter.tsx';
-import BuyerBlockFooter from './BuyerBlockFooter/BuyerBlockFooter.tsx';
-import CabinetBlockFooter from './CabinetBlockFooter/CabinetBlockFooter.tsx';
-import LinkBlockFooter from './LinkBlockFooter/LinkBlockFooter.tsx';
+import { useEffect } from "react";
+import { fetchSite } from "../../../store/editionSite/editionSiteThunk.ts";
+import { NavLink } from "react-router-dom";
+import CatygoryFooter from "./CatygoryFooter/CatygoryFooter.tsx";
+import BuyerBlockFooter from "./BuyerBlockFooter/BuyerBlockFooter.tsx";
+import CabinetBlockFooter from "./CabinetBlockFooter/CabinetBlockFooter.tsx";
+import LinkBlockFooter from "./LinkBlockFooter/LinkBlockFooter.tsx";
+import theme from "../../../globalStyles/globalTheme.ts";
+
 const Footer = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(fetchSite()).unwrap()
+    dispatch(fetchSite()).unwrap();
   }, [dispatch]);
+
+  const columnStyle = {
+    flex: "1 1 200px",
+    borderRight: `1px solid ${theme.colors.BORDER_CART}`,
+    alignSelf: "stretch",
+    boxSizing: "border-box" as const,
+    padding: `0 ${theme.spacing.sm}`,
+    '@media (max-width: 900px)': {
+      borderRight: "none",
+    },
+  };
 
   return (
     <Box
       sx={{
-        padding: "40px 0",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        textAlign: "center",
-        backgroundColor: "rgb(33, 33, 33)",
+        padding: `${theme.spacing.xxl} ${theme.spacing.xs}`,
+        backgroundColor: theme.colors.FOOTER_COLOR,
       }}
     >
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "flex-start",
-          width: "100%",
-          maxWidth: "1200px",
-          padding: "0 20px",
-          marginBottom: "20px",
-          flexDirection: "column",
-          gap: "20px",
-        }}
-      >
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          <NavLink
-            to="/"
-            className="text-decoration-none d-flex align-items-center gap-2"
-          >
-            <Box
-              component="img"
-              src={logo}
-              alt="Nezabudka"
-              sx={{
-                height: "65px",
-                width: "65px",
-                cursor: "pointer",
-                marginRight: "8px",
-                "@media (max-width: 800px)": {
-                  height: "50px",
-                  width: "50px",
-                },
-              }}
-            />
-            <Typography
-              sx={{
-                fontSize: "28px",
-                textTransform: "uppercase",
-                fontWeight: "bold",
-                fontFamily: "COMIC SANS MS, Roboto, Arial, sans-serif",
-                color: "white",
-                cursor: "pointer",
-                "@media (max-width: 800px)": {
-                  fontSize: "26px",
-                },
-              }}
-            >
-              Незабудка
-            </Typography>
-          </NavLink>
-        </Box>
-
+      <Container maxWidth="xl">
         <Box
           sx={{
             display: "flex",
-            justifyContent: "space-between",
-            alignItems: "flex-start",
-            width: "100%",
             flexWrap: "wrap",
-            gap: "40px",
+            justifyContent: "flex-start",
+            alignItems: "flex-start",
+            gap: theme.spacing.sm,
           }}
         >
-          <CatygoryFooter />
-          <Box>
+          <Box sx={columnStyle}>
+            <NavLink
+              to="/"
+              className="text-decoration-none"
+              style={{ display: "flex", alignItems: "center", gap: "8px" }}
+            >
+              <Box
+                component="img"
+                src={logo}
+                alt="Nezabudka"
+                sx={{
+                  height: theme.spacing.xxl,
+                  width: theme.spacing.xxl,
+                  cursor: "pointer",
+                }}
+              />
+              <Typography
+                sx={{
+                  fontSize: theme.fonts.size.lg,
+                  textTransform: "uppercase",
+                  fontWeight: "bold",
+                  color: theme.colors.white,
+                  cursor: "pointer",
+                }}
+              >
+                Незабудка
+              </Typography>
+            </NavLink>
+          </Box>
+
+          <Box sx={columnStyle}>
+            <CatygoryFooter />
+          </Box>
+          <Box sx={columnStyle}>
             <BuyerBlockFooter />
           </Box>
-          <Box sx={{ display: "flex", gap: "10px" }}>
-            <CabinetBlockFooter/>
+          <Box sx={columnStyle}>
+            <CabinetBlockFooter />
           </Box>
-          <Box sx={{ display: "flex", gap: "10px" }}>
-            <LinkBlockFooter/>
+          <Box
+            sx={{
+              ...columnStyle,
+              borderRight: "none",
+            }}
+          >
+            <LinkBlockFooter />
           </Box>
         </Box>
-      </Box>
 
-      <Typography
-        variant="body2"
-        sx={{ color: "lightgray", marginTop: "20px" }}
-      >
-        &copy; {new Date().getFullYear()} Nezabudka. Все права защищены.
-      </Typography>
+        <Typography
+          variant="body2"
+          sx={{
+            color: theme.colors.DARK_GRAY,
+            textAlign: "center",
+            marginTop: theme.spacing.xl,
+          }}
+        >
+          &copy; {new Date().getFullYear()} Nezabudka. Все права защищены.
+        </Typography>
+      </Container>
     </Box>
-
   );
 };
 
