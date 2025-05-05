@@ -27,7 +27,7 @@ const LinkBlockFooter = () => {
         variant="h6"
         sx={{
           fontWeight: theme.fonts.weight.medium,
-          fontSize: '14px',
+          fontSize:  theme.fonts.size.sm,
           color: theme.colors.rgbaGrey,
           mb: 1,
         }}
@@ -45,7 +45,7 @@ const LinkBlockFooter = () => {
             style={{
               color: theme.colors.white,
               textDecoration: 'none',
-              fontSize: '14px',
+              fontSize:  theme.fonts.size.sm,
             }}
           >
             {site.email}
@@ -61,7 +61,7 @@ const LinkBlockFooter = () => {
             style={{
               color: theme.colors.white,
               textDecoration: 'none',
-              fontSize: '14px',
+              fontSize: theme.fonts.size.sm,
             }}
           >
             {site.phone}
@@ -82,7 +82,7 @@ const LinkBlockFooter = () => {
               style={{
                 color: theme.colors.white,
                 textDecoration: 'none',
-                fontSize: '14px',
+                fontSize:  theme.fonts.size.sm,
               }}
             >
               {site.address}
@@ -94,7 +94,7 @@ const LinkBlockFooter = () => {
       {(site?.instagram || site?.whatsapp) && (
         <Box sx={{ mt: 1 }}>
           <Typography
-            sx={{ color: theme.colors.rgbaGrey, fontSize: '14px', mb: 0.5,  fontWeight: theme.fonts.weight.medium, }}
+            sx={{ color: theme.colors.rgbaGrey, fontSize:  theme.fonts.size.sm, mb: 0.5,  fontWeight: theme.fonts.weight.medium, }}
           >
             Мы в соцсетях:
           </Typography>
@@ -116,9 +116,9 @@ const LinkBlockFooter = () => {
                   component="img"
                   src={insta}
                   alt="Instagram"
-                  sx={{ width: 30, height: 30 }}
+                  sx={{ width: theme.spacing.lg, height: theme.spacing.lg }}
                 />
-                <Typography sx={{ fontSize: '14px',  color: theme.colors.white, }}>
+                <Typography sx={{ fontSize: theme.fonts.size.sm,  color: theme.colors.white, }}>
                   Instagram
                 </Typography>
               </Box>
@@ -140,9 +140,9 @@ const LinkBlockFooter = () => {
                   component="img"
                   src={whatsapp}
                   alt="WhatsApp"
-                  sx={{ width: 30, height: 30 }}
+                  sx={{  width: theme.spacing.lg, height: theme.spacing.lg }}
                 />
-                <Typography sx={{ fontSize: '14px', color: theme.colors.white, }}>
+                <Typography sx={{ fontSize: theme.fonts.size.sm, color: theme.colors.white, }}>
                   WhatsApp
                 </Typography>
               </Box>

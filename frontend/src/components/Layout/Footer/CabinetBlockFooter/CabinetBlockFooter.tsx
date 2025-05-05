@@ -41,26 +41,26 @@ const CabinetBlockFooter = () => {
   return (
     <Box sx={{ textAlign: "left" }}>
       {user && (user.role === "admin" || user.role === "superAdmin" )&& (
-          <p style={{ color: "lightgray", fontSize: "14px", marginBottom: "8px" }}>
+          <p style={{ color: "lightgray", fontSize: "14px", marginBottom: theme.spacing.xs }}>
             Кабинет администрации
           </p>
       )}
 
       {user?.role !== "admin" && user?.role !== "superAdmin" && (
-          <p style={{ color: theme.colors.rgbaGrey, fontSize: "14px", marginBottom: "8px", fontWeight: theme.fonts.weight.medium }}>
+          <p style={{ color: theme.colors.rgbaGrey, fontSize:  theme.fonts.size.sm, marginBottom: "8px", fontWeight: theme.fonts.weight.medium }}>
             Кабинет покупателя
           </p>
       )}
       <Box component="ul" sx={{ listStyle: "none", padding: 0, margin: 0 }}>
         {links.map((item) => (
-          <Box component="li" key={item.to} sx={{ marginBottom: "4px" }}>
+          <Box component="li" key={item.to} sx={{ marginBottom: theme.spacing.exs }}>
             <NavLink
               to={item.to}
               style={{
                 color: theme.colors.white,
                 textDecoration: "none",
                 transition: "color 0.3s",
-                fontSize: "14px"
+                fontSize:  theme.fonts.size.sm
               }}
             >
               {item.label}

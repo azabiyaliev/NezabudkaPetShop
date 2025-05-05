@@ -22,7 +22,7 @@ const Footer = () => {
     borderRight: `1px solid ${theme.colors.BORDER_CART}`,
     alignSelf: "stretch",
     boxSizing: "border-box" as const,
-    padding: "0 20px",
+    padding: `0 ${theme.spacing.sm}`,
     '@media (max-width: 900px)': {
       borderRight: "none",
     },
@@ -31,7 +31,7 @@ const Footer = () => {
   return (
     <Box
       sx={{
-        padding: "50px 10px",
+        padding: `${theme.spacing.xxl} ${theme.spacing.xs}`,
         backgroundColor: theme.colors.FOOTER_COLOR,
       }}
     >
@@ -42,7 +42,7 @@ const Footer = () => {
             flexWrap: "wrap",
             justifyContent: "flex-start",
             alignItems: "flex-start",
-            gap: "20px",
+            gap: theme.spacing.sm,
           }}
         >
           <Box sx={columnStyle}>
@@ -56,8 +56,8 @@ const Footer = () => {
                 src={logo}
                 alt="Nezabudka"
                 sx={{
-                  height: "50px",
-                  width: "50px",
+                  height: theme.spacing.xxl,
+                  width: theme.spacing.xxl,
                   cursor: "pointer",
                 }}
               />
@@ -99,7 +99,7 @@ const Footer = () => {
           sx={{
             color: theme.colors.DARK_GRAY,
             textAlign: "center",
-            marginTop: "40px",
+            marginTop: theme.spacing.xl,
           }}
         >
           &copy; {new Date().getFullYear()} Nezabudka. Все права защищены.

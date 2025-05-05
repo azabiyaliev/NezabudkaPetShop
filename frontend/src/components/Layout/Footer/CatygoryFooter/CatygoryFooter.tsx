@@ -16,7 +16,7 @@ const CatygoryFooter = () => {
 
   return (
     <Box sx={{ textAlign: "left" }}>
-      <p style={{ color: theme.colors.rgbaGrey, fontSize: "14px", marginBottom: "8px", fontWeight:theme.fonts.weight.medium }}>
+      <p style={{ color: theme.colors.rgbaGrey, fontSize:  theme.fonts.size.sm, marginBottom: theme.spacing.xs, fontWeight:theme.fonts.weight.medium }}>
        Каталог
       </p>
       <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
@@ -34,7 +34,7 @@ const CatygoryFooter = () => {
                 color: theme.colors.white,
                 textDecoration: "none",
                 transition: "color 0.3s",
-                fontSize: "14px"
+                fontSize:  theme.fonts.size.sm
               }}
               className={({ isActive }) =>
                 isActive ? "active-category" : ""
