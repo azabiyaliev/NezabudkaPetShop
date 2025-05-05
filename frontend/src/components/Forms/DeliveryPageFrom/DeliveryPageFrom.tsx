@@ -10,7 +10,6 @@ import { Box } from '@mui/joy';
 import { Button, Typography } from '@mui/material';
 import TextEditor, { deliveryPriceInfoTemplate } from '../../TextEditor/TextEditor.tsx';
 import TextField from '@mui/material/TextField';
-import AdminBar from '../../../features/Admin/AdminProfile/AdminBar.tsx';
 
 const initialState = {
   text: "",
@@ -32,11 +31,16 @@ const DeliveryPageForm = () => {
   useEffect(() => {
     dispatch(fetchDeliveryPage())
       .unwrap()
-      .then((delivery) => {
-        if (delivery) {
-          setForm(delivery);
+      .then((deliveryData) => {
+        if (deliveryData) {
+          setForm(prev => {
+            if (JSON.stringify(prev) !== JSON.stringify(deliveryData)) {
+              return deliveryData;
+            }
+            return prev;
+          });
         }
-      })
+      });
   }, [dispatch]);
 
   const onChangeEditorText = (html: string) => {
@@ -54,6 +58,9 @@ const DeliveryPageForm = () => {
   };
 
   const onChangeEditorCheckoutDeliveryPriceInfo = (html: string) => {
+    // 💡 Не обновляем, если значение не изменилось
+    if (html === form.checkoutDeliveryPriceInfo) return;
+
     const priceRegex = /\d+\s*сом/g;
     const prices = html.match(priceRegex) || [];
     const hasZeroPrice = prices.some(price => parseInt(price.replace(/\D/g, ''), 10) === 0);
@@ -69,7 +76,7 @@ const DeliveryPageForm = () => {
       ...prevState,
       checkoutDeliveryPriceInfo: html,
     }));
-  }
+  };
 
   const handleMapChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const mapValue = e.target.value;
@@ -128,19 +135,7 @@ const DeliveryPageForm = () => {
   };
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: { xs: 'column', md: 'row' },
-        gap: 2,
-        mt: "30px",
-        width: '100%',
-      }}
-    >
-      <Box sx={{ width: { xs: '100%', md: '500px' }, flexShrink: 0 }}>
-        <AdminBar />
-      </Box>
-
+    <Box>
       <Box
         sx={{
           flexGrow: 1,
@@ -205,11 +200,18 @@ const DeliveryPageForm = () => {
             />
 
             <Typography
-              variant="subtitle1"
-              sx={{ mb: 1, alignSelf: 'flex-start', fontWeight: 500 }}
+              variant="body2"
+              sx={{
+                alignSelf: 'flex-start',
+                color: 'text.secondary',
+                fontWeight: 400,
+                mb: 0.5,
+                mt:5,
+              }}
             >
               Цена за зону доставки
             </Typography>
+
             <Box
             sx={{
               display: 'flex',
@@ -233,23 +235,30 @@ const DeliveryPageForm = () => {
             {delivery?.map && (
               <Box
                 sx={{
+                  flex: '0 1 450px',
                   width: '100%',
-                  height: {
-                    xs: '300px',
-                    md: '400px',
-                  },
-                  borderRadius: '12px',
+                  maxWidth: '450px',
+                  height: '450px',
+                  borderRadius: '5px',
+                  overflow: 'hidden',
+                  boxShadow: '0 2px 6px rgba(0, 0, 0, 0.1)',
+                  position: 'relative',
+                  order: { xs: 1, md: 2 },
+                  float: "right",
                 }}
               >
-
                 <iframe
                   src={delivery.map}
-                  width="100%"
-                  height="100%"
-                  style={{ border: 0 }}
+                  width="600px"
+                  height="600px"
+                  style={{
+                    position: 'absolute',
+                    top: '-70px',
+                    border: 0,
+                  }}
                   allowFullScreen
                   loading="lazy"
-                  title="Delivery map"
+                  referrerPolicy="no-referrer-when-downgrade"
                 />
               </Box>
             )}
@@ -262,7 +271,7 @@ const DeliveryPageForm = () => {
               required
               error={!!mapError}
               helperText={mapError || ''}
-              sx={{ mt: 2 }}
+              sx={{ mt: 5 }}
             />
 
             <Button

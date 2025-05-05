@@ -30,12 +30,9 @@ import ClientTable from './features/SuperAdmin/container/ClientTable/ClientTable
 import OrderStats from './features/Admin/AdminOrderPage/OrderStats.tsx';
 import FavoriteProduct from './features/FavoriteProduct/containers/FavoriteProduct.tsx';
 import CompanyPage from './features/CompanyPage/CompanyPage.tsx';
-import CompanyPageFrom from './components/Forms/CompanyPageFrom/CompanyPageFrom.tsx';
 import BonusProgramPage from './features/BonusProgramPage/BonusProgramPage.tsx';
-import BonusProgramForm from './components/Forms/BonusProgramForm/BonusProgramForm.tsx';
 import { userRoleAdmin, userRoleSuperAdmin } from './globalConstants.ts';
 import DeliveryPage from './features/DeliveryPage/DeliveryPage.tsx';
-import DeliveryPageForm from './components/Forms/DeliveryPageFrom/DeliveryPageFrom.tsx';
 import CategoryPage from './features/Category/CategoryPage/CategoryPage.tsx';
 import  { useEffect } from 'react';
 import { fetchMe } from './store/users/usersThunk.ts';
@@ -45,8 +42,11 @@ import MyOrders from './features/Order/MyOrders.tsx';
 import AddAdmin from './features/Admin/AddAdmin/AddAdmin.tsx';
 import ErrorPage from './components/ErrorPage/ErrorPage.tsx';
 import SwiperCarousel from './components/UI/Carousel/SwiperCarousel.tsx';
-import AdminInfoForm from './components/Forms/AdminInfoForm/AdminInfoFrom.tsx';
-import ClientInfoForm from './components/Forms/ClientInfoForm/ClientInfoForm.tsx';
+import AdminInfoPagesForm from './features/Admin/AdminInfoPagesForm/AdminInfoPagesForm.tsx';
+import ClientInfoPagesForm from './features/Admin/ClientInfoPagesForm/ClientInfoPagesForm.tsx';
+import BonusProgramFormAdminPage from './features/Admin/BonusProgramFormAdminPage/BonusProgramFormAdminPage.tsx';
+import CompanyPageFormAdmin from './features/Admin/CompanyPageFormAdmin/CompanyPageFormAdmin.tsx';
+import DeliveryPageFormAdmin from './features/Admin/DeliveryPageFormAdmin/DeliveryPageFormAdmin.tsx';
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -225,32 +225,32 @@ const App = () => {
           }/>
           <Route path='/favorite-products' element={<FavoriteProduct/>}/>
           <Route path='/my_company' element={<CompanyPage/>}/>
-          <Route path='/private/my_company/:id' element={
+          <Route path='/private/my_company' element={
             <ProtectedRoute isAllowed={user && can(["superAdmin", "admin"])}>
-            <CompanyPageFrom/>
+            <CompanyPageFormAdmin/>
             </ProtectedRoute>
           }/>
           <Route path='/bonus_program' element={<BonusProgramPage/>}/>
-          <Route path='/private/bonus_program/:id' element={
+          <Route path='/private/bonus_program' element={
             <ProtectedRoute isAllowed={user && can(["superAdmin", "admin"])}>
-            <BonusProgramForm/>
+            <BonusProgramFormAdminPage/>
             </ProtectedRoute>
           }/>
           <Route path='/delivery' element={<DeliveryPage/>}/>
-          <Route path='/private/delivery/:id' element={
+          <Route path='/private/delivery' element={
             <ProtectedRoute isAllowed={user && can(["superAdmin", "admin"])}>
-              <DeliveryPageForm/>
+              <DeliveryPageFormAdmin/>
             </ProtectedRoute>
           }/>
           <Route path='/contacts' element={<ContactPage/>}/>
-          <Route path='/private/admin_info/:id' element={
+          <Route path='/private/admin_info' element={
             <ProtectedRoute isAllowed={user && can(["superAdmin"])}>
-              <AdminInfoForm/>
+              <AdminInfoPagesForm/>
             </ProtectedRoute>
           }/>
-          <Route path='/private/client_info/:id' element={
+          <Route path='/private/client_info' element={
             <ProtectedRoute isAllowed={user && can(["superAdmin"])}>
-              <ClientInfoForm/>
+              <ClientInfoPagesForm/>
             </ProtectedRoute>
           }/>
         </Routes>

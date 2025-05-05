@@ -1,15 +1,16 @@
-import AdminBar from "../AdminProfile/AdminBar.tsx";
-import { useAppDispatch } from "../../../app/hooks.ts";
-import { useEffect } from "react";
-import { fetchSite } from "../../../store/editionSite/editionSiteThunk.ts";
-import EditSiteForm from "../../../components/Forms/EditSiteForm/EditSiteForm.tsx";
-import { Box } from "@mui/material";
+import { useEffect } from 'react';
+import { useAppDispatch } from '../../../app/hooks.ts';
+import { Box } from '@mui/material';
+import AdminBar from '../AdminProfile/AdminBar.tsx';
+import { fetchClientInfo } from '../../../store/clientInfo/clientInfoThunk.ts';
+import ClientInfoForm from '../../../components/Forms/ClientInfoForm/ClientInfoForm.tsx';
 
-const EditionSitePage = () => {
+
+const ClientInfoPagesForm = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(fetchSite())
+    dispatch(fetchClientInfo())
       .unwrap()
       .catch((error) => {
         console.error("Error fetching site data:", error);
@@ -35,10 +36,10 @@ const EditionSitePage = () => {
           display: "flex",
         }}
       >
-        <EditSiteForm />
+     <ClientInfoForm/>
       </Box>
     </Box>
   );
 };
 
-export default EditionSitePage;
+export default ClientInfoPagesForm;
