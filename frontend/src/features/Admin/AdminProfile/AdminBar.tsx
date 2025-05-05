@@ -6,14 +6,10 @@ import {
   Divider, Box,
 } from '@mui/material';
 import {
-  useAppDispatch,
   useAppSelector,
   usePermission,
 } from '../../../app/hooks.ts';
 import { selectUser } from '../../../store/users/usersSlice.ts';
-import { selectCompany } from '../../../store/companyPage/compantPageSlice.ts';
-import { selectDelivery } from '../../../store/deliveryPage/deliveryPageSlice.ts';
-import { selectBonusProgram } from '../../../store/bonusProgramPage/bonusProgramPageSlice.ts';
 import {
   EditNote,
   PlaylistAddOutlined,
@@ -31,25 +27,10 @@ import {
 import { NavLink } from 'react-router-dom';
 import AdminNavItem from './AdminNavItem.tsx';
 import { userRoleAdmin, userRoleSuperAdmin } from '../../../globalConstants.ts';
-import { useEffect } from 'react';
-import { fetchAdminInfo } from '../../../store/adminInfo/adminInfoThunk.ts';
-import { fetchClientInfo } from '../../../store/clientInfo/clientInfoThunk.ts';
 const iconSx = { color: "#45624E", mr: 1 };
 const AdminBar = () => {
-  const company = useAppSelector(selectCompany);
-  const delivery = useAppSelector(selectDelivery);
-  const bonusProgram = useAppSelector(selectBonusProgram);
   const user = useAppSelector(selectUser);
   const can = usePermission(user);
-
-  const dispatch = useAppDispatch();
-  useEffect(() => {
-    dispatch(fetchAdminInfo());
-  }, [dispatch]);
-
-  useEffect(() => {
-    dispatch(fetchClientInfo());
-  }, [dispatch]);
 
   return (
     <Box
@@ -178,17 +159,17 @@ const AdminBar = () => {
           <Divider />
           <ListSubheader sx={{ bgcolor: 'inherit', fontWeight: 600, pl: 0,  position: 'static', }}>Управление контентом</ListSubheader>
           <AdminNavItem
-            to={`/private/my_company/${company?.id}`}
+            to={`/private/my_company`}
             icon={<EditNote sx={iconSx} />}
             text="О компании"
           />
           <AdminNavItem
-            to={`/private/delivery/${delivery?.id}`}
+            to={`/private/delivery`}
             icon={<EditNote sx={iconSx} />}
             text="Доставка и оплата"
           />
           <AdminNavItem
-            to={`/private/bonus_program/${bonusProgram?.id}`}
+            to={`/private/bonus_program`}
             icon={<EditNote sx={iconSx} />}
             text="Бонусная программа"
           />

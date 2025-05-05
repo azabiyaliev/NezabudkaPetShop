@@ -6,11 +6,9 @@ import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
 import { useNavigate } from 'react-router-dom';
 import { BonusProgramPageMutation } from '../../../types';
 import { selectBonusProgram } from '../../../store/bonusProgramPage/bonusProgramPageSlice.ts';
-import { fetchCompanyPage, updateCompanyPage } from '../../../store/companyPage/companyPageThunk.ts';
-import { fetchBonusPage } from '../../../store/bonusProgramPage/bonusProgramPageThunk.ts';
+import { fetchBonusPage, updateBonusPage } from '../../../store/bonusProgramPage/bonusProgramPageThunk.ts';
 import { toast } from 'react-toastify';
 import { enqueueSnackbar } from 'notistack';
-import AdminBar from '../../../features/Admin/AdminProfile/AdminBar.tsx';
 
 const initialState = {
   text: ""
@@ -46,28 +44,17 @@ const BonusProgramForm = () => {
       return;
     }
     try {
-      await dispatch(updateCompanyPage({ id: bonusProgram.id, data: form })).unwrap();
+      await dispatch(updateBonusPage({ id: bonusProgram.id, data: form })).unwrap();
       enqueueSnackbar('Вы успешно отредактировали страницу "О компании"!', { variant: 'success' });
-      navigate(`/my_company`);
-      await dispatch(fetchCompanyPage())
+      navigate(`/bonus_program`);
+      await dispatch(fetchBonusPage())
     } catch (error) {
       console.error(error);
     }
   };
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: { xs: 'column', md: 'row' },
-        gap: 2,
-        mt: "30px",
-        width: '100%',
-      }}
-    >
-      <Box sx={{ width: { xs: '100%', md: '500px' }, flexShrink: 0 }}>
-        <AdminBar />
-      </Box>
+    <Box>
       <Box
         sx={{
           flexGrow: 1,

@@ -9,7 +9,6 @@ import { fetchCompanyPage, updateCompanyPage } from '../../../store/companyPage/
 import { toast } from 'react-toastify';
 import { enqueueSnackbar } from 'notistack';
 import { Box } from '@mui/joy';
-import AdminBar from '../../../features/Admin/AdminProfile/AdminBar.tsx';
 
 const initialState = {
   text: ""
@@ -55,19 +54,7 @@ const CompanyPageForm = () => {
   };
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: { xs: 'column', md: 'row' },
-        mt: "30px",
-        width: '100%',
-        "@media (max-width: 900px)": {
-          flexWrap: "wrap",
-          flexDirection: "column",
-        },
-      }}
-    >
-      <AdminBar />
+    <Box>
       <Box
         sx={{
           flexGrow: 1,
