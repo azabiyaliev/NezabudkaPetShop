@@ -53,9 +53,17 @@ const FileInputForBrand: React.FC<Props> = ({
       />
       <Grid container spacing={2} alignItems="center">
         <Box
-          sx={{ display: "flex", alignItems: "center", gap: 2, width: "100%" }}
+          sx={{ display: "flex", alignItems: "center", gap: 2, width: "100%",
+            '@media (max-width: 560px)': {
+              display: "block",
+            },
+          }}
         >
-          <Box sx={{ width: "70%" }}>
+          <Box sx={{ width: "70%",
+            '@media (max-width: 560px)': {
+              width: "100%",
+            },
+          }}>
             <TextField
               sx={{ width: "100%" }}
               label={label}
@@ -64,7 +72,12 @@ const FileInputForBrand: React.FC<Props> = ({
               onClick={activateInput}
             />
           </Box>
-          <Box sx={{ width: "30%" }}>
+          <Box sx={{ width: "30%",
+            '@media (max-width: 560px)': {
+              width: "100%",
+              mt: 1
+            },
+          }}>
             <Button
               variant="text"
               onClick={activateInput}
