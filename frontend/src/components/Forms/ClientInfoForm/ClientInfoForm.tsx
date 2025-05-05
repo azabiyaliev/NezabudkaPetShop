@@ -5,10 +5,8 @@ import TextEditor from '../../TextEditor/TextEditor.tsx';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
 import { useNavigate } from 'react-router-dom';
 import { ClientInfoMutation } from '../../../types';
-import { fetchCompanyPage } from '../../../store/companyPage/companyPageThunk.ts';
 import { toast } from 'react-toastify';
 import { enqueueSnackbar } from 'notistack';
-import AdminBar from '../../../features/Admin/AdminProfile/AdminBar.tsx';
 import { selectClientInfo } from "../../../store/clientInfo/clientInfoSlice.ts";
 import { fetchClientInfo, updateClientInfo } from '../../../store/clientInfo/clientInfoThunk.ts';
 
@@ -16,7 +14,7 @@ const initialState = {
   information: ""
 }
 
-const AdminInfoForm = () => {
+const ClientInfoForm = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [form, setForm] = useState<ClientInfoMutation>(initialState);
@@ -48,26 +46,14 @@ const AdminInfoForm = () => {
     try {
       await dispatch(updateClientInfo({ id: clientInfo.id, data: form })).unwrap();
       enqueueSnackbar('Вы успешно отредактировали личный кабинет для клиентов', { variant: 'success' });
-      navigate(`/client_info/${clientInfo.id}`);
-      await dispatch(fetchCompanyPage())
+      navigate(`/private/client_info`);
     } catch (error) {
       console.error(error);
     }
   };
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        margin: "30px 0",
-        "@media (max-width: 900px)": {
-          flexWrap: "wrap",
-        },
-      }}
-    >
-      <AdminBar />
-
-
+    <Box>
       <Box
         sx={{
           flexGrow: 1,
@@ -130,4 +116,4 @@ const AdminInfoForm = () => {
 
 };
 
-export default AdminInfoForm;
+export default ClientInfoForm;

@@ -6,6 +6,7 @@ import {
   Divider, Box,
 } from '@mui/material';
 import {
+  useAppDispatch,
   useAppSelector,
   usePermission,
 } from '../../../app/hooks.ts';
@@ -28,19 +29,27 @@ import {
   ListAltOutlined,
 } from '@mui/icons-material';
 import { NavLink } from 'react-router-dom';
-import { selectAdminInfo } from '../../../store/adminInfo/adminInfoSlice.ts';
-import { selectClientInfo } from "../../../store/clientInfo/clientInfoSlice.ts";
 import AdminNavItem from './AdminNavItem.tsx';
 import { userRoleAdmin, userRoleSuperAdmin } from '../../../globalConstants.ts';
+import { useEffect } from 'react';
+import { fetchAdminInfo } from '../../../store/adminInfo/adminInfoThunk.ts';
+import { fetchClientInfo } from '../../../store/clientInfo/clientInfoThunk.ts';
 const iconSx = { color: "#45624E", mr: 1 };
 const AdminBar = () => {
   const company = useAppSelector(selectCompany);
   const delivery = useAppSelector(selectDelivery);
   const bonusProgram = useAppSelector(selectBonusProgram);
-  const adminInfo = useAppSelector(selectAdminInfo);
-  const clientInfo = useAppSelector(selectClientInfo);
   const user = useAppSelector(selectUser);
   const can = usePermission(user);
+
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    dispatch(fetchAdminInfo());
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(fetchClientInfo());
+  }, [dispatch]);
 
   return (
     <Box
@@ -136,13 +145,13 @@ const AdminBar = () => {
           {can(['superAdmin']) && (
             <>
               <AdminNavItem
-                to={`/private/admin_info/${adminInfo?.id}`}
+                to={`/private/admin_info`}
                 icon={<EditNoteOutlined sx={iconSx} />}
                 text="Информация для администрации"
               />
 
               <AdminNavItem
-                to={`/private/client_info/${clientInfo?.id}`}
+                to={`/private/client_info`}
                 icon={<EditNoteOutlined sx={iconSx} />}
                 text="Информация для клиента"
               />

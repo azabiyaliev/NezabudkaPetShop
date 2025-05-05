@@ -5,10 +5,8 @@ import TextEditor from "../../TextEditor/TextEditor.tsx";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
 import { useNavigate } from "react-router-dom";
 import { AdminInfoMutation } from "../../../types";
-import { fetchCompanyPage } from "../../../store/companyPage/companyPageThunk.ts";
 import { toast } from "react-toastify";
 import { enqueueSnackbar } from "notistack";
-import AdminBar from "../../../features/Admin/AdminProfile/AdminBar.tsx";
 import { selectAdminInfo } from "../../../store/adminInfo/adminInfoSlice.ts";
 import {
   fetchAdminInfo,
@@ -56,25 +54,14 @@ const AdminInfoForm = () => {
         "Вы успешно отредактировали личный кабинет для администрации",
         { variant: "success" },
       );
-      navigate(`/private/admin_info/${adminInfo.id}`);
-      await dispatch(fetchCompanyPage());
+      navigate(`/private/admin_info`);
     } catch (error) {
       console.error(error);
     }
   };
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        margin: "30px 0",
-        "@media (max-width: 900px)": {
-          flexWrap: "wrap",
-        },
-      }}
-    >
-      <AdminBar />
-
+    <Box>
       <Box
         sx={{
           flexGrow: 1,
