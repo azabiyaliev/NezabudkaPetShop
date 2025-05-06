@@ -153,6 +153,7 @@ export class ProductsService {
       productWeight,
       productManufacturer,
       promoPercentage,
+      isBestseller,
     } = createProductsDto;
 
     if (!categoryId || categoryId.length === 0) {
@@ -191,6 +192,7 @@ export class ProductsService {
         promoPercentage: promo,
         sales,
         existence: existence === 'true',
+        isBestseller: isBestseller ?? false,
         startDateSales,
         endDateSales,
         productCategory: {
@@ -299,6 +301,7 @@ export class ProductsService {
         productPrice: true,
         sales: true,
         existence: true,
+        isBestseller: true,
         startDateSales: true,
         endDateSales: true,
         promoPrice: true,
@@ -333,6 +336,7 @@ export class ProductsService {
       productFeedClass,
       productWeight,
       promoPercentage,
+      isBestseller,
     }: CreateProductsDto,
     file?: Express.Multer.File,
   ) {
@@ -364,6 +368,7 @@ export class ProductsService {
         brandId: Number(brandId),
         existence: existence === 'true',
         sales: sales ?? false,
+        isBestseller: isBestseller ?? false,
         startDateSales: sales ? startDateSales : null,
         endDateSales: sales ? endDateSales : null,
         productWeight: productWeight ? Number(productWeight) : null,
