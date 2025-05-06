@@ -17,7 +17,7 @@ const CategoryCard = () => {
   return (
     <Grid
       container
-      spacing={2}
+      spacing={3}
       justifyContent="center"
     >
       {filteredCategories.map((category) => (
@@ -39,8 +39,8 @@ const CategoryCard = () => {
           <Card
             sx={{
               width: '100%',
-              maxWidth: 350,
-              height: 250,
+              maxWidth: 300,
+              height: 210,
               backgroundColor: theme.colors.background,
               display: 'flex',
               alignItems: 'center',
@@ -59,8 +59,8 @@ const CategoryCard = () => {
             <CardMedia
               component="img"
               sx={{
-                height: 180,
-                width: 180,
+                height: 150,
+                width: 150,
                 objectFit: 'cover',
                 alignSelf: 'flex-end',
                 "@media (max-width: 780px)": {
@@ -77,7 +77,7 @@ const CategoryCard = () => {
             />
             <Typography
               sx={{
-                fontSize: theme.fonts.size.xxl,
+                fontSize: theme.fonts.size.xl,
                 fontWeight: theme.fonts.weight.medium,
                 color: theme.colors.text,
                 textAlign: 'center',
