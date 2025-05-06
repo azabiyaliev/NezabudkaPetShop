@@ -39,7 +39,7 @@ const CategoryCard = () => {
           <Card
             sx={{
               width: '100%',
-              maxWidth: 300,
+              maxWidth: 340,
               height: 210,
               backgroundColor: theme.colors.background,
               display: 'flex',
