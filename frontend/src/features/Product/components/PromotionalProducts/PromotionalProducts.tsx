@@ -18,9 +18,10 @@ const PromotionalProducts: React.FC<Props> = ({ products, cart }) => {
     <Box
       sx={{
         width: '100%',
+        margin: '0 auto',
+        padding: '20px 0px',
         position: 'relative',
         overflow: 'visible',
-        margin: '0, 50px',
         '& .swiper': {
           paddingBottom: '10px',
         },
@@ -50,8 +51,10 @@ const PromotionalProducts: React.FC<Props> = ({ products, cart }) => {
           zIndex: 1,
         },
         '& .swiper-button-prev': {
+          left: '-5px',
         },
         '& .swiper-button-next': {
+          right: '-5px',
         },
       }}
     >
@@ -99,6 +102,7 @@ const PromotionalProducts: React.FC<Props> = ({ products, cart }) => {
                 flexDirection: 'column',
                 alignItems: 'center',
                 position: 'relative',
+                padding: '0',
                 '& a:not(:has(img))': {
                   height: '80px',
                 },
