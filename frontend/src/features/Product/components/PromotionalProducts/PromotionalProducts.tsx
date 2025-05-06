@@ -19,8 +19,9 @@ const PromotionalProducts: React.FC<Props> = ({ products, cart }) => {
       sx={{
         width: '100%',
         margin: '0 auto',
-        padding: '20px 0',
+        padding: '20px 20px',
         position: 'relative',
+        overflow: 'visible',
         '& .swiper': {
           paddingBottom: '10px',
         },
@@ -43,29 +44,43 @@ const PromotionalProducts: React.FC<Props> = ({ products, cart }) => {
         },
         '& .swiper-button-next, & .swiper-button-prev': {
           color: '#237803',
-          width: '40px',
-          height: '40px',
+          width: '32px',
+          height: '32px',
           top: '50%',
           transform: 'translateY(-50%)',
           zIndex: 1,
         },
         '& .swiper-button-prev': {
-          left: '-7px',
+          left: '-8px',
+          '@media (min-width: 768px)': {
+            left: '-4px',
+          },
+          '@media (min-width: 1280px)': {
+            left: '-4px',
+          },
         },
         '& .swiper-button-next': {
-          right: '-7px',
+          right: '-8px',
+          '@media (min-width: 768px)': {
+            right: '-4px',
+          },
+          '@media (min-width: 1280px)': {
+            right: '-4px',
+          },
         },
       }}
     >
-      <Swiper
+
+    <Swiper
         modules={[Pagination, Navigation, Autoplay]}
-        spaceBetween={6}
-        slidesPerView={4}
+        spaceBetween={4}
+        slidesPerView={5}
         breakpoints={{
           0: { slidesPerView: 1 },
-          600: { slidesPerView: 2 },
-          1200: { slidesPerView: 3 },
-          1350: { slidesPerView: 4 },
+          480: { slidesPerView: 2 },
+          768: { slidesPerView: 3 },
+          1024: { slidesPerView: 4 },
+          1280: { slidesPerView: 5 },
         }}
         loop={true}
         grabCursor={true}
@@ -75,6 +90,7 @@ const PromotionalProducts: React.FC<Props> = ({ products, cart }) => {
           disableOnInteraction: false,
           pauseOnMouseEnter: true,
         }}
+
         pagination={{
           clickable: true,
           dynamicBullets: true,
