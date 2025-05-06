@@ -59,13 +59,14 @@ const PromotionalProducts: React.FC<Props> = ({ products, cart }) => {
     >
       <Swiper
         modules={[Pagination, Navigation, Autoplay]}
-        spaceBetween={6}
-        slidesPerView={4}
+        spaceBetween={4}
+        slidesPerView={5}
         breakpoints={{
           0: { slidesPerView: 1 },
-          600: { slidesPerView: 2 },
-          1200: { slidesPerView: 3 },
-          1350: { slidesPerView: 4 },
+          480: { slidesPerView: 2 },
+          768: { slidesPerView: 3 },
+          1024: { slidesPerView: 4 },
+          1280: { slidesPerView: 5 },
         }}
         loop={true}
         grabCursor={true}

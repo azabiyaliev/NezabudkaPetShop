@@ -23,8 +23,9 @@ const Footer = () => {
     alignSelf: "stretch",
     boxSizing: "border-box" as const,
     padding: `0 ${theme.spacing.sm}`,
-    '@media (max-width: 900px)': {
+    '@media (max-width: 990px)': {
       borderRight: "none",
+      flex: "1 1 300px",
     },
   };
 
@@ -36,6 +37,48 @@ const Footer = () => {
       }}
     >
       <Container maxWidth="xl">
+      <Box sx={{
+        display: 'none',
+        '@media (max-width:1220px)': {
+          display: 'flex',
+          pl: 2
+        },
+      }}>
+        <NavLink
+          to="/"
+          className="text-decoration-none"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+          }}
+        >
+          <Box>
+            <Box
+              component="img"
+              src={logo}
+              alt="Nezabudka"
+              sx={{
+                height: theme.spacing.xxl,
+                width: theme.spacing.xxl,
+                cursor: "pointer",
+              }}
+            />
+            <Typography
+              sx={{
+                fontSize: theme.fonts.size.lg,
+                textTransform: "uppercase",
+                fontWeight: "bold",
+                color: theme.colors.white,
+                cursor: "pointer",
+              }}
+            >
+              Незабудка
+            </Typography>
+          </Box>
+        </NavLink>
+      </Box>
+
         <Box
           sx={{
             display: "flex",
@@ -45,7 +88,12 @@ const Footer = () => {
             gap: theme.spacing.sm,
           }}
         >
-          <Box sx={columnStyle}>
+          <Box sx={{
+            ...columnStyle,
+            '@media (max-width: 1220px)': {
+             display:"none"
+            },
+          }}>
             <NavLink
               to="/"
               className="text-decoration-none"
