@@ -29,7 +29,7 @@ export enum DeliveryMethod {
 }
 
 const regEmail = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-const regPhone = /^\+996\s\d{3}\s\d{3}\s\d{3}$/;
+const regPhone = /^(\+996|0)\s?\d{3}\s?\d{3}\s?\d{3}$/;
 const regAddress = /^[a-zA-Zа-яА-Я0-9\s,.'-]*$/;
 
 const OrderForm = () => {
@@ -373,14 +373,11 @@ try {
                 sx={{
                   marginTop: SPACING.md,
                   padding: SPACING.sm,
-                  backgroundColor: COLORS.yellow,
+                  backgroundColor: COLORS.DARK_GREEN,
                   color: COLORS.contrastText,
                   fontWeight: FONTS.weight.bold,
                   '@media (max-width: 600px)': {
                     padding: SPACING.xs,
-                  },
-                  '&:hover': {
-                    backgroundColor: COLORS.warning,
                   },
                 }}
               >
@@ -538,12 +535,12 @@ try {
                     sx={{
                       backgroundColor:
                         form.deliveryMethod === DeliveryMethod.Delivery
-                          ? COLORS.DARK_GREEN
+                          ? COLORS.OLIVE_GREEN
                           : 'transparent',
                       color: form.deliveryMethod === DeliveryMethod.Delivery
                         ? COLORS.white
-                        : COLORS.DARK_GREEN,
-                      border: `1px solid ${COLORS.DARK_GREEN}`,
+                        : COLORS.OLIVE_GREEN,
+                      border: `1px solid ${COLORS.OLIVE_GREEN}`,
                       borderRadius: SPACING.sm,
                       padding: `${SPACING.xs} ${SPACING.sm}`,
                       textTransform: 'none',
@@ -552,8 +549,8 @@ try {
                       '&:hover': {
                         backgroundColor:
                           form.deliveryMethod === DeliveryMethod.Delivery
-                            ? COLORS.FOREST_GREEN
-                            : 'rgba(95, 139, 76, 0.1)',
+                            ? COLORS.OLIVE_GREEN
+                            : COLORS.background,
                       },
                       transition: 'all 0.2s ease',
                     }}
@@ -565,12 +562,12 @@ try {
                     sx={{
                       backgroundColor:
                         form.deliveryMethod === DeliveryMethod.PickUp
-                          ? COLORS.DARK_GREEN
+                          ? COLORS.OLIVE_GREEN
                           : 'transparent',
                       color: form.deliveryMethod === DeliveryMethod.PickUp
                         ? COLORS.white
-                        : COLORS.DARK_GREEN,
-                      border: `1px solid ${COLORS.DARK_GREEN}`,
+                        : COLORS.OLIVE_GREEN,
+                      border: `1px solid ${COLORS.OLIVE_GREEN}`,
                       borderRadius: SPACING.sm,
                       padding: `${SPACING.xs} ${SPACING.sm}`,
                       textTransform: 'none',
@@ -579,8 +576,8 @@ try {
                       '&:hover': {
                         backgroundColor:
                           form.deliveryMethod === DeliveryMethod.PickUp
-                            ? COLORS.FOREST_GREEN
-                            : 'rgba(95, 139, 76, 0.1)',
+                            ? COLORS.OLIVE_GREEN
+                            : COLORS.background,
                       },
                       transition: 'all 0.2s ease',
                     }}
@@ -624,12 +621,12 @@ try {
                     sx={{
                       backgroundColor:
                         form.paymentMethod === PaymentMethod.ByCard
-                          ? COLORS.DARK_GREEN
+                          ? COLORS.OLIVE_GREEN
                           : 'transparent',
                       color: form.paymentMethod === PaymentMethod.ByCard
                         ? COLORS.white
-                        : COLORS.DARK_GREEN,
-                      border: `1px solid ${COLORS.DARK_GREEN}`,
+                        : COLORS.OLIVE_GREEN,
+                      border: `1px solid ${COLORS.OLIVE_GREEN}`,
                       borderRadius: SPACING.sm,
                       padding: `${SPACING.xs} ${SPACING.sm}`,
                       textTransform: 'none',
@@ -638,7 +635,7 @@ try {
                       '&:hover': {
                         backgroundColor:
                           form.paymentMethod === PaymentMethod.ByCard
-                            ? COLORS.FOREST_GREEN
+                            ? COLORS.OLIVE_GREEN
                             : COLORS.background,
                       },
                       transition: 'all 0.2s ease',
@@ -651,12 +648,12 @@ try {
                     sx={{
                       backgroundColor:
                         form.paymentMethod === PaymentMethod.ByCash
-                          ? COLORS.DARK_GREEN
+                          ? COLORS.OLIVE_GREEN
                           : 'transparent',
                       color: form.paymentMethod === PaymentMethod.ByCash
                         ? COLORS.white
-                        : COLORS.DARK_GREEN,
-                      border: `1px solid ${COLORS.DARK_GREEN}`,
+                        : COLORS.OLIVE_GREEN,
+                      border: `1px solid ${COLORS.OLIVE_GREEN}`,
                       borderRadius: SPACING.sm,
                       padding: `${SPACING.xs} ${SPACING.sm}`,
                       textTransform: 'none',
@@ -665,7 +662,7 @@ try {
                       '&:hover': {
                         backgroundColor:
                           form.paymentMethod === PaymentMethod.ByCash
-                            ? COLORS.FOREST_GREEN
+                            ? COLORS.OLIVE_GREEN
                             : COLORS.background,
                       },
                       transition: 'all 0.2s ease',
