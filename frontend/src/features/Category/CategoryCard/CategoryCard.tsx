@@ -59,8 +59,8 @@ const CategoryCard = () => {
             <CardMedia
               component="img"
               sx={{
-                height: 150,
-                width: 150,
+                height: 190,
+                width: 190,
                 objectFit: 'cover',
                 alignSelf: 'flex-end',
                 "@media (max-width: 780px)": {
