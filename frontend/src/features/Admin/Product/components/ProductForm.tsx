@@ -224,7 +224,6 @@ const ProductForm: React.FC<Props> = ({
 
     onSubmit({ ...form });
 
-    console.log(form);
     if (!isProduct) {
       setForm(initialState);
       return;

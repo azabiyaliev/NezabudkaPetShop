@@ -12,7 +12,7 @@ const TopSellingProducts:React.FC<Props> = ({ products, cart }) => {
     <Box sx={{
       display: 'flex',
       flexWrap: 'wrap',
-      justifyContent: 'space-between',
+      justifyContent: 'center',
       alignItems: 'center',
       "@media (max-width: 666px)": {
         justifyContent: 'center',

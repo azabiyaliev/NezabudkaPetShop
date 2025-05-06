@@ -109,9 +109,16 @@ export class ProductsService {
   async getTopSellingProducts() {
     const products = await this.prismaService.products.findMany({
       where: {
-        orderedProductsStats: {
-          gt: 0,
-        },
+        AND: [
+          {
+            orderedProductsStats: {
+              gt: 0,
+            },
+          },
+          {
+            isBestseller: true,
+          },
+        ],
       },
       orderBy: {
         orderedProductsStats: 'desc',
@@ -540,7 +547,6 @@ export class ProductsService {
     let categoryIds: number[] = [];
 
     if (!category.parentId) {
-      // Родительская категория: найти все подкатегории
       const subcategories = await this.prismaService.category.findMany({
         where: { parentId: id },
         select: { id: true },
@@ -549,7 +555,6 @@ export class ProductsService {
       categoryIds = subcategories.map((cat) => cat.id);
       categoryIds.push(id);
     } else {
-      // Обычная категория
       categoryIds = [id];
     }
 
