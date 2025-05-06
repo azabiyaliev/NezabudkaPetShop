@@ -18,10 +18,9 @@ const PromotionalProducts: React.FC<Props> = ({ products, cart }) => {
     <Box
       sx={{
         width: '100%',
-        margin: '0 auto',
-        padding: '20px 20px',
         position: 'relative',
         overflow: 'visible',
+        margin: '0, 50px',
         '& .swiper': {
           paddingBottom: '10px',
         },
@@ -51,29 +50,15 @@ const PromotionalProducts: React.FC<Props> = ({ products, cart }) => {
           zIndex: 1,
         },
         '& .swiper-button-prev': {
-          left: '-8px',
-          '@media (min-width: 768px)': {
-            left: '-4px',
-          },
-          '@media (min-width: 1280px)': {
-            left: '-4px',
-          },
         },
         '& .swiper-button-next': {
-          right: '-8px',
-          '@media (min-width: 768px)': {
-            right: '-4px',
-          },
-          '@media (min-width: 1280px)': {
-            right: '-4px',
-          },
         },
       }}
     >
 
     <Swiper
         modules={[Pagination, Navigation, Autoplay]}
-        spaceBetween={4}
+        spaceBetween={0}
         slidesPerView={5}
         breakpoints={{
           0: { slidesPerView: 1 },
@@ -105,7 +90,6 @@ const PromotionalProducts: React.FC<Props> = ({ products, cart }) => {
               justifyContent: 'center',
               alignItems: 'flex-start',
               height: '100%',
-              width: 250,
             }}
           >
             <Box
