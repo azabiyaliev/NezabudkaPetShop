@@ -27,6 +27,14 @@ const Footer = () => {
       borderRight: "none",
       flex: "1 1 300px",
     },
+    '@media (max-width: 700px)': {
+      borderRight: "none",
+      flex: "1 1 200px",
+    },
+    '@media (max-width: 520px)': {
+      borderRight: "none",
+      flex: "1 1 250px",
+    },
   };
 
   return (
