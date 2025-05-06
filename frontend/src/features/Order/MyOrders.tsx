@@ -23,6 +23,7 @@ import ClientOrdersItem from "./ClientOrdersItem.tsx";
 import { NavLink } from "react-router-dom";
 import { COLORS, FONTS } from "../../globalStyles/stylesObjects.ts";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { OrderStatus } from '../Admin/AdminOrderPage/OrdersItem.tsx';
 
 const MyOrders = () => {
   const dispatch = useAppDispatch();
@@ -80,9 +81,17 @@ const MyOrders = () => {
     }
     return true;
   };
-  const filteredOrders = orders.filter(
-    (order) => filterByStatus(order) && filterByTime(order),
-  );
+  const filteredAndSortedOrders = orders
+    .filter((order) => filterByStatus(order) && filterByTime(order))
+    .sort((a, b) => {
+      if (a.status === OrderStatus.Canceled && b.status !== OrderStatus.Canceled) {
+        return 1;
+      }
+      if (a.status !== OrderStatus.Canceled && b.status === OrderStatus.Canceled) {
+        return -1;
+      }
+      return 0;
+    });
 
   if (loading) {
     return <CircularProgress />;
@@ -123,6 +132,7 @@ const MyOrders = () => {
         gap: "20px",
         alignItems: "center",
         position: "relative",
+        overflow: "hidden",
       }}
     >
       <NavLink
@@ -170,12 +180,12 @@ const MyOrders = () => {
           }}
         >
           <MenuItem value="All">Все</MenuItem>
-          <MenuItem value="Pending">Pending</MenuItem>
-          <MenuItem value="Confirmed">Confirmed</MenuItem>
-          <MenuItem value="Packed">Packed</MenuItem>
-          <MenuItem value="Shipped">Shipped</MenuItem>
-          <MenuItem value="Delivered">Delivered</MenuItem>
-          <MenuItem value="Returned">Returned</MenuItem>
+          <MenuItem value="Pending">В обработке</MenuItem>
+          <MenuItem value="Confirmed">Подтвержден</MenuItem>
+          <MenuItem value="Packed">Упакован</MenuItem>
+          <MenuItem value="Shipped">Отрпавлен</MenuItem>
+          <MenuItem value="Delivered">Доставлен</MenuItem>
+          <MenuItem value="Canceled">Отменен</MenuItem>
         </Select>
 
         <Select
@@ -199,7 +209,7 @@ const MyOrders = () => {
         <CircularProgress />
       ) : (
         <CustomPagination
-          items={filteredOrders}
+          items={filteredAndSortedOrders}
           renderItem={(item) => <ClientOrdersItem key={item.id} order={item} />}
         />
       )}

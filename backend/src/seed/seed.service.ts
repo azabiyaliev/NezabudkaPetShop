@@ -685,6 +685,7 @@ export class SeedService {
 
     await this.prisma.statistic.create({
       data: {
+        id: 1,
         date: new Date(),
         pickUpStatistic: Math.floor(Math.random() * 1000),
         deliveryStatistic: Math.floor(Math.random() * 1000),

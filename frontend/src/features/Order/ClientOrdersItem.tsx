@@ -7,17 +7,17 @@ import {
   Box,
   CardMedia,
   Button,
-  ListItemText,
-  ListItem,
-  List,
+  Chip,
 } from '@mui/material';
 import { IOrder } from '../../types';
 import dayjs from 'dayjs';
 import { apiUrl } from '../../globalConstants.ts';
 import { useAppDispatch } from '../../app/hooks.ts';
-import { deleteOrder } from '../../store/orders/ordersThunk.ts';
+import { GetClientOrders, GetGuestOrders, updateOrderStatus } from '../../store/orders/ordersThunk.ts';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import { OrderStatus } from '../Admin/AdminOrderPage/OrdersItem.tsx';
+import { COLORS, FONTS, SPACING } from '../../globalStyles/stylesObjects.ts';
 
 interface Props {
   order: IOrder;
@@ -28,10 +28,38 @@ const OrderCard: React.FC<Props> = ({ order }) => {
   const navigate = useNavigate();
 
   const totalAmount = order.items.reduce((sum, item) => sum + item.product.productPrice * item.quantity, 0);
+
   const cancelOrder = async() => {
-      await dispatch(deleteOrder(String(order.id)));
+      await dispatch(updateOrderStatus({
+        orderId: String(order.id),
+        updatedStatus: OrderStatus.Canceled,
+      }));
+      await dispatch(GetClientOrders())
+      await dispatch(GetGuestOrders(order.guestEmail))
       toast.success('Заказ отменен')
   }
+
+  const getStatusColor = () => {
+    switch (order.status) {
+      case "Canceled":
+      case "Returned":
+        return "error";
+      case "Pending":
+        return "warning";
+      case "Confirmed":
+        return "info";
+      case "Packed":
+        return "primary";
+      case "Shipped":
+        return "secondary";
+      case "Delivered":
+        return "success";
+      case "Received":
+        return "success";
+      default:
+        return "default";
+    }
+  };
   return (
     <Card
       sx={{
@@ -39,93 +67,223 @@ const OrderCard: React.FC<Props> = ({ order }) => {
         boxShadow: 4,
         overflow: 'hidden',
         mb: 3,
-        maxWidth: '100%',
-        minWidth: 350,
+        maxWidth: '700px',
         width: '100%',
+        backgroundColor: COLORS.white,
+        mx: 'auto',
+        '@media (max-width: 750px)': {
+          width: '80%',
+        },
+        '@media (max-width: 480px)': {
+          mb: 2,
+          width: '50%',
+        },
+        '@media (max-width: 365px)': {
+          width: '50%',
+        }
       }}
     >
-      <CardContent>
-        <Typography variant="h6" gutterBottom fontWeight="bold">
-          Заказ №{order.id} — {dayjs(order.createdAt).format('DD.MM.YYYY HH:mm')}
-        </Typography>
+      <CardContent
+        sx={{
+          p: SPACING.md,
+          '@media (max-width: 768px)': {
+            p: SPACING.sm,
+          },
+          '@media (max-width: 480px)': {
+            p: SPACING.xs,
+          },
+        }}
+      >
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: { xs: 'column', sm: 'row' },
+            justifyContent: 'space-between',
+            alignItems: { xs: 'flex-start', sm: 'center' },
+            mb: SPACING.sm,
+            gap: SPACING.xs,
+            overflowX: 'hidden',
+          }}
+        >
+          <Typography
+            variant="h6"
+            fontWeight="bold"
+            sx={{
+              color: COLORS.text,
+              fontSize: { xs: FONTS.size.lg, sm: FONTS.size.xl },
+              lineHeight: 1.2,
+              wordWrap: 'break-word',
+            }}
+          >
+            Заказ №{order.id} — {dayjs(order.createdAt).format('DD.MM.YYYY')}
+          </Typography>
 
-        <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-          Статус: <b>{order.status}</b>
-        </Typography>
+          <Chip
+            label={order.status}
+            color={getStatusColor()}
+            sx={{
+              fontSize: { xs: '0.75rem', sm: '0.9rem' },
+              height: 'auto',
+              mt: { xs: 1, sm: 0 },
+              py: 0.5,
+              px: 1.5,
+            }}
+          />
+        </Box>
 
-        <Divider sx={{ my: 2 }} />
+        <Divider sx={{ my: SPACING.sm }} />
 
-        <List dense disablePadding sx={{ mb: 2 }}>
+        <Box
+          sx={{
+            mb: SPACING.sm,
+            maxHeight: 155,
+            overflowY: 'auto',
+            border: `1px solid ${COLORS.BORDER_CART}`,
+            borderRadius: 2,
+            p: SPACING.xs,
+            backgroundColor: COLORS.rgbaGrey,
+            '@media (max-width: 480px)': {
+              border: 'none',
+              backgroundColor: COLORS.white,
+              px: 0,
+            },
+          }}
+        >
           {order.items.map((item) => (
-            <ListItem
+            <Box
               key={item.id}
-              onClick={() => navigate(`/product/${ item.product.id}`)}
+              onClick={() => navigate(`/product/${item.product.id}`)}
               sx={{
-                py: 1,
+                p: SPACING.sm,
+                mb: SPACING.xs,
                 display: 'flex',
-                justifyContent: 'space-between',
+                flexDirection: 'row',
                 alignItems: 'center',
                 cursor: 'pointer',
-                border: '1px solid #eee',
-                marginBottom: 2,
-                padding: 2,
-                "@media (max-width: 900px)": {
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                flexDirection: 'column',
-              },
+                border: `1px solid ${COLORS.BORDER_CART}`,
+                borderRadius: 2,
+                transition: 'all 0.3s ease',
+                '&:hover': {
+                  boxShadow: `0 4px 6px ${COLORS.DARK_GRAY}`,
+                  backgroundColor: COLORS.background,
+                },
+                '@media (max-width: 480px)': {
+                  border: 'none',
+                  borderBottom: `1px solid ${COLORS.BORDER_CART}`,
+                  flexDirection: 'row',
+                  alignItems: 'flex-start',
+                  p: SPACING.xs,
+                },
               }}
             >
               <CardMedia
                 component="img"
                 image={apiUrl + '/' + item.product.productPhoto}
-                alt={order.items[0]?.product.productName}
+                alt={item.product.productName}
                 sx={{
-                  width: 100,
-                  height: 100,
+                  width: '80px',
+                  height: '80px',
                   borderRadius: 2,
-                  cursor: 'pointer',
-                  mb: 2,
-                  marginRight: 2,
+                  flexShrink: 0,
+                  mr: SPACING.sm,
+                  '@media (max-width: 480px)': {
+                    width: '60px',
+                    height: '60px',
+                    mb: SPACING.xs,
+                    mr: SPACING.xs,
+                  },
                 }}
               />
-              <ListItemText
-                primary={
-                  <Typography variant="body1">
-                    {item.product
-                      ? `${item.product.productName} — ${item.quantity} × ${item.product.productPrice} сом`
-                      : `Товар #${item.productId} — ${item.quantity} шт`}
-                  </Typography>
-                }
-                secondary={
-                  item.product?.productDescription && (
-                    <Typography variant="caption" color="text.secondary">
-                      {item.product.productDescription}
-                    </Typography>
-                  )
-                }
-              />
-              {item.product && (
-                <Typography variant="body1" fontWeight="bold">
-                  {item.quantity * item.product.productPrice} сом
+
+              <Box sx={{ flex: 1, overflow: 'hidden' }}>
+                <Typography
+                  sx={{
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    fontWeight: FONTS.weight.medium,
+                    fontSize: { xs: FONTS.size.default, sm: FONTS.size.lg },
+                    color: COLORS.text,
+                  }}
+                >
+                  {item.product.productName}
                 </Typography>
-              )}
-            </ListItem>
+
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    mt: SPACING.xs,
+                    '@media (max-width: 480px)': {
+                      flexDirection: 'column',
+                      alignItems: 'flex-start',
+                      gap: SPACING.xs,
+                    },
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      fontSize: { xs: FONTS.size.xs, sm: FONTS.size.sm },
+                      color: COLORS.DARK_GRAY,
+                    }}
+                  >
+                    {item.quantity} × {item.product.productPrice} сом
+                  </Typography>
+
+                  <Typography
+                    fontWeight="bold"
+                    sx={{
+                      color: COLORS.text,
+                      fontSize: { xs: FONTS.size.default, sm: FONTS.size.lg },
+                    }}
+                  >
+                    {item.quantity * item.product.productPrice} сом
+                  </Typography>
+                </Box>
+              </Box>
+            </Box>
           ))}
-        </List>
-
-        <Divider sx={{ my: 2 }} />
-
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography variant="h6" fontWeight="bold">
+        </Box>
+        <Divider sx={{ my: SPACING.sm }} />
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: { xs: 'column', sm: 'row' },
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            gap: SPACING.sm,
+            width: '100%',
+            '@media (max-width: 480px)': {
+              alignItems: 'flex-start',
+            },
+          }}
+        >
+          <Typography
+            variant="h6"
+            fontWeight="bold"
+            sx={{
+              color: COLORS.text,
+              fontSize: { xs: FONTS.size.lg, sm: FONTS.size.xl },
+            }}
+          >
             Итого: {totalAmount} сом
           </Typography>
+
           <Button
             variant="contained"
             color="error"
             onClick={cancelOrder}
-            sx={{ borderRadius: 2, textTransform: 'none' }}
+            sx={{
+              textTransform: 'none',
+              backgroundColor: COLORS.warning,
+              px: SPACING.md,
+              py: SPACING.xs,
+              borderRadius: SPACING.xs,
+              fontSize: { xs: FONTS.size.default, sm: FONTS.size.lg },
+              width: { xs: '100%', sm: 'auto' },
+            }}
+            disabled={order.status === OrderStatus.Canceled}
           >
             Отменить заказ
           </Button>

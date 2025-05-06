@@ -69,6 +69,7 @@ export const MEDIA_REQ = {
     sm: '320px',
     md: '360px',
     lg: '414px',
+    xl: '480px',
   },
   tablet: {
     sm: '600px',

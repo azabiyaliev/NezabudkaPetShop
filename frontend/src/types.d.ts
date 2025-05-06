@@ -304,8 +304,7 @@ export interface IOrder {
   userId: number;
   bonusUsed?: number;
   user: User;
-  items: ICart[];
-
+  items: ICartItem[];
   createdAt: string;
   updatedAt: string;
 }

@@ -201,6 +201,7 @@ const OrderAdminItem: React.FC<Props> = ({ order }) => {
                 <Button
                   variant="outlined"
                   onClick={() => setIsEditingStatus(true)}
+                  disabled={order.status === OrderStatus.Canceled}
                 >
                   Изменить статус
                 </Button>
