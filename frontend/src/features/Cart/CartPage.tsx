@@ -11,6 +11,7 @@ import { userRoleClient } from '../../globalConstants.ts';
 import { FONTS, SPACING, COLORS } from '../../globalStyles/stylesObjects.ts';
 import { NavLink } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import Container from '@mui/material/Container';
 
 const CartPage = () => {
   const user = useAppSelector(selectUser);
@@ -30,7 +31,7 @@ const CartPage = () => {
   }, [dispatch, cart, user]);
 
   return (
-    <>
+    <Container maxWidth="xl">
       {cart && cart.products.length > 0 ? (
         <>
           <Typography
@@ -104,7 +105,7 @@ const CartPage = () => {
           </Typography>
         </Box>
       )}
-    </>
+    </Container>
   );
 };
 

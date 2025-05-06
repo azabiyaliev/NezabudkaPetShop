@@ -42,7 +42,6 @@ const OneBrand:React.FC<Props> = ({ brand, products, cart }) => {
         <Typography
           level="h1"
           sx={{
-            fontFamily: 'Nunito, sans-serif',
             color: '#237803',
             fontSize: '50px',
             textAlign: 'center',
@@ -57,7 +56,6 @@ const OneBrand:React.FC<Props> = ({ brand, products, cart }) => {
         {brand.description && (
           <Box
             sx={{
-              fontFamily: "Nunito, sans-serif",
               textAlign: "justify",
             }}
           >
@@ -67,15 +65,14 @@ const OneBrand:React.FC<Props> = ({ brand, products, cart }) => {
       </Box>
       {products.length > 0 && (
         <Box sx={{
-          margin: "30px 0"
+          margin: "10px 0"
         }}>
           <Typography
             level="h2"
             sx={{
-              fontFamily: "Nunito, sans-serif",
               color: "#FFC107",
               fontSize: '30px',
-              margin: '30px 0',
+              margin: '15px 0',
               "@media (max-width: 830px)": {
                 textAlign: "center",
               },
@@ -88,9 +85,8 @@ const OneBrand:React.FC<Props> = ({ brand, products, cart }) => {
           </Typography>
           <Box sx={{
             display: "flex",
-            justifyContent: "center",
             flexWrap: "wrap",
-            gap: '20px',
+            gap: '2px',
           }}>
             {products.map((product) => (
               <ProductCard key={product.id} product={product} cart={cart}/>
