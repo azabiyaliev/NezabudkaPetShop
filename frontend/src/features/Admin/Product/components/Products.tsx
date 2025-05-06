@@ -136,6 +136,17 @@ const Products: React.FC<Props> = ({products}) => {
         ),
     },
     {
+      field: 'isBestseller',
+      headerName: 'Хит продаж',
+      width: 100,
+      renderCell: (params) =>
+        params.value ? (
+          <CheckCircleIcon sx={{color: 'success.main'}}/>
+        ) : (
+          <CancelIcon sx={{color: 'error.main'}}/>
+        ),
+    },
+    {
       field: 'sales',
       headerName: 'Акция',
       width: 100,

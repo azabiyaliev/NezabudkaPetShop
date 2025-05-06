@@ -192,7 +192,7 @@ export class ProductsService {
         promoPercentage: promo,
         sales,
         existence: existence === 'true',
-        isBestseller: isBestseller ?? false,
+        isBestseller: isBestseller === 'true',
         startDateSales,
         endDateSales,
         productCategory: {
@@ -368,7 +368,7 @@ export class ProductsService {
         brandId: Number(brandId),
         existence: existence === 'true',
         sales: sales ?? false,
-        isBestseller: isBestseller ?? false,
+        isBestseller: isBestseller === 'true',
         startDateSales: sales ? startDateSales : null,
         endDateSales: sales ? endDateSales : null,
         productWeight: productWeight ? Number(productWeight) : null,

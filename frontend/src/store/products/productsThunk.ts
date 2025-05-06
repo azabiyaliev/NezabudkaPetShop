@@ -20,12 +20,7 @@ export const addProduct = createAsyncThunk<
     const keys = Object.keys(product) as (keyof ProductRequest)[];
     keys.forEach((key) => {
       const value = product[key];
-      if (
-        value !== undefined &&
-        value !== null &&
-        value !== "" &&
-        !(typeof value === "boolean" && !value)
-      ) {
+      if (value !== undefined && value !== null && value !== "") {
         if (value instanceof File) {
           formData.append(key, value, value.name);
         } else if (typeof value === "boolean") {
@@ -39,7 +34,6 @@ export const addProduct = createAsyncThunk<
         }
       }
     });
-
 
     await axiosApi.post("products/create", formData);
   } catch (error) {
