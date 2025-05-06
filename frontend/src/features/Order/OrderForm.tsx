@@ -16,7 +16,7 @@ import { userRoleClient } from '../../globalConstants.ts';
 import { enqueueSnackbar } from 'notistack';
 import { selectDelivery } from '../../store/deliveryPage/deliveryPageSlice.ts';
 import { fetchDeliveryPage } from '../../store/deliveryPage/deliveryPageThunk.ts';
-import { SPACING } from '../../globalStyles/stylesObjects.ts';
+import { COLORS, SPACING } from '../../globalStyles/stylesObjects.ts';
 import ReCAPTCHA from 'react-google-recaptcha';
 
 export enum PaymentMethod {
@@ -358,14 +358,14 @@ try {
                 sx={{
                   marginTop: '20px',
                   padding: '10px',
-                  backgroundColor: '#FF9900',
+                  backgroundColor: COLORS.DARK_GREEN,
                   fontWeight: 'bold',
                   '@media (max-width: 600px)': {
                     padding: '8px'
                   },
-                  '&:hover': {
-                    backgroundColor: '#e68a00'
-                  }
+                  "&:hover": {
+                    backgroundColor: COLORS.FOREST_GREEN,
+                  },
                 }}
               >
                 Оформить заказ
@@ -502,8 +502,8 @@ try {
                   <Button
                     onClick={() => handleDeliveryMethodChange(DeliveryMethod.Delivery)}
                     sx={{
-                      backgroundColor: form.deliveryMethod === DeliveryMethod.Delivery ? "#5F8B4C" : "transparent",
-                      color: form.deliveryMethod === DeliveryMethod.Delivery ? "white" : "#5F8B4C",
+                      backgroundColor: form.deliveryMethod === DeliveryMethod.Delivery ? COLORS.DARK_GREEN : "transparent",
+                      color: form.deliveryMethod === DeliveryMethod.Delivery ? "white" : COLORS.DARK_GREEN,
                       border: "1px solid #5F8B4C",
                       borderRadius: '12px',
                       padding: '8px 16px',
@@ -526,7 +526,7 @@ try {
                   <Button
                     onClick={() => handleDeliveryMethodChange(DeliveryMethod.PickUp)}
                     sx={{
-                      backgroundColor: form.deliveryMethod === DeliveryMethod.PickUp ? "#5F8B4C" : "transparent",
+                      backgroundColor: form.deliveryMethod === DeliveryMethod.PickUp ? COLORS.DARK_GREEN : "transparent",
                       color: form.deliveryMethod === DeliveryMethod.PickUp ? "white" : "#5F8B4C",
                       border: "1px solid #5F8B4C",
                       borderRadius: '12px',
@@ -583,8 +583,8 @@ try {
                   <Button
                     onClick={() => handlePaymentMethodChange(PaymentMethod.ByCard)}
                     sx={{
-                      backgroundColor: form.paymentMethod === PaymentMethod.ByCard ? "#5F8B4C" : "transparent",
-                      color: form.paymentMethod === PaymentMethod.ByCard ? "white" : "#5F8B4C",
+                      backgroundColor: form.paymentMethod === PaymentMethod.ByCard ? COLORS.DARK_GREEN : "transparent",
+                      color: form.paymentMethod === PaymentMethod.ByCard ? "white" : COLORS.DARK_GREEN,
                       border: "1px solid #5F8B4C",
                       borderRadius: '12px',
                       padding: '8px 16px',
@@ -607,8 +607,8 @@ try {
                   <Button
                     onClick={() => handlePaymentMethodChange(PaymentMethod.ByCash)}
                     sx={{
-                      backgroundColor: form.paymentMethod === PaymentMethod.ByCash ? "#5F8B4C" : "transparent",
-                      color: form.paymentMethod === PaymentMethod.ByCash ? "white" : "#5F8B4C",
+                      backgroundColor: form.paymentMethod === PaymentMethod.ByCash ? COLORS.DARK_GREEN : "transparent",
+                      color: form.paymentMethod === PaymentMethod.ByCash ? "white" : COLORS.DARK_GREEN,
                       border: "1px solid #5F8B4C",
                       borderRadius: '12px',
                       padding: '8px 16px',
