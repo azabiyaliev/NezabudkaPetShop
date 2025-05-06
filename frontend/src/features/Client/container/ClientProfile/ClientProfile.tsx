@@ -13,6 +13,7 @@ const ClientProfile = () => {
     dispatch(fetchClientInfo());
   }, [dispatch]);
 
+
   return (
     <>
       <Box

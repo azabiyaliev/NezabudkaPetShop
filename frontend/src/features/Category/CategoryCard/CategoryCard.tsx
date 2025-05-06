@@ -3,10 +3,10 @@ import { selectCategories } from '../../../store/categories/categoriesSlice.ts';
 import Card from '@mui/material/Card';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
 import { useNavigate } from 'react-router-dom';
 import { apiUrl } from '../../../globalConstants.ts';
 import theme from '../../../globalStyles/globalTheme.ts';
-
 
 const CategoryCard = () => {
   const categories = useAppSelector(selectCategories);
@@ -14,53 +14,90 @@ const CategoryCard = () => {
 
   const filteredCategories = categories.filter(category => category.image !== null);
 
-
   return (
-    <div className="d-flex flex-wrap gap-4 justify-content-center">
+    <Grid
+      container
+      spacing={3}
+      justifyContent="center"
+    >
       {filteredCategories.map((category) => (
-        <div
+        <Grid
           key={category.id}
+          item
+          xs={6}
+          sm={6}
+          md={5}
+          lg={4}
+          xl={3}
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+        }}
           onClick={() => navigate(`/all-products/${category.id}`)}
-          style={{ cursor: 'pointer' }}
+
         >
           <Card
             sx={{
-              width: 250,
-              height: 200,
+              width: '100%',
+              maxWidth: 340,
+              height: 210,
               backgroundColor: theme.colors.background,
               display: 'flex',
               alignItems: 'center',
+              flexDirection: 'row-reverse',
               justifyContent: 'space-between',
-              padding:theme.spacing.xs
+              cursor: 'pointer',
+              "@media (max-width: 780px)": {
+                flexDirection: 'column-reverse',
+                height: 'auto',
+                alignItems: 'center',
+                justifyContent: 'center',
+                pt:2
+              },
             }}
           >
+            <CardMedia
+              component="img"
+              sx={{
+                height: 190,
+                width: 190,
+                objectFit: 'cover',
+                alignSelf: 'flex-end',
+                "@media (max-width: 780px)": {
+                  width: 150,
+                  height: 150,
+                },
+                "@media (max-width: 400px)": {
+                  width: 140,
+                  height: 140,
+                },
+              }}
+              image={`${apiUrl}/${category.image}`}
+              alt={category.title}
+            />
             <Typography
               sx={{
-                fontSize: theme.fonts.size.lg,
+                fontSize: theme.fonts.size.xl,
                 fontWeight: theme.fonts.weight.medium,
-                color: theme.colors.text
+                color: theme.colors.text,
+                textAlign: 'center',
+                pl:theme.spacing.sm,
+                "@media (max-width: 670px)": {
+                  fontSize: theme.fonts.size.xl,
+                  pl:0,
+                },
+                "@media (max-width: 400px)": {
+                  fontSize: theme.fonts.size.lg,
+                },
               }}
               component="div"
             >
               {category.title}
             </Typography>
-              <CardMedia
-              component="img"
-              sx={{
-                mt:theme.spacing.xxl,
-                pt:theme.spacing.xs,
-                pl:theme.spacing.xs,
-                height: 180,
-                width: 180,
-                objectFit: 'cover',
-              }}
-              image={`${apiUrl}/${category.image}`}
-              alt={category.title}
-            />
           </Card>
-        </div>
+        </Grid>
       ))}
-    </div>
+    </Grid>
   );
 };
 
