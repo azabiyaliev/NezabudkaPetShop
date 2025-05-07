@@ -662,11 +662,18 @@ export class SeedService {
         });
       }
 
+      function randomDate(start: Date, end: Date): Date {
+        return new Date(
+          start.getTime() + Math.random() * (end.getTime() - start.getTime()),
+        );
+      }
+
       await this.prisma.order.create({
         data: {
           userId: randomClient.id,
           status: randomStatus,
           address,
+          createdAt: randomDate(new Date(2025, 3, 1), new Date()),
           guestPhone: randomClient.phone,
           guestEmail: randomClient.email,
           guestName: randomClient.firstName,
@@ -685,6 +692,7 @@ export class SeedService {
 
     await this.prisma.statistic.create({
       data: {
+        id: 1,
         date: new Date(),
         pickUpStatistic: Math.floor(Math.random() * 1000),
         deliveryStatistic: Math.floor(Math.random() * 1000),

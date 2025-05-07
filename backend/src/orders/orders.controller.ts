@@ -87,8 +87,8 @@ export class OrdersController {
     }
   }
 
-  @UseGuards(TokenAuthGuard, RolesGuard)
-  @Roles('admin', 'superAdmin')
+  @UseGuards(RolesGuard)
+  @Roles('client', 'admin', 'superAdmin')
   @Patch(':id')
   async updateOrderStatus(
     @Param('id') orderId: string,

@@ -3,7 +3,6 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks.ts';
 import { checkoutAuthUserOrder } from '../../store/orders/ordersThunk.ts';
 import { Box, Button, Paper, TextField } from '@mui/material';
 import Grid from '@mui/material/Grid2';
-import { toast } from 'react-toastify';
 import { NavLink, useNavigate } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import { OrderMutation } from '../../types';
@@ -16,7 +15,7 @@ import { userRoleClient } from '../../globalConstants.ts';
 import { enqueueSnackbar } from 'notistack';
 import { selectDelivery } from '../../store/deliveryPage/deliveryPageSlice.ts';
 import { fetchDeliveryPage } from '../../store/deliveryPage/deliveryPageThunk.ts';
-import { COLORS, SPACING } from '../../globalStyles/stylesObjects.ts';
+import { COLORS, FONTS, SPACING } from '../../globalStyles/stylesObjects.ts';
 import ReCAPTCHA from 'react-google-recaptcha';
 
 export enum PaymentMethod {
@@ -29,9 +28,9 @@ export enum DeliveryMethod {
   PickUp = 'PickUp',
 }
 
-const regEmail = /^(\w+[-.]?\w+)@(\w+)([.-]?\w+)?(\.[a-zA-Z]{2,3})$/;
+const regEmail = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const regPhone = /^(\+996|0)\s?\d{3}\s?\d{3}\s?\d{3}$/;
-const regAddress = /^[a-zA-Zа-яА-Я0-9\s,.-]+$/;
+const regAddress = /^[a-zA-Zа-яА-Я0-9\s,.'-]*$/;
 
 const OrderForm = () => {
   const dispatch = useAppDispatch();
@@ -155,63 +154,60 @@ const OrderForm = () => {
       }
     }
   };
+
+  const isFormValid = (): boolean => {
+    if (!regEmail.test(form.guestEmail)) {
+      enqueueSnackbar('Некорректный формат email', { variant: 'error' });
+      return false;
+    }
+    if (!regPhone.test(form.guestPhone)) {
+      enqueueSnackbar('Некорректный формат телефона', { variant: 'error' });
+      return false;
+    }
+    if (
+      form.deliveryMethod === DeliveryMethod.Delivery &&
+      !regAddress.test(form.address)
+    ) {
+      enqueueSnackbar('Некорректный адрес доставки', { variant: 'error' });
+      return false;
+    }
+    return true;
+  };
+
+
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!user && !recaptchaToken) {
-      enqueueSnackbar("Пожалуйста, подтвердите что вы не робот", { variant: 'error' });
+    if (!recaptchaToken) {
+      enqueueSnackbar('Пройдите проверку ReCAPTCHA', { variant: 'error' });
       return;
     }
 
-    if (
-      !regEmail.test(form.guestEmail) &&
-      !regPhone.test(form.guestPhone) &&
-      !regAddress.test(form.address) &&
-      !form.guestName
-    ) {
-      toast.error("Введите все поля в верном формате");
-      return;
-    } else if (!regEmail.test(form.guestEmail)) {
-      toast.error("Неправильный формат email");
-      return;
-    } else if (!regPhone.test(form.guestPhone)) {
-      toast.error("Неверный формат телефона");
-      return;
-    } else if (form.deliveryMethod === 'Delivery' && !regAddress.test(form.address)) {
-      toast.error("Неверный формат адреса");
-      return;
-    } else if (!form.guestName) {
-      toast.error("Заполните поле Имя");
-      return;
-    } else if (!form.address) {
-      toast.error("Заполните поле для Адреса")
-    }
+    if(!isFormValid) return
 
 try {
   const orderData = {
     ...form,
-    recaptchaToken: recaptchaToken || "",
+    recaptchaToken
   };
   await dispatch(checkoutAuthUserOrder(orderData)).unwrap();
   enqueueSnackbar("Заказ успешно оформлен!", {
     variant: "success",
   });
-  if (!recaptchaToken) {
-    enqueueSnackbar("Пожалуйста, подтвердите что вы не робот", { variant: 'error' });
-    recaptchaRef.current?.reset();
-    setRecaptchaToken(null);
-    return;
-  }
   if (!orderData.userId) {
     dispatch(clearCart())
-  } else {
-    if (carts?.id) {
+  } else if (carts?.id) {
       await dispatch(deleteItemsCart({cartId: carts.id})).unwrap()
       dispatch(clearCart());
-    }
   }
   navigate("/");
 } catch {
-      toast.error("Ошибка при оформлении заказа")
+      enqueueSnackbar("Ошибка при оформлении заказа", {
+        variant: "error",
+      });
+} finally {
+  recaptchaRef.current?.reset();
+  setRecaptchaToken(null);
 }
   };
 
@@ -269,43 +265,52 @@ try {
   )
 
   return (
-    <form onSubmit={handleSubmit} style={{ marginTop: "25px" }}>
-      <Box sx={{
-        display: 'flex',
-        justifyContent: 'space-around',
-        gap: '20px',
-        '@media (max-width: 950px)': {
-          flexDirection: 'column',
-          gap: '15px'
-        }
-      }}>
+    <form onSubmit={handleSubmit} style={{ marginTop: SPACING.md }}>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-around',
+          gap: SPACING.md,
+          '@media (max-width: 950px)': {
+            flexDirection: 'column',
+            gap: SPACING.sm,
+          },
+        }}
+      >
         <Box>
-          <Carts products={carts.products} deleteAllProduct={() => deleteAllProducts()}/>
-          <Box sx={{
-            border: "1px solid #e5e2dc",
-            padding: SPACING.xs,
-            borderRadius: "20px",
-            marginBottom: "20px",
-          }}>
-            <TotalPrice
-              products={carts.products}
-              bonusUsed={form.bonusUsed || 0}
-            />
+          <Carts products={carts.products} deleteAllProduct={() => deleteAllProducts()} />
+          <Box
+            sx={{
+              border: `1px solid ${COLORS.BORDER_CART}`,
+              padding: SPACING.sm,
+              borderRadius: SPACING.xl,
+              marginBottom: SPACING.md,
+              '@media (max-width: 480px)': {
+                display: 'none',
+              }
+            }}
+          >
+            <TotalPrice products={carts.products} bonusUsed={form.bonusUsed || 0} />
             <Box>
-              {user && user.role === "client" && (
-                <Box sx={{
-                  border: '1px solid #e5e2dc',
-                  borderRadius: '10px',
-                  padding: SPACING.md,
-                  margin: `${SPACING.xs}px 0`
-                }}>
-                  <Typography sx={{
-                    fontSize: "16px",
-                    marginBottom: '10px',
-                    '@media (max-width: 600px)': {
-                      fontSize: '0.9rem'
-                    }
-                  }}>
+              {user && user.role === 'client' && (
+                <Box
+                  sx={{
+                    border: `1px solid ${COLORS.BORDER_CART}`,
+                    borderRadius: SPACING.sm,
+                    padding: SPACING.sm,
+                    margin: `${SPACING.xs} 0`,
+                    backgroundColor: COLORS.background,
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      fontSize: FONTS.size.default,
+                      marginBottom: SPACING.sm,
+                      '@media (max-width: 600px)': {
+                        fontSize: FONTS.size.sm,
+                      },
+                    }}
+                  >
                     Использовать бонусы:
                   </Typography>
                   <TextField
@@ -316,33 +321,43 @@ try {
                     onChange={handleBonusChange}
                     inputProps={{ min: 0, max: maxBonusesToUse }}
                     disabled={isBonusInputDisabled}
-                    style={{ marginBottom: '10px' }}
+                    style={{ marginBottom: SPACING.sm }}
                     size="small"
                   />
-                  <Typography sx={{
-                    '@media (max-width: 600px)': {
-                      fontSize: '0.9rem'
-                    }
-                  }}>
+                  <Typography
+                    sx={{
+                      '@media (max-width: 600px)': {
+                        fontSize: FONTS.size.sm,
+                      },
+                    }}
+                  >
                     Ваши бонусы: {availableBonuses} (Вы можете потратить до {maxBonusesToUse})
                   </Typography>
                 </Box>
               )}
 
-              {(!user || user.role !== "client") && (
-                <Typography sx={{
-                  paddingLeft: SPACING.xs,
-                  '@media (max-width: 600px)': {
-                    fontSize: '0.9rem'
-                  }
-                }}>
-                  <NavLink to="/register" style={{ color: "black" }}>
+              {!user && (
+                <Typography
+                  sx={{
+                    paddingLeft: SPACING.xs,
+                    '@media (max-width: 600px)': {
+                      fontSize: FONTS.size.sm,
+                    },
+                  }}
+                >
+                  <NavLink to="/register" style={{ color: COLORS.text }}>
                     Зарегистрируйтесь, чтобы получить бонусы
                   </NavLink>
                 </Typography>
               )}
 
-              <Box sx={{ my: 2, display: 'flex', justifyContent: 'center' }}>
+              <Box
+                sx={{
+                  my: SPACING.sm,
+                  display: 'flex',
+                  justifyContent: 'center',
+                }}
+              >
                 <ReCAPTCHA
                   ref={recaptchaRef}
                   sitekey={import.meta.env.VITE_REACT_APP_RECAPTCHA_SITE_KEY}
@@ -373,132 +388,150 @@ try {
             </Box>
           </Box>
         </Box>
-        <Box sx={{
-          marginBottom: '50px'
-        }}>
-          <Box sx={{
-            marginBottom: '50px',
-            '@media (max-width: 1024px)': {
-              width: '100%',
-              minWidth: '100%'
-            }
-          }}>
-            <Box sx={{
-              border: '1px solid #e5e2dc',
-              borderRadius: '20px',
-              padding: '20px',
-              marginBottom: '20px'
-            }}>
-              <Typography variant="h5" sx={{
-                marginBottom: '20px',
-                fontWeight: 'bold',
-                '@media (max-width: 600px)': {
-                  fontSize: '1.2rem'
-                }
-              }}>
+
+        <Box
+          sx={{
+            marginBottom: SPACING.xxxl,
+          }}
+        >
+          <Box
+            sx={{
+              marginBottom: SPACING.xxxl,
+              '@media (max-width: 1024px)': {
+                width: '100%',
+                minWidth: '100%',
+              },
+            }}
+          >
+            <Box
+              sx={{
+                border: `1px solid ${COLORS.BORDER_CART}`,
+                borderRadius: SPACING.xl,
+                padding: SPACING.md,
+                marginBottom: SPACING.md,
+                backgroundColor: COLORS.background,
+              }}
+            >
+              <Typography
+                variant="h5"
+                sx={{
+                  marginBottom: SPACING.md,
+                  fontWeight: FONTS.weight.bold,
+                  '@media (max-width: 600px)': {
+                    fontSize: FONTS.size.lg,
+                  },
+                }}
+              >
                 Персональные данные
               </Typography>
 
-              <Grid spacing={2}>
-                <Grid>
-                  <TextField
-                    fullWidth
-                    label="Имя"
-                    name="guestName"
-                    value={form.guestName}
-                    onChange={handleChange}
-                    style={{ marginBottom: '15px' }}
-                  />
-                </Grid>
-                <Grid>
-                  <TextField
-                    fullWidth
-                    label="Фамилия"
-                    name="guestLastName"
-                    value={form.guestLastName}
-                    onChange={handleChange}
-                    style={{ marginBottom: '15px' }}
-                  />
-                </Grid>
-                <Grid>
-                  <TextField
-                    fullWidth
-                    label="Телефон"
-                    name="guestPhone"
-                    value={form.guestPhone}
-                    onChange={handleChange}
-                    error={Boolean(incorrectFormatPhone)}
-                    placeholder="+996"
-                    style={{ marginBottom: '15px' }}
-                  />
-                </Grid>
-                <Grid>
-                  <TextField
-                    fullWidth
-                    label="Эл. адрес"
-                    name="guestEmail"
-                    value={form.guestEmail}
-                    onChange={handleChange}
-                    error={Boolean(incorrectFormatEmail)}
-                    style={{ marginBottom: '15px' }}
-                  />
-                </Grid>
+              <Grid
+                spacing={SPACING.sm}
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                }}
+              >
+                <TextField
+                  fullWidth
+                  label="Имя"
+                  name="guestName"
+                  value={form.guestName}
+                  onChange={handleChange}
+                  style={{ marginBottom: SPACING.sm }}
+                />
+                <TextField
+                  fullWidth
+                  label="Фамилия"
+                  name="guestLastName"
+                  value={form.guestLastName}
+                  onChange={handleChange}
+                  style={{ marginBottom: SPACING.sm }}
+                />
+                <TextField
+                  fullWidth
+                  label="Телефон"
+                  name="guestPhone"
+                  value={form.guestPhone}
+                  onChange={handleChange}
+                  error={Boolean(incorrectFormatPhone)}
+                  helperText={incorrectFormatPhone}
+                  placeholder="+996"
+                  style={{ marginBottom: SPACING.sm }}
+                />
+                <TextField
+                  fullWidth
+                  label="Эл. адрес"
+                  name="guestEmail"
+                  value={form.guestEmail}
+                  onChange={handleChange}
+                  error={Boolean(incorrectFormatEmail)}
+                  helperText={incorrectFormatEmail}
+                  style={{ marginBottom: SPACING.sm }}
+                />
                 {form.deliveryMethod === 'Delivery' && (
-                  <Grid>
-                    <TextField
-                      fullWidth
-                      label="Адрес"
-                      name="address"
-                      value={form.address}
-                      onChange={handleChange}
-                      error={Boolean(incorrectFormatAddress)}
-                    />
-                  </Grid>
+                  <TextField
+                    fullWidth
+                    label="Адрес"
+                    name="address"
+                    value={form.address}
+                    onChange={handleChange}
+                    error={Boolean(incorrectFormatAddress)}
+                    helperText={incorrectFormatAddress}
+                  />
                 )}
               </Grid>
             </Box>
 
-            <Box sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              gap: '20px',
-              margin: '20px 0',
-              flexWrap: 'wrap',
-              '@media (max-width: 768px)': {
-                flexDirection: 'column',
-                gap: '15px'
-              }
-            }}>
-              <Box sx={{
-                border: '1px solid #e5e2dc',
-                borderRadius: '20px',
-                padding: '20px',
-                flex: 1,
-                minWidth: '300px',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-                backgroundColor: '#fff',
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                gap: SPACING.md,
+                margin: `${SPACING.md} 0`,
+                flexWrap: 'wrap',
                 '@media (max-width: 768px)': {
-                  width: '100%'
-                }
-              }}>
-                <Typography variant="h6" sx={{
-                  marginBottom: '20px',
-                  fontWeight: '600',
-                  color: '#333',
-                  '@media (max-width: 600px)': {
-                    fontSize: '1rem',
-                    marginBottom: '15px'
-                  }
-                }}>
+                  flexDirection: 'column',
+                  gap: SPACING.sm,
+                },
+              }}
+            >
+              <Box
+                sx={{
+                  border: `1px solid ${COLORS.BORDER_CART}`,
+                  borderRadius: SPACING.xl,
+                  padding: SPACING.md,
+                  flex: 1,
+                  minWidth: '300px',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+                  backgroundColor: COLORS.white,
+                  '@media (max-width: 768px)': {
+                    width: '100%',
+                  },
+                }}
+              >
+                <Typography
+                  variant="h6"
+                  sx={{
+                    marginBottom: SPACING.md,
+                    fontWeight: FONTS.weight.medium,
+                    color: COLORS.text,
+                    '@media (max-width: 600px)': {
+                      fontSize: FONTS.size.default,
+                    },
+                  }}
+                >
                   Способ Доставки
                 </Typography>
-                <Box sx={{
-                  display: 'flex',
-                  gap: '12px',
-                  '@media (max-width: 400px)': {
-                    flexDirection: 'column'
-                  }
-                }}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    gap: SPACING.sm,
+                    '@media (max-width: 400px)': {
+                      flexDirection: 'column',
+                    },
+                  }}
+                >
                   <Button
                     onClick={() => handleDeliveryMethodChange(DeliveryMethod.Delivery)}
                     sx={{
@@ -551,34 +584,33 @@ try {
               </Box>
 
               <Box sx={{
-                border: '1px solid #e5e2dc',
-                borderRadius: '20px',
-                padding: '20px',
+                border: `1px solid ${COLORS.BORDER_CART}`,
+                borderRadius: SPACING.xl,
+                padding: SPACING.md,
                 flex: 1,
                 minWidth: '300px',
                 boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-                backgroundColor: '#fff',
+                backgroundColor: COLORS.white,
                 '@media (max-width: 768px)': {
-                  width: '100%'
-                }
+                  width: '100%',
+                },
               }}>
                 <Typography variant="h6" sx={{
-                  marginBottom: '20px',
-                  fontWeight: '600',
-                  color: '#333',
+                  marginBottom: SPACING.md,
+                  fontWeight: FONTS.weight.medium,
+                  color: COLORS.text,
                   '@media (max-width: 600px)': {
-                    fontSize: '1rem',
-                    marginBottom: '15px'
-                  }
+                    fontSize: FONTS.size.default,
+                  },
                 }}>
                   Способ Оплаты
                 </Typography>
                 <Box sx={{
                   display: 'flex',
-                  gap: '12px',
+                  gap: SPACING.sm,
                   '@media (max-width: 400px)': {
-                    flexDirection: 'column'
-                  }
+                    flexDirection: 'column',
+                  },
                 }}>
                   <Button
                     onClick={() => handlePaymentMethodChange(PaymentMethod.ByCard)}
@@ -697,6 +729,117 @@ try {
                 </Box>
               </Box>
             )}
+            <Box
+              sx={{
+                border: `1px solid ${COLORS.BORDER_CART}`,
+                padding: SPACING.sm,
+                borderRadius: SPACING.xl,
+                marginBottom: SPACING.md,
+                display: 'none',
+                '@media (max-width: 480px)': {
+                  display: 'block',
+                  marginTop: '200px',
+                }
+              }}
+            >
+              <TotalPrice products={carts.products} bonusUsed={form.bonusUsed || 0} />
+              <Box>
+                {user && user.role === 'client' && (
+                  <Box
+                    sx={{
+                      border: `1px solid ${COLORS.BORDER_CART}`,
+                      borderRadius: SPACING.sm,
+                      padding: SPACING.sm,
+                      margin: `${SPACING.xs} 0`,
+                      backgroundColor: COLORS.background,
+                    }}
+                  >
+                    <Typography
+                      sx={{
+                        fontSize: FONTS.size.default,
+                        marginBottom: SPACING.sm,
+                        '@media (max-width: 600px)': {
+                          fontSize: FONTS.size.sm,
+                        },
+                      }}
+                    >
+                      Использовать бонусы:
+                    </Typography>
+                    <TextField
+                      fullWidth
+                      label="Сколько бонусов использовать"
+                      type="number"
+                      value={form.bonusUsed}
+                      onChange={handleBonusChange}
+                      inputProps={{ min: 0, max: maxBonusesToUse }}
+                      disabled={isBonusInputDisabled}
+                      style={{ marginBottom: SPACING.sm }}
+                      size="small"
+                    />
+                    <Typography
+                      sx={{
+                        '@media (max-width: 600px)': {
+                          fontSize: FONTS.size.sm,
+                        },
+                      }}
+                    >
+                      Ваши бонусы: {availableBonuses} (Вы можете потратить до {maxBonusesToUse})
+                    </Typography>
+                  </Box>
+                )}
+
+                {!user && (
+                  <Typography
+                    sx={{
+                      paddingLeft: SPACING.xs,
+                      '@media (max-width: 600px)': {
+                        fontSize: FONTS.size.sm,
+                      },
+                    }}
+                  >
+                    <NavLink to="/register" style={{ color: COLORS.text }}>
+                      Зарегистрируйтесь, чтобы получить бонусы
+                    </NavLink>
+                  </Typography>
+                )}
+
+                <Box
+                  sx={{
+                    my: SPACING.sm,
+                    display: 'flex',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <ReCAPTCHA
+                    ref={recaptchaRef}
+                    sitekey={import.meta.env.VITE_REACT_APP_RECAPTCHA_SITE_KEY}
+                    onChange={(token) => setRecaptchaToken(token)}
+                  />
+                </Box>
+
+                <Button
+                  type="submit"
+                  variant="contained"
+                  fullWidth
+                  disabled={disabledButton}
+                  sx={{
+                    marginTop: SPACING.md,
+                    padding: SPACING.sm,
+                    backgroundColor: COLORS.yellow,
+                    color: COLORS.contrastText,
+                    fontWeight: FONTS.weight.bold,
+                    '@media (max-width: 600px)': {
+                      padding: SPACING.xs,
+                    },
+                    '&:hover': {
+                      backgroundColor: COLORS.warning,
+                    },
+                  }}
+                >
+                  Оформить заказ
+                </Button>
+              </Box>
+            </Box>
           </Box>
         </Box>
       </Box>
