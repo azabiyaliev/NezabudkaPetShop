@@ -1,15 +1,17 @@
-import { useEffect } from "react";
+import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { getStatistics } from "../../../store/orders/ordersThunk";
 import ColumnChart from "../../../components/UI/ColumnChart/ColumnChart.tsx";
-import { DataGrid, gridClasses, GridToolbar } from "@mui/x-data-grid";
-import { Box, CircularProgress, Paper } from "@mui/material";
+import { DataGrid, gridClasses } from "@mui/x-data-grid";
+import { Box, Button, CircularProgress, Drawer, IconButton, Paper } from '@mui/material';
 import Typography from "@mui/material/Typography";
 import AdminBar from "../AdminProfile/AdminBar.tsx";
+import MenuIcon from '@mui/icons-material/Menu';
 
 const OrderStats = () => {
   const dispatch = useAppDispatch();
   const orders = useAppSelector((state) => state.orders.orderStats);
+  const [isAdminBarOpen, setIsAdminBarOpen] = useState(false);
 
   useEffect(() => {
     dispatch(getStatistics());
@@ -88,93 +90,162 @@ const OrderStats = () => {
     { field: "percentage", headerName: "Проценты", flex: 1 },
   ];
 
+  const toggleAdminBar = () => setIsAdminBarOpen(!isAdminBarOpen);
   return (
     <Box
       sx={{
         display: "flex",
+        gap: 4,
         margin: "30px 0",
+        position: "relative",
         "@media (max-width: 900px)": {
-          flexWrap: "wrap",
+          flexDirection: "column",
+          gap: 2,
         },
       }}
     >
-      <AdminBar />
+      <IconButton
+        onClick={toggleAdminBar}
+        sx={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          display: "block",
+          zIndex: 10,
+          "@media (min-width: 1360px)": {
+            display: "none",
+          },
+        }}
+      >
+        <MenuIcon />
+      </IconButton>
+
+      <Drawer
+        anchor="left"
+        open={isAdminBarOpen}
+        onClose={toggleAdminBar}
+        sx={{
+          "& .MuiDrawer-paper": {
+            width: 400,
+          },
+        }}
+      >
+        <Box
+          sx={{
+            p: 2,
+            display: "flex",
+            flexDirection: "column",
+            height: "100%",
+          }}
+        >
+          <Typography variant="h6" sx={{ mb: 2 }}>
+            Admin Panel
+          </Typography>
+          <AdminBar />
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{ mt: "auto" }}
+            onClick={toggleAdminBar}
+          >
+            Закрыть
+          </Button>
+        </Box>
+      </Drawer>
+
+      <Box
+        sx={{
+          flexShrink: 0,
+          width: 250,
+          height: "100%",
+          "@media (max-width: 1360px)": {
+            display: "none",
+          },
+        }}
+      >
+        <AdminBar />
+      </Box>
+
       <Box
         sx={{
           flex: 1,
-          flexShrink: 1,
+          minWidth: 0,
           display: "flex",
           flexDirection: "column",
           gap: 4,
-          minHeight: "100vh",
-          mt: "10px",
-          ml: "20px",
+          ml: { lg: "250px" },
+          "@media (max-width: 900px)": {
+            ml: 0,
+            width: "100%",
+          },
         }}
       >
         <Typography
           variant="h6"
           gutterBottom
-          sx={{ textAlign: "center", fontWeight: 600 }}
+          sx={{
+            textAlign: "center",
+            fontWeight: 600,
+            mt: { xs: 6, lg: 0 }, // Отступ для кнопки меню на мобильных
+          }}
         >
           Статистика заказов
         </Typography>
 
+        {/* График */}
         <Paper
           elevation={3}
           sx={{
             p: 2,
             borderRadius: "12px",
-            flex: 1,
             minHeight: "400px",
-            display: "flex",
-            flexDirection: "column",
             width: "100%",
+            overflow: "hidden",
+            "@media (max-width: 600px)": {
+              p: 1,
+              minHeight: "300px",
+            },
           }}
         >
-          <Box sx={{ flex: 1, minHeight: 0 }}>
+          <Box sx={{ height: "100%", width: "100%" }}>
             <ColumnChart stats={orders} />
           </Box>
         </Paper>
 
+        {/* Таблица */}
         <Paper
           elevation={3}
           sx={{
             borderRadius: "12px",
             overflow: "hidden",
-            flex: 1,
             minHeight: "400px",
-            display: "flex",
-            flexDirection: "column",
+            width: "100%",
+            mb: 4,
           }}
         >
-          <Box sx={{ flex: 1, minHeight: 0 }}>
-            <DataGrid
-              rows={rows}
-              columns={columns}
-              slots={{
-                toolbar: GridToolbar,
-              }}
-              sx={{
-                [`& .${gridClasses.cell}`]: {
-                  py: 2,
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            disableRowSelectionOnClick
+            hideFooter
+            sx={{
+              [`& .${gridClasses.cell}`]: {
+                py: 2,
+              },
+              [`& .${gridClasses.row}`]: {
+                fontSize: "0.95rem",
+              },
+              "@media (max-width: 600px)": {
+                ".MuiDataGrid-columnHeaders": {
+                  display: "none",
                 },
-                [`& .bold-cell`]: {
-                  fontWeight: 500,
-                },
-                "& .MuiDataGrid-toolbarContainer": {
-                  p: 2,
-                  pb: 0,
-                },
-                height: "100%",
-                "& .MuiDataGrid-virtualScroller": {
-                  minHeight: "300px",
-                },
-              }}
-            />
-          </Box>
+              },
+            }}
+          />
         </Paper>
       </Box>
     </Box>
+
   );
 };
 
