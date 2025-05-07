@@ -48,7 +48,6 @@ const BrandPage = () => {
         <Typography
           level="h2"
           sx={{
-            fontFamily: "Nunito, sans-serif",
             color: "#237803",
             fontSize: '30px',
             margin: '30px 0',
