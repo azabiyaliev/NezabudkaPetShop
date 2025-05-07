@@ -1,6 +1,6 @@
 import React, { PropsWithChildren } from 'react';
 import Header from '../Header/Header.tsx';
-import { Box, Container } from '@mui/material';
+import { Box } from '@mui/material';
 import Footer from '../Footer/Footer.tsx';
 
 interface LayoutProps extends PropsWithChildren {
@@ -38,7 +38,7 @@ const Layout: React.FC<LayoutProps> = ({ children, beforeContainer, isWide }) =>
             {children}
           </Box>
         ) : (
-          <Container maxWidth="xl">{children}</Container>
+          <Box>{children}</Box>
         )}
       </main>
       <footer>
