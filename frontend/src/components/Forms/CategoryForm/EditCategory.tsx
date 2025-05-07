@@ -3,10 +3,10 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { selectUser } from '../../../store/users/usersSlice.ts';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
 import { fetchCategoriesThunk, updateCategoryThunk } from '../../../store/categories/categoriesThunk.ts';
-import { toast } from 'react-toastify';
 import FileInputCategory from '../../FileInput/FileInputCategory.tsx';
 import { apiUrl } from '../../../globalConstants.ts';
 import CloseIcon from '@mui/icons-material/Close';
+import { enqueueSnackbar } from 'notistack';
 
 interface EditCategoryProps {
   category: {
@@ -43,8 +43,7 @@ const EditCategory: React.FC<EditCategoryProps> = ({ category, onClose }) => {
     e.preventDefault();
 
     if (!editedCategory.title.trim()) {
-      toast.warning("Не оставляйте поля пустыми!!", { position: 'top-center' });
-      return;
+      return enqueueSnackbar('Не оставляйте поля пустыми!', { variant: 'error' });
     }
 
     if (!user) return;
@@ -77,13 +76,12 @@ const EditCategory: React.FC<EditCategoryProps> = ({ category, onClose }) => {
           token: user.token,
         })
       );
-
+      enqueueSnackbar('Вы успешно отредактировли !', { variant: 'success' });
       await dispatch(fetchCategoriesThunk());
-      toast.success('Категория успешно обновлена!', { position: 'top-center' });
       onClose();
     } catch (error) {
       console.error(error);
-      toast.error("Ошибка при обновлении категории!", { position: 'top-center' });
+      enqueueSnackbar('Ошибка при обновлении категории!', { variant: 'error' });
     }
   };
   const inputChangeHandler = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {

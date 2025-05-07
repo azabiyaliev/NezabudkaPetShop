@@ -7,12 +7,12 @@ import {
   editProduct,
   getOneProductForEdit,
 } from '../../../../store/products/productsThunk.ts';
-import { toast } from "react-toastify";
 import Grid from "@mui/material/Grid2";
 import AdminBar from "../../AdminProfile/AdminBar.tsx";
 import ProductForm from "../components/ProductForm.tsx";
 import { useEffect } from "react";
 import { userRoleAdmin, userRoleSuperAdmin } from '../../../../globalConstants.ts';
+import { enqueueSnackbar } from 'notistack';
 
 const EditProduct = () => {
   const dispatch = useAppDispatch();
@@ -31,7 +31,7 @@ const EditProduct = () => {
         await dispatch(
           editProduct({ token: user.token, product: newProduct }),
         ).unwrap();
-        toast.success("Товар успешно обновлен!");
+        enqueueSnackbar('Товар успешно обновлен!', { variant: 'success' });
         navigate("/private/products");
       }
     } catch (e) {

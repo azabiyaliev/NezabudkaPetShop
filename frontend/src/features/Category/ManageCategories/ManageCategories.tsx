@@ -26,16 +26,14 @@ import { selectUser } from '../../../store/users/usersSlice.ts';
 import { ICategories, Subcategory } from '../../../types';
 import NewCategory from "../NewCategory/NewCategory.tsx";
 import SubcategoryForm from '../../../components/Forms/SubcategoryForm/SubcategoryForm.tsx';
-import { toast } from 'react-toastify';
 import './ManageCategories.css';
 import EditCategory from '../../../components/Forms/CategoryForm/EditCategory.tsx';
 import { COLORS } from '../../../globalStyles/stylesObjects.ts';
 import styles from './styles.module.css';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-
-const SUCCESSFUL_CATEGORY_DELETE = "Удаление прошло успешно!";
-const ERROR_CATEGORY_DELETE = "Ошибка при удалении подкатегории!";
-const WARNING_CATEGORY_DELETE = "Категория не пуста или используется в данный момент, не стоит удалять!";
+import { enqueueSnackbar } from 'notistack';
+import Swal from 'sweetalert2';
+import theme from '../../../globalStyles/globalTheme.ts';
 
 const ManageCategories = () => {
   const categories = useAppSelector(selectCategories);
@@ -62,7 +60,7 @@ const ManageCategories = () => {
         setOpenCategoryModal(true);
       })
       .catch(() => {
-        toast.error("Ошибка при получении категории", { position: 'top-center' });
+        enqueueSnackbar('Ошибка при получении категории', { variant: 'error' });
       });
   };
 
@@ -77,17 +75,29 @@ const ManageCategories = () => {
         categoryToDelete.subcategories &&
         categoryToDelete.subcategories.length > 0
       ) {
-        toast.warning(WARNING_CATEGORY_DELETE, { position: "top-center" });
+        enqueueSnackbar('Категория не пуста или используется в данный момент, не стоит удалять!', { variant: 'error' });
         return;
       }
+      const result = await Swal.fire({
+        title: "Удалить?",
+        text: "Вы уверены, что хотите удалить? Это действие необратимо.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: theme.colors.warning,
+        cancelButtonColor: theme.colors.OLIVE_GREEN,
+        confirmButtonText: "Удалить",
+        cancelButtonText: "Отмена",
+      });
+
+      if (!result.isConfirmed) return;
 
       await dispatch(deleteCategory(id));
       await dispatch(fetchCategoriesThunk());
 
-      toast.success(SUCCESSFUL_CATEGORY_DELETE, { position: 'top-center' });
+      enqueueSnackbar('Вы успешно удалили', { variant: 'success' });
     } catch (error) {
       console.log(error);
-      toast.error(ERROR_CATEGORY_DELETE, { position: 'top-center' });
+      enqueueSnackbar('Ошибка при удалении подкатегории', { variant: 'error' });
     }
   };
 
@@ -152,14 +162,10 @@ const ManageCategories = () => {
               token: user.token,
             }),
           );
-          toast.success('Положение подкатегории успешно сохранено', {
-            position: 'top-center',
-          });
+          enqueueSnackbar('Положение подкатегории успешно сохранено', { variant: 'success' });
         } catch (error) {
           console.error('Ошибка при сохранении положения подкатегории:', error);
-          toast.error('Ошибка при сохранении положения подкатегории', {
-            position: 'top-center',
-          });
+          enqueueSnackbar('Ошибка при сохранении положения подкатегории', { variant: 'error' });
           setTreeData(treeData);
           return;
         }

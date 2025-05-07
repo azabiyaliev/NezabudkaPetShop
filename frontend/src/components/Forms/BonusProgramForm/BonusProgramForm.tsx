@@ -7,7 +7,6 @@ import { useNavigate } from 'react-router-dom';
 import { BonusProgramPageMutation } from '../../../types';
 import { selectBonusProgram } from '../../../store/bonusProgramPage/bonusProgramPageSlice.ts';
 import { fetchBonusPage, updateBonusPage } from '../../../store/bonusProgramPage/bonusProgramPageThunk.ts';
-import { toast } from 'react-toastify';
 import { enqueueSnackbar } from 'notistack';
 
 const initialState = {
@@ -40,7 +39,7 @@ const BonusProgramForm = () => {
   const submitHandler = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!bonusProgram?.id) {
-      toast.error("Ваш id неверный!");
+      enqueueSnackbar('Ваш ID неверный!', { variant: 'error' });
       return;
     }
     try {
@@ -50,6 +49,7 @@ const BonusProgramForm = () => {
       await dispatch(fetchBonusPage())
     } catch (error) {
       console.error(error);
+      enqueueSnackbar('Вам не удалось отредактировать страницу "О компании"!', { variant: 'error' });
     }
   };
 

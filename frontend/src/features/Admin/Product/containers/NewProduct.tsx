@@ -2,12 +2,12 @@ import { useAppDispatch, useAppSelector, usePermission } from '../../../../app/h
 import { useNavigate } from "react-router-dom";
 import { addProduct } from "../../../../store/products/productsThunk.ts";
 import { ProductRequest } from "../../../../types";
-import { toast } from "react-toastify";
 import ProductForm from "../components/ProductForm.tsx";
 import { selectUser } from "../../../../store/users/usersSlice.ts";
 import AdminBar from "../../AdminProfile/AdminBar.tsx";
 import { userRoleAdmin, userRoleSuperAdmin } from '../../../../globalConstants.ts';
 import { Box } from '@mui/material';
+import { enqueueSnackbar } from 'notistack';
 
 const NewProduct = () => {
   const dispatch = useAppDispatch();
@@ -19,7 +19,7 @@ const NewProduct = () => {
     try {
       if (user && can([userRoleAdmin, userRoleSuperAdmin])) {
         await dispatch(addProduct({ product, token: user.token })).unwrap();
-        toast.success("Товар успешно добавлен!");
+        enqueueSnackbar('Товар успешно добавлен!', { variant: 'success' });
         navigate("/private/products");
       }
     } catch (e) {

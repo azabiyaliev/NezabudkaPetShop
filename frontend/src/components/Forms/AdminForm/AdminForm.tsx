@@ -18,8 +18,8 @@ import {
   updateLoading
 } from '../../../store/admins/adminSlice.ts';
 import { regEmail, regPhone } from '../../../globalConstants.ts';
-import { toast } from 'react-toastify';
 import { useNavigate, useParams } from 'react-router-dom';
+import { enqueueSnackbar } from 'notistack';
 
 
 
@@ -99,7 +99,10 @@ const AdminForm = () => {
       });
 
       if (!isChanged) {
-        toast.info('Нет изменений для сохранения', { position: 'bottom-left' });
+        enqueueSnackbar(
+          "Нет изменений для сохранения",
+          { variant: "warning" },
+        );
         return;
       }
     }
@@ -107,11 +110,17 @@ const AdminForm = () => {
     try {
       if (isEdit) {
         await dispatch(updateAdmin({ id: Number(id), adminData })).unwrap();
-        toast.success('Админ успешно обновлён!', { position: 'bottom-left' });
+        enqueueSnackbar(
+          "Вы успешно отредактировали администратора",
+          { variant: "success" },
+        );
         navigate('/private/admin-table');
       } else {
         await dispatch(createAdmin(adminData)).unwrap();
-        toast.success('Админ успешно создан!', { position: 'bottom-left' });
+        enqueueSnackbar(
+          "Вы успешно создали администратора",
+          { variant: "success" },
+        );
         navigate('/');
       }
 

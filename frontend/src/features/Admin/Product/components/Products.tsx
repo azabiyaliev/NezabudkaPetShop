@@ -16,8 +16,10 @@ import {
   deleteProduct,
   getProducts,
 } from '../../../../store/products/productsThunk.ts';
-import { toast } from 'react-toastify';
 import dayjs from 'dayjs';
+import Swal from "sweetalert2";
+import theme from "../../../../globalStyles/globalTheme.ts";
+import { enqueueSnackbar } from 'notistack';
 
 
 interface Props {
@@ -32,14 +34,30 @@ const Products: React.FC<Props> = ({products}) => {
 
 
     const productDelete = async (id: number) => {
-    if (user && can([userRoleAdmin, userRoleSuperAdmin])) {
-      await dispatch(
-        deleteProduct({productId: id, token: user.token}),
-      ).unwrap();
-      toast.success('Товар успешно удален!');
-      await dispatch(getProducts('')).unwrap();
-    }
-  };
+      if (!user || !can([userRoleAdmin, userRoleSuperAdmin])) return;
+
+      const result = await Swal.fire({
+        title: "Удалить товар?",
+        text: "Вы уверены, что хотите удалить этот товар? Это действие нельзя отменить.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: theme.colors.warning,
+        cancelButtonColor: theme.colors.OLIVE_GREEN,
+        confirmButtonText: "Удалить",
+        cancelButtonText: "Отмена",
+      });
+
+      if (result.isConfirmed) {
+        try {
+          await dispatch(deleteProduct({ productId: id, token: user.token })).unwrap();
+          enqueueSnackbar('Товар успешно удалён!', { variant: 'success' });
+          await dispatch(getProducts('')).unwrap();
+        } catch (error) {
+          console.error("Ошибка при удалении товара:", error);
+          enqueueSnackbar('Ошибка при удалении товара', { variant: 'error' });
+        }
+      }
+    };
 
   const columns: GridColDef<ProductResponse>[] = [
     { field: "id", headerName: "ID", width: 60 },

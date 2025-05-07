@@ -6,8 +6,8 @@ import {
   addNewCategory,
   fetchCategoriesThunk,
 } from '../../../store/categories/categoriesThunk.ts';
-import { toast, ToastContainer } from 'react-toastify';
 import { Box } from '@mui/material';
+import { enqueueSnackbar } from 'notistack';
 
 
 const NewCategory = () => {
@@ -18,8 +18,7 @@ const NewCategory = () => {
     if (user) {
       await dispatch(addNewCategory({category, token: user.token}));
       await dispatch(fetchCategoriesThunk());
-
-      toast.success('Категория была добавлена ;)', {position: 'top-center'});
+      enqueueSnackbar('Категория была добавлена!', { variant: 'success' });
     }
   };
 
@@ -28,7 +27,6 @@ const NewCategory = () => {
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', }}>
         <CategoryForm onSubmit={onSubmit}/>
       </Box>
-      <ToastContainer/>
     </>
   );
 };

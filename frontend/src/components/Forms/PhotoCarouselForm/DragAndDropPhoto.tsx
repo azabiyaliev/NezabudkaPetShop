@@ -21,6 +21,7 @@ import { Box, Typography } from "@mui/joy";
 import PublishedWithChangesIcon from "@mui/icons-material/PublishedWithChanges";
 import AdminBar from "../../../features/Admin/AdminProfile/AdminBar.tsx";
 import AddNewPhotoForm from "./AddNewPhotoForm.tsx";
+import theme from '../../../globalStyles/globalTheme.ts';
 
 const DragAndDropPhoto = () => {
   const photos = useAppSelector(selectPhotoCarousel) || [];
@@ -90,7 +91,7 @@ const DragAndDropPhoto = () => {
     try {
       await dispatch(updatePhotoOrders(updatedPhotos)).unwrap();
       navigate("/");
-      enqueueSnackbar("Вы успешно изменили порядок фото в карусели! 🎉", {
+      enqueueSnackbar("Вы успешно изменили порядок фото в карусели!", {
         variant: "success",
       });
     } catch (error) {
@@ -105,8 +106,8 @@ const DragAndDropPhoto = () => {
         text: "Вы уверены, что хотите удалить эту фотографию?",
         icon: "warning",
         showCancelButton: true,
-        confirmButtonColor: "#d33",
-        cancelButtonColor: "#3085d6",
+        confirmButtonColor: theme.colors.warning,
+        cancelButtonColor: theme.colors.OLIVE_GREEN,
         confirmButtonText: "Удалить",
         cancelButtonText: "Отмена",
       });
@@ -114,11 +115,15 @@ const DragAndDropPhoto = () => {
       if (result.isConfirmed) {
         try {
           await dispatch(deletePhoto({ id: photoId })).unwrap();
-          Swal.fire("Удалено!", "Фотография успешно удалена.", "success");
+          enqueueSnackbar("Фотография успешно удалена.", {
+            variant: "success",
+          });
           await dispatch(fetchPhoto()).unwrap();
         } catch (error) {
           console.error("Ошибка удаления:", error);
-          Swal.fire("Ошибка", "Не удалось удалить фотографию.", "error");
+          enqueueSnackbar("Не удалось удалить фотографию.", {
+            variant: "error",
+          });
         }
       }
     } else {

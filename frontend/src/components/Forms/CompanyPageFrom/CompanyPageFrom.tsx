@@ -6,7 +6,6 @@ import { selectCompany } from '../../../store/companyPage/compantPageSlice.ts';
 import TextEditor from '../../TextEditor/TextEditor.tsx';
 import { Button, Typography } from '@mui/material';
 import { fetchCompanyPage, updateCompanyPage } from '../../../store/companyPage/companyPageThunk.ts';
-import { toast } from 'react-toastify';
 import { enqueueSnackbar } from 'notistack';
 import { Box } from '@mui/joy';
 
@@ -40,7 +39,7 @@ const CompanyPageForm = () => {
   const submitHandler = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!company?.id) {
-      toast.error("Ваш id неверный!");
+      enqueueSnackbar('Ваш ID неверный', { variant: 'error' });
       return;
     }
     try {
@@ -50,6 +49,7 @@ const CompanyPageForm = () => {
       await dispatch(fetchCompanyPage());
     } catch (error) {
       console.error(error);
+      enqueueSnackbar('Вам неудалось отредактировать страницу "О компании"!', { variant: 'error' });
     }
   };
 

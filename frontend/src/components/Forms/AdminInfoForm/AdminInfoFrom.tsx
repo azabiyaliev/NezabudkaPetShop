@@ -5,7 +5,6 @@ import TextEditor from "../../TextEditor/TextEditor.tsx";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
 import { useNavigate } from "react-router-dom";
 import { AdminInfoMutation } from "../../../types";
-import { toast } from "react-toastify";
 import { enqueueSnackbar } from "notistack";
 import { selectAdminInfo } from "../../../store/adminInfo/adminInfoSlice.ts";
 import {
@@ -43,7 +42,10 @@ const AdminInfoForm = () => {
   const submitHandler = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!adminInfo?.id) {
-      toast.error("Ваш id неверный!");
+        enqueueSnackbar(
+            "Ваш ID неверный",
+            { variant: "error" },
+        );
       return;
     }
     try {
@@ -51,12 +53,16 @@ const AdminInfoForm = () => {
         updateAdminInfo({ id: adminInfo.id, data: form }),
       ).unwrap();
       enqueueSnackbar(
-        "Вы успешно отредактировали личный кабинет для администрации",
+        "Вы успешно отредактировали личный кабинет администрации",
         { variant: "success" },
       );
       navigate(`/private/admin_info`);
     } catch (error) {
       console.error(error);
+        enqueueSnackbar(
+            "Не удалось отредактировать личный кабинет администарции",
+            { variant: "error" },
+        );
     }
   };
 

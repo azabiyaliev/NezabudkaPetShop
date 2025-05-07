@@ -5,7 +5,6 @@ import TextEditor from '../../TextEditor/TextEditor.tsx';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
 import { useNavigate } from 'react-router-dom';
 import { ClientInfoMutation } from '../../../types';
-import { toast } from 'react-toastify';
 import { enqueueSnackbar } from 'notistack';
 import { selectClientInfo } from "../../../store/clientInfo/clientInfoSlice.ts";
 import { fetchClientInfo, updateClientInfo } from '../../../store/clientInfo/clientInfoThunk.ts';
@@ -40,15 +39,16 @@ const ClientInfoForm = () => {
   const submitHandler = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!clientInfo?.id) {
-      toast.error("Ваш id неверный!");
+      enqueueSnackbar('Ваш ID неверный!', { variant: 'error' });
       return;
     }
     try {
       await dispatch(updateClientInfo({ id: clientInfo.id, data: form })).unwrap();
-      enqueueSnackbar('Вы успешно отредактировали личный кабинет для клиентов', { variant: 'success' });
+      enqueueSnackbar('Вы успешно отредактировали личный кабинет клиентов', { variant: 'success' });
       navigate(`/private/client_info`);
     } catch (error) {
       console.error(error);
+      enqueueSnackbar('Вам неудалось отредактирвоать личный кабинет клиентов ', { variant: 'error' });
     }
   };
 
