@@ -540,13 +540,14 @@ export class SeedService {
 
         const productName = `${randomPrefix} ${randomType} – ${subCategory.title}${parentCategory ? ' для ' + parentCategory.title.toLowerCase() : ''}`;
 
-        const productData: ProductData = {
+        const productData: ProductData & { isBestseller: boolean } = {
           productName,
           productPrice: randomPrice,
           productDescription: `${subCategory.title}. ${randomDescription}`,
           brandId: randomBrand.id,
           productPhoto: randomPhoto,
           existence,
+          isBestseller: Math.random() < 0.3,
           sales: onSale,
           productWeight: randomWeight,
           productManufacturer: randomManufacturer,
