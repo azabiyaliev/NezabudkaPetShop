@@ -45,47 +45,60 @@ const Footer = () => {
       }}
     >
       <Container maxWidth="xl">
-      <Box sx={{
-        display: 'none',
-        '@media (max-width:1220px)': {
-          display: 'flex',
-          pl: 2
-        },
-      }}>
-        <NavLink
-          to="/"
-          className="text-decoration-none"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "8px",
+        <Box
+          sx={{
+            display: 'none',
+            '@media (max-width:1220px)': {
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              gap: '8px',
+              pl: 2,
+              pb:2
+            },
           }}
         >
-          <Box>
+          <NavLink
+            to="/"
+            className="text-decoration-none"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+            }}
+          >
             <Box
-              component="img"
-              src={logo}
-              alt="Nezabudka"
               sx={{
-                height: theme.spacing.xxl,
-                width: theme.spacing.xxl,
-                cursor: "pointer",
-              }}
-            />
-            <Typography
-              sx={{
-                fontSize: theme.fonts.size.lg,
-                textTransform: "uppercase",
-                fontWeight: "bold",
-                color: theme.colors.white,
-                cursor: "pointer",
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
               }}
             >
-              Незабудка
-            </Typography>
-          </Box>
-        </NavLink>
-      </Box>
+              <Box
+                component="img"
+                src={logo}
+                alt="Nezabudka"
+                sx={{
+                  height: theme.spacing.xxl,
+                  width: theme.spacing.xxl,
+                  cursor: 'pointer',
+                }}
+              />
+              <Typography
+                sx={{
+                  fontSize: theme.fonts.size.lg,
+                  textTransform: 'uppercase',
+                  fontWeight: 'bold',
+                  color: theme.colors.white,
+                  cursor: 'pointer',
+                }}
+              >
+                Незабудка
+              </Typography>
+            </Box>
+          </NavLink>
+        </Box>
+
 
         <Box
           sx={{
