@@ -132,6 +132,7 @@ model Products {
 
   existence       Boolean   @default(true)
   sales           Boolean   @default(false)
+  isBestseller    Boolean @default(false) @map("is_bestseller")
   startDateSales  DateTime?
   endDateSales    DateTime?
   promoPercentage Int?      @map("sale_percentage")

@@ -130,10 +130,13 @@ const HomePage = () => {
     }
   }, [dispatch, user]);
 
-  const sortedProducts = [...topSellingProducts].sort((a, b) => {
+  const bestsellerProducts = topSellingProducts.filter(product => product.isBestseller);
+  const sortedProducts = [...bestsellerProducts].sort((a, b) => {
     if (a.existence === b.existence) return 0;
     return a.existence ? -1 : 1;
   });
+
+  console.log(topSellingProducts);
 
   return (
     <Box>
@@ -186,7 +189,7 @@ const HomePage = () => {
         </Box>
       )}
       <Container maxWidth="xl">
-        {topSellingProducts.length > 0 && (
+        {bestsellerProducts.length > 0 && (
           <Box
             sx={{
               marginTop: theme.spacing.main_spacing,

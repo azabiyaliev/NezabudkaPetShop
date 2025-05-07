@@ -180,6 +180,7 @@ export interface ProductRequest {
   productManufacturer?: string | null;
   existence?: boolean;
   sales?: boolean;
+  isBestseller?: boolean;
   brandId?: string;
   categoryId: number[];
   id?: number;
@@ -252,6 +253,7 @@ export interface ProductResponse {
   productDescription: string;
   existence: boolean;
   sales: boolean;
+  isBestseller?: boolean;
   brandId: string;
   brand: IBrand;
   reviews: [];

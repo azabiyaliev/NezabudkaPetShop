@@ -42,6 +42,7 @@ const initialState: ProductRequest = {
   productDescription: "",
   existence: false,
   sales: false,
+  isBestseller: false,
   brandId: "",
   categoryId: [],
   startDateSales: null,
@@ -222,7 +223,6 @@ const ProductForm: React.FC<Props> = ({
 
 
     onSubmit({ ...form });
-
 
     if (!isProduct) {
       setForm(initialState);
@@ -647,6 +647,23 @@ const ProductForm: React.FC<Props> = ({
                 />
               }
               label="Участвует в акции"
+            />
+
+            <FormControlLabel
+              control={
+                <Checkbox
+                  sx={{
+                    "&.Mui-checked": {
+                      color: orange[500],
+                    },
+                  }}
+                  checked={form.isBestseller || false}
+                  onChange={(e) =>
+                    setForm((prev) => ({ ...prev, isBestseller: e.target.checked }))
+                  }
+                />
+              }
+              label="Хит продаж"
             />
             {form.sales && (
               <Grid container spacing={2}>
