@@ -71,7 +71,6 @@ const Cart: React.FC<Props> = ({ product, isFirst }) => {
         sx={{
           margin: "10px 0",
           display: "flex",
-          flexWrap: "wrap",
           justifyContent: "space-between",
           borderTop: isFirst ? "none" : `1px solid ${COLORS.BORDER_CART}`,
           mr: SPACING.sm,

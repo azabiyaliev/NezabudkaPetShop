@@ -371,13 +371,15 @@ try {
                 fullWidth
                 disabled={disabledButton}
                 sx={{
-                  marginTop: SPACING.md,
-                  padding: SPACING.sm,
+                  marginTop: '20px',
+                  padding: '10px',
                   backgroundColor: COLORS.DARK_GREEN,
-                  color: COLORS.contrastText,
-                  fontWeight: FONTS.weight.bold,
+                  fontWeight: 'bold',
                   '@media (max-width: 600px)': {
-                    padding: SPACING.xs,
+                    padding: '8px'
+                  },
+                  "&:hover": {
+                    backgroundColor: COLORS.FOREST_GREEN,
                   },
                 }}
               >
@@ -533,26 +535,23 @@ try {
                   <Button
                     onClick={() => handleDeliveryMethodChange(DeliveryMethod.Delivery)}
                     sx={{
-                      backgroundColor:
-                        form.deliveryMethod === DeliveryMethod.Delivery
-                          ? COLORS.OLIVE_GREEN
-                          : 'transparent',
-                      color: form.deliveryMethod === DeliveryMethod.Delivery
-                        ? COLORS.white
-                        : COLORS.OLIVE_GREEN,
-                      border: `1px solid ${COLORS.OLIVE_GREEN}`,
-                      borderRadius: SPACING.sm,
-                      padding: `${SPACING.xs} ${SPACING.sm}`,
+                      backgroundColor: form.deliveryMethod === DeliveryMethod.Delivery ? COLORS.DARK_GREEN : "transparent",
+                      color: form.deliveryMethod === DeliveryMethod.Delivery ? "white" : COLORS.DARK_GREEN,
+                      border: "1px solid #5F8B4C",
+                      borderRadius: '12px',
+                      padding: '8px 16px',
                       textTransform: 'none',
-                      fontSize: FONTS.size.sm,
-                      fontWeight: FONTS.weight.medium,
+                      fontSize: '15px',
+                      fontWeight: '500',
+                      flex: 1,
+                      minWidth: '120px',
                       '&:hover': {
-                        backgroundColor:
-                          form.deliveryMethod === DeliveryMethod.Delivery
-                            ? COLORS.OLIVE_GREEN
-                            : COLORS.background,
+                        backgroundColor: form.deliveryMethod === DeliveryMethod.Delivery ? "#4a6d3a" : "rgba(95, 139, 76, 0.1)",
                       },
                       transition: 'all 0.2s ease',
+                      '@media (max-width: 400px)': {
+                        width: '100%'
+                      }
                     }}
                   >
                     Доставка
@@ -560,26 +559,23 @@ try {
                   <Button
                     onClick={() => handleDeliveryMethodChange(DeliveryMethod.PickUp)}
                     sx={{
-                      backgroundColor:
-                        form.deliveryMethod === DeliveryMethod.PickUp
-                          ? COLORS.OLIVE_GREEN
-                          : 'transparent',
-                      color: form.deliveryMethod === DeliveryMethod.PickUp
-                        ? COLORS.white
-                        : COLORS.OLIVE_GREEN,
-                      border: `1px solid ${COLORS.OLIVE_GREEN}`,
-                      borderRadius: SPACING.sm,
-                      padding: `${SPACING.xs} ${SPACING.sm}`,
+                      backgroundColor: form.deliveryMethod === DeliveryMethod.PickUp ? COLORS.DARK_GREEN : "transparent",
+                      color: form.deliveryMethod === DeliveryMethod.PickUp ? "white" : "#5F8B4C",
+                      border: "1px solid #5F8B4C",
+                      borderRadius: '12px',
+                      padding: '8px 16px',
                       textTransform: 'none',
-                      fontSize: FONTS.size.sm,
-                      fontWeight: FONTS.weight.medium,
+                      fontSize: '15px',
+                      fontWeight: '500',
+                      flex: 1,
+                      minWidth: '120px',
                       '&:hover': {
-                        backgroundColor:
-                          form.deliveryMethod === DeliveryMethod.PickUp
-                            ? COLORS.OLIVE_GREEN
-                            : COLORS.background,
+                        backgroundColor: form.deliveryMethod === DeliveryMethod.PickUp ? "#4a6d3a" : "rgba(95, 139, 76, 0.1)",
                       },
                       transition: 'all 0.2s ease',
+                      '@media (max-width: 400px)': {
+                        width: '100%'
+                      }
                     }}
                   >
                     Самовывоз
@@ -619,26 +615,23 @@ try {
                   <Button
                     onClick={() => handlePaymentMethodChange(PaymentMethod.ByCard)}
                     sx={{
-                      backgroundColor:
-                        form.paymentMethod === PaymentMethod.ByCard
-                          ? COLORS.OLIVE_GREEN
-                          : 'transparent',
-                      color: form.paymentMethod === PaymentMethod.ByCard
-                        ? COLORS.white
-                        : COLORS.OLIVE_GREEN,
-                      border: `1px solid ${COLORS.OLIVE_GREEN}`,
-                      borderRadius: SPACING.sm,
-                      padding: `${SPACING.xs} ${SPACING.sm}`,
+                      backgroundColor: form.paymentMethod === PaymentMethod.ByCard ? COLORS.DARK_GREEN : "transparent",
+                      color: form.paymentMethod === PaymentMethod.ByCard ? "white" : COLORS.DARK_GREEN,
+                      border: "1px solid #5F8B4C",
+                      borderRadius: '12px',
+                      padding: '8px 16px',
                       textTransform: 'none',
-                      fontSize: FONTS.size.sm,
-                      fontWeight: FONTS.weight.medium,
+                      fontSize: '15px',
+                      fontWeight: '500',
+                      flex: 1,
+                      minWidth: '120px',
                       '&:hover': {
-                        backgroundColor:
-                          form.paymentMethod === PaymentMethod.ByCard
-                            ? COLORS.OLIVE_GREEN
-                            : COLORS.background,
+                        backgroundColor: form.paymentMethod === PaymentMethod.ByCard ? "#4a6d3a" : "rgba(95, 139, 76, 0.1)",
                       },
                       transition: 'all 0.2s ease',
+                      '@media (max-width: 400px)': {
+                        width: '100%'
+                      }
                     }}
                   >
                     Картой
@@ -646,26 +639,23 @@ try {
                   <Button
                     onClick={() => handlePaymentMethodChange(PaymentMethod.ByCash)}
                     sx={{
-                      backgroundColor:
-                        form.paymentMethod === PaymentMethod.ByCash
-                          ? COLORS.OLIVE_GREEN
-                          : 'transparent',
-                      color: form.paymentMethod === PaymentMethod.ByCash
-                        ? COLORS.white
-                        : COLORS.OLIVE_GREEN,
-                      border: `1px solid ${COLORS.OLIVE_GREEN}`,
-                      borderRadius: SPACING.sm,
-                      padding: `${SPACING.xs} ${SPACING.sm}`,
+                      backgroundColor: form.paymentMethod === PaymentMethod.ByCash ? COLORS.DARK_GREEN : "transparent",
+                      color: form.paymentMethod === PaymentMethod.ByCash ? "white" : COLORS.DARK_GREEN,
+                      border: "1px solid #5F8B4C",
+                      borderRadius: '12px',
+                      padding: '8px 16px',
                       textTransform: 'none',
-                      fontSize: FONTS.size.sm,
-                      fontWeight: FONTS.weight.medium,
+                      fontSize: '15px',
+                      fontWeight: '500',
+                      flex: 1,
+                      minWidth: '120px',
                       '&:hover': {
-                        backgroundColor:
-                          form.paymentMethod === PaymentMethod.ByCash
-                            ? COLORS.OLIVE_GREEN
-                            : COLORS.background,
+                        backgroundColor: form.paymentMethod === PaymentMethod.ByCash ? "#4a6d3a" : "rgba(95, 139, 76, 0.1)",
                       },
                       transition: 'all 0.2s ease',
+                      '@media (max-width: 400px)': {
+                        width: '100%'
+                      }
                     }}
                   >
                     Наличными

@@ -42,7 +42,7 @@ const BrandPage = () => {
   });
 
   return brand && (
-    <Container>
+    <Container maxWidth="xl">
       {cart && ( <OneBrand brand={brand} products={sortedProducts} cart={cart}/>)}
       {products.length === 0 && (
         <Typography
