@@ -14,10 +14,12 @@ import dayjs from 'dayjs';
 import { apiUrl } from '../../globalConstants.ts';
 import { useAppDispatch } from '../../app/hooks.ts';
 import { GetClientOrders, GetGuestOrders, updateOrderStatus } from '../../store/orders/ordersThunk.ts';
-import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { OrderStatus } from '../Admin/AdminOrderPage/OrdersItem.tsx';
 import { COLORS, FONTS, SPACING } from '../../globalStyles/stylesObjects.ts';
+import { enqueueSnackbar } from 'notistack';
+import Swal from 'sweetalert2';
+import theme from '../../globalStyles/globalTheme.ts';
 
 interface Props {
   order: IOrder;
@@ -29,15 +31,33 @@ const OrderCard: React.FC<Props> = ({ order }) => {
 
   const totalAmount = order.items.reduce((sum, item) => sum + item.product.productPrice * item.quantity, 0);
 
-  const cancelOrder = async() => {
-      await dispatch(updateOrderStatus({
-        orderId: String(order.id),
-        updatedStatus: OrderStatus.Canceled,
-      }));
-      await dispatch(GetClientOrders())
-      await dispatch(GetGuestOrders(order.guestEmail))
-      toast.success('Заказ отменен')
-  }
+  const cancelOrder = async () => {
+    const result = await Swal.fire({
+      title: "Отменить заказ?",
+      text: "Вы уверены, что хотите отменить этот заказ? Это действие нельзя отменить.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: theme.colors.warning,
+      cancelButtonColor: theme.colors.OLIVE_GREEN,
+      confirmButtonText: "Отменить заказ",
+      cancelButtonText: "Отмена",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await dispatch(updateOrderStatus({
+          orderId: String(order.id),
+          updatedStatus: OrderStatus.Canceled,
+        }));
+        await dispatch(GetClientOrders());
+        await dispatch(GetGuestOrders(order.guestEmail));
+        enqueueSnackbar('Заказ отменен', { variant: 'success' });
+      } catch (error) {
+        console.error("Ошибка при отмене заказа:", error);
+        enqueueSnackbar('Не удалось отменить заказ', { variant: 'error' });
+      }
+    }
+  };
 
   const getStatusColor = () => {
     switch (order.status) {
