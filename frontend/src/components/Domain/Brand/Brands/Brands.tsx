@@ -14,6 +14,8 @@ import { enqueueSnackbar } from 'notistack';
 import { useAppDispatch, useAppSelector, usePermission } from '../../../../app/hooks.ts';
 import { selectUser } from '../../../../store/users/usersSlice.ts';
 import noImage from '../../../../assets/no-image.jpg';
+import Swal from "sweetalert2";
+import theme from '../../../../globalStyles/globalTheme.ts';
 
 interface Props {
   brands: IBrand[];
@@ -33,10 +35,28 @@ const Brands: React.FC<Props> = ({ brands }) => {
     );
 
   const deleteThisBrand = async (id: number) => {
-    if (user && (can([userRoleAdmin, userRoleSuperAdmin]))) {
-      await dispatch(brandeDelete({ brandId: id, token: user.token })).unwrap();
-      enqueueSnackbar("Бренд успешно удален!", { variant: 'success' });
-      await dispatch(getBrands()).unwrap();
+    if (!user || !can([userRoleAdmin, userRoleSuperAdmin])) return;
+
+    const result = await Swal.fire({
+      title: "Удалить бренд?",
+      text: "Вы уверены, что хотите удалить этот бренд? Это действие нельзя отменить.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: theme.colors.warning,
+      cancelButtonColor: theme.colors.OLIVE_GREEN,
+      confirmButtonText: "Удалить",
+      cancelButtonText: "Отмена",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await dispatch(brandeDelete({ brandId: id, token: user.token })).unwrap();
+        enqueueSnackbar("Бренд успешно удален!", { variant: 'success' });
+        await dispatch(getBrands()).unwrap();
+      } catch (error) {
+        console.error("Ошибка при удалении бренда:", error);
+        enqueueSnackbar("Ошибка при удалении бренда", { variant: 'error' });
+      }
     }
   };
 

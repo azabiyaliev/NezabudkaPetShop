@@ -85,7 +85,7 @@ const FormEditPhoto: React.FC<FormEditPhotoProps> = ({ photoId }) => {
       enqueueSnackbar('Вы отредатировали фото для карусели;)', { variant: 'success' });
     } catch (error) {
       console.error('Ошибка обновления фото:', error);
-      enqueueSnackbar('Ошибка при обновлении фото.', { variant: 'warning' });
+      enqueueSnackbar('Ошибка при редактировании фото.', { variant: 'warning' });
     }
   };
 

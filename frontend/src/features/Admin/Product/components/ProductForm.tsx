@@ -1,6 +1,5 @@
 import { ProductRequest } from "../../../../types";
 import React, { FormEvent, useEffect, useState } from "react";
-import { toast } from "react-toastify";
 import {
   Box,
   Button,
@@ -27,6 +26,7 @@ import TextEditor from '../../../../components/TextEditor/TextEditor.tsx';
 import { apiUrl } from '../../../../globalConstants.ts';
 import CloseIcon from '@mui/icons-material/Close';
 import theme from '../../../../globalStyles/globalTheme.ts';
+import { enqueueSnackbar } from 'notistack';
 
 
 interface Props {
@@ -176,23 +176,23 @@ const ProductForm: React.FC<Props> = ({
     e.preventDefault();
 
     if (!form.productName.trim()) {
-      return toast.warning("Необходимо название товара!");
+      return enqueueSnackbar('Необходимо название товара!', { variant: 'error' });
     }
 
     if (!form.productPrice || form.productPrice <= 0) {
-      return toast.warning("Цена должна быть больше 0!");
+      return enqueueSnackbar('Цена должна быть больше 0!', { variant: 'error' });
     }
 
     if (!form.productDescription.trim()) {
-      return toast.warning("Необходимо добавить описание товара!");
+      return enqueueSnackbar('Необходимо добавить описание товара!', { variant: 'error' });
     }
 
     if (!form.categoryId) {
-      return toast.warning("Необходимо выбрать категорию!");
+      return enqueueSnackbar('Необходимо выбрать категорию!', { variant: 'error' });
     }
 
     if (!form.productPhoto) {
-      return toast.warning("Необходимо изображение товара!");
+      return enqueueSnackbar('Необходимо изображение товара!', { variant: 'error' });
     }
 
     if (form.sales) {
@@ -202,22 +202,22 @@ const ProductForm: React.FC<Props> = ({
       startDate.setHours(0, 0, 0, 0);
 
       if (!form.startDateSales || !form.endDateSales) {
-        return toast.warning("Укажите даты начала и окончания акции!");
+        return enqueueSnackbar('Укажите даты начала и окончания акции!', { variant: 'error' });
       }
 
       if (form.startDateSales > form.endDateSales) {
-        return toast.warning("Дата окончания не может быть раньше начала!");
+        return enqueueSnackbar('Дата окончания не может быть раньше начала!', { variant: 'error' });
       }
 
       if (startDate < now) {
-        return toast.warning("Дата начало акции не может раньше сегодняшнего дня!")
+        return enqueueSnackbar('Дата начало акции не может раньше сегодняшнего дня!', { variant: 'error' });
       }
     }
 
     if(form.promoPercentage === undefined) return form.promoPercentage;
 
     if(form.promoPercentage < 0 || form.promoPercentage > 100) {
-      return toast.warning('Процент не может быть ниже 0 и выше 100!')
+      return enqueueSnackbar('Процент не может быть ниже 0 и выше 100!', { variant: 'error' });
     }
 
 

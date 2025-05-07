@@ -1,11 +1,11 @@
 import { TextField, Button, Box, Typography, Grid, Paper, IconButton } from "@mui/material";
 import React, { useCallback, useRef, useState } from "react";
 import { CategoryMutation } from '../../../types';
-import { toast } from "react-toastify";
 import AddIcon from '@mui/icons-material/Add';
 import FileInputCategory from '../../FileInput/FileInputCategory.tsx';
 import { apiUrl } from '../../../globalConstants.ts';
 import CloseIcon from '@mui/icons-material/Close';
+import { enqueueSnackbar } from 'notistack';
 
 export interface Props {
   onSubmit: (category: CategoryMutation) => void;
@@ -17,8 +17,6 @@ const initialState: CategoryMutation = {
   image: null,
 };
 
-const WARNING_EMPTY_SUBCATEGORY = "Введите название подкатегории!";
-
 const CategoryForm: React.FC<Props> = ({ onSubmit }) => {
   const [category, setCategory] = useState<CategoryMutation>(initialState);
 
@@ -28,7 +26,7 @@ const CategoryForm: React.FC<Props> = ({ onSubmit }) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (category.title.trim() === "") {
-      return toast.warning(WARNING_EMPTY_SUBCATEGORY, { position: "top-center" });
+      return enqueueSnackbar('Введите название подкатегории!', { variant: 'error' });
     }
 
     onSubmit({ ...category });

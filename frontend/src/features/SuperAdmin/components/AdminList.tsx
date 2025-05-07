@@ -11,6 +11,9 @@ import { toast } from "react-toastify";
 import { deleteLoading } from '../../../store/admins/adminSlice.ts';
 import EditNoteOutlinedIcon from '@mui/icons-material/EditNoteOutlined';
 import DeleteSweepOutlinedIcon from '@mui/icons-material/DeleteSweepOutlined';
+import Swal from 'sweetalert2';
+import theme from '../../../globalStyles/globalTheme.ts';
+import { enqueueSnackbar } from 'notistack';
 
 interface Props {
   admins: AdminDataMutation[];
@@ -22,11 +25,31 @@ const AdminList: React.FC<Props> = ({ admins }) => {
   const [selectDelete, setSelectDelete] = useState<string>("");
   const isDelete = useAppSelector(deleteLoading);
 
+
   const handleDelete = async (id: number) => {
-    setSelectDelete(String(Number(id)));
-    await dispatch(deleteAdmin(id)).unwrap();
-    await dispatch(getAdmins()).unwrap();
-    toast.success("Админ успешно удалён");
+    const result = await Swal.fire({
+      title: "Удалить администратора?",
+      text: "Вы уверены, что хотите удалить этого администратора? Это действие нельзя отменить.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: theme.colors.warning,
+      cancelButtonColor: theme.colors.OLIVE_GREEN,
+      confirmButtonText: "Удалить",
+      cancelButtonText: "Отмена",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        setSelectDelete(String(id));
+        await dispatch(deleteAdmin(id)).unwrap();
+        await dispatch(getAdmins()).unwrap();
+        enqueueSnackbar('Вы успешно удалили администратора!', { variant: 'success' });
+      } catch (error) {
+        console.error("Ошибка при удалении администратора:", error);
+        toast.error("Не удалось удалить администратора");
+        enqueueSnackbar('Не удалось удалить администратора!', { variant: 'error' });
+      }
+    }
   };
 
   const columns: GridColDef<AdminDataMutation>[] = [

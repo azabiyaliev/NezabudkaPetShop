@@ -31,8 +31,10 @@ import {
   getAllOrders,
   updateOrderStatus,
 } from "../../../store/orders/ordersThunk.ts";
-import { toast } from "react-toastify";
 import { DeliveryMethod } from "../../Order/OrderForm.tsx";
+import Swal from "sweetalert2";
+import { enqueueSnackbar } from 'notistack';
+import theme from '../../../globalStyles/globalTheme.ts';
 
 interface Props {
   order: IOrder;
@@ -67,10 +69,10 @@ const OrderAdminItem: React.FC<Props> = ({ order }) => {
         }),
       ).unwrap();
       await dispatch(getAllOrders());
+      enqueueSnackbar('Статус заказа обновлен', { variant: 'success' });
       setIsEditingStatus(false);
-      toast.success("Статус заказа обновлен");
     } catch {
-      toast.error("Ошибка при обновлении статуса");
+      enqueueSnackbar('Ошибка при обновлении статуса', { variant: 'error' });
     }
   };
 
@@ -96,11 +98,30 @@ const OrderAdminItem: React.FC<Props> = ({ order }) => {
     }
   };
 
+
   const handleDelete = async () => {
-    if (order.status === "Delivered" || order.status === "Received") {
-      await dispatch(deleteOrder(String(order.id)));
-      await dispatch(getAllOrders());
-      toast.success("Заказ удалён");
+    if (order.status !== "Delivered" && order.status !== "Received") return;
+
+    const result = await Swal.fire({
+      title: "Удалить заказ?",
+      text: "Вы уверены, что хотите удалить этот заказ? Это действие необратимо.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: theme.colors.warning,
+      cancelButtonColor: theme.colors.OLIVE_GREEN,
+      confirmButtonText: "Удалить",
+      cancelButtonText: "Отмена",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await dispatch(deleteOrder(String(order.id))).unwrap();
+        await dispatch(getAllOrders());
+        enqueueSnackbar('Заказ успешно удалён!', { variant: 'success' });
+      } catch (error) {
+        console.error("Ошибка при удалении заказа:", error);
+        enqueueSnackbar('Заказ не удалось удалить', { variant: 'success' });
+      }
     }
   };
 

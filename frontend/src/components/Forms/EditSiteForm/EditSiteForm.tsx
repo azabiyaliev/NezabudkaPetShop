@@ -97,7 +97,7 @@ const EditSiteForm = () => {
     try {
       await dispatch(updateSite({ id: site.id, data: form })).unwrap();
       enqueueSnackbar('Вы успешно отредактировали сайт!', { variant: 'success' });
-      navigate(`/`);
+      navigate(`/private/edition_site`);
       await dispatch(fetchSite())
     } catch (error) {
       console.error(error);

@@ -13,6 +13,7 @@ import ModalWindowPasswordChange from "../../UI/ModalWindow/ModalWindowPasswordC
 import LockResetIcon from "@mui/icons-material/LockReset";
 import { regPhone, userRoleAdmin, userRoleClient, userRoleSuperAdmin } from '../../../globalConstants.ts';
 import { regEmail } from '../EditSiteForm/EditSiteForm.tsx';
+import { enqueueSnackbar } from 'notistack';
 
 const initialState = {
   firstName: "",
@@ -37,9 +38,6 @@ const UserFormEdition = () => {
 
   useEffect(() => {
     if (!user) {
-      toast.error(
-        "Для редактирования данных пользователя необходимо войти в систему.",
-      );
       navigate("/login");
     }
     if (id) {
@@ -89,33 +87,16 @@ const UserFormEdition = () => {
     e.preventDefault();
 
     if (!id) {
-      toast.error("Ваш id неверный!", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      enqueueSnackbar('Вaш ID неверный', { variant: 'error' });
       return;
     }
 
     try {
       await dispatch(updateUser({ id: parseInt(id), data: form })).unwrap();
       await dispatch(fetchUserById(id)).unwrap;
+      enqueueSnackbar('Вы успешно отредактировали профиль!', { variant: 'success' });
 
-      toast.success("Вы успешно отредактировали профиль!", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-
-      if (user && user.role === "admin") {
+      if (user && can([userRoleAdmin, userRoleSuperAdmin])) {
         navigate(`/private/users/${user.id}`);
       } else {
         navigate(`/client/users/${user && user.id}`);
@@ -277,7 +258,7 @@ const UserFormEdition = () => {
                 },
               }}
             >
-              {user && user.role === "admin" && (
+              {user && can([userRoleAdmin, userRoleSuperAdmin]) && (
                 <Button
                   type="submit"
                   disabled={isButtonFormInvalid}
@@ -294,7 +275,7 @@ const UserFormEdition = () => {
                 </Button>
               )}
 
-              {user && user.role === "client" && (
+              {user && can([userRoleClient]) && (
                 <Button
                   type="submit"
                   disabled={isButtonFormInvalid}

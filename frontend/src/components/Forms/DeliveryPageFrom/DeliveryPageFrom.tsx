@@ -58,7 +58,6 @@ const DeliveryPageForm = () => {
   };
 
   const onChangeEditorCheckoutDeliveryPriceInfo = (html: string) => {
-    // 💡 Не обновляем, если значение не изменилось
     if (html === form.checkoutDeliveryPriceInfo) return;
 
     const priceRegex = /\d+\s*сом/g;
@@ -100,6 +99,7 @@ const DeliveryPageForm = () => {
     e.preventDefault();
     if (!delivery?.id) {
       toast.error("Ваш id неверный!");
+      enqueueSnackbar('Ваш ID неверный!', { variant: 'error' });
       return;
     }
 
@@ -131,6 +131,7 @@ const DeliveryPageForm = () => {
       await dispatch(fetchDeliveryPage())
     } catch (error) {
       console.error(error);
+      enqueueSnackbar('Ввм неудалось отредактировать страницу "Доставка и оплата"!', { variant: 'error' });
     }
   };
 

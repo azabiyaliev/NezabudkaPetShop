@@ -6,16 +6,12 @@ import {
 } from "@mui/material";
 import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
 import React, { useState } from "react";
-import { toast } from "react-toastify";
 import {
   addNewSubcategory,
   fetchCategoriesThunk,
 } from '../../../store/categories/categoriesThunk.ts';
 import { selectUser } from '../../../store/users/usersSlice.ts';
-
-const WARNING_EMPTY_SUBCATEGORY = "Введите название подкатегории!";
-const ERROR_SUBCATEGORY = "Ошибка при добавлении подкатегории!";
-const SUCCESS_SUBCATEGORY = "Подкатегория была добавлена ;)";
+import { enqueueSnackbar } from 'notistack';
 
 interface Props {
   categoryId: number;
@@ -32,7 +28,7 @@ const SubcategoryForm: React.FC<Props> = ({ categoryId, onClose }) => {
     e.preventDefault();
 
     if (newSubcategory.trim() === "") {
-      return toast.warning(WARNING_EMPTY_SUBCATEGORY, { position: "top-center" });
+      return enqueueSnackbar('Введите название подкатегории!', { variant: 'error' });
     }
 
     try {
@@ -47,12 +43,12 @@ const SubcategoryForm: React.FC<Props> = ({ categoryId, onClose }) => {
 
         await dispatch(fetchCategoriesThunk());
         setNewSubcategory("");
-        toast.success(SUCCESS_SUBCATEGORY, { position: "top-center" });
         onClose();
+        enqueueSnackbar('Вы успешно добавили подкатегорию', { variant: 'success' });
       }
     } catch (error) {
       console.error(error);
-      toast.error(ERROR_SUBCATEGORY, { position: "top-center" });
+      return enqueueSnackbar('Ошибка при добавлении подкатегории!', { variant: 'error' });
     }
   };
 
