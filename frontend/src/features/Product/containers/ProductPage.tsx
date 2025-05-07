@@ -478,9 +478,17 @@ const ProductPage = () => {
                          disabled={user && (can([userRoleAdmin, userRoleSuperAdmin]))}
                        >
                          {isFavorite ? (
-                           <FavoriteIcon sx={{ fontSize: 50, color: theme.colors.error }} />
+                           <FavoriteIcon sx={{ fontSize: 50, color: theme.colors.error,
+                             '@media (max-width: 470px)': {
+                               fontSize: 30
+                             },
+                           }} />
                          ) : (
-                           <FavoriteBorderIcon sx={{ fontSize: 50, color: theme.colors.black }} />
+                           <FavoriteBorderIcon sx={{ fontSize: 50, color: theme.colors.black,
+                             '@media (max-width: 470px)': {
+                               fontSize: 30
+                             },
+                           }} />
                          )}
                        </IconButton>
                      </span>
@@ -494,9 +502,17 @@ const ProductPage = () => {
                      }}
                    >
                      {isFavorite ? (
-                       <FavoriteIcon sx={{ fontSize: 50, color: theme.colors.error }} />
+                       <FavoriteIcon sx={{ fontSize: 50, color: theme.colors.error,
+                         '@media (max-width: 470px)': {
+                           fontSize: 30
+                         },
+                       }} />
                      ) : (
-                       <FavoriteBorderIcon sx={{ fontSize: 50, color: theme.colors.black }} />
+                       <FavoriteBorderIcon sx={{ fontSize: 50, color: theme.colors.black,
+                         '@media (max-width: 470px)': {
+                           fontSize: 30
+                         },
+                       }} />
                      )}
                    </IconButton>
                  }
