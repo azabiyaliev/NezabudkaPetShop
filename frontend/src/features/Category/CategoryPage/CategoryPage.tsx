@@ -21,6 +21,10 @@ const CategoryPage = () => {
           justifyContent: "center",
           alignItems: "center",
           ml: 2,
+          "@media (max-width: 900px)": {
+            maxWidth: "100%",
+            width: "100%",
+          },
         }}
       >
         <ManageCategories />

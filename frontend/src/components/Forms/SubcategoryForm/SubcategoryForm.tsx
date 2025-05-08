@@ -52,6 +52,7 @@ const SubcategoryForm: React.FC<Props> = ({ categoryId, onClose }) => {
     }
   };
 
+
   return (
     <Box
       component="form"

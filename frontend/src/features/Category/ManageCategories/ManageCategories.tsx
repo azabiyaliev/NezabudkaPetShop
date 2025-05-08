@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Box,
   IconButton,
@@ -7,33 +7,39 @@ import {
   Typography,
   Tooltip,
   ListItemButton,
-} from '@mui/material';
+} from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import AddIcon from '@mui/icons-material/Add';
-import ArrowDropDownOutlinedIcon from '@mui/icons-material/ArrowDropDownOutlined';
-import { DndProvider, getBackendOptions, MultiBackend, NodeModel, Tree } from '@minoru/react-dnd-treeview';
+import AddIcon from "@mui/icons-material/Add";
+import ArrowDropDownOutlinedIcon from "@mui/icons-material/ArrowDropDownOutlined";
+import {
+  DndProvider,
+  getBackendOptions,
+  MultiBackend,
+  NodeModel,
+  Tree,
+} from "@minoru/react-dnd-treeview";
 
 import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
-import { selectCategories } from '../../../store/categories/categoriesSlice.ts';
+import { selectCategories } from "../../../store/categories/categoriesSlice.ts";
 import {
   deleteCategory,
   fetchCategoriesThunk,
   fetchOneCategoryThunk,
   updateSubcategoryParentThunk,
 } from "../../../store/categories/categoriesThunk.ts";
-import { selectUser } from '../../../store/users/usersSlice.ts';
-import { ICategories, Subcategory } from '../../../types';
+import { selectUser } from "../../../store/users/usersSlice.ts";
+import { ICategories, Subcategory } from "../../../types";
 import NewCategory from "../NewCategory/NewCategory.tsx";
-import SubcategoryForm from '../../../components/Forms/SubcategoryForm/SubcategoryForm.tsx';
-import './ManageCategories.css';
-import EditCategory from '../../../components/Forms/CategoryForm/EditCategory.tsx';
-import { COLORS } from '../../../globalStyles/stylesObjects.ts';
-import styles from './styles.module.css';
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import { enqueueSnackbar } from 'notistack';
-import Swal from 'sweetalert2';
-import theme from '../../../globalStyles/globalTheme.ts';
+import SubcategoryForm from "../../../components/Forms/SubcategoryForm/SubcategoryForm.tsx";
+import "./ManageCategories.css";
+import EditCategory from "../../../components/Forms/CategoryForm/EditCategory.tsx";
+import { COLORS } from "../../../globalStyles/stylesObjects.ts";
+import styles from "./styles.module.css";
+import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import { enqueueSnackbar } from "notistack";
+import Swal from "sweetalert2";
+import theme from "../../../globalStyles/globalTheme.ts";
 
 const ManageCategories = () => {
   const categories = useAppSelector(selectCategories);
@@ -45,14 +51,15 @@ const ManageCategories = () => {
   const [parentCategoryId, setParentCategoryId] = useState<number | null>(null);
   const [treeData, setTreeData] = useState<NodeModel[]>([]);
 
-  const [fetchedCategory, setFetchedCategory] = useState<ICategories | null>(null);
+  const [fetchedCategory, setFetchedCategory] = useState<ICategories | null>(
+    null,
+  );
 
   useEffect(() => {
     dispatch(fetchCategoriesThunk());
   }, [dispatch]);
 
   const handleOpenCategory = (id: string) => {
-
     dispatch(fetchOneCategoryThunk(id))
       .unwrap()
       .then((category) => {
@@ -60,7 +67,7 @@ const ManageCategories = () => {
         setOpenCategoryModal(true);
       })
       .catch(() => {
-        enqueueSnackbar('Ошибка при получении категории', { variant: 'error' });
+        enqueueSnackbar("Ошибка при получении категории", { variant: "error" });
       });
   };
 
@@ -75,7 +82,10 @@ const ManageCategories = () => {
         categoryToDelete.subcategories &&
         categoryToDelete.subcategories.length > 0
       ) {
-        enqueueSnackbar('Категория не пуста или используется в данный момент, не стоит удалять!', { variant: 'error' });
+        enqueueSnackbar(
+          "Категория не пуста или используется в данный момент, не стоит удалять!",
+          { variant: "error" },
+        );
         return;
       }
       const result = await Swal.fire({
@@ -94,10 +104,10 @@ const ManageCategories = () => {
       await dispatch(deleteCategory(id));
       await dispatch(fetchCategoriesThunk());
 
-      enqueueSnackbar('Вы успешно удалили', { variant: 'success' });
+      enqueueSnackbar("Вы успешно удалили", { variant: "success" });
     } catch (error) {
       console.log(error);
-      enqueueSnackbar('Ошибка при удалении подкатегории', { variant: 'error' });
+      enqueueSnackbar("Ошибка при удалении подкатегории", { variant: "error" });
     }
   };
 
@@ -112,7 +122,10 @@ const ManageCategories = () => {
   };
 
   const transformCategoriesToTree = useCallback(
-    (categories: ICategories[] | Subcategory[], parent: number = 0): NodeModel[] => {
+    (
+      categories: ICategories[] | Subcategory[],
+      parent: number = 0,
+    ): NodeModel[] => {
       return categories.flatMap((category) => {
         const node: NodeModel = {
           id: category.id,
@@ -133,7 +146,7 @@ const ManageCategories = () => {
         return [node, ...children];
       });
     },
-    []
+    [],
   );
 
   useEffect(() => {
@@ -162,10 +175,14 @@ const ManageCategories = () => {
               token: user.token,
             }),
           );
-          enqueueSnackbar('Положение подкатегории успешно сохранено', { variant: 'success' });
+          enqueueSnackbar("Положение подкатегории успешно сохранено", {
+            variant: "success",
+          });
         } catch (error) {
-          console.error('Ошибка при сохранении положения подкатегории:', error);
-          enqueueSnackbar('Ошибка при сохранении положения подкатегории', { variant: 'error' });
+          console.error("Ошибка при сохранении положения подкатегории:", error);
+          enqueueSnackbar("Ошибка при сохранении положения подкатегории", {
+            variant: "error",
+          });
           setTreeData(treeData);
           return;
         }
@@ -178,7 +195,7 @@ const ManageCategories = () => {
   type Props = {
     node: NodeModel;
     depth: number;
-  }
+  };
 
   const Placeholder: React.FC<Props> = (props) => {
     const left = props.depth * 24;
@@ -186,11 +203,11 @@ const ManageCategories = () => {
     return (
       <Box
         sx={{
-          backgroundColor: '#1967d2',
-          height: '2px',
-          position: 'absolute',
+          backgroundColor: "#1967d2",
+          height: "2px",
+          position: "absolute",
           right: 0,
-          transform: 'translateY(-50%)',
+          transform: "translateY(-50%)",
           top: 0,
           left: left,
         }}
@@ -200,8 +217,26 @@ const ManageCategories = () => {
 
   return (
     <>
-      <Box sx={{ display: "flex", flexDirection: "column" }}>
-        <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600, mt:2 }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          width: 800,
+          "@media (max-width: 1100px)": {
+            width: "100%",
+          },
+          "@media (max-width: 900px)": {
+            maxWidth: "100%",
+            width: "100%",
+            marginRight: 3,
+          },
+        }}
+      >
+        <Typography
+          variant="h6"
+          gutterBottom
+          sx={{ textAlign: "center", fontWeight: 600, mt: 2 }}
+        >
           Управление категориями
         </Typography>
 
@@ -219,13 +254,21 @@ const ManageCategories = () => {
           положение в иерархии.
         </Typography>
 
-        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-end", mt: 2}}>
-          <Typography sx={{ fontSize: "10px", color: "#757575", textAlign: "right" }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-end",
+            mt: 2,
+          }}
+        >
+          <Typography
+            sx={{ fontSize: "10px", color: "#757575", textAlign: "right" }}
+          >
             Чтобы вытащить подкатегорию из категории перенесите в пустое место
           </Typography>
-          <ArrowDownwardIcon sx={{ mt: 1, mr: 5, color: "#757575"}} />
+          <ArrowDownwardIcon sx={{ mt: 1, mr: 5, color: "#757575" }} />
         </Box>
-
 
         <Box>
           <DndProvider backend={MultiBackend} options={getBackendOptions()}>
@@ -238,18 +281,18 @@ const ManageCategories = () => {
                   return (
                     <Box
                       sx={{
-                        padding: '8px 16px',
-                        backgroundColor: '#fefefe',
-                        border: '2px solid #1976d2',
-                        borderRadius: '8px',
-                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
+                        padding: "8px 16px",
+                        backgroundColor: "#fefefe",
+                        border: "2px solid #1976d2",
+                        borderRadius: "8px",
+                        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
                         color: COLORS.info,
-                        fontWeight: 'bold',
-                        fontSize: '1rem',
-                        maxWidth: '300px',
-                        whiteSpace: 'nowrap',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
+                        fontWeight: "bold",
+                        fontSize: "1rem",
+                        maxWidth: "300px",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
                       }}
                     >
                       {item.text}
@@ -257,7 +300,7 @@ const ManageCategories = () => {
                   );
                 }}
                 classes={{
-                  dropTarget: styles.dropTarget
+                  dropTarget: styles.dropTarget,
                 }}
                 placeholderRender={(node, { depth }) => (
                   <Placeholder node={node} depth={depth} />
@@ -268,46 +311,60 @@ const ManageCategories = () => {
 
                   return (
                     <div
-                      className={isSubcategory ? 'subcategory-item' : 'category-item'}
+                      className={
+                        isSubcategory ? "subcategory-item" : "category-item"
+                      }
                       style={{
                         marginInlineStart: depth * 20,
-                        display: 'flex',
-                        alignItems: 'center',
+                        display: "flex",
+                        alignItems: "center",
                       }}
                     >
                       <ListItemButton onClick={onToggle} sx={{ flex: 1 }}>
                         {node.droppable && (
                           <ArrowDropDownOutlinedIcon
                             sx={{
-                              transform: isOpen ? 'rotate(0deg)' : 'rotate(-90deg)',
-                              transition: 'transform 0.2s',
-                              marginRight: '20px',
+                              transform: isOpen
+                                ? "rotate(0deg)"
+                                : "rotate(-90deg)",
+                              transition: "transform 0.2s",
+                              marginRight: "20px",
                             }}
                           />
                         )}
                         <ListItemText
                           primary={node.text}
                           sx={{
-                            fontSize: isSubcategory ? '0.9rem' : '1rem',
-                            fontWeight: isSubcategory ? 'normal' : 'bold',
+                            fontSize: isSubcategory ? "0.9rem" : "1rem",
+                            fontWeight: isSubcategory ? "normal" : "bold",
                           }}
                         />
                       </ListItemButton>
 
                       <Tooltip title="Показать категорию">
-                        <IconButton onClick={() => handleOpenCategory(String(category.id))}>
+                        <IconButton
+                          onClick={() =>
+                            handleOpenCategory(String(category.id))
+                          }
+                        >
                           <EditIcon fontSize="small" />
                         </IconButton>
                       </Tooltip>
 
                       <Tooltip title="Удалить категорию">
-                        <IconButton onClick={() => onDelete(String(category.id))} color="error">
+                        <IconButton
+                          onClick={() => onDelete(String(category.id))}
+                          color="error"
+                        >
                           <DeleteIcon fontSize="small" />
                         </IconButton>
                       </Tooltip>
 
                       <Tooltip title="Добавить подкатегорию">
-                        <IconButton onClick={() => handleAddSubcategory(category.id)} color="success">
+                        <IconButton
+                          onClick={() => handleAddSubcategory(category.id)}
+                          color="success"
+                        >
                           <AddIcon fontSize="small" />
                         </IconButton>
                       </Tooltip>
@@ -322,11 +379,18 @@ const ManageCategories = () => {
         <Modal
           open={openAddSubModal}
           onClose={handleCloseAddSubcategory}
-          sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
         >
-          <Box sx={{ bgcolor: "white", p: 4, borderRadius: 2, width: 400 }}>
+          <Box sx={{ bgcolor: "white", p: 4, borderRadius: 2,  width: "50%",maxWidth: "500px",}}>
             {parentCategoryId && (
-              <SubcategoryForm categoryId={parentCategoryId} onClose={handleCloseAddSubcategory} />
+              <SubcategoryForm
+                categoryId={parentCategoryId}
+                onClose={handleCloseAddSubcategory}
+              />
             )}
           </Box>
         </Modal>
@@ -337,9 +401,13 @@ const ManageCategories = () => {
             setOpenCategoryModal(false);
             setFetchedCategory(null);
           }}
-          sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
         >
-          <Box sx={{ bgcolor: "white", p: 4, borderRadius: 2, width: 500 }}>
+          <Box sx={{ bgcolor: "white", p: 4, borderRadius: 2, width: 800 }}>
             {fetchedCategory && (
               <EditCategory
                 category={{
@@ -359,7 +427,6 @@ const ManageCategories = () => {
             )}
           </Box>
         </Modal>
-
       </Box>
     </>
   );
