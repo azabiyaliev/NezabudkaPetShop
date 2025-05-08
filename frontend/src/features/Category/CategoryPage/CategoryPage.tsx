@@ -62,7 +62,7 @@ const CategoryPage = () => {
           }}
         >
           <Typography variant="h6" sx={{ mb: 2 }}>
-            Admin Panel
+            Панель админа
           </Typography>
           <AdminBar />
           <ModalClose onClick={toggleAdminBar} />
