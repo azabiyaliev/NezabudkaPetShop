@@ -40,3 +40,9 @@
     flex-direction: column;
   }
 }
+
+@media (max-width: 470px) {
+  .categories-ul ul{
+    padding-right: 25px;
+  }
+}
