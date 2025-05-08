@@ -341,33 +341,36 @@ const ManageCategories = () => {
                         />
                       </ListItemButton>
 
-                      <Tooltip title="Показать категорию">
-                        <IconButton
-                          onClick={() =>
-                            handleOpenCategory(String(category.id))
-                          }
-                        >
-                          <EditIcon fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
+                      <Box>
+                        <Tooltip title="Показать категорию">
+                          <IconButton
+                            onClick={() =>
+                              handleOpenCategory(String(category.id))
+                            }
+                          >
+                            <EditIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
 
-                      <Tooltip title="Удалить категорию">
-                        <IconButton
-                          onClick={() => onDelete(String(category.id))}
-                          color="error"
-                        >
-                          <DeleteIcon fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
+                        <Tooltip title="Удалить категорию">
+                          <IconButton
+                            onClick={() => onDelete(String(category.id))}
+                            color="error"
+                          >
+                            <DeleteIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
 
-                      <Tooltip title="Добавить подкатегорию">
-                        <IconButton
-                          onClick={() => handleAddSubcategory(category.id)}
-                          color="success"
-                        >
-                          <AddIcon fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
+                        <Tooltip title="Добавить подкатегорию">
+                          <IconButton
+                            onClick={() => handleAddSubcategory(category.id)}
+                            color="success"
+                          >
+                            <AddIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      </Box>
+
                     </div>
                   );
                 }}

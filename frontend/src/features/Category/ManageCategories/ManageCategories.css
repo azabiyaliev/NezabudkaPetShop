@@ -9,6 +9,7 @@
 .categories-ul ul {
   list-style: none;
   padding-right: 98px;
+  padding-left: 0;
   margin: 0;
 }
 
@@ -31,4 +32,11 @@
 .category-item:hover,
 .subcategory-item:hover {
   background-color: #d0d0d0;
+}
+
+@media (max-width: 470px) {
+  .category-item,
+  .subcategory-item {
+    flex-direction: column;
+  }
 }
