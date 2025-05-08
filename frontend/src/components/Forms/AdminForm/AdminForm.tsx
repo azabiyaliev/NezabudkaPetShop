@@ -21,8 +21,6 @@ import { regEmail, regPhone } from '../../../globalConstants.ts';
 import { useNavigate, useParams } from 'react-router-dom';
 import { enqueueSnackbar } from 'notistack';
 
-
-
 const initialAdmin: AdminDataMutation = {
   firstName: '',
   secondName: '',
@@ -121,7 +119,7 @@ const AdminForm = () => {
           "Вы успешно создали администратора",
           { variant: "success" },
         );
-        navigate('/');
+        navigate('/private/admin-table');
       }
 
     } catch (error) {

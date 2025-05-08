@@ -32,7 +32,7 @@ const BrandsPage = () => {
       </Box>
       <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center" }}>
         {brands.length > 0 ? (
-          <Box sx={{ width: "90%", maxWidth: 1100, mt: SPACING.xl }}>
+          <Box sx={{ width: "90%", maxWidth: 1100, mt: SPACING.md}}>
             <Brands brands={brands}/>
           </Box>
         ) : (

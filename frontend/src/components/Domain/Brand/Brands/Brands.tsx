@@ -170,6 +170,10 @@ const Brands: React.FC<Props> = ({ brands }) => {
           sx={{
             borderRadius: "40px",
             width: "40%",
+            "@media (max-width: 750px)": {
+              width: "100%",
+              minWidth: "100%",
+            },
             '& .MuiOutlinedInput-root': {
               borderRadius: '40px',
               '& fieldset': {
