@@ -36,7 +36,7 @@ const ClientInfoPagesForm = () => {
           display: "flex",
         }}
       >
-     <ClientInfoForm/>
+        <ClientInfoForm/>
       </Box>
     </Box>
   );

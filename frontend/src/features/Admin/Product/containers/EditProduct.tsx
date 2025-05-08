@@ -1,18 +1,16 @@
 import { useAppDispatch, useAppSelector, usePermission } from '../../../../app/hooks.ts';
-import { useNavigate, useParams } from "react-router-dom";
-import { selectProduct } from "../../../../store/products/productsSlice.ts";
-import { selectUser } from "../../../../store/users/usersSlice.ts";
-import { ProductRequest } from "../../../../types";
-import {
-  editProduct,
-  getOneProductForEdit,
-} from '../../../../store/products/productsThunk.ts';
-import Grid from "@mui/material/Grid2";
-import AdminBar from "../../AdminProfile/AdminBar.tsx";
-import ProductForm from "../components/ProductForm.tsx";
-import { useEffect } from "react";
+import { useNavigate, useParams } from 'react-router-dom';
+import { selectProduct } from '../../../../store/products/productsSlice.ts';
+import { selectUser } from '../../../../store/users/usersSlice.ts';
+import { ProductRequest } from '../../../../types';
+import { editProduct, getOneProductForEdit, } from '../../../../store/products/productsThunk.ts';
+import Grid from '@mui/material/Grid2';
+import AdminBar from '../../AdminProfile/AdminBar.tsx';
+import ProductForm from '../components/ProductForm.tsx';
+import { useEffect } from 'react';
 import { userRoleAdmin, userRoleSuperAdmin } from '../../../../globalConstants.ts';
 import { enqueueSnackbar } from 'notistack';
+import { Typography } from '@mui/material';
 
 const EditProduct = () => {
   const dispatch = useAppDispatch();
@@ -46,6 +44,9 @@ const EditProduct = () => {
             <AdminBar />
           </Grid>
           <Grid size={8}>
+            <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600, mt:3 }}>
+              Редактирование товара
+            </Typography>
             {product !== null && (
                 <ProductForm
                   onSubmit={onSubmitForm}

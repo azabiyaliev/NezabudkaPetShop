@@ -6,8 +6,9 @@ import ProductForm from "../components/ProductForm.tsx";
 import { selectUser } from "../../../../store/users/usersSlice.ts";
 import AdminBar from "../../AdminProfile/AdminBar.tsx";
 import { userRoleAdmin, userRoleSuperAdmin } from '../../../../globalConstants.ts';
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
+import { FONTS } from '../../../../globalStyles/stylesObjects.ts';
 
 const NewProduct = () => {
   const dispatch = useAppDispatch();
@@ -40,13 +41,13 @@ const NewProduct = () => {
           <AdminBar />
           <Box
             sx={{
-              flexGrow: 1,
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              ml: 2,
+              width: '100%',
+              marginLeft: '30px',
             }}
           >
+            <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600, fontSize: FONTS.size.xl}}>
+              Добавление нового товара
+            </Typography>
             <ProductForm onSubmit={onSubmitForm} />
           </Box>
         </Box>

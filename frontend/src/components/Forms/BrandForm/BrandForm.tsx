@@ -86,7 +86,7 @@ const BrandForm: React.FC<Props> = ({
     <form
       onSubmit={onSubmit}
       style={{
-        margin: '0 30px'
+        margin: '20px 30px',
       }}
     >
       <main>

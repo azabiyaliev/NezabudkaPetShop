@@ -27,6 +27,7 @@ import { apiUrl } from '../../../../globalConstants.ts';
 import CloseIcon from '@mui/icons-material/Close';
 import theme from '../../../../globalStyles/globalTheme.ts';
 import { enqueueSnackbar } from 'notistack';
+import { COLORS } from '../../../../globalStyles/stylesObjects.ts';
 
 
 interface Props {
@@ -267,16 +268,17 @@ const ProductForm: React.FC<Props> = ({
   );
 
   return (
-    <form onSubmit={submitFormHandler}>
-      <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600, mt:3 }}>
-        {!isProduct ? "Добавление товара" : "Редактирование товара"}
-      </Typography>
+    <form onSubmit={submitFormHandler} style={{
+      border: '1px solid #ccc',
+      borderRadius: "4px",
+      boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
+      padding: '30px 20px',
+      marginTop: '20px'
+    }}>
       <Box
         sx={{
-          width: "100%",
           marginTop: 1,
           mx: "auto",
-          p: 2,
         }}
       >
         <Grid container direction="column" spacing={2}>
@@ -302,27 +304,27 @@ const ProductForm: React.FC<Props> = ({
             />
           </Grid>
           <Grid size={{ xs: 12 }}>
-              <TextField
-                sx={{
-                  width: "100%",
-                  "& label.Mui-focused": { color: orange[500] },
-                  "& .MuiOutlinedInput-root": {
-                    "& fieldset": { borderColor: "#ccc" },
-                    "&:hover fieldset": { borderColor: orange[500] },
-                    "&.Mui-focused fieldset": { borderColor: orange[500] },
-                  },
-                }}
-                type="number"
-                id="productPrice"
-                name="productPrice"
-                label="Цена"
-                required
-                value={form.productPrice}
-                onChange={inputChangeHandler}
-                inputProps={{ min: 1 }}
-                error={!!priceError}
-                helperText={priceError}
-              />
+            <TextField
+              sx={{
+                width: "100%",
+                "& label.Mui-focused": { color: orange[500] },
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": { borderColor: "#ccc" },
+                  "&:hover fieldset": { borderColor: orange[500] },
+                  "&.Mui-focused fieldset": { borderColor: orange[500] },
+                },
+              }}
+              type="number"
+              id="productPrice"
+              name="productPrice"
+              label="Цена"
+              required
+              value={form.productPrice}
+              onChange={inputChangeHandler}
+              inputProps={{ min: 1 }}
+              error={!!priceError}
+              helperText={priceError}
+            />
           </Grid>
           <Grid size={{ xs: 12 }}>
             <TextEditor
@@ -723,7 +725,14 @@ const ProductForm: React.FC<Props> = ({
           <Grid>
             <Button
               type="submit"
-              sx={{ color: "#ff9800", width: "100%" }}
+              sx={{
+                color: "#fff",
+                width: "100%",
+                background: disableButton ? COLORS.DARK_GREEN : null,
+                '&:hover': {
+                  background: disableButton ? COLORS.FOREST_GREEN : null,
+                }
+              }}
               variant="outlined"
               color="inherit"
               disabled={!disableButton || loading}
