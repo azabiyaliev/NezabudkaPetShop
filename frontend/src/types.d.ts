@@ -144,7 +144,6 @@ export interface CategoryMutation {
   title: string;
   subcategories?: Subcategory[];
   parentId?: number | null;
-  icon?: File | null | string;
   image?: File | null | string;
 }
 
@@ -155,7 +154,6 @@ export interface ICategoriesMutation {
   parentId: number | null;
   subcategories: Subcategory[];
   parent: { id:number, title: string };
-  icon: string | null;
   image: string | null;
 }
 
@@ -164,7 +162,6 @@ export interface Subcategory {
   title: string;
   parentId: string | number | null;
   subcategories?: Subcategory[];
-  icon?: File | null;
   image?: File | null;
 }
 

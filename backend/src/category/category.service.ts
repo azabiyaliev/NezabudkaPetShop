@@ -23,11 +23,7 @@ export class CategoryService {
     return category;
   }
 
-  async createCategory(
-    categoryDto: CategoryDto,
-    icon: string | null,
-    image: string | null,
-  ) {
+  async createCategory(categoryDto: CategoryDto, image: string | null) {
     const { title, parentId } = categoryDto;
 
     if (title.trim() === '') {
@@ -44,7 +40,6 @@ export class CategoryService {
       data: {
         title,
         parentId: parentId ?? null,
-        icon: icon ?? null,
         image: image ?? null,
       },
     });
@@ -58,7 +53,7 @@ export class CategoryService {
   ) {
     await this.validateCategory(categoryId);
 
-    for (const { title, icon, image } of subCategoryDtos) {
+    for (const { title, image } of subCategoryDtos) {
       if (!title.trim()) {
         throw new BadRequestException('Название подкатегории отсутствует');
       }
@@ -75,7 +70,6 @@ export class CategoryService {
         data: {
           title,
           parentId: categoryId,
-          icon: icon ?? null,
           image: image ?? null,
         },
       });
@@ -129,7 +123,6 @@ export class CategoryService {
         ...(categoryDto.parentId !== undefined && {
           parentId: categoryDto.parentId,
         }),
-        icon: categoryDto.icon,
         image: categoryDto.image,
       },
     });

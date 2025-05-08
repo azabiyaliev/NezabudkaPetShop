@@ -9,7 +9,5 @@ export class CategoryDto {
   @IsOptional()
   subcategories?: SubcategoryDto[];
   @IsOptional()
-  icon?: string | null;
-  @IsOptional()
   image?: string | null;
 }
