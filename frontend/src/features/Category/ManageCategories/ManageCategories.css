@@ -34,9 +34,14 @@
   background-color: #d0d0d0;
 }
 
-@media (max-width: 470px) {
-  .category-item,
+@media (max-width: 670px) {
   .subcategory-item {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 470px) {
+  .category-item {
     flex-direction: column;
   }
 }
