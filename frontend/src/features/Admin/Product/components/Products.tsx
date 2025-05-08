@@ -335,6 +335,10 @@ const Products: React.FC<Props> = ({products}) => {
           sx={{
             borderRadius: "40px",
             width: "40%",
+            "@media (max-width: 950px)": {
+              width: "100%",
+              minWidth: "100%",
+            },
             '& .MuiOutlinedInput-root': {
               borderRadius: '40px',
               '& fieldset': {
