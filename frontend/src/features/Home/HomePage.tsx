@@ -136,8 +136,6 @@ const HomePage = () => {
     return a.existence ? -1 : 1;
   });
 
-  console.log(topSellingProducts);
-
   return (
     <Box>
       <Container maxWidth="xl">

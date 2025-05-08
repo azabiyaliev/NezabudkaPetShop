@@ -29,29 +29,30 @@ const NewProduct = () => {
   };
 
   return (
-    <>
-        <Box
-          sx={{
-          display: "flex",
-          margin: "30px 0",
+    <Box
+      sx={{
+        display: "flex",
+        margin: "30px 0",
+        "@media (max-width: 900px)": {
+          flexWrap: "wrap",
+        },
+      }}>
+      <AdminBar />
+      <Box
+        sx={{
+          width: '100%',
+          marginLeft: '30px',
           "@media (max-width: 900px)": {
-            flexWrap: "wrap",
+            marginLeft: '0',
           },
-        }}>
-          <AdminBar />
-          <Box
-            sx={{
-              width: '100%',
-              marginLeft: '30px',
-            }}
-          >
-            <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600, fontSize: FONTS.size.xl}}>
-              Добавление нового товара
-            </Typography>
-            <ProductForm onSubmit={onSubmitForm} />
-          </Box>
-        </Box>
-    </>
+        }}
+      >
+        <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600, fontSize: FONTS.size.xl}}>
+          Добавление нового товара
+        </Typography>
+        <ProductForm onSubmit={onSubmitForm} />
+      </Box>
+    </Box>
   );
 };
 
