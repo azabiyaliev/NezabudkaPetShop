@@ -26,6 +26,7 @@ export class ProductsService {
   //FOR ADMIN/USER
   async getAllProducts(searchKeyword?: string, brand?: number) {
     const products = await this.prismaService.products.findMany({
+      orderBy: { id: 'desc' },
       where: {
         OR: [
           {
