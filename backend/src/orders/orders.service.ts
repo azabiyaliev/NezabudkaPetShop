@@ -359,9 +359,7 @@ export class OrdersService {
       Условие доставки: ${order.deliveryMethod}
       Использовано бонусов: ${bonusToUse} сом
       Итого: ${orderAmount} сом;`;
-      setTimeout(() => {
-        this.telegramBot.sendMessage(message);
-      }, 3000);
+      await this.telegramBot.sendMessage(message);
     } catch (e) {
       this.logger.error('Не удалось отправить уведомление в Telegram', e);
     }
@@ -475,6 +473,7 @@ export class OrdersService {
       },
     });
   }
+
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   async autoDeletingCanceledOrder() {
     const sevenDaysAgo = new Date();
