@@ -1,18 +1,15 @@
 import { useAppDispatch, useAppSelector, usePermission } from '../../../../app/hooks.ts';
-import { useNavigate, useParams } from "react-router-dom";
-import { selectProduct } from "../../../../store/products/productsSlice.ts";
-import { selectUser } from "../../../../store/users/usersSlice.ts";
-import { ProductRequest } from "../../../../types";
-import {
-  editProduct,
-  getOneProductForEdit,
-} from '../../../../store/products/productsThunk.ts';
-import Grid from "@mui/material/Grid2";
-import AdminBar from "../../AdminProfile/AdminBar.tsx";
-import ProductForm from "../components/ProductForm.tsx";
-import { useEffect } from "react";
+import { useNavigate, useParams } from 'react-router-dom';
+import { selectProduct } from '../../../../store/products/productsSlice.ts';
+import { selectUser } from '../../../../store/users/usersSlice.ts';
+import { ProductRequest } from '../../../../types';
+import { editProduct, getOneProductForEdit, } from '../../../../store/products/productsThunk.ts';
+import AdminBar from '../../AdminProfile/AdminBar.tsx';
+import ProductForm from '../components/ProductForm.tsx';
+import { useEffect } from 'react';
 import { userRoleAdmin, userRoleSuperAdmin } from '../../../../globalConstants.ts';
 import { enqueueSnackbar } from 'notistack';
+import { Box, Typography } from '@mui/material';
 
 const EditProduct = () => {
   const dispatch = useAppDispatch();
@@ -40,25 +37,39 @@ const EditProduct = () => {
   };
 
   return (
-    <>
-        <Grid container spacing={2}>
-          <Grid size={4}>
-            <AdminBar />
-          </Grid>
-          <Grid size={8}>
-            {product !== null && (
-                <ProductForm
-                  onSubmit={onSubmitForm}
-                  editProduct={{
-                    ...product,
-                    categoryId: product.productCategory?.map((pc) => pc.category?.id).filter((id): id is number => typeof id === 'number') ?? [],
-                  }}
-                  isProduct
-                />
-            )}
-          </Grid>
-        </Grid>
-    </>
+    <Box
+      sx={{
+        display: "flex",
+        margin: "30px 0",
+        "@media (max-width: 900px)": {
+          flexWrap: "wrap",
+        },
+      }}>
+      <AdminBar />
+      <Box
+        sx={{
+          width: '100%',
+          marginLeft: '30px',
+          "@media (max-width: 900px)": {
+            marginLeft: '0',
+          },
+        }}
+      >
+        <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600}}>
+          Редактирование товара
+        </Typography>
+        {product !== null && (
+          <ProductForm
+            onSubmit={onSubmitForm}
+            editProduct={{
+              ...product,
+              categoryId: product.productCategory?.map((pc) => pc.category?.id).filter((id): id is number => typeof id === 'number') ?? [],
+            }}
+            isProduct
+          />
+        )}
+      </Box>
+    </Box>
   );
 };
 

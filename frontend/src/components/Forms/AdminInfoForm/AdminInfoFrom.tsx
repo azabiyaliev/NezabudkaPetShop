@@ -73,7 +73,6 @@ const AdminInfoForm = () => {
           flexGrow: 1,
           display: "flex",
           justifyContent: "center",
-          marginLeft: 5,
           "@media (max-width: 900px)": {
             marginLeft: 0,
           },

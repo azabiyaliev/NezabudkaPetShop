@@ -10,6 +10,7 @@ import { apiUrl } from '../../../globalConstants.ts';
 import TextEditor from '../../TextEditor/TextEditor.tsx';
 import { Box } from '@mui/joy';
 import CloseIcon from '@mui/icons-material/Close';
+import { COLORS } from '../../../globalStyles/stylesObjects.ts';
 
 interface Props {
   addNewBrand: (brand: IBrandForm) => void;
@@ -86,7 +87,7 @@ const BrandForm: React.FC<Props> = ({
     <form
       onSubmit={onSubmit}
       style={{
-        margin: '0 30px'
+        margin: '20px 30px',
       }}
     >
       <main>
@@ -159,7 +160,12 @@ const BrandForm: React.FC<Props> = ({
               border: newBrand.title.trim().length === 0 ? "1px solid lightgrey" : null,
               background: isLoading || newBrand.title.trim().length === 0
                 ? "transparent"
-                : "linear-gradient(90deg, rgba(250, 134, 1, 1) 0%, rgba(250, 179, 1, 1) 28%, rgba(250, 143, 1, 1) 100%)",
+                : COLORS.DARK_GREEN,
+              '&:hover': {
+                background: isLoading || newBrand.title.trim().length === 0
+                  ? "transparent"
+                  : COLORS.FOREST_GREEN,
+              }
             }}
             type="submit"
             disabled={isLoading || newBrand.title.trim().length === 0}
