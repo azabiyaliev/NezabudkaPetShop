@@ -9,7 +9,7 @@ import { addErrorFromSlice, addLoadingFromSlice } from '../../../store/brands/br
 import { useNavigate } from 'react-router-dom';
 import { enqueueSnackbar } from 'notistack';
 import { userRoleAdmin, userRoleSuperAdmin } from '../../../globalConstants.ts';
-import { FONTS, SPACING } from '../../../globalStyles/stylesObjects.ts';
+import { FONTS } from '../../../globalStyles/stylesObjects.ts';
 
 const NewBrandPage = () => {
   const user = useAppSelector(selectUser);
@@ -42,7 +42,7 @@ const NewBrandPage = () => {
         textAlign: 'center', width: '100%',
       }}>
         <Box>
-          <Typography variant="h6" gutterBottom sx={{textAlign: 'center', margin: `${SPACING.md} 0 ${SPACING.lg} 0`, fontWeight: FONTS.weight.bold, fontSize: FONTS.size.xl}}>
+          <Typography variant="h6" gutterBottom sx={{textAlign: 'center', fontWeight: FONTS.weight.bold, fontSize: FONTS.size.xl}}>
             Добавление нового бренда
           </Typography>
           <BrandForm addNewBrand={addNewBrand} isLoading={loading} brandError={addError}/>

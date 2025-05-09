@@ -46,6 +46,10 @@ const ClientList: React.FC<Props> = ({ clients }) => {
           sx={{
             borderRadius: "40px",
             width: "40%",
+            "@media (max-width: 950px)": {
+              width: "100%",
+              minWidth: "100%",
+            },
             '& .MuiOutlinedInput-root': {
               borderRadius: '40px',
               '& fieldset': {
@@ -83,7 +87,6 @@ const ClientList: React.FC<Props> = ({ clients }) => {
               },
             }}
             pageSizeOptions={[10, 25, 50, 100]}
-            checkboxSelection
             disableRowSelectionOnClick
             localeText={ruRU.components.MuiDataGrid.defaultProps.localeText}
             sx={{

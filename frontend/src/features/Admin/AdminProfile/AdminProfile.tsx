@@ -34,7 +34,7 @@ const AdminProfile = () => {
           }}
         >
           <AdminBar />
-          <Box sx={{ marginLeft: "90px" }}>
+          <Box sx={{margin: '0 auto'}}>
             <Typography
               variant="h6"
               gutterBottom

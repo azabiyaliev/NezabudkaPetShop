@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Box, Button, TextField } from '@mui/material';
 import Grid from '@mui/material/Grid2';
+import { COLORS } from '../../../../globalStyles/stylesObjects.ts';
 
 interface Props {
   onChange: React.ChangeEventHandler<HTMLInputElement>;
@@ -85,8 +86,10 @@ const FileInputForBrand: React.FC<Props> = ({
                 color: "white",
                 width: "100%",
                 height: "50px",
-                background:
-                  "linear-gradient(90deg, rgba(250, 134, 1, 1) 0%, rgba(250, 179, 1, 1) 28%, rgba(250, 143, 1, 1) 100%)",
+                background: COLORS.DARK_GREEN,
+                '&:hover': {
+                  background: COLORS.FOREST_GREEN,
+                }
               }}
             >
               Выбрать изображение

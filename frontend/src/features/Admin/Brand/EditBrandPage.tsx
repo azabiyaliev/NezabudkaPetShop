@@ -15,7 +15,7 @@ import { editBrand, getOneBrand } from '../../../store/brands/brandsThunk.ts';
 import { useNavigate, useParams } from 'react-router-dom';
 import { enqueueSnackbar } from 'notistack';
 import { userRoleAdmin, userRoleSuperAdmin } from '../../../globalConstants.ts';
-import { FONTS, SPACING } from '../../../globalStyles/stylesObjects.ts';
+import { FONTS } from '../../../globalStyles/stylesObjects.ts';
 
 const EditBrandPage = () => {
   const user = useAppSelector(selectUser);
@@ -65,7 +65,7 @@ const EditBrandPage = () => {
         textAlign: 'center', width: '100%',
       }}>
         <Box>
-          <Typography variant="h6" gutterBottom sx={{textAlign: 'center', margin: `${SPACING.md} 0 ${SPACING.lg} 0`, fontWeight: FONTS.weight.bold, fontSize: FONTS.size.xl}}>
+          <Typography variant="h6" gutterBottom sx={{textAlign: 'center', fontWeight: FONTS.weight.bold, fontSize: FONTS.size.xl}}>
             Редактирование бренда
           </Typography>
           {brand !== null && (

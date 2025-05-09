@@ -31,8 +31,7 @@ const AdminInfoPagesForm = () => {
       </Box>
       <Box
         sx={{
-          flexGrow: 1,
-          display: "flex",
+          margin: '0 auto',
         }}
       >
        <AdminInfoForm/>
