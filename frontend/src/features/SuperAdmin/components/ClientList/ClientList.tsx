@@ -83,7 +83,6 @@ const ClientList: React.FC<Props> = ({ clients }) => {
               },
             }}
             pageSizeOptions={[10, 25, 50, 100]}
-            checkboxSelection
             disableRowSelectionOnClick
             localeText={ruRU.components.MuiDataGrid.defaultProps.localeText}
             sx={{

@@ -1,6 +1,8 @@
 import Grid from "@mui/material/Grid2";
 import { Button, TextField } from "@mui/material";
 import React, { useEffect, useRef, useState } from 'react';
+import { Box } from '@mui/joy';
+import { COLORS } from '../../globalStyles/stylesObjects.ts';
 
 interface Props {
   name: string;
@@ -46,7 +48,11 @@ const FileInput: React.FC<Props> = ({ name, label, onGetFile, initialValue }) =>
         onChange={onFileChange}
         ref={inputRef}
       />
-      <Grid container spacing={2} direction="row" alignItems="center">
+      <Grid container spacing={2} direction="row" alignItems="center" sx={{
+        '@media (max-width:630px)': {
+          display: "none",
+        },
+      }}>
         <Grid size={{ xs: 9 }}>
           <TextField
             label={label}
@@ -73,6 +79,44 @@ const FileInput: React.FC<Props> = ({ name, label, onGetFile, initialValue }) =>
           </Button>
         </Grid>
       </Grid>
+      <Box sx={{
+        display: "none",
+        '@media (max-width: 630px)': {
+          display: "block",
+        },
+      }}>
+        <Box>
+          <TextField
+            label={label}
+            slotProps={{ input: { readOnly: true } }}
+            value={fileName}
+            onClick={activateInput}
+            sx={{ width: '100%' }}
+          />
+        </Box>
+        <Box sx={{
+          marginTop: '10px'
+        }}>
+          <Button
+            variant="contained"
+            onClick={activateInput}
+            sx={{
+              color: "white",
+              textTransform: "uppercase",
+              background: COLORS.DARK_GREEN,
+              width: "100%",
+              height: '45px',
+              fontSize: "0.75rem",
+              padding: "6px 12px",
+              '&:hover': {
+                background: COLORS.FOREST_GREEN,
+              }
+            }}
+          >
+            Выбрать изображение
+          </Button>
+        </Box>
+      </Box>
     </>
   );
 };

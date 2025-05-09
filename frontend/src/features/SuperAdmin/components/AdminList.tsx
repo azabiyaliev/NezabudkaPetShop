@@ -1,19 +1,20 @@
 import React, { useState } from 'react';
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { Box, Divider, IconButton, Typography } from '@mui/material';
-import Grid from "@mui/material/Grid2";
-import { ruRU } from "@mui/x-data-grid/locales";
-import { useNavigate } from "react-router-dom";
-import { AdminDataMutation } from "../../../types";
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { Box, IconButton, Typography } from '@mui/material';
+import Grid from '@mui/material/Grid2';
+import { ruRU } from '@mui/x-data-grid/locales';
+import { useNavigate } from 'react-router-dom';
+import { AdminDataMutation } from '../../../types';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
-import { deleteAdmin, getAdmins } from "../../../store/admins/adminThunks.ts";
-import { toast } from "react-toastify";
+import { deleteAdmin, getAdmins } from '../../../store/admins/adminThunks.ts';
+import { toast } from 'react-toastify';
 import { deleteLoading } from '../../../store/admins/adminSlice.ts';
 import EditNoteOutlinedIcon from '@mui/icons-material/EditNoteOutlined';
 import DeleteSweepOutlinedIcon from '@mui/icons-material/DeleteSweepOutlined';
 import Swal from 'sweetalert2';
 import theme from '../../../globalStyles/globalTheme.ts';
 import { enqueueSnackbar } from 'notistack';
+import { Divider } from '@mui/joy';
 
 interface Props {
   admins: AdminDataMutation[];
@@ -107,7 +108,6 @@ const AdminList: React.FC<Props> = ({ admins }) => {
             },
           }}
           pageSizeOptions={[10, 25, 50, 100]}
-          checkboxSelection
           disableRowSelectionOnClick
           localeText={ruRU.components.MuiDataGrid.defaultProps.localeText}
           sx={{

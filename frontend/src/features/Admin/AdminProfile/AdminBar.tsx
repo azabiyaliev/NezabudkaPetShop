@@ -43,6 +43,7 @@ const AdminBar = () => {
         height: 'fit-content',
         maxHeight: '100vh',
         overflowY: 'auto',
+        marginBottom: '20px',
         '@media (max-width: 900px)': {
           width: '100%',
           padding: '16px',
