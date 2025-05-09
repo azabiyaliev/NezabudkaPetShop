@@ -386,9 +386,10 @@ const ManageCategories = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            mx: 5
           }}
         >
-          <Box sx={{ bgcolor: "white", p: 4, borderRadius: 2,  width: "50%",maxWidth: "500px",}}>
+          <Box sx={{ bgcolor: "white", p: 4, borderRadius: 2,  width: "70%",maxWidth: "500px",}}>
             {parentCategoryId && (
               <SubcategoryForm
                 categoryId={parentCategoryId}
@@ -408,6 +409,7 @@ const ManageCategories = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            mx: 5
           }}
         >
           <Box sx={{ bgcolor: "white", p: 4, borderRadius: 2, width: 800 }}>
