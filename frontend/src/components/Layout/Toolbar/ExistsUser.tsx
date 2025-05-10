@@ -19,6 +19,8 @@ import AutoGraphOutlinedIcon from '@mui/icons-material/AutoGraphOutlined';
 import { logout } from '../../../store/users/usersThunk.ts';
 import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
 import { clearCart } from "../../../store/cart/cartSlice.ts";
+import theme from '../../../globalStyles/globalTheme.ts';
+import { User } from "phosphor-react";
 
 const ExistsUser = () => {
   const addError = useAppSelector(addErrorFromSlice);
@@ -85,12 +87,10 @@ const ExistsUser = () => {
               flexDirection: "column",
             }}
           >
-            <PermIdentityOutlinedIcon
-              sx={{
-                width: "30px",
-                height: "30px",
-                color: "#000",
-              }}
+            <User
+              size={28}
+              weight="regular"
+              color={theme.colors.white}
             />
             <Typography
               sx={{
@@ -101,10 +101,16 @@ const ExistsUser = () => {
               }}
             >
               {user?.role === "superAdmin" ? (
-                <span style={{ color: "#343332" }}>Super Admin</span>
+                <span style={{
+                  backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                  backdropFilter: 'blur(10px)',
+                }}>Super Admin</span>
               ) : user?.role === "admin" ? (
                 <>
-                  <span style={{ color: "#a82626" }}>Admin:</span> {user.firstName}
+                  <span style={{
+                    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                    backdropFilter: 'blur(10px)',
+                  }}>Admin:</span> {user.firstName}
                 </>
               ) : (
                 user?.firstName
@@ -125,23 +131,27 @@ const ExistsUser = () => {
           >
             <Tooltip
               title={
-                user?.role === "superAdmin" ? (
-                  <span style={{ color: "#343332" }}>Super Admin</span>
-                ) : user?.role === "admin" ? (
-                  <>
-                    <span style={{ color: "#a82626" }}>Admin:</span> {user.firstName}
-                  </>
-                ) : (
-                  user?.firstName
-                )
+                user?.role === "superAdmin"
+                  ? "Super Admin"
+                  : user?.role === "admin"
+                    ? `Admin: ${user.firstName}`
+                    : user?.firstName
               }
+              componentsProps={{
+                tooltip: {
+                  sx: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                    backdropFilter: 'blur(10px)',
+                    fontSize: "13px",
+                    padding: "6px 10px",
+                  },
+                },
+              }}
             >
-              <PermIdentityOutlinedIcon
-                sx={{
-                  width: "30px",
-                  height: "30px",
-                  color: "#fff",
-                }}
+              <User
+                size={28}
+                weight="regular"
+                color={theme.colors.white}
               />
             </Tooltip>
           </Box>

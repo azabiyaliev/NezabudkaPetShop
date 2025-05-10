@@ -43,6 +43,7 @@
     "framer-motion": "^12.8.2",
     "html-react-parser": "^5.2.3",
     "notistack": "^3.0.2",
+    "phosphor-react": "^1.4.1",
     "prettier": "^3.5.2",
     "quill": "^2.0.3",
     "react": "^19.0.0",

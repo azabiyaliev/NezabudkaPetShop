@@ -5,10 +5,9 @@ import {
   Button,
   Menu,
   MenuItem,
-  Typography,
 } from "@mui/material";
-import { COLORS } from '../../../globalStyles/stylesObjects.ts';
-import PermIdentityOutlinedIcon from '@mui/icons-material/PermIdentityOutlined';
+import { User } from "phosphor-react";
+import theme from '../../../globalStyles/globalTheme.ts';
 
 const UnknownUser = () => {
   const guestEmail = localStorage.getItem('guestEmail');
@@ -54,31 +53,11 @@ const UnknownUser = () => {
             },
           }}
         >
-          <PermIdentityOutlinedIcon
-            sx={{
-              width: "30px",
-              height: "30px",
-              color: "#fff",
-              "@media (max-width: 900px)": {
-                color: "#000",
-              },
-            }}
+          <User
+            size={28}
+            weight="regular"
+            color={theme.colors.white}
           />
-          <Typography
-            sx={{
-              color: "#fff",
-              fontSize: "16px",
-              fontWeight: "500",
-              textTransform: "uppercase",
-              "@media (max-width: 900px)": {
-                color: `${COLORS.black}`,
-                fontSize: "14px",
-                marginLeft: 0,
-              },
-            }}
-          >
-            Войти
-          </Typography>
         </Button>
       </Box>
 
