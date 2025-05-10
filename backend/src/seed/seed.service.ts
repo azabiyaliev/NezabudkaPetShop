@@ -140,7 +140,7 @@ export class SeedService {
 
     await this.prisma.siteEdition.create({
       data: {
-        instagram: 'https://www.instagram.com/nezabudka.zoo/',
+        instagram: 'https://www.instagram.com/nezabudka.bishkek?igsh=MXg5ankzZ3JwdjFvag==',
         whatsapp: 'https://api.whatsapp.com/send?phone=99655533889',
         schedule: '10:00-20:00',
         address: 'г. Бишкек, Гоголя 127',

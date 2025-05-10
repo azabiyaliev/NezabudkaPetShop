@@ -183,8 +183,8 @@ const MainToolbar = () => {
                 justifyContent: "space-between",
                 alignItems: "center",
                 gap: "30px",
-                marginTop: "7px",
-                marginBottom:"7px"
+                marginTop: "5px",
+                marginBottom:"5px"
               }}
             >
               <Box
