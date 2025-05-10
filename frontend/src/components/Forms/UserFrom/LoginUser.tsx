@@ -58,7 +58,10 @@ const LoginUser = () => {
         navigate("/");
       }
     } catch (error) {
-      toast.error((error as { error: string }).error, {
+      const errorMessage =
+        (error as { response: { data: { message: string } } })?.response?.data
+          ?.message || "Произошла ошибка. Повторите попытку.";
+      toast.error(errorMessage, {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: true,
@@ -67,6 +70,7 @@ const LoginUser = () => {
         draggable: true,
         progress: undefined,
       });
+
     }
   };
 
