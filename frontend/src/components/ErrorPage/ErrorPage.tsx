@@ -12,9 +12,12 @@ const ErrorPage = () => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
+        gap: "30px",
         margin: "100px",
-        "@media (max-width: 500px)": {
-          flexDirection: "column",
+        "@media (max-width: 600px)": {
+          flexDirection: "column-reverse",
+          margin: "50px 20px",
+          textAlign: "center",
         },
       }}
     >
@@ -28,25 +31,25 @@ const ErrorPage = () => {
       >
         <Typography
           variant="h1"
-          sx={{ fontSize: { xs: "4rem", sm: "5rem", md: "6rem" } }}
+          sx={{ fontSize: { xs: "3rem", sm: "4rem", md: "6rem" } }}
         >
           404
         </Typography>
         <Typography
           variant="h4"
-          sx={{ fontSize: { xs: "1.5rem", sm: "2rem" } }}
+          sx={{ fontSize: { xs: "1.5rem", sm: "2rem" }, mb: 1 }}
         >
           Ой!
         </Typography>
         <Typography
           variant="h5"
-          sx={{ fontSize: { xs: "1.1rem", sm: "1.25rem" } }}
+          sx={{ fontSize: { xs: "1.1rem", sm: "1.25rem" }, mb: 0.5 }}
         >
-          Кажется что-то пошло не так.
+          Кажется, что-то пошло не так.
         </Typography>
         <Typography
           variant="h5"
-          sx={{ fontSize: { xs: "1.1rem", sm: "1.25rem" } }}
+          sx={{ fontSize: { xs: "1.1rem", sm: "1.25rem" }, mb: 2 }}
         >
           Давайте вернемся в магазин :)
         </Typography>
@@ -69,7 +72,7 @@ const ErrorPage = () => {
       <Box
         component="img"
         sx={{
-          width: { xs: 250, sm: 300, md: 400 },
+          width: { xs: 180, sm: 250, md: 400 },
           height: "auto",
         }}
         alt="Error"
