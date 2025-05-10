@@ -445,7 +445,7 @@ const ProductPage = () => {
                      width: "200px",
                      padding: `${SPACING.sm} ${SPACING.lg}`,
                      borderRadius: "40px",
-                     backgroundColor: COLORS.DARK_GREEN,
+                     backgroundColor: COLORS.primary,
                      color: theme.colors.white,
                      fontSize: theme.fonts.size.default,
                      textTransform: "none",

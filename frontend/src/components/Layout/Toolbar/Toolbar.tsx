@@ -269,11 +269,9 @@ const MainToolbar = () => {
         style={{
           background: user?.role === "superAdmin"
             ? "linear-gradient(135deg, #1B4332 0%, #A3B72F 50%, #F4D35E 100%)"
-            : "#367c2b",
+            : theme.colors.primary,
           backgroundSize: "200%",
           backgroundPosition: "center",
-          backdropFilter: "blur(10px)",
-          WebkitBackdropFilter: "blur(10px)", // для Safari
           borderBottom: `1px solid ${theme.colors.white}`,
           boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
         }}
@@ -353,7 +351,7 @@ const MainToolbar = () => {
                         },
                         textTransform: "uppercase",
                         fontWeight: "bold",
-                        fontFamily: 'Montserrat, sans-serif',
+                        fontFamily: 'Tahoma, sans-serif',
                         color: "white",
                         cursor: "pointer",
                         marginRight: theme.spacing.xs,
