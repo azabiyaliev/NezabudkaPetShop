@@ -19,6 +19,7 @@ import ArrowDropDownOutlinedIcon from '@mui/icons-material/ArrowDropDownOutlined
 import { alpha } from '@mui/material/styles';
 import { COLORS, FONTS, SPACING } from '../../../globalStyles/stylesObjects.ts';
 import CustomPagination from '../../../components/Pagination/Pagination.tsx';
+import Container from '@mui/material/Container';
 
 const AllProductsCardsPage = () => {
   const dispatch = useAppDispatch();
@@ -241,6 +242,7 @@ const AllProductsCardsPage = () => {
   };
 
   return (
+    <Container maxWidth="xl">
       <Grid container spacing={2} sx={{mt: 4}}>
         <Grid size={3}>
           <Box
@@ -348,6 +350,8 @@ const AllProductsCardsPage = () => {
           )}
         </Grid>
       </Grid>
+    </Container>
+
   );
 };
 

@@ -6,6 +6,7 @@ import { fetchUserById } from "../../../../store/users/usersThunk.ts";
 import UserFormEdition from "../../../../components/Forms/UserFormEdition/UserFormEdition.tsx";
 import ClientBar from "../../../../components/Domain/Client/ClientBar.tsx";
 import { Box } from '@mui/material';
+import Container from '@mui/material/Container';
 
 const ClientEditProfile = () => {
   const dispatch = useAppDispatch();
@@ -19,40 +20,42 @@ const ClientEditProfile = () => {
   }, [dispatch, id, user]);
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        gap: 2,
-        mt: 5,
-        flexDirection: 'column',
-        '@media (min-width: 900px)': {
-          flexDirection: 'row',
-        },
-      }}
-    >
-      {user && user.role === 'client' && (
-        <Box
-          sx={{
-            width: '100%',
-            '@media (min-width: 900px)': {
-              width: '30%',
-            },
-          }}
-        >
-          <ClientBar />
-        </Box>
-      )}
-      <Box
-        sx={{
-          width: '100%',
-          '@media (min-width: 900px)': {
-            width: '68%',
-          },
-        }}
-      >
-        <UserFormEdition />
-      </Box>
-    </Box>
+   <Container maxWidth="xl">
+     <Box
+       sx={{
+         display: 'flex',
+         gap: 2,
+         mt: 5,
+         flexDirection: 'column',
+         '@media (min-width: 900px)': {
+           flexDirection: 'row',
+         },
+       }}
+     >
+       {user && user.role === 'client' && (
+         <Box
+           sx={{
+             width: '100%',
+             '@media (min-width: 900px)': {
+               width: '30%',
+             },
+           }}
+         >
+           <ClientBar />
+         </Box>
+       )}
+       <Box
+         sx={{
+           width: '100%',
+           '@media (min-width: 900px)': {
+             width: '68%',
+           },
+         }}
+       >
+         <UserFormEdition />
+       </Box>
+     </Box>
+   </Container>
   );
 };
 

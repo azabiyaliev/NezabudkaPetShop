@@ -124,96 +124,98 @@ const MyOrders = () => {
   }
 
   return (
-    <Box
-      sx={{
-        my: 5,
-        display: "flex",
-        flexDirection: "column",
-        gap: "20px",
-        alignItems: "center",
-        position: "relative",
-        overflow: "hidden",
-      }}
-    >
-      <NavLink
-        to={`/my_account/users/account/${user?.id}`}
-        style={{
-          position: "absolute",
-          left: 1,
-          textDecoration: "none",
-          color: COLORS.success,
-          fontSize: FONTS.size.lg,
-          display: "flex",
-          alignItems: "center",
-        }}
-      >
-        <ArrowBackIcon sx={{ fontSize: FONTS.size.lg, marginRight: 1 }} />
-        Назад
-      </NavLink>
-      <Typography
-        variant="h4"
-        sx={{
-          "@media (max-width: 480px)": {
-            fontSize: FONTS.size.lg
-          },
-        }}
-      >
-        Мои заказы
-      </Typography>
-
+    <Container maxWidth="xl">
       <Box
         sx={{
+          my: 5,
           display: "flex",
-          justifyContent: "space-between",
+          flexDirection: "column",
           gap: "20px",
           alignItems: "center",
+          position: "relative",
+          overflow: "hidden",
         }}
       >
-        <Select
-          value={statusFilter}
-          onChange={handleStatusFilterChange}
+        <NavLink
+          to={`/my_account/users/account/${user?.id}`}
+          style={{
+            position: "absolute",
+            left: 1,
+            textDecoration: "none",
+            color: COLORS.success,
+            fontSize: FONTS.size.lg,
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <ArrowBackIcon sx={{ fontSize: FONTS.size.lg, marginRight: 1 }} />
+          Назад
+        </NavLink>
+        <Typography
+          variant="h4"
           sx={{
-            minWidth: 200,
             "@media (max-width: 480px)": {
-              minWidth: 120,
+              fontSize: FONTS.size.lg
             },
           }}
         >
-          <MenuItem value="All">Все</MenuItem>
-          <MenuItem value="Pending">В обработке</MenuItem>
-          <MenuItem value="Confirmed">Подтвержден</MenuItem>
-          <MenuItem value="Packed">Упакован</MenuItem>
-          <MenuItem value="Shipped">Отрпавлен</MenuItem>
-          <MenuItem value="Delivered">Доставлен</MenuItem>
-          <MenuItem value="Canceled">Отменен</MenuItem>
-        </Select>
+          Мои заказы
+        </Typography>
 
-        <Select
-          value={timeFilter}
-          onChange={handleTimeFilterChange}
+        <Box
           sx={{
-            minWidth: 200,
-            "@media (max-width: 480px)": {
-              minWidth: 120,
-            },
+            display: "flex",
+            justifyContent: "space-between",
+            gap: "20px",
+            alignItems: "center",
           }}
         >
-          <MenuItem value="All">За всё время</MenuItem>
-          <MenuItem value="Today">Сегодня</MenuItem>
-          <MenuItem value="Last7Days">Последние 7 дней</MenuItem>
-          <MenuItem value="Last30Days">Последние 30 дней</MenuItem>
-        </Select>
+          <Select
+            value={statusFilter}
+            onChange={handleStatusFilterChange}
+            sx={{
+              minWidth: 200,
+              "@media (max-width: 480px)": {
+                minWidth: 120,
+              },
+            }}
+          >
+            <MenuItem value="All">Все</MenuItem>
+            <MenuItem value="Pending">В обработке</MenuItem>
+            <MenuItem value="Confirmed">Подтвержден</MenuItem>
+            <MenuItem value="Packed">Упакован</MenuItem>
+            <MenuItem value="Shipped">Отрпавлен</MenuItem>
+            <MenuItem value="Delivered">Доставлен</MenuItem>
+            <MenuItem value="Canceled">Отменен</MenuItem>
+          </Select>
+
+          <Select
+            value={timeFilter}
+            onChange={handleTimeFilterChange}
+            sx={{
+              minWidth: 200,
+              "@media (max-width: 480px)": {
+                minWidth: 120,
+              },
+            }}
+          >
+            <MenuItem value="All">За всё время</MenuItem>
+            <MenuItem value="Today">Сегодня</MenuItem>
+            <MenuItem value="Last7Days">Последние 7 дней</MenuItem>
+            <MenuItem value="Last30Days">Последние 30 дней</MenuItem>
+          </Select>
+        </Box>
+
+        {loading ? (
+          <CircularProgress />
+        ) : (
+          <CustomPagination
+            items={filteredAndSortedOrders}
+            renderItem={(item) => <ClientOrdersItem key={item.id} order={item} />}
+          />
+        )}
       </Box>
-
-      {loading ? (
-        <CircularProgress />
-      ) : (
-        <CustomPagination
-          items={filteredAndSortedOrders}
-          renderItem={(item) => <ClientOrdersItem key={item.id} order={item} />}
-        />
-      )}
-    </Box>
+    </Container>
   );
 };
 

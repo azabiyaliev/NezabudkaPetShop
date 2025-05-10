@@ -18,34 +18,35 @@ const BonusProgramPage = () => {
   }, [dispatch]);
 
   return (
-    <div className="d-flex">
-      <div className="col-3 mt-5">
-        <ByuerBarTopTollBar />
-      </div>
+    <Container maxWidth="xl">
+      <div className="d-flex">
+        <div className="col-3 mt-5">
+          <ByuerBarTopTollBar />
+        </div>
 
-      <div className="col-9 mt-5" style={{ display: 'flex', justifyContent: 'center' }}>
-        <Container>
-          <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600 }}>
-            Бонусная программа
-          </Typography>
+        <div className="col-9 mt-5" style={{ display: 'flex', justifyContent: 'center' }}>
+          <Container>
+            <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600 }}>
+              Бонусная программа
+            </Typography>
 
             <Box
               sx={{
-              borderRadius: '5px',
-              padding: 4,
-              backgroundColor: theme.colors.rgbaGrey,
-              mx: 'auto',
-            }}
-            >
-            <div
-              dangerouslySetInnerHTML={{ __html: bonusProgram?.text || '<p>Информация пока не добавлена.</p>' }}
-              style={{
-                lineHeight: 1.6,
-                fontSize: '16px',
-                color: theme.colors.text,
-                marginBottom: '16px',
+                borderRadius: '5px',
+                padding: 4,
+                backgroundColor: theme.colors.rgbaGrey,
+                mx: 'auto',
               }}
-            />
+            >
+              <div
+                dangerouslySetInnerHTML={{ __html: bonusProgram?.text || '<p>Информация пока не добавлена.</p>' }}
+                style={{
+                  lineHeight: 1.6,
+                  fontSize: '16px',
+                  color: theme.colors.text,
+                  marginBottom: '16px',
+                }}
+              />
               {!user && (
                 <Box
                   sx={{
@@ -62,10 +63,11 @@ const BonusProgramPage = () => {
                   </Typography>
                 </Box>
               )}
-          </Box>
-        </Container>
+            </Box>
+          </Container>
+        </div>
       </div>
-    </div>
+    </Container>
   );
 };
 
