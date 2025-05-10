@@ -31,6 +31,7 @@ import { getLocalFavoriteProducts } from '../../../store/favoriteProducts/favori
 import { ClickAwayListener } from "@mui/material";
 import theme from "../../../globalStyles/globalTheme.ts";
 import PhoneIcon from '@mui/icons-material/Phone';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import {
   Heart,
   MagnifyingGlass,
@@ -242,7 +243,7 @@ const MainToolbar = () => {
                 >
                   <a
                     href={`tel:${site?.phone}`}
-                    style={{ textDecoration: "none", color: "black" }}
+                    style={{ textDecoration: "none", color: "black", display: "flex", alignItems: "center", }}
                   >
                     <PhoneIcon/>
                     {site?.phone}
@@ -251,14 +252,17 @@ const MainToolbar = () => {
 
                 <Typography
                   sx={{
+                    display: "flex",
+                    alignItems: "center",
                     color: theme.colors.text,
                     fontSize: theme.fonts.size.default,
-                    fontWeight:theme.fonts.weight.medium,
+                    fontWeight: theme.fonts.weight.medium,
                     "@media (max-width: 800px)": { fontSize: 13 },
                     "@media (max-width: 560px)": { display: "none" },
                   }}
                 >
-                  ({site && site.schedule})
+                  <AccessTimeIcon/>
+                  {site && site.schedule}
                 </Typography>
               </Box>
             </Box>
