@@ -51,6 +51,7 @@ const RegisterUser = () => {
 
   const submitHandler = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('ReCAPTCHA Token:', recaptchaToken);
 
     if (!recaptchaToken) {
       enqueueSnackbar("Пожалуйста, подтвердите что вы не робот", { variant: 'error' });
@@ -203,7 +204,15 @@ const RegisterUser = () => {
               <ReCAPTCHA
                 ref={recaptchaRef}
                 sitekey={import.meta.env.VITE_REACT_APP_RECAPTCHA_SITE_KEY}
-                onChange={(token) => setRecaptchaToken(token)}
+                onChange={(token) => {
+                  console.log("Token:", token);
+                  setForm(prev => ({...prev, recaptchaToken: token || ''}));
+                  setRecaptchaToken(token);
+                }}
+                onExpired={() => {
+                  setForm(prev => ({...prev, recaptchaToken: ''}));
+                  setRecaptchaToken(null);
+                }}
               />
             </Box>
 
