@@ -20,10 +20,12 @@ import { IOrder } from "../../types";
 import dayjs from "dayjs";
 import CustomPagination from "../../components/Pagination/Pagination.tsx";
 import ClientOrdersItem from "./ClientOrdersItem.tsx";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from 'react-router-dom';
 import { COLORS, FONTS } from "../../globalStyles/stylesObjects.ts";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { OrderStatus } from '../Admin/AdminOrderPage/OrdersItem.tsx';
+import image from '../../assets/image_transparent.png';
+import Button from '@mui/joy/Button';
 
 const MyOrders = () => {
   const dispatch = useAppDispatch();
@@ -34,6 +36,7 @@ const MyOrders = () => {
   const guestEmail = localStorage.getItem("guestEmail");
   const [statusFilter, setStatusFilter] = useState<string>("All");
   const [timeFilter, setTimeFilter] = useState<string>("All");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loadOrders = async () => {
@@ -108,17 +111,109 @@ const MyOrders = () => {
   if (!user && !guestEmail) {
     return (
       <Container maxWidth="md" sx={{ py: 4 }}>
-        <Alert severity="info">
-          Для просмотра заказов необходимо авторизоваться или оформить заказ
-        </Alert>
+        <Box
+          sx={{
+            textAlign: 'center',
+            marginTop: 10,
+          }}
+        >
+          <Typography variant="h3" sx={{ fontWeight: 600, color: '#333', mb: 2 }}>
+            Ваши заказы
+          </Typography>
+          <Typography sx={{ mb: 2 }}>
+            Для просмотра заказов необходимо авторизоваться или оформить заказ
+          </Typography>
+          <img
+            width="200"
+            height="200"
+            src={image}
+            alt="shopping-cart-emoji"
+            style={{ marginBottom: 20 }}
+          />
+          <Typography
+            variant="body1"
+            sx={{
+              color: '#706e6a',
+              fontSize: '18px',
+              maxWidth: 600,
+              margin: '0 auto',
+            }}
+          >
+            Начните делать покупки и порадуйте своего питомца!
+          </Typography>
+          <Button
+            onClick={() => navigate('/all-products')}
+            sx={{
+              backgroundColor: "#237803",
+              borderRadius: "50px",
+              color: "white",
+              fontWeight: 600,
+              padding: "13px",
+              width: "250px",
+              marginTop: '20px',
+              "&:hover": {
+                backgroundColor: "#154902",
+              },
+            }}
+          >
+            Каталог товаров
+          </Button>
+        </Box>
       </Container>
     );
   }
 
   if (!orders || orders.length === 0) {
     return (
-      <Container>
-        <Typography>У вас пока нет заказов.</Typography>
+      <Container maxWidth="xl" sx={{ position: 'relative', minHeight: '70vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+        <Box
+          sx={{
+            textAlign: 'center',
+            marginTop: 10,
+          }}
+        >
+          <Typography variant="h3" sx={{ fontWeight: 600, color: '#333', mb: 2 }}>
+            Ваши заказы
+          </Typography>
+          <img
+            width="200"
+            height="200"
+            src={image}
+            alt="shopping-cart-emoji"
+            style={{ marginBottom: 20 }}
+          />
+          <Typography variant="h5" sx={{ fontWeight: 600, color: '#333', mb: 2 }}>
+            У вас пока нет заказов!
+          </Typography>
+          <Typography
+            variant="body1"
+            sx={{
+              color: '#706e6a',
+              fontSize: '18px',
+              maxWidth: 600,
+              margin: '0 auto',
+            }}
+          >
+            Начните делать покупки и порадуйте своего питомца
+          </Typography>
+          <Button
+            onClick={() => navigate('/all-products')}
+            sx={{
+              backgroundColor: "#237803",
+              borderRadius: "50px",
+              color: "white",
+              fontWeight: 600,
+              padding: "13px",
+              width: "250px",
+              marginTop: '20px',
+              "&:hover": {
+                backgroundColor: "#154902",
+              },
+            }}
+          >
+            Каталог товаров
+          </Button>
+        </Box>
       </Container>
     );
   }
