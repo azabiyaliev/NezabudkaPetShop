@@ -76,26 +76,34 @@ const OrderAdminItem: React.FC<Props> = ({ order }) => {
     }
   };
 
-  const getStatusColor = () => {
-    switch (order.status) {
-      case "Canceled":
-      case "Returned":
-        return "error";
-      case "Pending":
-        return "warning";
-      case "Confirmed":
-        return "info";
-      case "Packed":
-        return "primary";
-      case "Shipped":
-        return "secondary";
-      case "Delivered":
-        return "success";
-      case "Received":
-        return "success";
-      default:
-        return "default";
-    }
+  const translateOrderStatus = (status: OrderStatus): string => {
+    const statusTranslations: Record<OrderStatus, string> = {
+      Pending: 'В обработке',
+      Confirmed: 'Подтвержден',
+      Packed: 'Упакован',
+      Shipped: 'Отправлен',
+      Delivered: 'Доставлен',
+      Received: 'Получен',
+      Returned: 'Возвращен',
+      Canceled: 'Отменен'
+    };
+
+    return statusTranslations[status] || status;
+  };
+
+  const getStatusColor = (status: OrderStatus): 'error' | 'warning' | 'success' | 'info' | 'default' | 'primary' | 'secondary' => {
+    const colorMap: Record<OrderStatus, 'error' | 'warning' | 'success' | 'info' | 'default' | 'primary' | 'secondary'> = {
+      Canceled: 'error',
+      Pending: 'warning',
+      Confirmed: 'info',
+      Packed: 'primary',
+      Shipped: 'secondary',
+      Delivered: 'success',
+      Received: 'success',
+      Returned: 'error'
+    };
+
+    return colorMap[status] || 'default';
   };
 
 
@@ -151,7 +159,11 @@ const OrderAdminItem: React.FC<Props> = ({ order }) => {
             <Typography variant="h6" component="div">
               Заказ #{order.id}
             </Typography>
-            <Chip label={order.status} color={getStatusColor()} size="small" />
+            <Chip
+              label={translateOrderStatus(order.status as OrderStatus)}
+              color={getStatusColor(order.status as OrderStatus)}
+              size="small"
+            />
           </Box>
 
           {isEditingStatus ? (
@@ -332,7 +344,7 @@ const OrderAdminItem: React.FC<Props> = ({ order }) => {
               <Box
                 sx={{
                   flexGrow: 1,
-                  overflowY: 'auto',
+                  overflowY: "auto",
                   maxHeight: 290,
                   mb: 2,
                 }}
@@ -351,7 +363,10 @@ const OrderAdminItem: React.FC<Props> = ({ order }) => {
                           }
                           secondary={
                             item.product?.productDescription && (
-                              <Typography variant="caption" color="text.secondary">
+                              <Typography
+                                variant="caption"
+                                color="text.secondary"
+                              >
                                 {item.product.productDescription}
                               </Typography>
                             )
@@ -371,7 +386,6 @@ const OrderAdminItem: React.FC<Props> = ({ order }) => {
                   )}
                 </List>
               </Box>
-
 
               <Divider sx={{ my: 2 }} />
 
