@@ -118,7 +118,7 @@ const MyOrders = () => {
           }}
         >
           <Typography variant="h3" sx={{ fontWeight: 600, color: '#333', mb: 2 }}>
-            Ваши заказы
+            Мои заказы
           </Typography>
           <Typography sx={{ mb: 2 }}>
             Для просмотра заказов необходимо авторизоваться или оформить заказ
@@ -173,7 +173,7 @@ const MyOrders = () => {
           }}
         >
           <Typography variant="h3" sx={{ fontWeight: 600, color: '#333', mb: 2 }}>
-            Ваши заказы
+            Мои заказы
           </Typography>
           <img
             width="200"
