@@ -68,11 +68,6 @@ const AdminList: React.FC<Props> = ({ admins }) => {
       },
       headerClassName: 'header-column',
     },
-    { field: "firstName", headerName: "Имя", width: 130, headerClassName: 'header-column' },
-    { field: "secondName", headerName: "Фамилия", width: 130, headerClassName: 'header-column' },
-    { field: "email", headerName: "Email", width: 200, headerClassName: 'header-column' },
-    { field: "phone", headerName: "Телефон", width: 140, headerClassName: 'header-column' },
-    { field: "role", headerName: "Роль", width: 100, headerClassName: 'header-column' },
     {
       field: "actions",
       headerName: "Действия",
@@ -87,7 +82,7 @@ const AdminList: React.FC<Props> = ({ admins }) => {
               params.row.role === "superAdmin" ||
               (isDelete && selectDelete === String(params.row.id))
             }
-            sx={{ marginRight: '20px' }}
+            sx={{ marginRight: '10px' }}
           >
             <ClearIcon sx={{ color: 'red' }} />
           </IconButton>
@@ -100,6 +95,11 @@ const AdminList: React.FC<Props> = ({ admins }) => {
       ),
       headerClassName: 'header-column'
     },
+    { field: "firstName", headerName: "Имя", width: 130, headerClassName: 'header-column' },
+    { field: "secondName", headerName: "Фамилия", width: 130, headerClassName: 'header-column' },
+    { field: "email", headerName: "Email", width: 200, headerClassName: 'header-column' },
+    { field: "phone", headerName: "Телефон", width: 140, headerClassName: 'header-column' },
+    { field: "role", headerName: "Роль", width: 100, headerClassName: 'header-column' },
   ];
 
   const filteredAdmins = admins.filter((admin) =>

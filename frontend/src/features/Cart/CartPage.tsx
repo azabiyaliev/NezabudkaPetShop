@@ -9,14 +9,16 @@ import { fetchCart } from '../../store/cart/cartThunk.ts';
 import { useEffect } from 'react';
 import { userRoleClient } from '../../globalConstants.ts';
 import { FONTS, SPACING, COLORS } from '../../globalStyles/stylesObjects.ts';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Container from '@mui/material/Container';
+import Button from '@mui/joy/Button';
 
 const CartPage = () => {
   const user = useAppSelector(selectUser);
   const cart = useAppSelector(cartFromSlice);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (user && (user.role === userRoleClient)) {
@@ -103,6 +105,23 @@ const CartPage = () => {
           >
             Начните делать покупки и порадуйте своего питомца!
           </Typography>
+          <Button
+            onClick={() => navigate('/all-products')}
+            sx={{
+              backgroundColor: "#237803",
+              borderRadius: "50px",
+              color: "white",
+              fontWeight: 600,
+              padding: "13px",
+              width: "250px",
+              marginTop: '20px',
+              "&:hover": {
+                backgroundColor: "#154902",
+              },
+            }}
+          >
+            Каталог товаров
+          </Button>
         </Box>
       )}
     </Container>
