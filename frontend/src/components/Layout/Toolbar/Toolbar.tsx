@@ -1,4 +1,4 @@
-import { Badge, Box, Button, Container, InputBase, Toolbar, } from '@mui/material';
+import { Badge, Box, Button, Container, InputBase, Toolbar, useMediaQuery, } from '@mui/material';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector, usePermission, } from '../../../app/hooks.ts';
 import ExistsUser from './ExistsUser.tsx';
@@ -25,7 +25,6 @@ import { userRoleAdmin, userRoleClient, userRoleSuperAdmin } from '../../../glob
 import IconButton from '@mui/joy/IconButton';
 import { fetchUserIdBonus } from '../../../store/users/usersThunk.ts';
 import Tooltip from '@mui/joy/Tooltip';
-import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import { selectedFavorite } from '../../../store/favoriteProducts/favoriteProductsSlice.ts';
 import { getLocalFavoriteProducts } from '../../../store/favoriteProducts/favoriteProductLocal.ts';
 import { ClickAwayListener } from "@mui/material";
@@ -36,8 +35,8 @@ import {
   Heart,
   MagnifyingGlass,
   ShoppingCartSimple,
-  Star,
-} from "phosphor-react";
+  Star, Truck
+} from 'phosphor-react';
 
 const MainToolbar = () => {
   const [openCart, setOpenCart] = useState<boolean>(false);
@@ -56,6 +55,7 @@ const MainToolbar = () => {
   const [focused, setFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [open, setOpen] = useState(false);
+  const isMobile = useMediaQuery("(max-width:600px)");
 
 
   useEffect(() => {
@@ -183,16 +183,16 @@ const MainToolbar = () => {
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-                gap: "30px",
-                marginTop: "5px",
-                marginBottom:"5px"
+                gap: theme.spacing.lg,
+                marginTop: theme.spacing.exs,
+                marginBottom:theme.spacing.exs,
               }}
             >
               <Box
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  gap: "10px",
+                  gap: theme.spacing.xs,
                 }}
               >
                 <a
@@ -204,7 +204,7 @@ const MainToolbar = () => {
                     textDecoration: "none",
                     display: "flex",
                     alignItems: "center",
-                    paddingRight: "10px",
+                    paddingRight:  theme.spacing.xs,
                   }}
                 >
                   <Typography
@@ -212,7 +212,7 @@ const MainToolbar = () => {
                       color: theme.colors.text,
                       fontSize: theme.fonts.size.default,
                       fontWeight:theme.fonts.weight.medium,
-                      "@media (max-width: 800px)": { fontSize: 13 },
+                      "@media (max-width: 800px)": { fontSize: theme.fonts.size.xs },
                     }}
                   >
                     {site?.address}
@@ -223,18 +223,18 @@ const MainToolbar = () => {
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  gap: "10px",
+                  gap: theme.spacing.xs,
                   cursor: "pointer",
                 }}
               >
                 <Typography
                   sx={{
-                    borderRight: "1px solid black",
-                    paddingRight: "10px",
+                    borderRight: `1px solid ${theme.colors.text}`,
+                    paddingRight: theme.spacing.xs,
                     color: theme.colors.text,
                     fontSize: theme.fonts.size.default,
                     fontWeight:theme.fonts.weight.medium,
-                    "@media (max-width: 800px)": { fontSize: 13 },
+                    "@media (max-width: 800px)": { fontSize: theme.fonts.size.xs },
                     "@media (max-width: 560px)": {
                       borderRight: "none",
                       paddingRight: "0px",
@@ -243,7 +243,7 @@ const MainToolbar = () => {
                 >
                   <a
                     href={`tel:${site?.phone}`}
-                    style={{ textDecoration: "none", color: "black", display: "flex", alignItems: "center", }}
+                    style={{ textDecoration: "none", color: theme.colors.text, display: "flex", alignItems: "center", }}
                   >
                     <PhoneIcon/>
                     {site?.phone}
@@ -257,7 +257,7 @@ const MainToolbar = () => {
                     color: theme.colors.text,
                     fontSize: theme.fonts.size.default,
                     fontWeight: theme.fonts.weight.medium,
-                    "@media (max-width: 800px)": { fontSize: 13 },
+                    "@media (max-width: 800px)": { fontSize:  theme.fonts.size.xs},
                     "@media (max-width: 560px)": { display: "none" },
                   }}
                 >
@@ -295,7 +295,7 @@ const MainToolbar = () => {
                 paddingTop: "15px",
                 paddingBottom: "15px",
                 "@media (max-width: 1430px)": {
-                  paddingTop: "5px",
+                  paddingTop: theme.spacing.exs,
                   paddingBottom: 0,
                 },
                 "@media (max-width: 1100px)": {
@@ -313,18 +313,18 @@ const MainToolbar = () => {
                     "@media (max-width: 900px)": {
                       paddingTop: "7px",
                       paddingBottom: "7px",
-                      borderRadius: "10px",
+                      borderRadius: theme.spacing.xs,
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
                       cursor: "pointer",
                       transition: "background 0.3s ease",
                       position: "relative",
-                      marginRight: "20px",
+                      marginRight: theme.spacing.sm,
                     },
                   }}
                 >
-                  <MenuIcon sx={{ color: "white" }} />
+                  <MenuIcon sx={{ color: theme.colors.white }} />
                 </Box>
                 <NavLink
                   to="/"
@@ -356,11 +356,11 @@ const MainToolbar = () => {
                         textTransform: "uppercase",
                         fontWeight: "bold",
                         fontFamily: 'Tahoma, sans-serif',
-                        color: "white",
+                        color: theme.colors.white,
                         cursor: "pointer",
                         marginRight: theme.spacing.xs,
                         "@media (max-width: 500px)": {
-                          paddingRight: "10px",
+                          paddingRight: theme.spacing.xs,
                         },
                       }}
                     >
@@ -386,11 +386,11 @@ const MainToolbar = () => {
                     component={NavLink}
                     to="/all-products"
                     sx={{
-                      fontSize: "20px",
+                      fontSize: theme.fonts.size.lg,
                       textDecoration: "none",
-                      color: "white",
+                      color: theme.colors.white,
                       "@media (max-width: 1230px)": {
-                        fontSize: "17px",
+                        fontSize: theme.fonts.size.default,
                       },
                       "@media (max-width: 1100px)": {
                         display: "none",
@@ -404,13 +404,13 @@ const MainToolbar = () => {
                     to="/delivery"
                     sx={{
                       textDecoration: "none",
-                      color: "white",
+                      color: theme.colors.white,
                       display: "flex",
                       alignItems: "center",
-                      gap: "5px",
-                      fontSize: "20px",
+                      gap: theme.spacing.exs,
+                      fontSize: theme.fonts.size.lg,
                       "@media (max-width: 1230px)": {
-                        fontSize: "17px",
+                        fontSize: theme.fonts.size.default,
                       },
                     }}
                   >
@@ -429,11 +429,11 @@ const MainToolbar = () => {
                     component={NavLink}
                     to="/contacts"
                     sx={{
-                      fontSize: "20px",
+                      fontSize: theme.fonts.size.lg,
                       textDecoration: "none",
-                      color: "white",
+                      color: theme.colors.white,
                       "@media (max-width: 1230px)": {
-                        fontSize: "17px",
+                        fontSize: theme.fonts.size.default,
                       },
                       "@media (max-width: 1100px)": {
                         display: "none",
@@ -584,7 +584,7 @@ const MainToolbar = () => {
               </ClickAwayListener>
 
               {/*Toolbar*/}
-              <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <Box sx={{ display: "flex", alignItems: "center",  gap: theme.spacing.xs }}>
                 {(user && can(["client"])) || !user ? (
                   <Box
                     sx={{
@@ -592,7 +592,7 @@ const MainToolbar = () => {
                       justifyContent: "space-between",
                     }}
                   >
-                    <Box sx={{ display: "flex", gap: "10px" }}>
+                    <Box sx={{ display: "flex", gap: theme.spacing.xs }}>
                       <Box
                         component={NavLink}
                         to="/delivery"
@@ -608,23 +608,22 @@ const MainToolbar = () => {
                             padding: { xs: "9px", sm: "10px", md: "7px 20px" },
                             borderRadius: { xs: "50%", md: "10px" },
                           },
+                          "@media (max-width: 400px)": {
+                            paddingRight: 0,
+                          },
                         }}
                       >
                         <Tooltip
                           sx={{
-                            backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                            backgroundColor: theme.colors.tooltip_color,
                             backdropFilter: 'blur(10px)',
                           }}
                           title='Информация о доставке'>
-                        <LocalShippingIcon
-                          sx={{
-                            color: "#fff",
-                            fontSize: { xs: "20px", sm: "24px", md: '30px' },
-                            "@media (max-width: 500px)": {
-                              fontSize: "20px",
-                            },
-                          }}
-                        />
+                          <Truck
+                            size={isMobile ? 20 : 28}
+                            weight="regular"
+                            color={theme.colors.white}
+                          />
                         </Tooltip>
                       </Box>
                       {/*Cart*/}
@@ -639,12 +638,15 @@ const MainToolbar = () => {
                           justifyContent: "center",
                           cursor: "pointer",
                           transition: "background 0.3s ease",
+                          "@media (max-width: 400px)": {
+                            paddingRight: 0,
+                          },
                         }}
                       >
                         <Tooltip
                           title="Корзина"
                           sx={{
-                            backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                            backgroundColor: theme.colors.tooltip_color,
                             backdropFilter: 'blur(10px)',
                           }}
                         >
@@ -661,7 +663,7 @@ const MainToolbar = () => {
                             }}
                           >
                             <ShoppingCartSimple
-                              size={28}
+                              size={isMobile ? 20 : 28}
                               weight="regular"
                               color={theme.colors.white}
                             />
@@ -700,12 +702,12 @@ const MainToolbar = () => {
                         >
                           <Tooltip
                             sx={{
-                              backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                              backgroundColor: theme.colors.tooltip_color,
                               backdropFilter: 'blur(10px)',
                             }}
                             title='Избранное'>
                             <Heart
-                              size={28}
+                              size={isMobile ? 20 : 28}
                               weight="regular"
                               color={theme.colors.white}
                             />
@@ -717,7 +719,7 @@ const MainToolbar = () => {
                       {/*Bonus*/}
                       <Tooltip
                         sx={{
-                          backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                          backgroundColor: theme.colors.tooltip_color,
                           backdropFilter: 'blur(10px)',
                         }}
                         title={
@@ -735,7 +737,7 @@ const MainToolbar = () => {
                           <Typography
                             sx={{
                               fontSize: "14px",
-                              color: "#fff",
+                              color: theme.colors.white,
                             }}
                           >
                             Вы можете получить бонусы за каждый оформленный заказ и в дальнейшем
@@ -751,14 +753,14 @@ const MainToolbar = () => {
                           <Box
                             sx={{
                               backgroundColor: "transparent",
-                              padding: "10px",
+                              padding: theme.spacing.xs,
                               borderRadius: "10px",
                               display: { xs: "none", md: "flex" },
                               alignItems: "center",
                               justifyContent: "center",
                               cursor: "pointer",
                               transition: "background 0.3s ease",
-                              color: "#333",
+                              color: theme.colors.tooltip_color,
                             }}
                           >
                             <Badge
@@ -791,9 +793,9 @@ const MainToolbar = () => {
                         bottom: 0,
                         left: 0,
                         width: "100%",
-                        backgroundColor: "#fff",
+                        backgroundColor: theme.colors.white,
                         boxShadow: "0px -2px 5px #8EA58C",
-                        padding: "20px 0",
+                        padding: "10px 0",
                         display: { xs: "flex", md: "none" },
                         justifyContent: "space-around",
                         alignItems: "center",
@@ -830,13 +832,12 @@ const MainToolbar = () => {
                         </Badge>
                         <Typography
                           sx={{
-                            color: "black",
+                            color: theme.colors.text,
                             fontSize: "14px",
                             textTransform: "uppercase",
                             marginTop: "7px",
                           }}
                         >
-                          Заказы
                         </Typography>
                       </NavLink>
 
@@ -851,7 +852,7 @@ const MainToolbar = () => {
                         >
                           <Button
                             sx={{
-                              color: "black",
+                              color: theme.colors.text,
                               display: "flex",
                               flexDirection: "column",
                               alignItems: "center",
@@ -871,14 +872,13 @@ const MainToolbar = () => {
                         </Badge>
                         <Typography
                           sx={{
-                            color: "black",
-                            fontSize: "14px",
+                            color: theme.colors.text,
+                            fontSize: theme.fonts.size.sm,
                             textTransform: "uppercase",
                             marginTop: "7px",
                             textAlign: "center",
                           }}
                         >
-                          Избранные
                         </Typography>
                       </NavLink>
 
@@ -893,7 +893,7 @@ const MainToolbar = () => {
                       sx={{
                         display: "none",
                         "@media (max-width: 1100px)": {
-                          backgroundColor: "#FDE910",
+                          backgroundColor: theme.colors.yellow,
                           borderRadius: "10px",
                           display: "flex",
                           alignItems: "center",
@@ -913,12 +913,12 @@ const MainToolbar = () => {
                       >
                         <Box
                           sx={{
-                            backgroundColor: "#FDE910",
-                            paddingTop: "10px",
-                            paddingBottom: "10px",
-                            paddingRight: "20px",
-                            paddingLeft: "20px",
-                            borderRadius: "10px",
+                            backgroundColor: theme.colors.yellow,
+                            paddingTop: theme.spacing.xs,
+                            paddingBottom:  theme.spacing.xs,
+                            paddingRight: theme.spacing.sm,
+                            paddingLeft: theme.spacing.sm,
+                            borderRadius:  theme.spacing.xs,
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
@@ -926,14 +926,14 @@ const MainToolbar = () => {
                             transition: "background 0.3s ease",
                             "@media (max-width: 800px)": {
                               borderRadius: "50%",
-                              paddingTop: "10px",
-                              paddingBottom: "10px",
-                              paddingRight: "10px",
-                              paddingLeft: "10px",
+                              paddingTop:  theme.spacing.xs,
+                              paddingBottom:  theme.spacing.xs,
+                              paddingRight:  theme.spacing.xs,
+                              paddingLeft:  theme.spacing.xs,
                             },
                           }}
                         >
-                          <SettingsIcon sx={{ color: "rgb(52, 51, 50)" }} />
+                          <SettingsIcon sx={{ color: theme.colors.black }} />
                         </Box>
                       </NavLink>
                     </Box>
@@ -961,11 +961,11 @@ const MainToolbar = () => {
                     bottom: 0,
                     left: 0,
                     width: "100%",
-                    backgroundColor: "#fff",
-                    boxShadow: "0px -2px 5px #8EA58C",
-                    padding: "20px 0",
+                    backgroundColor: theme.colors.white,
+                    boxShadow: `0px -2px 5px ${theme.colors.primary}`,
+                    padding: "10px 0",
                     display: "none",
-                    justifyContent: "space-around",
+                    justifyContent: "space-evenly",
                     alignItems: "center",
                     zIndex: 1000,
                     "@media (max-width: 900px)": {
@@ -975,7 +975,7 @@ const MainToolbar = () => {
                 >
                   <NavLink
                     to="/private/client_orders"
-                    style={{ textDecoration: "none", marginTop: "5px" }}
+                    style={{ textDecoration: "none", display: "flex", flexDirection: "column", alignItems: "center" }}
                   >
                     <Badge
                       badgeContent={sum}
@@ -986,7 +986,7 @@ const MainToolbar = () => {
                         sx={{
                           color: "black",
                           display: "flex",
-                          flexDirection: "row",
+                          flexDirection: "column",
                           alignItems: "center",
                           padding: 0,
                           gap: "8px",
@@ -996,17 +996,18 @@ const MainToolbar = () => {
                           sx={{
                             width: "27px",
                             height: "27px",
-                            color: "black",
+                            color: theme.colors.black,
                           }}
                         />
                       </Button>
                     </Badge>
                     <Typography
                       sx={{
-                        color: "black",
-                        fontSize: "14px",
+                        color: theme.colors.black,
+                        fontSize: theme.fonts.size.sm,
                         textTransform: "uppercase",
                         marginTop: "7px",
+                        textAlign: "center",
                       }}
                     >
                       Заказы
@@ -1015,7 +1016,7 @@ const MainToolbar = () => {
 
                   <NavLink
                     to="/private/clients"
-                    style={{ textDecoration: "none" }}
+                    style={{ textDecoration: "none", display: "flex", flexDirection: "column", alignItems: "center" }}
                   >
                     <Badge
                       badgeContent={sum}
@@ -1024,7 +1025,7 @@ const MainToolbar = () => {
                     >
                       <Button
                         sx={{
-                          color: "black",
+                          color: theme.colors.black,
                           display: "flex",
                           flexDirection: "column",
                           alignItems: "center",
@@ -1044,8 +1045,8 @@ const MainToolbar = () => {
                     </Badge>
                     <Typography
                       sx={{
-                        color: "black",
-                        fontSize: "14px",
+                        color: theme.colors.black,
+                        fontSize: theme.fonts.size.sm,
                         textTransform: "uppercase",
                         marginTop: "7px",
                         textAlign: "center",
@@ -1054,7 +1055,27 @@ const MainToolbar = () => {
                       Клиенты
                     </Typography>
                   </NavLink>
-                  {user ? <ExistsUser /> : <UnknownUser />}
+
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Button
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        padding: 0,
+                        gap: "8px",
+                      }}
+                    >
+                      {user ? <ExistsUser /> : <UnknownUser />}
+                    </Button>
+                  </Box>
                 </Box>
               )}
             </Toolbar>
@@ -1123,7 +1144,7 @@ const MainToolbar = () => {
                         background: "transparent",
                         border: "none",
                         cursor: "pointer",
-                        color: "#8EA58C",
+                        color: theme.colors.primary,
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
@@ -1141,7 +1162,7 @@ const MainToolbar = () => {
                           width: "100%",
                           maxHeight: 300,
                           overflowY: "auto",
-                          backgroundColor: "white",
+                          backgroundColor: theme.colors.white,
                           boxShadow: 3,
                           zIndex: 1000,
                           marginTop: 1,
@@ -1173,7 +1194,7 @@ const MainToolbar = () => {
                               <div
                                 style={{
                                   padding: "10px",
-                                  borderBottom: "1px solid #ddd",
+                                  borderBottom: `1px solid ${theme.colors.lightGrey}`,
                                 }}
                               >
                                 {highlightText(product.productName, search)}

@@ -13,6 +13,8 @@ export const COLORS = {
   white: '#ffffff',
   black: '#000000',
   rgbaGrey: 'rgba(241,239,239,0.61)',
+  tooltip_color:'rgba(0, 0, 0, 0.3)',
+  lightGrey: '#ddd',
 
 
   BORDER_CART: 'rgba(102,100,97,0.61)',

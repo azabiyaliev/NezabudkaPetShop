@@ -1,5 +1,15 @@
 import { useState } from 'react';
-import { Box, Button, Divider, Drawer, List, ListItem, ListItemText, Tooltip, Typography, } from '@mui/material';
+import {
+  Box,
+  Button,
+  Divider,
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
+  Tooltip,
+  Typography,
+} from '@mui/material';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector, usePermission } from '../../../app/hooks.ts';
 import { selectUser } from '../../../store/users/usersSlice.ts';
@@ -88,9 +98,9 @@ const ExistsUser = () => {
             }}
           >
             <User
-              size={28}
+              size={30}
               weight="regular"
-              color={theme.colors.white}
+              color={theme.colors.black}
             />
             <Typography
               sx={{

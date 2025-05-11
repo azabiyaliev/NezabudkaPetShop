@@ -4,8 +4,8 @@ import {
   Box,
   Button,
   Menu,
-  MenuItem,
-} from "@mui/material";
+  MenuItem, useMediaQuery,
+} from '@mui/material';
 import { User } from "phosphor-react";
 import theme from '../../../globalStyles/globalTheme.ts';
 
@@ -13,6 +13,8 @@ const UnknownUser = () => {
   const guestEmail = localStorage.getItem('guestEmail');
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+  const isMobile = useMediaQuery("(max-width:900px)");
+
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -56,7 +58,7 @@ const UnknownUser = () => {
           <User
             size={28}
             weight="regular"
-            color={theme.colors.white}
+            color={isMobile ? theme.colors.black : theme.colors.white}
           />
         </Button>
       </Box>
