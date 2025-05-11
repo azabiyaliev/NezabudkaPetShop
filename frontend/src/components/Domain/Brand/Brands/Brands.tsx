@@ -73,9 +73,36 @@ const Brands: React.FC<Props> = ({ brands }) => {
       headerClassName: 'header-column',
     },
     {
+      field: 'actions',
+      headerName: 'Действия',
+      width: 120,
+      headerAlign: 'center',
+      align: 'center',
+      headerClassName: 'header-column',
+      renderCell: (params) => (
+        <>
+          <IconButton sx={{
+            marginRight: '10px'
+          }}>
+            <ClearIcon
+              sx={{color: 'red'}}
+              onClick={() => deleteThisBrand(params.row.id)}
+            />
+          </IconButton>
+
+          <IconButton>
+            <EditIcon
+              sx={{color: '#ff9800'}}
+              onClick={() => navigate(`/private/edit_brand/${params.row.id}`)}
+            />
+          </IconButton>
+        </>
+      ),
+    },
+    {
       field: "title",
       headerName: "Название",
-      width: 160,
+      width: 200,
       headerAlign: 'center',
       align: 'center',
       renderCell: (params) => (
@@ -118,40 +145,13 @@ const Brands: React.FC<Props> = ({ brands }) => {
     {
       field: "description",
       headerName: "Описание",
-      width: 220,
+      width: 280,
       headerAlign: 'center',
       align: 'center',
       headerClassName: 'header-column',
       renderCell: (params) => {
         return params.value ? params.value : '-';
       }
-    },
-    {
-      field: 'actions',
-      headerName: 'Действия',
-      width: 220,
-      headerAlign: 'center',
-      align: 'center',
-      headerClassName: 'header-column',
-      renderCell: (params) => (
-        <>
-          <IconButton sx={{
-            marginRight: '20px'
-          }}>
-            <ClearIcon
-              sx={{color: 'red'}}
-              onClick={() => deleteThisBrand(params.row.id)}
-            />
-          </IconButton>
-
-          <IconButton>
-            <EditIcon
-              sx={{color: '#ff9800'}}
-              onClick={() => navigate(`/private/edit_brand/${params.row.id}`)}
-            />
-          </IconButton>
-        </>
-      ),
     },
   ];
 
