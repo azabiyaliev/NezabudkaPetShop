@@ -9,7 +9,7 @@ import Typography from '@mui/joy/Typography';
 import { useNavigate } from 'react-router-dom';
 import { useAppSelector } from '../../../app/hooks.ts';
 import CartProduct from './CartProduct.tsx';
-import imageCart from '../../../assets/image_transparent.png';
+import imageCart from '../../../assets/image_transparent.webp';
 import { cartFromSlice } from '../../../store/cart/cartSlice.ts';
 import { Box } from '@mui/material';
 import { SPACING } from '../../../globalStyles/stylesObjects.ts';

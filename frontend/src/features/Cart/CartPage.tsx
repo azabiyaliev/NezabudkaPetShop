@@ -1,6 +1,6 @@
 import { Box } from '@mui/joy';
 import { useAppDispatch, useAppSelector } from '../../app/hooks.ts';
-import image from '../../assets/image_transparent.png';
+import image from '../../assets/image_transparent.webp';
 import Typography from '@mui/joy/Typography';
 import OrderForm from '../Order/OrderForm.tsx';
 import { cartFromSlice, setToLocalStorage } from '../../store/cart/cartSlice.ts';
