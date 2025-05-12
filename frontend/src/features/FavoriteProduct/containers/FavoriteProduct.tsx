@@ -10,7 +10,7 @@ import {
 } from '../../../store/favoriteProducts/favoriteProductLocal.ts';
 import axiosApi from '../../../axiosApi.ts';
 import { ProductResponse } from '../../../types';
-import image from '../../../assets/image_transparent.png';
+import image from '../../../assets/image_transparent.webp';
 import { useNavigate } from 'react-router-dom';
 import ProductCard from '../../../components/Domain/ProductCard/ProductCard.tsx';
 import { cartFromSlice, getFromLocalStorage } from '../../../store/cart/cartSlice.ts';

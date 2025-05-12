@@ -3,7 +3,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector, usePermission, } from '../../../app/hooks.ts';
 import ExistsUser from './ExistsUser.tsx';
 import UnknownUser from './UnknownUser.tsx';
-import logo from '../../../assets/logo-nezabudka.png';
+import logo from '../../../assets/logo-nezabudka.webp';
 import Typography from '@mui/material/Typography';
 import './Fonts.css';
 import { selectEditSite } from '../../../store/editionSite/editionSiteSlice.ts';

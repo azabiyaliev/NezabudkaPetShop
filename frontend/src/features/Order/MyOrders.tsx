@@ -24,7 +24,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { COLORS, FONTS } from "../../globalStyles/stylesObjects.ts";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { OrderStatus } from '../Admin/AdminOrderPage/OrdersItem.tsx';
-import image from '../../assets/image_transparent.png';
+import image from '../../assets/image_transparent.webp';
 import Button from '@mui/joy/Button';
 
 const MyOrders = () => {

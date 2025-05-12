@@ -3,7 +3,7 @@ import { IBrandForm, ICartBack, ProductResponse } from '../../../../types';
 import { Box, Typography } from '@mui/joy';
 import { apiUrl } from '../../../../globalConstants';
 import ReactHtmlParser from 'html-react-parser';
-import noImage from '../../../../assets/no-image.jpg';
+import noImage from '../../../../assets/no-image.webp';
 import ProductCard from '../../ProductCard/ProductCard.tsx';
 
 interface Props {

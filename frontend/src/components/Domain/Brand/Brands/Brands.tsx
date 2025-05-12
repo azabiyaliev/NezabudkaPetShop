@@ -13,7 +13,7 @@ import { brandeDelete, getBrands } from '../../../../store/brands/brandsThunk.ts
 import { enqueueSnackbar } from 'notistack';
 import { useAppDispatch, useAppSelector, usePermission } from '../../../../app/hooks.ts';
 import { selectUser } from '../../../../store/users/usersSlice.ts';
-import noImage from '../../../../assets/no-image.jpg';
+import noImage from '../../../../assets/no-image.webp';
 import Swal from "sweetalert2";
 import theme from '../../../../globalStyles/globalTheme.ts';
 
