@@ -4,16 +4,17 @@ import {
   Box,
   Button,
   Menu,
-  MenuItem,
-  Typography,
-} from "@mui/material";
-import { COLORS } from '../../../globalStyles/stylesObjects.ts';
-import PermIdentityOutlinedIcon from '@mui/icons-material/PermIdentityOutlined';
+  MenuItem, useMediaQuery,
+} from '@mui/material';
+import { User } from "phosphor-react";
+import theme from '../../../globalStyles/globalTheme.ts';
 
 const UnknownUser = () => {
   const guestEmail = localStorage.getItem('guestEmail');
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+  const isMobile = useMediaQuery("(max-width:900px)");
+
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -42,7 +43,7 @@ const UnknownUser = () => {
           aria-expanded={open ? "true" : undefined}
           onClick={handleClick}
           sx={{
-            color: "black",
+            color: theme.colors.black,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -54,31 +55,11 @@ const UnknownUser = () => {
             },
           }}
         >
-          <PermIdentityOutlinedIcon
-            sx={{
-              width: "30px",
-              height: "30px",
-              color: "#fff",
-              "@media (max-width: 900px)": {
-                color: "#000",
-              },
-            }}
+          <User
+            size={28}
+            weight="regular"
+            color={isMobile ? theme.colors.black : theme.colors.white}
           />
-          <Typography
-            sx={{
-              color: "#fff",
-              fontSize: "16px",
-              fontWeight: "500",
-              textTransform: "uppercase",
-              "@media (max-width: 900px)": {
-                color: `${COLORS.black}`,
-                fontSize: "14px",
-                marginLeft: 0,
-              },
-            }}
-          >
-            Войти
-          </Typography>
         </Button>
       </Box>
 
@@ -97,16 +78,16 @@ const UnknownUser = () => {
         }}
         sx={{
           '& .MuiPaper-root': {
-            backgroundColor: 'rgba(0, 0, 0, 0.3)',
+            backgroundColor: theme.colors.tooltip_color,
             backdropFilter: 'blur(10px)',
           },
         }}
 
       >
-        <MenuItem sx={{color: '#fff'}} component={NavLink} to="/login" onClick={handleClose}>
+        <MenuItem sx={{color: theme.colors.white}} component={NavLink} to="/login" onClick={handleClose}>
           Войти
         </MenuItem>
-        <MenuItem sx={{color: '#fff'}} component={NavLink} to="/register" onClick={handleClose}>
+        <MenuItem sx={{color:  theme.colors.white}} component={NavLink} to="/register" onClick={handleClose}>
           Зарегистрироваться
         </MenuItem>
 
