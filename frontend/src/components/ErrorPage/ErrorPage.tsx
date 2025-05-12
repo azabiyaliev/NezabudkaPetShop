@@ -13,7 +13,8 @@ const ErrorPage = () => {
         justifyContent: "center",
         alignItems: "center",
         gap: "30px",
-        margin: "100px",
+        marginTop: "100px",
+        marginBottom: "100px",
         "@media (max-width: 780px)": {
           flexDirection: "column-reverse",
           margin: "50px 20px",
