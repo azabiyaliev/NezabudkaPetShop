@@ -366,6 +366,10 @@ const MainToolbar = () => {
                         width: "50px",
                         marginRight: "0px",
                       },
+                      "@media (max-width: 400px)": {
+                        height: "40px",
+                        width: "40px",
+                      },
                     }}
                   />
                   <div>
