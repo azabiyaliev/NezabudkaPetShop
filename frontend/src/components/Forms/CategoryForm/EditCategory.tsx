@@ -7,6 +7,7 @@ import FileInputCategory from '../../FileInput/FileInputCategory.tsx';
 import { apiUrl } from '../../../globalConstants.ts';
 import CloseIcon from '@mui/icons-material/Close';
 import { enqueueSnackbar } from 'notistack';
+import theme from '../../../globalStyles/globalTheme.ts';
 
 interface EditCategoryProps {
   category: {
@@ -109,7 +110,7 @@ const EditCategory: React.FC<EditCategoryProps> = ({ category, onClose }) => {
     <Box
       component="form"
       onSubmit={handleSubmit}
-      sx={{ display: "flex", flexDirection: "column", gap: 2, mx: "auto" }}
+      sx={{ display: "flex", flexDirection: "column", gap: 2, mx: "auto",  }}
     >
       <Typography variant="h6" textAlign="center">
         Редактировать категорию
@@ -135,8 +136,8 @@ const EditCategory: React.FC<EditCategoryProps> = ({ category, onClose }) => {
               justifyContent: "center",
               width: "100px",
               height: "100px",
-              backgroundColor: "#f5f5f5",
-              border: "1px dashed #ddd",
+              backgroundColor: theme.colors.rgbaGrey,
+              border: `1px dashed ${theme.colors.DARK_GRAY}`,
               borderRadius: 4,
               position: "relative",
             }}
@@ -166,10 +167,7 @@ const EditCategory: React.FC<EditCategoryProps> = ({ category, onClose }) => {
                       position: "absolute",
                       top: 0,
                       right: 0,
-                      backgroundColor: "white",
-                      "&:hover": {
-                        backgroundColor: "#ffdddd",
-                      },
+                      backgroundColor: theme.colors.white,
                     }}
                   >
                     <CloseIcon />
@@ -180,7 +178,7 @@ const EditCategory: React.FC<EditCategoryProps> = ({ category, onClose }) => {
               <Typography
                 component="span"
                 sx={{
-                  color: "#aaa",
+                  color: theme.colors.DARK_GRAY,
                   fontSize: "12px",
                   textAlign: "center",
                 }}

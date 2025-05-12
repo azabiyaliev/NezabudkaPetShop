@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Box, Button, TextField } from '@mui/material';
 import Grid from '@mui/material/Grid2';
-import { COLORS } from '../../../../globalStyles/stylesObjects.ts';
+import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
+import theme from "../../../../globalStyles/globalTheme.ts";
 
 interface Props {
   onChange: React.ChangeEventHandler<HTMLInputElement>;
@@ -80,19 +81,20 @@ const FileInputForBrand: React.FC<Props> = ({
             },
           }}>
             <Button
-              variant="text"
+              variant="contained"
               onClick={activateInput}
               sx={{
-                color: "white",
-                width: "100%",
-                height: "50px",
-                background: COLORS.DARK_GREEN,
-                '&:hover': {
-                  background: COLORS.FOREST_GREEN,
-                }
+                background: theme.colors.white,
+                border: `1px solid ${theme.colors.primary} `,
+                borderRadius: theme.spacing.exs,
+                height: '100%',
+                padding: "13px 12px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
               }}
             >
-              Выбрать изображение
+              <AddPhotoAlternateIcon sx={{ color: theme.colors.primary }} />
             </Button>
           </Box>
         </Box>

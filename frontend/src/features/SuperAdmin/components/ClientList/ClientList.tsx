@@ -4,6 +4,7 @@ import { ruRU } from '@mui/x-data-grid/locales';
 import React, { useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import { UserWithOrder } from '../../../../types';
+import theme from '../../../../globalStyles/globalTheme.ts';
 
 interface Props {
   clients: UserWithOrder[];
@@ -44,26 +45,16 @@ const ClientList: React.FC<Props> = ({ clients }) => {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           sx={{
-            borderRadius: "40px",
-            width: "40%",
-            "@media (max-width: 950px)": {
-              width: "100%",
-              minWidth: "100%",
-            },
-            '& .MuiOutlinedInput-root': {
-              borderRadius: '40px',
-              '& fieldset': {
-                borderColor: "#8EA58C",
-              },
-              '&.Mui-focused fieldset': {
-                borderColor: "#388e3c",
-              },
+            width: "100%",
+            maxWidth: "320px",
+            "@media (max-width: 750px)": {
+              maxWidth: "100%",
             },
           }}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
-                <SearchIcon sx={{ color: "darkgreen" }} />
+                <SearchIcon sx={{ color: theme.colors.primary }} />
               </InputAdornment>
             ),
           }}

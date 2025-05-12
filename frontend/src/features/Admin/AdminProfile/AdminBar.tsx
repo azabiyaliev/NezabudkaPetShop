@@ -27,7 +27,8 @@ import {
 import { NavLink } from 'react-router-dom';
 import AdminNavItem from './AdminNavItem.tsx';
 import { userRoleAdmin, userRoleSuperAdmin } from '../../../globalConstants.ts';
-const iconSx = { color: "#45624E", mr: 1 };
+import theme from '../../../globalStyles/globalTheme.ts';
+const iconSx = { color: theme.colors.primary, mr: theme.spacing.exs };
 const AdminBar = () => {
   const user = useAppSelector(selectUser);
   const can = usePermission(user);
@@ -82,7 +83,7 @@ const AdminBar = () => {
               >
                 <ListItemText
                   primary="Личный кабинет"
-                  sx={{ color: 'rgba(46, 46, 46, 0.7)' }}
+                  sx={{ color: theme.colors.primary }}
                   primaryTypographyProps={{ fontWeight: 600, fontSize: 14 }}
                 />
               </ListItem>

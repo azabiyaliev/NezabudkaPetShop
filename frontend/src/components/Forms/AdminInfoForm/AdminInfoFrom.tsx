@@ -11,6 +11,7 @@ import {
   fetchAdminInfo,
   updateAdminInfo,
 } from "../../../store/adminInfo/adminInfoThunk.ts";
+import theme from "../../../globalStyles/globalTheme.ts";
 
 const initialState = {
   information: "",
@@ -82,7 +83,7 @@ const AdminInfoForm = () => {
           <Typography
             variant="h6"
             gutterBottom
-            sx={{ textAlign: "center", fontWeight: 600 }}
+            sx={{ textAlign: "center", fontWeight: theme.fonts.weight.medium }}
           >
             Редактирование личного кабинета для администариции
           </Typography>
@@ -124,7 +125,7 @@ const AdminInfoForm = () => {
             <Button
               variant="contained"
               type="submit"
-              sx={{ mt: 3, alignSelf: "center", backgroundColor: "darkgreen" }}
+              sx={{ mt: theme.spacing.sm, alignSelf: "center", backgroundColor: theme.colors.primary }}
             >
               Сохранить
             </Button>

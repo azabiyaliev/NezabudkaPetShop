@@ -88,14 +88,14 @@ const Products: React.FC<Props> = ({products}) => {
         <>
           <IconButton>
             <ClearIcon
-              sx={{color: 'red'}}
+              sx={{color: theme.colors.warning}}
               onClick={() => productDelete(params.row.id)}
             />
           </IconButton>
 
           <IconButton>
             <EditIcon
-              sx={{color: '#ff9800'}}
+              sx={{color: theme.colors.primary}}
               onClick={() => navigate(`/private/edit_product/${params.row.id}`)}
             />
           </IconButton>
@@ -333,35 +333,23 @@ const Products: React.FC<Props> = ({products}) => {
           value={productSearch}
           onChange={(e) => setProductSearch(e.target.value)}
           sx={{
-            borderRadius: "40px",
-            width: "40%",
-            "@media (max-width: 950px)": {
-              width: "100%",
-              minWidth: "100%",
-            },
-            '& .MuiOutlinedInput-root': {
-              borderRadius: '40px',
-              '& fieldset': {
-                borderColor: "#8EA58C",
-              },
-              '&.Mui-focused fieldset': {
-                borderColor: "#388e3c",
-              },
+            width: "100%",
+            maxWidth: "320px",
+            "@media (max-width: 750px)": {
+              maxWidth: "100%",
             },
           }}
-          slotProps={{
-            input: {
-              endAdornment: (
-                <InputAdornment position="end">
-                  <SearchIcon sx={{ color: "darkgreen" }} />
-                </InputAdornment>
-              ),
-            },
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <SearchIcon sx={{ color: theme.colors.primary }} />
+              </InputAdornment>
+            ),
           }}
         />
       </Box>
 
-      <Box sx={{ display: "flex", justifyContent: "center", width: '100%' }}>
+      <Box sx={{ display: "flex", justifyContent: "start", width: '100%' }}>
         <Box sx={{ width: "100%", overflowX: 'auto' }}>
           <DataGrid
             rows={filteredProducts as (ProductResponse & { index: number })[]}

@@ -18,16 +18,16 @@ import { brandsFromSlice } from "../../../../store/brands/brandsSlice.ts";
 import { getBrands } from "../../../../store/brands/brandsThunk.ts";
 import { selectCategories } from "../../../../store/categories/categoriesSlice.ts";
 import { fetchCategoriesThunk } from "../../../../store/categories/categoriesThunk.ts";
-import { orange } from "@mui/material/colors";
 import FormControl from "@mui/material/FormControl";
 import FileInput from "../../../../components/FileInput/FileInput.tsx";
 import { addProductLoading } from "../../../../store/products/productsSlice.ts";
 import TextEditor from '../../../../components/TextEditor/TextEditor.tsx';
 import { apiUrl } from '../../../../globalConstants.ts';
 import CloseIcon from '@mui/icons-material/Close';
-import theme from '../../../../globalStyles/globalTheme.ts';
 import { enqueueSnackbar } from 'notistack';
 import { COLORS } from '../../../../globalStyles/stylesObjects.ts';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
 
 interface Props {
@@ -286,12 +286,6 @@ const ProductForm: React.FC<Props> = ({
             <TextField
               sx={{
                 width: "100%",
-                "& label.Mui-focused": { color: orange[500] },
-                "& .MuiOutlinedInput-root": {
-                  "& fieldset": { borderColor: "#ccc" },
-                  "&:hover fieldset": { borderColor: orange[500] },
-                  "&.Mui-focused fieldset": { borderColor: orange[500] },
-                },
               }}
               id="productName"
               name="productName"
@@ -307,12 +301,6 @@ const ProductForm: React.FC<Props> = ({
             <TextField
               sx={{
                 width: "100%",
-                "& label.Mui-focused": { color: orange[500] },
-                "& .MuiOutlinedInput-root": {
-                  "& fieldset": { borderColor: "#ccc" },
-                  "&:hover fieldset": { borderColor: orange[500] },
-                  "&.Mui-focused fieldset": { borderColor: orange[500] },
-                },
               }}
               type="number"
               id="productPrice"
@@ -343,14 +331,6 @@ const ProductForm: React.FC<Props> = ({
             <Grid size={{ xs: 12 }}>
               <FormControl
                 fullWidth
-                sx={{
-                  "& label.Mui-focused": { color: orange[500] },
-                  "& .MuiOutlinedInput-root": {
-                    "& fieldset": { borderColor: "#ccc" },
-                    "&:hover fieldset": { borderColor: orange[500] },
-                    "&.Mui-focused fieldset": { borderColor: orange[500] },
-                  },
-                }}
               >
                 <InputLabel id="brand">Бренд</InputLabel>
                 <Select
@@ -508,7 +488,19 @@ const ProductForm: React.FC<Props> = ({
           <Grid size={{ xs: 12 }}>
             <Button
               onClick={toggleAdvancedFields}
-              sx={{ mt: 2, mb: 2, color: orange[500] }}
+              sx={{
+                mt: 2,
+                mb: 2,
+                color: COLORS.primary,
+                border: `1px solid ${COLORS.primary}`,
+                borderRadius: 2,
+                px: 2,
+                py: 1,
+                textTransform: "none",
+                fontWeight: 500,
+                transition: "all 0.3s ease",
+              }}
+              endIcon={showAdvancedFields ? <ExpandLessIcon /> : <ExpandMoreIcon />}
             >
               {showAdvancedFields ? "Скрыть дополнительные поля" : "Показать дополнительные поля"}
             </Button>
@@ -522,14 +514,6 @@ const ProductForm: React.FC<Props> = ({
                   value={form.productSize}
                   onChange={inputChangeHandler}
                   fullWidth
-                  sx={{
-                    "& label.Mui-focused": { color: orange[500] },
-                    "& .MuiOutlinedInput-root": {
-                      "& fieldset": { borderColor: "#ccc" },
-                      "&:hover fieldset": { borderColor: orange[500] },
-                      "&.Mui-focused fieldset": { borderColor: orange[500] },
-                    }
-                  }}
                   error={!!sizeError}
                   helperText={sizeError}
                 />
@@ -541,14 +525,6 @@ const ProductForm: React.FC<Props> = ({
                   value={form.productAge}
                   onChange={inputChangeHandler}
                   fullWidth
-                  sx={{
-                    "& label.Mui-focused": { color: orange[500] },
-                    "& .MuiOutlinedInput-root": {
-                      "& fieldset": { borderColor: "#ccc" },
-                      "&:hover fieldset": { borderColor: orange[500] },
-                      "&.Mui-focused fieldset": { borderColor: orange[500] },
-                    }
-                  }}
                   error={!!ageError}
                   helperText={ageError}
                 />
@@ -561,14 +537,6 @@ const ProductForm: React.FC<Props> = ({
                   value={form.productWeight}
                   onChange={inputChangeHandler}
                   fullWidth
-                  sx={{
-                    "& label.Mui-focused": { color: orange[500] },
-                    "& .MuiOutlinedInput-root": {
-                      "& fieldset": { borderColor: "#ccc" },
-                      "&:hover fieldset": { borderColor: orange[500] },
-                      "&.Mui-focused fieldset": { borderColor: orange[500] },
-                    }
-                  }}
                   error={!!weightError}
                   helperText={weightError}
                 />
@@ -580,14 +548,6 @@ const ProductForm: React.FC<Props> = ({
                   value={form.productFeedClass}
                   onChange={inputChangeHandler}
                   fullWidth
-                  sx={{
-                    "& label.Mui-focused": { color: orange[500] },
-                    "& .MuiOutlinedInput-root": {
-                      "& fieldset": { borderColor: "#ccc" },
-                      "&:hover fieldset": { borderColor: orange[500] },
-                      "&.Mui-focused fieldset": { borderColor: orange[500] },
-                    }
-                  }}
                   error={!!feedClassError}
                   helperText={feedClassError}
                 />
@@ -599,14 +559,6 @@ const ProductForm: React.FC<Props> = ({
                   value={form.productManufacturer}
                   onChange={inputChangeHandler}
                   fullWidth
-                  sx={{
-                    "& label.Mui-focused": { color: orange[500] },
-                    "& .MuiOutlinedInput-root": {
-                      "& fieldset": { borderColor: "#ccc" },
-                      "&:hover fieldset": { borderColor: orange[500] },
-                      "&.Mui-focused fieldset": { borderColor: orange[500] },
-                    }
-                  }}
                   error={!!manufacturerError}
                   helperText={manufacturerError}
                 />
@@ -619,7 +571,7 @@ const ProductForm: React.FC<Props> = ({
                 <Checkbox
                   sx={{
                     "&.Mui-checked": {
-                      color: orange[500],
+                      color: COLORS.primary,
                     },
                   }}
                   checked={form.existence}
@@ -639,7 +591,7 @@ const ProductForm: React.FC<Props> = ({
                 <Checkbox
                   sx={{
                     "&.Mui-checked": {
-                      color: orange[500],
+                      color:  COLORS.primary,
                     },
                   }}
                   checked={form.sales}
@@ -656,7 +608,7 @@ const ProductForm: React.FC<Props> = ({
                 <Checkbox
                   sx={{
                     "&.Mui-checked": {
-                      color: orange[500],
+                      color:  COLORS.primary,
                     },
                   }}
                   checked={form.isBestseller || false}
@@ -668,8 +620,15 @@ const ProductForm: React.FC<Props> = ({
               label="Хит продаж"
             />
             {form.sales && (
-              <Grid container spacing={2}>
-                <Grid size={{ xs: 5 }} >
+              <Grid
+                container
+                spacing={2}
+                sx={{
+                  mt: 2,
+                  justifyContent: "center",
+                }}
+              >
+                <Grid item>
                   <TextField
                     label="Дата начала акции"
                     type="date"
@@ -677,18 +636,11 @@ const ProductForm: React.FC<Props> = ({
                     InputLabelProps={{ shrink: true }}
                     value={form.startDateSales ?? ""}
                     onChange={inputChangeHandler}
-                    sx={{
-                      width: "100%",
-                      "& label.Mui-focused": { color: orange[500] },
-                      "& .MuiOutlinedInput-root": {
-                        "& fieldset": { borderColor: "#ccc" },
-                        "&:hover fieldset": { borderColor: orange[500] },
-                        "&.Mui-focused fieldset": { borderColor: orange[500] },
-                      }
-                    }}
+                    sx={{ width: 300 }}
                   />
                 </Grid>
-                <Grid size={{ xs: 5 }}>
+
+                <Grid item>
                   <TextField
                     label="Дата окончания акции"
                     type="date"
@@ -696,49 +648,46 @@ const ProductForm: React.FC<Props> = ({
                     InputLabelProps={{ shrink: true }}
                     value={form.endDateSales ?? ""}
                     onChange={inputChangeHandler}
-                    sx={{
-                      width: "100%",
-                      "& label.Mui-focused": { color: orange[500] },
-                      "& .MuiOutlinedInput-root": {
-                        "& fieldset": { borderColor: "#ccc" },
-                        "&:hover fieldset": { borderColor: orange[500] },
-                        "&.Mui-focused fieldset": { borderColor: orange[500] },
-                      }
-                    }}
+                    sx={{ width: 300 }}
                   />
                 </Grid>
-                <Grid>
+
+                <Grid item>
                   <TextField
-                  label='Скидочные проценты %'
-                  id="promoPercentage"
-                  name='promoPercentage'
-                  type='number'
-                  value={form.promoPercentage}
-                  onChange={inputChangeHandler}/>
-                  <Typography sx={{marginTop: theme.spacing.xs}}>
-                    Цена с {form.promoPercentage}% будет равна {promoFinalPrice} cом
-                  </Typography>
+                    label="Скидка (%)"
+                    id="promoPercentage"
+                    name="promoPercentage"
+                    type="number"
+                    inputProps={{ min: 0, max: 100 }}
+                    value={form.promoPercentage ?? ""}
+                    onChange={inputChangeHandler}
+                    sx={{ width: 300 }}
+                  />
+                  {form.promoPercentage && Number(form.promoPercentage) > 0 && (
+                    <Typography variant="body2" sx={{ mt: 1, color: "text.secondary" }}>
+                      Цена со скидкой {form.promoPercentage}%:{" "}
+                      <strong>{promoFinalPrice} сом</strong>
+                    </Typography>
+                  )}
                 </Grid>
               </Grid>
             )}
           </Grid>
-          <Grid>
-            <Button
-              type="submit"
-              sx={{
-                color: "#fff",
-                width: "100%",
-                background: disableButton ? COLORS.DARK_GREEN : null,
-                '&:hover': {
-                  background: disableButton ? COLORS.FOREST_GREEN : null,
-                }
-              }}
-              variant="outlined"
-              color="inherit"
-              disabled={!disableButton || loading}
-            >
-              {!isProduct ? "Добавить" : "Сохранить"}
-            </Button>
+          <Grid container justifyContent="center">
+            <Grid item>
+              <Button
+                type="submit"
+                sx={{
+                  color: COLORS.white,
+                  background: disableButton ? COLORS.primary : null,
+                }}
+                variant="outlined"
+                color="inherit"
+                disabled={!disableButton || loading}
+              >
+                {!isProduct ? "Добавить" : "Сохранить"}
+              </Button>
+            </Grid>
           </Grid>
         </Grid>
       </Box>

@@ -84,12 +84,12 @@ const AdminList: React.FC<Props> = ({ admins }) => {
             }
             sx={{ marginRight: '10px' }}
           >
-            <ClearIcon sx={{ color: 'red' }} />
+            <ClearIcon sx={{ color: theme.colors.warning }} />
           </IconButton>
           <IconButton
             onClick={() => navigate(`/private/admin-edit/${params.row.id}`)}
           >
-            <EditIcon sx={{ color: '#ff9800' }} />
+            <EditIcon sx={{ color: theme.colors.primary }} />
           </IconButton>
         </>
       ),
@@ -108,9 +108,14 @@ const AdminList: React.FC<Props> = ({ admins }) => {
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600 }}>
+      <Typography
+        variant="h6"
+        gutterBottom
+        sx={{ textAlign: "center", fontWeight: theme.fonts.weight.medium }}
+      >
         Список администраторов
       </Typography>
+
 
       <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
         <TextField
@@ -119,30 +124,18 @@ const AdminList: React.FC<Props> = ({ admins }) => {
           value={adminSearch}
           onChange={(e) => setAdminSearch(e.target.value)}
           sx={{
-            borderRadius: "40px",
-            width: "40%",
-            '& .MuiOutlinedInput-root': {
-              borderRadius: '40px',
-              '& fieldset': {
-                borderColor: "#8EA58C",
-              },
-              '&.Mui-focused fieldset': {
-                borderColor: "#388e3c",
-              },
-            },
+            width: "100%",
+            maxWidth: "320px",
             "@media (max-width: 750px)": {
-              width: "100%",
-              minWidth: "100%",
+              maxWidth: "100%",
             },
           }}
-          slotProps={{
-            input: {
-              endAdornment: (
-                <InputAdornment position="end">
-                  <SearchIcon sx={{ color: "darkgreen" }} />
-                </InputAdornment>
-              ),
-            },
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <SearchIcon sx={{ color: theme.colors.primary }} />
+              </InputAdornment>
+            ),
           }}
         />
       </Box>

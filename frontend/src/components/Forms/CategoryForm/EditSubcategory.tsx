@@ -8,6 +8,7 @@ import {
   updateSubcategoryThunk
 } from '../../../store/categories/categoriesThunk.ts';
 import { enqueueSnackbar } from 'notistack';
+import theme from '../../../globalStyles/globalTheme.ts';
 
 interface EditSubcategoryProps {
   subcategory: {
@@ -82,7 +83,7 @@ const EditSubcategory: React.FC<EditSubcategoryProps> = ({ subcategory,  onClose
         onChange={inputChangeHandler}
       />
 
-      <Button type="submit" variant="contained" sx={{ bgcolor: "#237803", color: "white" }}>
+      <Button type="submit" variant="contained" sx={{ bgcolor: theme.colors.primary, color: theme.colors.white }}>
         Сохранить изменения
       </Button>
     </Box>

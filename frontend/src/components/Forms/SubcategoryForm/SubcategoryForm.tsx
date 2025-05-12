@@ -12,6 +12,7 @@ import {
 } from '../../../store/categories/categoriesThunk.ts';
 import { selectUser } from '../../../store/users/usersSlice.ts';
 import { enqueueSnackbar } from 'notistack';
+import theme from '../../../globalStyles/globalTheme.ts';
 
 interface Props {
   categoryId: number;
@@ -85,12 +86,8 @@ const SubcategoryForm: React.FC<Props> = ({ categoryId, onClose }) => {
         variant="contained"
         sx={{
           textTransform: "uppercase",
-          color: "white",
-          background: "#237803",
-          borderRadius: "10px",
-          "&:hover": {
-            backgroundColor: "#1e6600",
-          },
+          color: theme.colors.white,
+          background: theme.colors.primary,
         }}
       >
         Добавить
