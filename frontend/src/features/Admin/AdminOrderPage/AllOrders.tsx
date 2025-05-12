@@ -197,6 +197,7 @@ const AllOrders = () => {
               <MenuItem value="Shipped">Отправлен</MenuItem>
               <MenuItem value="Delivered">Доставлен</MenuItem>
               <MenuItem value="Received">Получен</MenuItem>
+              <MenuItem value="Returned">Возвращен</MenuItem>
               <MenuItem value="Canceled">Отменен</MenuItem>
             </Select>
 

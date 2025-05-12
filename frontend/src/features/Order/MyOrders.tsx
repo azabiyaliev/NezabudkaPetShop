@@ -279,8 +279,9 @@ const MyOrders = () => {
             <MenuItem value="Pending">В обработке</MenuItem>
             <MenuItem value="Confirmed">Подтвержден</MenuItem>
             <MenuItem value="Packed">Упакован</MenuItem>
-            <MenuItem value="Shipped">Отрпавлен</MenuItem>
+            <MenuItem value="Shipped">Отправлен</MenuItem>
             <MenuItem value="Delivered">Доставлен</MenuItem>
+            <MenuItem value="Returned">Возвращен</MenuItem>
             <MenuItem value="Canceled">Отменен</MenuItem>
           </Select>
 
