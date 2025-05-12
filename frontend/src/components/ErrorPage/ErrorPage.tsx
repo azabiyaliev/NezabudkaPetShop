@@ -14,7 +14,7 @@ const ErrorPage = () => {
         alignItems: "center",
         gap: "30px",
         margin: "100px",
-        "@media (max-width: 600px)": {
+        "@media (max-width: 780px)": {
           flexDirection: "column-reverse",
           margin: "50px 20px",
           textAlign: "center",
