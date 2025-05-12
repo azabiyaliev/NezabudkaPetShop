@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import {
+  Badge,
   Box,
   Button,
   Divider,
@@ -8,13 +9,11 @@ import {
   ListItem,
   ListItemText,
   Tooltip,
-  Typography,
 } from '@mui/material';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector, usePermission } from '../../../app/hooks.ts';
 import { selectUser } from '../../../store/users/usersSlice.ts';
 import { addErrorFromSlice, clearError, } from '../../../store/brands/brandsSlice.ts';
-import PermIdentityOutlinedIcon from '@mui/icons-material/PermIdentityOutlined';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import CreditScoreOutlinedIcon from '@mui/icons-material/CreditScoreOutlined';
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
@@ -30,7 +29,7 @@ import { logout } from '../../../store/users/usersThunk.ts';
 import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
 import { clearCart } from "../../../store/cart/cartSlice.ts";
 import theme from '../../../globalStyles/globalTheme.ts';
-import { User } from "phosphor-react";
+import { CheckCircle, User } from 'phosphor-react';
 
 const ExistsUser = () => {
   const addError = useAppSelector(addErrorFromSlice);
@@ -39,6 +38,7 @@ const ExistsUser = () => {
   const user = useAppSelector(selectUser);
   const can = usePermission(user);
   const navigate = useNavigate();
+
 
   const toggleDrawer = (open: boolean) => () => {
     setIsDrawerOpen(open);
@@ -77,11 +77,21 @@ const ExistsUser = () => {
         <Button
           onClick={toggleDrawer(true)}
           sx={{
-            color: "black",
+            color: theme.colors.black,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
             padding: 0,
+            backgroundColor: "transparent",
+            "&:hover": {
+              backgroundColor: "transparent",
+            },
+            "&:focus": {
+              backgroundColor: "transparent",
+            },
+            "&:active": {
+              backgroundColor: "transparent",
+            },
             "@media (min-width: 900px)": {
               flexDirection: "column",
             },
@@ -89,43 +99,29 @@ const ExistsUser = () => {
         >
           <Box
             sx={{
-              display: {
-                xs: "flex",
-                md: "none",
-              },
-              alignItems: "center",
+              display: "none",
               flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              position: "relative",
+              "@media (max-width: 900px)": {
+                display: "flex",
+              },
             }}
           >
-            <User
-              size={30}
-              weight="regular"
-              color={theme.colors.black}
-            />
-            <Typography
-              sx={{
-                color: "#white",
-                fontSize: "14px",
-                fontWeight: 500,
-                textTransform: "uppercase",
+            <Badge
+              invisible={!user}
+              overlap="circular"
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "right",
               }}
+              badgeContent={
+                <CheckCircle size={12} weight="fill" color={theme.colors.primary} />
+              }
             >
-              {user?.role === "superAdmin" ? (
-                <span style={{
-                  backgroundColor: 'rgba(0, 0, 0, 0.3)',
-                  backdropFilter: 'blur(10px)',
-                }}>Super Admin</span>
-              ) : user?.role === "admin" ? (
-                <>
-                  <span style={{
-                    backgroundColor: 'rgba(0, 0, 0, 0.3)',
-                    backdropFilter: 'blur(10px)',
-                  }}>Admin:</span> {user.firstName}
-                </>
-              ) : (
-                user?.firstName
-              )}
-            </Typography>
+              <User size={30} weight="regular" color={theme.colors.black} />
+            </Badge>
           </Box>
 
           <Box
@@ -150,9 +146,9 @@ const ExistsUser = () => {
               componentsProps={{
                 tooltip: {
                   sx: {
-                    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                    backgroundColor: theme.colors.tooltip_color,
                     backdropFilter: 'blur(10px)',
-                    fontSize: "13px",
+                    fontSize: theme.fonts.size.xs,
                     padding: "6px 10px",
                   },
                 },
@@ -189,11 +185,13 @@ const ExistsUser = () => {
               gap: "8px",
             }}
           >
-            <PermIdentityOutlinedIcon
-              sx={{ width: "30px", height: "30px", color: "#45624E" }}
+            <User
+              size={28}
+              weight="regular"
+              color={theme.colors.ICON_GREEN}
             />
             <span
-              style={{ color: "#45624E", fontSize: "18px", fontWeight: "600" }}
+              style={{ color: theme.colors.ICON_GREEN, fontSize: theme.fonts.size.big_default, fontWeight: theme.fonts.weight.medium }}
             >
               {user && user.firstName} {user && user.secondName}
             </span>
@@ -210,11 +208,13 @@ const ExistsUser = () => {
                     onClick={toggleDrawer(false)}
                   >
                     <HomeOutlinedIcon
-                      style={{ color: "#45624E", marginRight: "10px" }}
+                      style={{ color: theme.colors.ICON_GREEN, marginRight: theme.spacing.xs }}
                     />
                     <ListItemText
                       primary="Личный кабинет"
-                      className="text-black"
+                     sx={{
+                       color: theme.colors.text
+                     }}
                     />
                   </ListItem>
                 </>
@@ -227,11 +227,13 @@ const ExistsUser = () => {
                     onClick={toggleDrawer(false)}
                   >
                     <HomeOutlinedIcon
-                      style={{ color: "#45624E", marginRight: "10px" }}
+                      style={{ color: theme.colors.ICON_GREEN, marginRight: theme.spacing.xs }}
                     />
                     <ListItemText
                       primary="Личный кабинет"
-                      className="text-black"
+                      sx={{
+                        color: theme.colors.text
+                      }}
                     />
                   </ListItem>
                 </>
@@ -245,11 +247,13 @@ const ExistsUser = () => {
                     onClick={toggleDrawer(false)}
                   >
                     <AdminPanelSettingsOutlinedIcon
-                      style={{ color: "#45624E", marginRight: "10px" }}
+                      style={{ color: theme.colors.ICON_GREEN, marginRight: theme.spacing.xs }}
                     />
                     <ListItemText
                       primary="Администраторы"
-                      className="text-black"
+                      sx={{
+                        color: theme.colors.text
+                      }}
                     />
                   </ListItem>
                   <ListItem
@@ -258,11 +262,13 @@ const ExistsUser = () => {
                     onClick={toggleDrawer(false)}
                   >
                     <AutoGraphOutlinedIcon
-                      style={{ color: "#45624E", marginRight: "10px" }}
+                      style={{ color: theme.colors.ICON_GREEN, marginRight: theme.spacing.xs }}
                     />
                     <ListItemText
                       primary="Статистика заказов"
-                      className="text-black"
+                      sx={{
+                        color: theme.colors.text
+                      }}
                     />
                   </ListItem>
                 </>
@@ -273,9 +279,14 @@ const ExistsUser = () => {
                 onClick={toggleDrawer(false)}
               >
                 <CreditScoreOutlinedIcon
-                  style={{ color: "#45624E", marginRight: "10px" }}
+                  style={{ color: theme.colors.ICON_GREEN, marginRight: theme.spacing.xs }}
                 />
-                <ListItemText primary="Заказы" className="text-black" />
+                <ListItemText
+                  primary="Заказы"
+                  sx={{
+                    color: theme.colors.text
+                  }}
+                />
               </ListItem>
               <ListItem
                 component={NavLink}
@@ -283,9 +294,14 @@ const ExistsUser = () => {
                 onClick={toggleDrawer(false)}
               >
                 <GroupOutlinedIcon
-                  style={{ color: "#45624E", marginRight: "10px" }}
+                  style={{ color: theme.colors.ICON_GREEN, marginRight: theme.spacing.xs }}
                 />
-                <ListItemText primary="Клиенты" className="text-black" />
+                <ListItemText
+                  primary="Клиенты"
+                  sx={{
+                    color: theme.colors.text
+                  }}
+                />
               </ListItem>
               <ListItem
                 component={NavLink}
@@ -293,9 +309,14 @@ const ExistsUser = () => {
                 onClick={() => toggleBrand(false)}
               >
                 <BallotOutlinedIcon
-                  style={{ color: "#45624E", marginRight: "10px" }}
+                  style={{ color: theme.colors.ICON_GREEN, marginRight: theme.spacing.xs }}
                 />
-                <ListItemText primary="Бренды" className="text-black" />
+                <ListItemText
+                  primary="Бренды"
+                  sx={{
+                    color: theme.colors.text
+                  }}
+                />
               </ListItem>
               <ListItem
                 component={NavLink}
@@ -303,9 +324,14 @@ const ExistsUser = () => {
                 onClick={toggleDrawer(false)}
               >
                 <ListAltOutlinedIcon
-                  style={{ color: "#45624E", marginRight: "10px" }}
+                  style={{ color: theme.colors.ICON_GREEN, marginRight: theme.spacing.xs }}
                 />
-                <ListItemText primary="Товары" className="text-black" />
+                <ListItemText
+                  primary="Товары"
+                  sx={{
+                    color: theme.colors.text
+                  }}
+                />
               </ListItem>
               <ListItem
                 component={NavLink}
@@ -313,9 +339,14 @@ const ExistsUser = () => {
                 onClick={toggleDrawer(false)}
               >
                 <CategoryOutlinedIcon
-                  style={{ color: "#45624E", marginRight: "10px" }}
+                  style={{ color: theme.colors.ICON_GREEN, marginRight: theme.spacing.xs }}
                 />
-                <ListItemText primary="Категории" className="text-black" />
+                <ListItemText
+                  primary="Категории"
+                  sx={{
+                    color: theme.colors.text
+                  }}
+                />
               </ListItem>
             </List>
           )}
@@ -328,9 +359,14 @@ const ExistsUser = () => {
                 onClick={toggleDrawer(false)}
               >
                 <HomeOutlinedIcon
-                  style={{ color: "#45624E", marginRight: "10px" }}
+                  style={{ color: theme.colors.ICON_GREEN, marginRight: theme.spacing.xs }}
                 />
-                <ListItemText primary="Личный кабинет" className="text-black" />
+                <ListItemText
+                  primary="Личный кабинет"
+                  sx={{
+                    color: theme.colors.text
+                  }}
+                />
               </ListItem>
               <ListItem
                 component={NavLink}
@@ -338,9 +374,14 @@ const ExistsUser = () => {
                 onClick={toggleDrawer(false)}
               >
                 <LocalMallOutlinedIcon
-                  style={{ color: "#45624E", marginRight: "10px" }}
+                  style={{ color: theme.colors.ICON_GREEN, marginRight: theme.spacing.xs }}
                 />
-                <ListItemText primary="Мои Заказы" className="text-black" />
+                <ListItemText
+                  primary="Мои Заказы"
+                  sx={{
+                    color: theme.colors.text
+                  }}
+                />
               </ListItem>
               <ListItem
                 component={NavLink}
@@ -348,9 +389,14 @@ const ExistsUser = () => {
                 onClick={toggleDrawer(false)}
               >
                 <ShoppingCartOutlinedIcon
-                  style={{ color: "#45624E", marginRight: "10px" }}
+                  style={{ color: theme.colors.ICON_GREEN, marginRight: theme.spacing.xs }}
                 />
-                <ListItemText primary="Корзина" className="text-black" />
+                <ListItemText
+                  primary="Корзина"
+                  sx={{
+                    color: theme.colors.text
+                  }}
+                />
               </ListItem>
               <ListItem
                 component={NavLink}
@@ -358,9 +404,14 @@ const ExistsUser = () => {
                 onClick={toggleDrawer(false)}
               >
                 <FavoriteOutlinedIcon
-                  style={{ color: "#45624E", marginRight: "10px" }}
+                  style={{ color: theme.colors.ICON_GREEN, marginRight: theme.spacing.xs }}
                 />
-                <ListItemText primary="Избранные" className="text-black" />
+                <ListItemText
+                  primary="Избранные"
+                  sx={{
+                    color: theme.colors.text
+                  }}
+                />
               </ListItem>
             </List>
           )}
@@ -379,9 +430,14 @@ const ExistsUser = () => {
             }}
           >
             <LogoutOutlinedIcon
-              style={{ color: "#45624E", marginRight: "10px" }}
+              style={{ color: theme.colors.ICON_GREEN, marginRight: theme.spacing.xs }}
             />
-            <ListItemText primary="Выйти" className="text-black" />
+            <ListItemText
+              primary="Выйти"
+              sx={{
+                color: theme.colors.text
+              }}
+            />
           </ListItem>
         </Box>
       </Drawer>

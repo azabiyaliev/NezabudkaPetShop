@@ -15,6 +15,8 @@ export const COLORS = {
   rgbaGrey: 'rgba(241,239,239,0.61)',
   tooltip_color:'rgba(0, 0, 0, 0.3)',
   lightGrey: '#ddd',
+  adminBackgroundGreen: '#1B4332',
+  adminBackgroundYellow: '#A3B72F',
 
 
   BORDER_CART: 'rgba(102,100,97,0.61)',
@@ -53,6 +55,7 @@ export const FONTS = {
     xs: '12px',
     sm: '14px',
     default: '16px',
+    big_default:'18px',
     lg: '20px',
     xl: '24px',
     xxl: '30px',

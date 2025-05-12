@@ -43,7 +43,7 @@ const UnknownUser = () => {
           aria-expanded={open ? "true" : undefined}
           onClick={handleClick}
           sx={{
-            color: "black",
+            color: theme.colors.black,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -78,16 +78,16 @@ const UnknownUser = () => {
         }}
         sx={{
           '& .MuiPaper-root': {
-            backgroundColor: 'rgba(0, 0, 0, 0.3)',
+            backgroundColor: theme.colors.tooltip_color,
             backdropFilter: 'blur(10px)',
           },
         }}
 
       >
-        <MenuItem sx={{color: '#fff'}} component={NavLink} to="/login" onClick={handleClose}>
+        <MenuItem sx={{color: theme.colors.white}} component={NavLink} to="/login" onClick={handleClose}>
           Войти
         </MenuItem>
-        <MenuItem sx={{color: '#fff'}} component={NavLink} to="/register" onClick={handleClose}>
+        <MenuItem sx={{color:  theme.colors.white}} component={NavLink} to="/register" onClick={handleClose}>
           Зарегистрироваться
         </MenuItem>
 
