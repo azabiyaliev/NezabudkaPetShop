@@ -175,6 +175,7 @@ const UserFormEdition = () => {
                   sx={{
                     backgroundColor: theme.colors.white,
                     borderRadius: theme.spacing.exs,
+                    mt: theme.spacing.sm,
                   }}
                   error={!!getFieldError("firstName") || Boolean(name)}
                   helperText={getFieldError("firstName") || name}
