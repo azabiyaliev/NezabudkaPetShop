@@ -2,7 +2,6 @@ import { useState } from 'react';
 import {
   Badge,
   Box,
-  Button,
   Divider,
   Drawer,
   List,
@@ -74,7 +73,7 @@ const ExistsUser = () => {
           },
         }}
       >
-        <Button
+        <Box
           onClick={toggleDrawer(true)}
           sx={{
             color: theme.colors.black,
@@ -82,6 +81,7 @@ const ExistsUser = () => {
             flexDirection: "column",
             alignItems: "center",
             padding: 0,
+            cursor: "pointer",
             backgroundColor: "transparent",
             "&:hover": {
               backgroundColor: "transparent",
@@ -161,7 +161,7 @@ const ExistsUser = () => {
               />
             </Tooltip>
           </Box>
-        </Button>
+        </Box>
       </Box>
 
       <Drawer anchor="right" open={isDrawerOpen} onClose={toggleDrawer(false)}>
