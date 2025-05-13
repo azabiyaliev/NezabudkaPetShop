@@ -21,12 +21,15 @@ const ClientTable = () => {
           flexDirection: "column",
         },
       }}>
-        <Box sx={{
-          minWidth: 240,
-          "@media (max-width: 1300px)": {
-            width: "100%",
-            minWidth: "100%",
-          },}}>
+        <Box
+          sx={{
+            flexShrink: 0,
+            height: "100%",
+            "@media (max-width: 900px)": {
+              display: "none",
+            },
+          }}
+        >
           <AdminBar />
         </Box>
         <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center" }}>

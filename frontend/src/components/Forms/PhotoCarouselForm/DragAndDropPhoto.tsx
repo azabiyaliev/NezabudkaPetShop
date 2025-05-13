@@ -142,7 +142,17 @@ const DragAndDropPhoto = () => {
         },
       }}
     >
-      <AdminBar />
+      <Box
+        sx={{
+          flexShrink: 0,
+          height: "100%",
+          "@media (max-width: 900px)": {
+            display: "none",
+          },
+        }}
+      >
+        <AdminBar />
+      </Box>
       
       <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center" }}>
         <Box sx={{ width: "100%", maxWidth: "900px", px: 2 }}>

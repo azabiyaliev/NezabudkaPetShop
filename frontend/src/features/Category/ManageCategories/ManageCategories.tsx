@@ -223,13 +223,13 @@ const ManageCategories = () => {
           display: "flex",
           flexDirection: "column",
           width: 800,
-          "@media (max-width: 1100px)": {
+          "@media (max-width: 1265px)": {
             width: "100%",
           },
           "@media (max-width: 900px)": {
             maxWidth: "100%",
             width: "100%",
-            marginRight: 3,
+            margin: "0 30px",
           },
         }}
       >

@@ -1,17 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { getStatistics } from "../../../store/orders/ordersThunk";
 import ColumnChart from "../../../components/UI/ColumnChart/ColumnChart.tsx";
 import { DataGrid, gridClasses } from "@mui/x-data-grid";
-import { Box, Button, CircularProgress, Drawer, IconButton, Paper } from '@mui/material';
+import { Box, CircularProgress, Paper } from '@mui/material';
 import Typography from "@mui/material/Typography";
 import AdminBar from "../AdminProfile/AdminBar.tsx";
-import MenuIcon from '@mui/icons-material/Menu';
 
 const OrderStats = () => {
   const dispatch = useAppDispatch();
   const orders = useAppSelector((state) => state.orders.orderStats);
-  const [isAdminBarOpen, setIsAdminBarOpen] = useState(false);
 
   useEffect(() => {
     dispatch(getStatistics());
@@ -90,7 +88,6 @@ const OrderStats = () => {
     { field: "percentage", headerName: "Проценты", flex: 1 },
   ];
 
-  const toggleAdminBar = () => setIsAdminBarOpen(!isAdminBarOpen);
   return (
     <Box
       sx={{
@@ -104,54 +101,6 @@ const OrderStats = () => {
         },
       }}
     >
-      <IconButton
-        onClick={toggleAdminBar}
-        sx={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          display: "block",
-          zIndex: 10,
-          "@media (min-width: 1360px)": {
-            display: "none",
-          },
-        }}
-      >
-        <MenuIcon />
-      </IconButton>
-
-      <Drawer
-        anchor="left"
-        open={isAdminBarOpen}
-        onClose={toggleAdminBar}
-        sx={{
-          "& .MuiDrawer-paper": {
-            width: 400,
-          },
-        }}
-      >
-        <Box
-          sx={{
-            p: 2,
-            display: "flex",
-            flexDirection: "column",
-            height: "100%",
-          }}
-        >
-          <Typography variant="h6" sx={{ mb: 2 }}>
-            Admin Panel
-          </Typography>
-          <AdminBar />
-          <Button
-            variant="contained"
-            color="primary"
-            sx={{ mt: "auto" }}
-            onClick={toggleAdminBar}
-          >
-            Закрыть
-          </Button>
-        </Box>
-      </Drawer>
 
       <Box
         sx={{
@@ -186,7 +135,7 @@ const OrderStats = () => {
           sx={{
             textAlign: "center",
             fontWeight: 600,
-            mt: { xs: 6, lg: 0 }, // Отступ для кнопки меню на мобильных
+            mt: { xs: 6, lg: 0 },
           }}
         >
           Статистика заказов

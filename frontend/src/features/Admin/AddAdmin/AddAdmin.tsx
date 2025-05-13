@@ -14,7 +14,17 @@ const AddAdmin = () => {
         },
       }}
     >
-      <AdminBar />
+      <Box
+        sx={{
+          flexShrink: 0,
+          height: "100%",
+          "@media (max-width: 900px)": {
+            display: "none",
+          },
+        }}
+      >
+        <AdminBar />
+      </Box>
       <AdminForm/>
     </Box>
   );

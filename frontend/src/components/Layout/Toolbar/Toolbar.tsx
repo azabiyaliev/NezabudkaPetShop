@@ -1,5 +1,5 @@
 import { Badge, Box, Button, Container, InputBase, Toolbar, useMediaQuery, } from '@mui/material';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { useAppDispatch, useAppSelector, usePermission, } from '../../../app/hooks.ts';
 import ExistsUser from './ExistsUser.tsx';
 import UnknownUser from './UnknownUser.tsx';
@@ -47,7 +47,6 @@ const MainToolbar = () => {
   const site = useAppSelector(selectEditSite);
   const cart = useAppSelector(cartFromSlice);
   const favoriteProducts = useAppSelector(selectedFavorite);
-  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const products = useAppSelector(selectProducts);
   const [search, setSearch] = useState("");
@@ -124,7 +123,6 @@ const MainToolbar = () => {
 
   const closeMenu = () => {
     setOpenCategoryMenu(false);
-    navigate("/");
   };
 
   const checkProductInCart: number[] = Array.isArray(cart?.products)
