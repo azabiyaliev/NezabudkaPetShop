@@ -10,7 +10,7 @@ import { deleteItemCart, fetchCart } from '../../../store/cart/cartThunk.ts';
 import { selectUser } from '../../../store/users/usersSlice.ts';
 import { cartFromSlice, deleteProductInCart } from '../../../store/cart/cartSlice.ts';
 import { Link } from 'react-router-dom';
-import { COLORS } from '../../../globalStyles/stylesObjects.ts';
+import { COLORS, FONTS } from '../../../globalStyles/stylesObjects.ts';
 
 interface Props {
   productCart: ICartItem;
@@ -48,6 +48,7 @@ const CartProduct: React.FC<Props> = ({ productCart, closeCart }) => {
           justifyContent: 'center',
           flexShrink: 0,
           marginBottom: '5px',
+          position: 'relative',
         }}
       >
         <Link
@@ -55,6 +56,26 @@ const CartProduct: React.FC<Props> = ({ productCart, closeCart }) => {
           onClick={closeCart}
           style={{ display: 'block', width: '100%', height: '100%', backgroundColor: 'white' }}
         >
+          {productCart.product.sales &&
+            <Box sx={{
+              position: 'absolute',
+              top: -7,
+              backgroundColor: COLORS.warning,
+              color: COLORS.white,
+              width: '38px',
+              height: '38px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: '50%',
+              fontWeight: FONTS.weight.bold,
+              fontSize: FONTS.size.xs,
+              cursor: 'pointer',
+              zIndex: 2,
+            }}>
+              - {productCart.product.promoPercentage}%
+            </Box>
+          }
           <img
             src={apiUrl + productCart.product.productPhoto}
             alt={productCart.product.productName}
@@ -89,20 +110,36 @@ const CartProduct: React.FC<Props> = ({ productCart, closeCart }) => {
             {productCart.product.productName}
           </Typography>
         </Link>
-        <Typography
-          level="body-sm"
-          sx={{ marginTop: '5px' }}
-        >
-          {productCart.quantity} x{' '}
-          <span
-            style={{
-              color: 'rgba(250, 179, 1, 1)',
-              marginLeft: '5px',
-            }}
+        {productCart.product.sales
+          ? <Typography
+            level="body-sm"
+            sx={{ marginTop: '5px' }}
           >
-            <b>{productCart.product.productPrice.toLocaleString('ru-RU').replace(/,/g, ' ')} сом</b>
-          </span>
-        </Typography>
+            {productCart.quantity} x{' '}
+            <span
+              style={{
+                color: COLORS.warning,
+                marginLeft: '5px',
+              }}
+            >
+            <b>{productCart.product.promoPrice.toLocaleString('ru-RU').replace(/,/g, ' ')}</b>
+          </span> сом
+          </Typography>
+          : <Typography
+            level="body-sm"
+            sx={{ marginTop: '5px' }}
+          >
+            {productCart.quantity} x{' '}
+            <span
+              style={{
+                color: 'rgba(250, 179, 1, 1)',
+                marginLeft: '5px',
+              }}
+            >
+            <b>{productCart.product.productPrice.toLocaleString('ru-RU').replace(/,/g, ' ')}</b>
+          </span> сом
+          </Typography>
+        }
       </Box>
 
       <Box sx={{ ml: 1 }}>
