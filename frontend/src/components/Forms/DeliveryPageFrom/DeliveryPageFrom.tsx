@@ -7,9 +7,10 @@ import { toast } from 'react-toastify';
 import { enqueueSnackbar } from 'notistack';
 import { fetchDeliveryPage, updateDeliveryPage } from '../../../store/deliveryPage/deliveryPageThunk.ts';
 import { Box } from '@mui/joy';
-import { Button, Typography } from '@mui/material';
+import { Button, Grid, Typography } from "@mui/material";
 import TextEditor, { deliveryPriceInfoTemplate } from '../../TextEditor/TextEditor.tsx';
 import TextField from '@mui/material/TextField';
+import theme from '../../../globalStyles/globalTheme.ts';
 
 const initialState = {
   text: "",
@@ -158,10 +159,10 @@ const DeliveryPageForm = () => {
               flexDirection: 'column',
               alignItems: 'center',
               width: '100%',
-              mt:5,
+              mt:theme.spacing.sm,
             }}
           >
-            <Box sx={{mb: 5}}>
+            <Box sx={{mb: theme.spacing.sm}}>
               <Typography
                 variant="body2"
                 sx={{
@@ -207,7 +208,7 @@ const DeliveryPageForm = () => {
                 color: 'text.secondary',
                 fontWeight: 400,
                 mb: 0.5,
-                mt:5,
+                mt:theme.spacing.sm,
               }}
             >
               Цена за зону доставки
@@ -233,47 +234,65 @@ const DeliveryPageForm = () => {
               </Typography>
               </Box>
             </Box>
-            {delivery?.map && (
-              <Box
-                sx={{
-                  flex: '0 1 450px',
-                  width: '100%',
-                  maxWidth: '450px',
-                  height: '450px',
-                  borderRadius: '5px',
-                  overflow: 'hidden',
-                  boxShadow: '0 2px 6px rgba(0, 0, 0, 0.1)',
-                  position: 'relative',
-                  order: { xs: 1, md: 2 },
-                  float: "right",
-                }}
-              >
-                <iframe
-                  src={delivery.map}
-                  width="600px"
-                  height="600px"
-                  style={{
-                    position: 'absolute',
-                    top: '-70px',
-                    border: 0,
-                  }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                />
-              </Box>
-            )}
+            <Box sx={{ mt: theme.spacing.lg, width: '100%' }}>
+              <Grid container spacing={2} alignItems="flex-start">
 
-            <TextField
-              label="Ссылка на карту"
-              value={form.map}
-              onChange={handleMapChange}
-              fullWidth
-              required
-              error={!!mapError}
-              helperText={mapError || ''}
-              sx={{ mt: 5 }}
-            />
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    label="Ссылка на карту"
+                    value={form.map}
+                    onChange={handleMapChange}
+                    fullWidth
+                    required
+                    error={!!mapError}
+                    helperText={mapError || ''}
+                  />
+                  <Box sx={{ mt: 1, p: 1, bgcolor: theme.colors.rgbaGrey, border: `1px dashed ${theme.colors.DARK_GRAY}`, borderRadius: 1 }}>
+                    <Typography variant="body2" sx={{ fontWeight: 500, mb: 0.5 }}>
+                      Как вставить карту Google:
+                    </Typography>
+                    <Typography variant="caption" component="div" color="text.secondary">
+                      1. Откройте <b>Google My Maps</b> и создайте карту.<br />
+                      2. Нажмите <b>"Поделиться" → "Встроить карту"</b>.<br />
+                      3. Скопируйте ссылку, начинающуюся с:<br />
+                      <code>https://www.google.com/maps/d/u/0/embed?mid=...</code><br />
+                      4. Вставьте её в поле выше.
+                    </Typography>
+                  </Box>
+                </Grid>
+
+                <Grid item xs={12} md={6}>
+                    <Box
+                      sx={{
+                        flex: '0 1 450px',
+                        width: '100%',
+                        maxWidth: '350px',
+                        height: '350px',
+                        borderRadius: '5px',
+                        overflow: 'hidden',
+                        boxShadow: '0 2px 6px rgba(0, 0, 0, 0.1)',
+                        position: 'relative',
+                        order: { xs: 1, md: 2 },
+                        float: "right",
+                      }}
+                    >
+                      <iframe
+                        src={delivery?.map}
+                        width="600px"
+                        height="600px"
+                        style={{
+                          position: 'absolute',
+                          top: '-70px',
+                          border: 0,
+                        }}
+                        allowFullScreen
+                        loading="lazy"
+                        referrerPolicy="no-referrer-when-downgrade"
+                      />
+                    </Box>
+                </Grid>
+              </Grid>
+            </Box>
 
             <Button
               variant="contained"

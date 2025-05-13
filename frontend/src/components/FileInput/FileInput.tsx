@@ -2,7 +2,8 @@ import Grid from "@mui/material/Grid2";
 import { Button, TextField } from "@mui/material";
 import React, { useEffect, useRef, useState } from 'react';
 import { Box } from '@mui/joy';
-import { COLORS } from '../../globalStyles/stylesObjects.ts';
+import theme from '../../globalStyles/globalTheme.ts';
+import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 
 interface Props {
   name: string;
@@ -67,15 +68,17 @@ const FileInput: React.FC<Props> = ({ name, label, onGetFile, initialValue }) =>
             variant="contained"
             onClick={activateInput}
             sx={{
-              color: "white",
-              textTransform: "uppercase",
-              background: "#237803",
-              width: "100%",
-              fontSize: "0.75rem",
-              padding: "6px 12px",
+              background: theme.colors.white,
+              border: `1px solid ${theme.colors.primary} `,
+              borderRadius: theme.spacing.exs,
+              height: '100%',
+              padding: "12px 12px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
           >
-            Выбрать изображение
+            <AddPhotoAlternateIcon sx={{ color: theme.colors.primary }} />
           </Button>
         </Grid>
       </Grid>
@@ -101,19 +104,17 @@ const FileInput: React.FC<Props> = ({ name, label, onGetFile, initialValue }) =>
             variant="contained"
             onClick={activateInput}
             sx={{
-              color: "white",
-              textTransform: "uppercase",
-              background: COLORS.DARK_GREEN,
-              width: "100%",
-              height: '45px',
-              fontSize: "0.75rem",
-              padding: "6px 12px",
-              '&:hover': {
-                background: COLORS.FOREST_GREEN,
-              }
+              background: theme.colors.white,
+              border: `1px solid ${theme.colors.primary} `,
+              borderRadius: theme.spacing.exs,
+              height: '100%',
+              padding: "12px 12px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
           >
-            Выбрать изображение
+            <AddPhotoAlternateIcon sx={{ color: theme.colors.primary }} />
           </Button>
         </Box>
       </Box>

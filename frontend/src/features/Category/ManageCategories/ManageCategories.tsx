@@ -40,6 +40,7 @@ import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import { enqueueSnackbar } from "notistack";
 import Swal from "sweetalert2";
 import theme from "../../../globalStyles/globalTheme.ts";
+import CloseIcon from "@mui/icons-material/Close";
 
 const ManageCategories = () => {
   const categories = useAppSelector(selectCategories);
@@ -388,15 +389,54 @@ const ManageCategories = () => {
             justifyContent: "center",
           }}
         >
-          <Box sx={{ bgcolor: "white", p: 4, borderRadius: 2,  width: "50%",maxWidth: "500px",}}>
-            {parentCategoryId && (
-              <SubcategoryForm
-                categoryId={parentCategoryId}
-                onClose={handleCloseAddSubcategory}
-              />
-            )}
+          <Box sx={{ position: "relative", display: "flex", justifyContent: "center" }}>
+            <Box
+              sx={{
+                position: "fixed",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                bgcolor: theme.colors.blurBackground,
+                backdropFilter: "blur(4px)",
+                zIndex: -1,
+              }}
+            />
+
+            <Box
+              sx={{
+                bgcolor: theme.colors.white,
+                p: 4,
+                borderRadius: 2,
+                width: "80%",
+                maxWidth: "800px",
+                minWidth: "400px",
+                position: "relative",
+              }}
+            >
+
+              <IconButton
+                onClick={handleCloseAddSubcategory}
+                sx={{
+                  position: "absolute",
+                  top: 10,
+                  right: 10,
+                  zIndex: 1,
+                }}
+              >
+                <CloseIcon />
+              </IconButton>
+
+              {parentCategoryId && (
+                <SubcategoryForm
+                  categoryId={parentCategoryId}
+                  onClose={handleCloseAddSubcategory}
+                />
+              )}
+            </Box>
           </Box>
         </Modal>
+
 
         <Modal
           open={openCategoryModal}
@@ -410,24 +450,53 @@ const ManageCategories = () => {
             justifyContent: "center",
           }}
         >
-          <Box sx={{ bgcolor: "white", p: 4, borderRadius: 2, width: 800 }}>
-            {fetchedCategory && (
-              <EditCategory
-                category={{
-                  id: fetchedCategory.id,
-                  title: fetchedCategory.title,
-                  icon: fetchedCategory.icon as string | undefined,
-                  image: fetchedCategory.image as string | undefined,
-                }}
-                onClose={() => {
+          <Box sx={{ position: "relative", display: "flex", justifyContent: "center" }}>
+            <Box
+              sx={{
+                position: "fixed",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: theme.colors.blurBackground,
+                backdropFilter: 'blur(4px)',
+              }}
+            />
+
+            <Box sx={{ bgcolor: theme.colors.white, p: 4, borderRadius: 2, width: 800, position: "relative" }}>
+              <IconButton
+                onClick={() => {
                   setOpenCategoryModal(false);
                   setFetchedCategory(null);
                 }}
-              />
-            )}
-            {!fetchedCategory && openCategoryModal && (
-              <Typography>Загрузка данных категории...</Typography>
-            )}
+                sx={{
+                  position: "absolute",
+                  top: 16,
+                  right: 16,
+                  color: theme.colors.error,
+                }}
+              >
+                <CloseIcon />
+              </IconButton>
+
+              {fetchedCategory && (
+                <EditCategory
+                  category={{
+                    id: fetchedCategory.id,
+                    title: fetchedCategory.title,
+                    icon: fetchedCategory.icon as string | undefined,
+                    image: fetchedCategory.image as string | undefined,
+                  }}
+                  onClose={() => {
+                    setOpenCategoryModal(false);
+                    setFetchedCategory(null);
+                  }}
+                />
+              )}
+              {!fetchedCategory && openCategoryModal && (
+                <Typography>Загрузка данных категории...</Typography>
+              )}
+            </Box>
           </Box>
         </Modal>
       </Box>

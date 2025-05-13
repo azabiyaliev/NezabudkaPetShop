@@ -8,6 +8,7 @@ import { ClientInfoMutation } from '../../../types';
 import { enqueueSnackbar } from 'notistack';
 import { selectClientInfo } from "../../../store/clientInfo/clientInfoSlice.ts";
 import { fetchClientInfo, updateClientInfo } from '../../../store/clientInfo/clientInfoThunk.ts';
+import theme from '../../../globalStyles/globalTheme.ts';
 
 const initialState = {
   information: ""
@@ -103,7 +104,7 @@ const ClientInfoForm = () => {
             <Button
               variant="contained"
               type="submit"
-              sx={{ mt: 3, alignSelf: 'center', backgroundColor: 'darkgreen' }}
+              sx={{ mt: theme.spacing.sm, alignSelf: "center", backgroundColor: theme.colors.primary }}
             >
               Сохранить
             </Button>

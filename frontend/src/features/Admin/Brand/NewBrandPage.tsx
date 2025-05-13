@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import BrandForm from '../../../components/Forms/BrandForm/BrandForm.tsx';
 import AdminBar from '../AdminProfile/AdminBar.tsx';
 import { IBrandForm } from '../../../types';
@@ -9,7 +9,9 @@ import { addErrorFromSlice, addLoadingFromSlice } from '../../../store/brands/br
 import { useNavigate } from 'react-router-dom';
 import { enqueueSnackbar } from 'notistack';
 import { userRoleAdmin, userRoleSuperAdmin } from '../../../globalConstants.ts';
-import { FONTS } from '../../../globalStyles/stylesObjects.ts';
+import theme from '../../../globalStyles/globalTheme.ts';
+import Typography from '@mui/joy/Typography';
+
 
 const NewBrandPage = () => {
   const user = useAppSelector(selectUser);
@@ -42,7 +44,10 @@ const NewBrandPage = () => {
         textAlign: 'center', width: '100%',
       }}>
         <Box>
-          <Typography variant="h6" gutterBottom sx={{textAlign: 'center', fontWeight: FONTS.weight.bold, fontSize: FONTS.size.xl}}>
+          <Typography level="h4" gutterBottom sx={{ textAlign: 'center', fontWeight: theme.fonts.weight.medium,
+            "@media (max-width: 900px)": {
+              mt: 5,
+            },}}>
             Добавление нового бренда
           </Typography>
           <BrandForm addNewBrand={addNewBrand} isLoading={loading} brandError={addError}/>

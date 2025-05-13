@@ -8,6 +8,7 @@ import { Button, Typography } from '@mui/material';
 import { fetchCompanyPage, updateCompanyPage } from '../../../store/companyPage/companyPageThunk.ts';
 import { enqueueSnackbar } from 'notistack';
 import { Box } from '@mui/joy';
+import theme from '../../../globalStyles/globalTheme.ts';
 
 const initialState = {
   text: ""
@@ -77,7 +78,7 @@ const CompanyPageForm = () => {
               flexDirection: 'column',
               alignItems: 'center',
               width: '100%',
-              mt: 5,
+              mt: theme.spacing.sm,
             }}
           >
             <Typography

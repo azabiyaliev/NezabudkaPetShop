@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material';
+import { Box } from "@mui/material";
 import AdminBar from '../AdminProfile/AdminBar.tsx';
 import BrandForm from '../../../components/Forms/BrandForm/BrandForm.tsx';
 import { useAppDispatch, useAppSelector, usePermission } from '../../../app/hooks.ts';
@@ -15,7 +15,8 @@ import { editBrand, getOneBrand } from '../../../store/brands/brandsThunk.ts';
 import { useNavigate, useParams } from 'react-router-dom';
 import { enqueueSnackbar } from 'notistack';
 import { userRoleAdmin, userRoleSuperAdmin } from '../../../globalConstants.ts';
-import { FONTS } from '../../../globalStyles/stylesObjects.ts';
+import theme from '../../../globalStyles/globalTheme.ts';
+import { Typography } from "@mui/joy";
 
 const EditBrandPage = () => {
   const user = useAppSelector(selectUser);
@@ -65,7 +66,10 @@ const EditBrandPage = () => {
         textAlign: 'center', width: '100%',
       }}>
         <Box>
-          <Typography variant="h6" gutterBottom sx={{textAlign: 'center', fontWeight: FONTS.weight.bold, fontSize: FONTS.size.xl}}>
+          <Typography level="h4" gutterBottom sx={{ textAlign: 'center', fontWeight: theme.fonts.weight.medium,
+            "@media (max-width: 900px)": {
+              mt: 5,
+            },}}>
             Редактирование бренда
           </Typography>
           {brand !== null && (

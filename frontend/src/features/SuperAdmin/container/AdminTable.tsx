@@ -5,7 +5,6 @@ import { useEffect } from 'react';
 import { selectAdmins } from '../../../store/admins/adminSlice.ts';
 import { getAdmins } from '../../../store/admins/adminThunks.ts';
 import { Box } from '@mui/material';
-import { SPACING } from '../../../globalStyles/stylesObjects.ts';
 import AdminList from '../components/AdminList.tsx';
 
 const AdminTable = () => {
@@ -33,7 +32,7 @@ const AdminTable = () => {
       </Box>
       <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center" }}>
         {admins.length > 0 ? (
-          <Box sx={{ width: "90%", maxWidth: 1100, mt: SPACING.md }}>
+          <Box sx={{ width: "90%", maxWidth: 1100,}}>
             <AdminList admins={admins}/>
           </Box>
         ) : (

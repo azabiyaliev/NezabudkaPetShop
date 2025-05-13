@@ -9,6 +9,7 @@ import { useAppDispatch } from "../../../app/hooks.ts";
 import { enqueueSnackbar } from 'notistack';
 import { IconButton, InputAdornment } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+import theme from "../../../globalStyles/globalTheme.ts";
 
 interface Props {
   open: boolean;
@@ -72,12 +73,20 @@ const ModalWindowPasswordChange: React.FC<Props> = ({ open, setOpen }) => {
       <Dialog
         open={open}
         onClose={handleClose}
+        BackdropProps={{
+          sx: {
+            backdropFilter: 'blur(4px)',
+            backgroundColor: theme.colors.blurBackground,
+          },
+        }}
         PaperProps={{
           sx: {
             border: "1px solid #344C3D",
             borderRadius: "12px",
             boxShadow: "0px 8px 24px #344C3D",
             padding: "10px",
+            width:"70%",
+            height:"40%",
           },
         }}
       >
@@ -94,9 +103,17 @@ const ModalWindowPasswordChange: React.FC<Props> = ({ open, setOpen }) => {
           <CloseOutlinedIcon />
         </Button>
 
-        <DialogTitle style={{ textAlign: "center", marginTop:"15px", marginBottom:"15px" }}>Смена пароля</DialogTitle>
+        <DialogTitle style={{ textAlign: "center", marginTop:theme.spacing.xs, marginBottom:theme.spacing.xs }}>Смена пароля</DialogTitle>
         <DialogContent>
-          <Typography variant="body2" color="textSecondary" align="center">
+          <Typography
+            variant="body2"
+            sx={{
+              alignSelf: 'flex-start',
+              color: 'text.secondary',
+              fontWeight: 400,
+              mb: 0.5,
+            }}
+          >
             Пожалуйста, введите ваш нынешний пароль.
           </Typography>
           <TextField
@@ -106,12 +123,15 @@ const ModalWindowPasswordChange: React.FC<Props> = ({ open, setOpen }) => {
             fullWidth
             value={currentPassword}
             onChange={handlePasswordChange}
-            style={{ marginTop: "10px", marginBottom: "20px" }}
+            sx={{
+              backgroundColor: theme.colors.white,
+              borderRadius: theme.spacing.exs,
+            }}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
                   <IconButton onClick={toggleCurrentPasswordVisibility}>
-                    {showCurrentPassword ? <VisibilityOff /> : <Visibility />}
+                    {showCurrentPassword ? <Visibility />  : <VisibilityOff /> }
                   </IconButton>
                 </InputAdornment>
               ),
@@ -119,9 +139,13 @@ const ModalWindowPasswordChange: React.FC<Props> = ({ open, setOpen }) => {
           />
           <Typography
             variant="body2"
-            color="textSecondary"
-            align="center"
-            style={{ marginTop: "10px" }}
+            sx={{
+              alignSelf: 'flex-start',
+              color: 'text.secondary',
+              fontWeight: 400,
+              mb: 0.5,
+              mt: theme.spacing.sm,
+            }}
           >
             Введите новый пароль
           </Typography>
@@ -132,12 +156,15 @@ const ModalWindowPasswordChange: React.FC<Props> = ({ open, setOpen }) => {
             fullWidth
             value={newPassword}
             onChange={handleNewPasswordChange}
-            style={{ marginTop: "10px" }}
+            sx={{
+              backgroundColor: theme.colors.white,
+              borderRadius: theme.spacing.exs,
+            }}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
                   <IconButton onClick={toggleNewPasswordVisibility}>
-                    {showNewPassword ? <VisibilityOff /> : <Visibility />}
+                    {showNewPassword ?  <Visibility /> : <VisibilityOff />}
                   </IconButton>
                 </InputAdornment>
               ),
@@ -146,7 +173,7 @@ const ModalWindowPasswordChange: React.FC<Props> = ({ open, setOpen }) => {
         </DialogContent>
         <DialogActions
           style={{
-            marginBottom: "40px",
+            marginBottom: theme.spacing.sm,
             display: "flex",
             justifyContent: "center",
           }}
@@ -155,12 +182,10 @@ const ModalWindowPasswordChange: React.FC<Props> = ({ open, setOpen }) => {
             onClick={handlePasswordSubmit}
             variant="contained"
             sx={{
-              marginTop: "20px",
-              backgroundColor: "#FFEB3B",
-              color: "black",
-              width: "auto",
-              maxWidth: "300px",
-              borderRadius: "20px",
+              backgroundColor: theme.colors.primary,
+              color: theme.colors.white,
+              mt: theme.spacing.sm,
+              width:"30%",
             }}
           >
             Сменить пароль

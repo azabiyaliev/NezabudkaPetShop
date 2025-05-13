@@ -1,11 +1,11 @@
 import { TextField, Button, Box, Typography, Paper, IconButton } from "@mui/material";
 import React, { useCallback, useRef, useState } from "react";
 import { CategoryMutation } from '../../../types';
-import AddIcon from '@mui/icons-material/Add';
 import FileInputCategory from '../../FileInput/FileInputCategory.tsx';
 import { apiUrl } from '../../../globalConstants.ts';
 import CloseIcon from '@mui/icons-material/Close';
 import { enqueueSnackbar } from 'notistack';
+import theme from '../../../globalStyles/globalTheme.ts';
 
 export interface Props {
   onSubmit: (category: CategoryMutation) => void;
@@ -63,7 +63,7 @@ const CategoryForm: React.FC<Props> = ({ onSubmit }) => {
 
   return (
     <Paper elevation={3} sx={{ p: 4, borderRadius: 3, maxWidth: 800, margin: "10px auto" , width: "100%"}}>
-      <Typography  gutterBottom sx={{ textAlign: 'start', fontWeight: 600, mb:"10px" }}>
+      <Typography  gutterBottom sx={{ textAlign: 'center', fontWeight: 600, mb:"10px" }}>
         Добавить новую категорию
       </Typography>
 
@@ -81,7 +81,7 @@ const CategoryForm: React.FC<Props> = ({ onSubmit }) => {
             />
           </Box>
 
-          <Box sx={{ display: "flex", justifyContent: "space-between", gap: 2, mt: 2, alignItems: "center" }}>
+          <Box sx={{ display: "flex", justifyContent: "space-between", gap: 2, alignItems: "center" }}>
             <FileInputCategory
               id="image"
               name="image"
@@ -99,8 +99,8 @@ const CategoryForm: React.FC<Props> = ({ onSubmit }) => {
                 justifyContent: 'center',
                 width: '100px',
                 height: '100px',
-                backgroundColor: '#f5f5f5',
-                border: '1px dashed #ddd',
+                backgroundColor: theme.colors.rgbaGrey,
+                border: `1px dashed ${theme.colors.DARK_GRAY} `,
                 borderRadius: 4,
                 position: 'relative',
               }}
@@ -129,10 +129,7 @@ const CategoryForm: React.FC<Props> = ({ onSubmit }) => {
                       position: 'absolute',
                       top: 0,
                       right: 0,
-                      backgroundColor: 'white',
-                      '&:hover': {
-                        backgroundColor: '#ffdddd',
-                      },
+                      backgroundColor: theme.colors.white,
                     }}
                   >
                     <CloseIcon />
@@ -142,8 +139,8 @@ const CategoryForm: React.FC<Props> = ({ onSubmit }) => {
                 <Typography
                   component="span"
                   sx={{
-                    color: '#aaa',
-                    fontSize: '12px',
+                    color: theme.colors.DARK_GRAY,
+                    fontSize: theme.fonts.size.xs,
                     textAlign: 'center',
                   }}
                 >
@@ -158,17 +155,10 @@ const CategoryForm: React.FC<Props> = ({ onSubmit }) => {
               type="submit"
               variant="contained"
               size="large"
-              startIcon={<AddIcon />}
               sx={{
-                backgroundColor: "#237803",
-                color: "white",
-                px: 4,
-                py: 1.5,
-                borderRadius: "8px",
+                backgroundColor: theme.colors.primary,
+                color: theme.colors.white,
                 fontWeight: 500,
-                "&:hover": {
-                  backgroundColor: "#1e6600",
-                },
               }}
             >
               Добавить

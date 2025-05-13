@@ -6,9 +6,11 @@ import ProductForm from "../components/ProductForm.tsx";
 import { selectUser } from "../../../../store/users/usersSlice.ts";
 import AdminBar from "../../AdminProfile/AdminBar.tsx";
 import { userRoleAdmin, userRoleSuperAdmin } from '../../../../globalConstants.ts';
-import { Box, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
-import { FONTS } from '../../../../globalStyles/stylesObjects.ts';
+
+import theme from '../../../../globalStyles/globalTheme.ts';
+import Typography from '@mui/joy/Typography';
 
 const NewProduct = () => {
   const dispatch = useAppDispatch();
@@ -34,25 +36,43 @@ const NewProduct = () => {
         display: "flex",
         margin: "30px 0",
         "@media (max-width: 900px)": {
-          flexWrap: "wrap",
+          flexDirection: "column",
         },
-      }}>
+      }}
+    >
       <AdminBar />
       <Box
         sx={{
-          width: '100%',
-          marginLeft: '30px',
-          "@media (max-width: 900px)": {
-            marginLeft: '0',
-          },
+          flexGrow: 1,
+          display: "flex",
+          justifyContent: "center",
         }}
       >
-        <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600, fontSize: FONTS.size.xl}}>
-          Добавление нового товара
-        </Typography>
-        <ProductForm onSubmit={onSubmitForm} />
+        <Box
+          sx={{
+            width: "70%",
+            "@media (max-width: 900px)": {
+              width: "100%",
+              mt: 5,
+            },
+          }}
+        >
+          <Typography
+            level="h4"
+            gutterBottom
+            sx={{
+              textAlign: "center",
+              fontWeight: theme.fonts.weight.medium,
+            }}
+          >
+            Добавление нового товара
+          </Typography>
+          <ProductForm onSubmit={onSubmitForm} />
+        </Box>
       </Box>
     </Box>
+
+
   );
 };
 

@@ -85,14 +85,14 @@ const Brands: React.FC<Props> = ({ brands }) => {
             marginRight: '10px'
           }}>
             <ClearIcon
-              sx={{color: 'red'}}
+              sx={{color: theme.colors.warning}}
               onClick={() => deleteThisBrand(params.row.id)}
             />
           </IconButton>
 
           <IconButton>
             <EditIcon
-              sx={{color: '#ff9800'}}
+              sx={{color: theme.colors.primary}}
               onClick={() => navigate(`/private/edit_brand/${params.row.id}`)}
             />
           </IconButton>
@@ -168,30 +168,18 @@ const Brands: React.FC<Props> = ({ brands }) => {
           value={brandSearch}
           onChange={(e) => setBrandSearch(e.target.value)}
           sx={{
-            borderRadius: "40px",
-            width: "40%",
+            width: "100%",
+            maxWidth: "320px",
             "@media (max-width: 750px)": {
-              width: "100%",
-              minWidth: "100%",
-            },
-            '& .MuiOutlinedInput-root': {
-              borderRadius: '40px',
-              '& fieldset': {
-                borderColor: "#8EA58C",
-              },
-              '&.Mui-focused fieldset': {
-                borderColor: "#388e3c",
-              },
+              maxWidth: "100%",
             },
           }}
-          slotProps={{
-            input: {
-              endAdornment: (
-                <InputAdornment position="end">
-                  <SearchIcon sx={{ color: "darkgreen" }} />
-                </InputAdornment>
-              ),
-            },
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <SearchIcon sx={{ color: theme.colors.primary }} />
+              </InputAdornment>
+            ),
           }}
         />
       </Box>

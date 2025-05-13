@@ -8,6 +8,7 @@ import TextField from '@mui/material/TextField';
 import FileInput from '../../UI/FileInput/FileInput.tsx';
 import { apiUrl } from '../../../globalConstants.ts';
 import CloseIcon from '@mui/icons-material/Close';
+import theme from '../../../globalStyles/globalTheme.ts';
 
 const initialState = {
   link: "",
@@ -101,18 +102,17 @@ const AddNewPhotoForm = () => {
           width: '100%',
           maxWidth: 700,
           borderRadius: 3,
-          backgroundColor: '#fff',
+          backgroundColor: theme.colors.white,
           boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
         }}
       >
-        <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600 }}>
+        <Typography  gutterBottom sx={{ textAlign: 'center', fontWeight: theme.fonts.weight.medium, mb:"10px" }}>
           Добавить фото для карусели
         </Typography>
 
         <form onSubmit={onFormSubmit}>
           <TextField
             fullWidth
-            size="small"
             label="Ссылка"
             name="link"
             variant="outlined"
@@ -120,7 +120,11 @@ const AddNewPhotoForm = () => {
             onChange={onInputChange}
             error={Boolean(linkError)}
             helperText={linkError}
-            sx={{ mb: 2 }}
+            sx={{
+              backgroundColor: theme.colors.white,
+              borderRadius: theme.spacing.exs,
+              mt: theme.spacing.sm,
+            }}
           />
 
           <FileInput
@@ -135,7 +139,6 @@ const AddNewPhotoForm = () => {
 
           <TextField
             fullWidth
-            size="small"
             label="Заголовок"
             name="title"
             variant="outlined"
@@ -143,12 +146,15 @@ const AddNewPhotoForm = () => {
             onChange={onInputChange}
             error={Boolean(titleError)}
             helperText={titleError}
-            sx={{ mt: 2, mb: 2 }}
+            sx={{
+              backgroundColor: theme.colors.white,
+              borderRadius: theme.spacing.exs,
+              mt: theme.spacing.exs,
+            }}
           />
 
           <TextField
             fullWidth
-            size="small"
             label="Описание"
             name="description"
             variant="outlined"
@@ -158,7 +164,11 @@ const AddNewPhotoForm = () => {
             onChange={onInputChange}
             error={Boolean(descError)}
             helperText={descError}
-            sx={{ mb: 2 }}
+            sx={{
+              backgroundColor: theme.colors.white,
+              borderRadius: theme.spacing.exs,
+              mt: theme.spacing.sm,
+            }}
           />
 
           {newPhoto.photo && (
@@ -170,9 +180,9 @@ const AddNewPhotoForm = () => {
                   width: '200px',
                   height: '100px',
                   objectFit: 'cover',
-                  borderRadius: '8px',
-                  marginRight: '10px',
-                  border: '1px solid #ddd',
+                  borderRadius: theme.spacing.exs,
+                  marginRight: theme.spacing.xs,
+                  marginTop: theme.spacing.sm
                 }}
               />
               <CloseIcon
@@ -192,14 +202,10 @@ const AddNewPhotoForm = () => {
               variant="contained"
               type="submit"
               sx={{
-                backgroundColor: isButtonFormInvalid ? 'lightgray' : '#FDE910',
-                color: 'rgb(52, 51, 50)',
-                borderRadius: '20px',
-                textTransform: 'none',
+                backgroundColor: isButtonFormInvalid ? theme.colors.rgbaGrey : theme.colors.primary,
+                color: theme.colors.white,
+                textTransform: 'uppercase',
                 fontWeight: 600,
-                "&:hover": {
-                  backgroundColor: isButtonFormInvalid ? 'lightgray' : '#e0d809',
-                }
               }}
             >
               Добавить

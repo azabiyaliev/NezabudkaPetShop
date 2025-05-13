@@ -93,7 +93,7 @@ const BrandForm: React.FC<Props> = ({
       <main>
         <Sheet
           sx={{
-            maxWidth: 1200,
+            maxWidth: 800,
             padding: '30px 20px',
             mx: "auto",
             display: "flex",
@@ -152,27 +152,24 @@ const BrandForm: React.FC<Props> = ({
               <CloseIcon onClick={() => deleteLogo()}/>
             </Box>
           )}
-          <Button
-            variant="text"
-            sx={{
-              color: "white",
-              textTransform: "uppercase",
-              border: newBrand.title.trim().length === 0 ? "1px solid lightgrey" : null,
-              background: isLoading || newBrand.title.trim().length === 0
-                ? "transparent"
-                : COLORS.DARK_GREEN,
-              '&:hover': {
+          <Box sx={{ display: "flex", justifyContent: "center" }}>
+            <Button
+              variant="text"
+              sx={{
+                color: COLORS.white,
+                textTransform: "uppercase",
+                border: newBrand.title.trim().length === 0 ? "1px solid lightgrey" : null,
                 background: isLoading || newBrand.title.trim().length === 0
                   ? "transparent"
-                  : COLORS.FOREST_GREEN,
-              }
-            }}
-            type="submit"
-            disabled={isLoading || newBrand.title.trim().length === 0}
-          >
-            {!isBrand ? "Создать" : "Сохранить"}
-            {isLoading ? <ButtonSpinner /> : null}
-          </Button>
+                  : COLORS.primary,
+              }}
+              type="submit"
+              disabled={isLoading || newBrand.title.trim().length === 0}
+            >
+              {!isBrand ? "Создать" : "Сохранить"}
+              {isLoading ? <ButtonSpinner /> : null}
+            </Button>
+          </Box>
         </Sheet>
       </main>
     </form>

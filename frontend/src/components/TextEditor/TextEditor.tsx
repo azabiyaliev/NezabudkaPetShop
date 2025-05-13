@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from "react";
 import Quill from "quill";
 import "quill/dist/quill.snow.css";
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import './styles.css';
 
 interface Props {
@@ -95,9 +95,7 @@ const TextEditor: React.FC<Props> = ({
           {helperText}
         </Typography>
       )}
-      <Paper elevation={3}>
-        <div ref={quillRef} style={{ height: "200px", borderRadius: "4px" }} />
-      </Paper>
+      <div ref={quillRef} style={{ height: "200px", borderRadius: "4px" }} />
     </Box>
   );
 };

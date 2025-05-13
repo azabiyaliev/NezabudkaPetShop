@@ -8,6 +8,7 @@ import { fetchSite, updateSite } from '../../../store/editionSite/editionSiteThu
 import { selectEditSite, selectError } from '../../../store/editionSite/editionSiteSlice.ts';
 import { enqueueSnackbar } from 'notistack';
 import Typography from '@mui/joy/Typography';
+import theme from '../../../globalStyles/globalTheme.ts';
 
 const initialState: EditSiteMutation = {
   instagram: "",
@@ -119,7 +120,7 @@ const EditSiteForm = () => {
   return (
     <Container component="main">
       <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center",  position: "relative" }}>
-        <Typography level="h4" gutterBottom sx={{ textAlign: 'center', fontWeight: 600,
+        <Typography level="h4" gutterBottom sx={{ textAlign: 'center', fontWeight: theme.fonts.weight.medium,
           "@media (max-width: 900px)": {
             mt: 5,
           },}}>
@@ -136,44 +137,8 @@ const EditSiteForm = () => {
             error={!!getFieldError("instagram") || Boolean(instaError)}
             helperText={getFieldError("instagram") || instaError}
             sx={{
-              mb: 3,
-              borderRadius: "20px",
-              "& .MuiOutlinedInput-root": {
-                borderRadius: "20px",
-                backgroundColor: "#E4E6D9",
-                transition: "all 0.3s ease",
-                height: "56px",
-                "&.Mui-focused": {
-                  borderColor: "green",
-                },
-                "& .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "green",
-                  transition: "border-color 0.3s ease",
-                },
-                "&:hover .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "darkgreen",
-                },
-              },
-              "& .MuiInputLabel-root.Mui-focused": {
-                color: "green",
-              },
-              "& .MuiOutlinedInput-root.Mui-error": {
-                backgroundColor: "#FFECEC",
-                "& .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "#FF0000",
-                },
-              },
-              "& .MuiInputLabel-root.Mui-error": {
-                color: "#FF0000",
-              },
-              "& .MuiFormHelperText-root": {
-                minHeight: "20px",
-              },
-              "& .MuiFormHelperText-root.Mui-error": {
-                color: "#FF0000",
-                fontSize: "0.9rem",
-                fontWeight: 500,
-              },
+              backgroundColor: theme.colors.white,
+              borderRadius: theme.spacing.exs,
             }}
           />
           <TextField
@@ -186,44 +151,9 @@ const EditSiteForm = () => {
             error={!!getFieldError("whatsapp") || Boolean(whatsError)}
             helperText={getFieldError("whatsapp") || whatsError}
             sx={{
-              mb: 3,
-              borderRadius: "20px",
-              "& .MuiOutlinedInput-root": {
-                borderRadius: "20px",
-                backgroundColor: "#E4E6D9",
-                transition: "all 0.3s ease",
-                height: "56px",
-                "&.Mui-focused": {
-                  borderColor: "green",
-                },
-                "& .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "green",
-                  transition: "border-color 0.3s ease",
-                },
-                "&:hover .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "darkgreen",
-                },
-              },
-              "& .MuiInputLabel-root.Mui-focused": {
-                color: "green",
-              },
-              "& .MuiOutlinedInput-root.Mui-error": {
-                backgroundColor: "#FFECEC",
-                "& .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "#FF0000",
-                },
-              },
-              "& .MuiInputLabel-root.Mui-error": {
-                color: "#FF0000",
-              },
-              "& .MuiFormHelperText-root": {
-                minHeight: "20px",
-              },
-              "& .MuiFormHelperText-root.Mui-error": {
-                color: "#FF0000",
-                fontSize: "0.9rem",
-                fontWeight: 500,
-              },
+              backgroundColor: theme.colors.white,
+              borderRadius: theme.spacing.exs,
+              mt: theme.spacing.sm,
             }}
           />
           <TextField
@@ -236,44 +166,9 @@ const EditSiteForm = () => {
             error={!!getFieldError("schedule") || Boolean(scheduleError)}
             helperText={getFieldError("schedule") || scheduleError}
             sx={{
-              mb: 3,
-              borderRadius: "20px",
-              "& .MuiOutlinedInput-root": {
-                borderRadius: "20px",
-                backgroundColor: "#E4E6D9",
-                transition: "all 0.3s ease",
-                height: "56px",
-                "&.Mui-focused": {
-                  borderColor: "green",
-                },
-                "& .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "green",
-                  transition: "border-color 0.3s ease",
-                },
-                "&:hover .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "darkgreen",
-                },
-              },
-              "& .MuiInputLabel-root.Mui-focused": {
-                color: "green",
-              },
-              "& .MuiOutlinedInput-root.Mui-error": {
-                backgroundColor: "#FFECEC",
-                "& .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "#FF0000",
-                },
-              },
-              "& .MuiInputLabel-root.Mui-error": {
-                color: "#FF0000",
-              },
-              "& .MuiFormHelperText-root": {
-                minHeight: "20px",
-              },
-              "& .MuiFormHelperText-root.Mui-error": {
-                color: "#FF0000",
-                fontSize: "0.9rem",
-                fontWeight: 500,
-              },
+              backgroundColor: theme.colors.white,
+              borderRadius: theme.spacing.exs,
+              mt: theme.spacing.sm,
             }}
           />
           <TextField
@@ -286,44 +181,9 @@ const EditSiteForm = () => {
             error={!!getFieldError("address") || Boolean(addressError)}
             helperText={getFieldError("address") || addressError}
             sx={{
-              mb: 3,
-              borderRadius: "20px",
-              "& .MuiOutlinedInput-root": {
-                borderRadius: "20px",
-                backgroundColor: "#E4E6D9",
-                transition: "all 0.3s ease",
-                height: "56px",
-                "&.Mui-focused": {
-                  borderColor: "green",
-                },
-                "& .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "green",
-                  transition: "border-color 0.3s ease",
-                },
-                "&:hover .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "darkgreen",
-                },
-              },
-              "& .MuiInputLabel-root.Mui-focused": {
-                color: "green",
-              },
-              "& .MuiOutlinedInput-root.Mui-error": {
-                backgroundColor: "#FFECEC",
-                "& .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "#FF0000",
-                },
-              },
-              "& .MuiInputLabel-root.Mui-error": {
-                color: "#FF0000",
-              },
-              "& .MuiFormHelperText-root": {
-                minHeight: "20px",
-              },
-              "& .MuiFormHelperText-root.Mui-error": {
-                color: "#FF0000",
-                fontSize: "0.9rem",
-                fontWeight: 500,
-              },
+              backgroundColor: theme.colors.white,
+              borderRadius: theme.spacing.exs,
+              mt: theme.spacing.sm,
             }}
           />
           <TextField
@@ -336,44 +196,9 @@ const EditSiteForm = () => {
             error={!!getFieldError("linkAddress") || Boolean(linkAddressError)}
             helperText={getFieldError("linkAddress") || linkAddressError}
             sx={{
-              mb: 3,
-              borderRadius: "20px",
-              "& .MuiOutlinedInput-root": {
-                borderRadius: "20px",
-                backgroundColor: "#E4E6D9",
-                transition: "all 0.3s ease",
-                height: "56px",
-                "&.Mui-focused": {
-                  borderColor: "green",
-                },
-                "& .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "green",
-                  transition: "border-color 0.3s ease",
-                },
-                "&:hover .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "darkgreen",
-                },
-              },
-              "& .MuiInputLabel-root.Mui-focused": {
-                color: "green",
-              },
-              "& .MuiOutlinedInput-root.Mui-error": {
-                backgroundColor: "#FFECEC",
-                "& .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "#FF0000",
-                },
-              },
-              "& .MuiInputLabel-root.Mui-error": {
-                color: "#FF0000",
-              },
-              "& .MuiFormHelperText-root": {
-                minHeight: "20px",
-              },
-              "& .MuiFormHelperText-root.Mui-error": {
-                color: "#FF0000",
-                fontSize: "0.9rem",
-                fontWeight: 500,
-              },
+              backgroundColor: theme.colors.white,
+              borderRadius: theme.spacing.exs,
+              mt: theme.spacing.sm,
             }}
           />
           <TextField
@@ -386,44 +211,9 @@ const EditSiteForm = () => {
             error={!!getFieldError("linkAddress") || Boolean(linkAddressError)}
             helperText={getFieldError("linkAddress") || linkAddressError}
             sx={{
-              mb: 3,
-              borderRadius: "20px",
-              "& .MuiOutlinedInput-root": {
-                borderRadius: "20px",
-                backgroundColor: "#E4E6D9",
-                transition: "all 0.3s ease",
-                height: "56px",
-                "&.Mui-focused": {
-                  borderColor: "green",
-                },
-                "& .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "green",
-                  transition: "border-color 0.3s ease",
-                },
-                "&:hover .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "darkgreen",
-                },
-              },
-              "& .MuiInputLabel-root.Mui-focused": {
-                color: "green",
-              },
-              "& .MuiOutlinedInput-root.Mui-error": {
-                backgroundColor: "#FFECEC",
-                "& .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "#FF0000",
-                },
-              },
-              "& .MuiInputLabel-root.Mui-error": {
-                color: "#FF0000",
-              },
-              "& .MuiFormHelperText-root": {
-                minHeight: "20px",
-              },
-              "& .MuiFormHelperText-root.Mui-error": {
-                color: "#FF0000",
-                fontSize: "0.9rem",
-                fontWeight: 500,
-              },
+              backgroundColor: theme.colors.white,
+              borderRadius: theme.spacing.exs,
+              mt: theme.spacing.sm,
             }}
           />
           <TextField
@@ -437,44 +227,9 @@ const EditSiteForm = () => {
             error={!!getFieldError("email") || Boolean(emailError)}
             helperText={getFieldError("email")|| emailError}
             sx={{
-              mb: 3,
-              borderRadius: "20px",
-              "& .MuiOutlinedInput-root": {
-                borderRadius: "20px",
-                backgroundColor: "#E4E6D9",
-                transition: "all 0.3s ease",
-                height: "56px",
-                "&.Mui-focused": {
-                  borderColor: "green",
-                },
-                "& .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "green",
-                  transition: "border-color 0.3s ease",
-                },
-                "&:hover .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "darkgreen",
-                },
-              },
-              "& .MuiInputLabel-root.Mui-focused": {
-                color: "green",
-              },
-              "& .MuiOutlinedInput-root.Mui-error": {
-                backgroundColor: "#FFECEC",
-                "& .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "#FF0000",
-                },
-              },
-              "& .MuiInputLabel-root.Mui-error": {
-                color: "#FF0000",
-              },
-              "& .MuiFormHelperText-root": {
-                minHeight: "20px",
-              },
-              "& .MuiFormHelperText-root.Mui-error": {
-                color: "#FF0000",
-                fontSize: "0.9rem",
-                fontWeight: 500,
-              },
+              backgroundColor: theme.colors.white,
+              borderRadius: theme.spacing.exs,
+              mt: theme.spacing.sm,
             }}
           />
           <TextField
@@ -488,44 +243,9 @@ const EditSiteForm = () => {
             error={!!getFieldError("phone") || Boolean(phoneError)}
             helperText={getFieldError("phone") || phoneError}
             sx={{
-              mb: 3,
-              borderRadius: "20px",
-              "& .MuiOutlinedInput-root": {
-                borderRadius: "20px",
-                backgroundColor: "#E4E6D9",
-                transition: "all 0.3s ease",
-                height: "56px",
-                "&.Mui-focused": {
-                  borderColor: "green",
-                },
-                "& .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "green",
-                  transition: "border-color 0.3s ease",
-                },
-                "&:hover .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "darkgreen",
-                },
-              },
-              "& .MuiInputLabel-root.Mui-focused": {
-                color: "green",
-              },
-              "& .MuiOutlinedInput-root.Mui-error": {
-                backgroundColor: "#FFECEC",
-                "& .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "#FF0000",
-                },
-              },
-              "& .MuiInputLabel-root.Mui-error": {
-                color: "#FF0000",
-              },
-              "& .MuiFormHelperText-root": {
-                minHeight: "20px",
-              },
-              "& .MuiFormHelperText-root.Mui-error": {
-                color: "#FF0000",
-                fontSize: "0.9rem",
-                fontWeight: 500,
-              },
+              backgroundColor: theme.colors.white,
+              borderRadius: theme.spacing.exs,
+              mt: theme.spacing.sm,
             }}
           />
 
@@ -535,12 +255,9 @@ const EditSiteForm = () => {
               variant="contained"
               disabled={isButtonFormInvalid}
               sx={{
-                mt: 3,
-                mb: 2,
-                backgroundColor: "#FFEB3B",
-                color: "black",
-                width: "40%",
-                borderRadius: "20px"
+                backgroundColor: theme.colors.primary,
+                color: theme.colors.white,
+                mt: theme.spacing.sm,
               }}
             >
               Сохранить изменения

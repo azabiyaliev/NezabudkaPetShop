@@ -8,6 +8,7 @@ import { BonusProgramPageMutation } from '../../../types';
 import { selectBonusProgram } from '../../../store/bonusProgramPage/bonusProgramPageSlice.ts';
 import { fetchBonusPage, updateBonusPage } from '../../../store/bonusProgramPage/bonusProgramPageThunk.ts';
 import { enqueueSnackbar } from 'notistack';
+import theme from '../../../globalStyles/globalTheme.ts';
 
 const initialState = {
   text: ""
@@ -80,7 +81,7 @@ const BonusProgramForm = () => {
               flexDirection: 'column',
               alignItems: 'center',
               width: '100%',
-              mt: 5,
+              mt: theme.spacing.sm,
             }}
           >
             <Typography

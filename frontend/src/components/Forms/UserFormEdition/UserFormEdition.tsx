@@ -14,6 +14,7 @@ import LockResetIcon from "@mui/icons-material/LockReset";
 import { regPhone, userRoleAdmin, userRoleClient, userRoleSuperAdmin } from '../../../globalConstants.ts';
 import { regEmail } from '../EditSiteForm/EditSiteForm.tsx';
 import { enqueueSnackbar } from 'notistack';
+import theme from "../../../globalStyles/globalTheme.ts";
 
 const initialState = {
   firstName: "",
@@ -137,18 +138,18 @@ const UserFormEdition = () => {
             position: "relative"
           }}
         >
-          <Avatar sx={{ bgcolor: "white" }}>
-            <PersonIcon sx={{ color: "black" }} />
+          <Avatar sx={{ bgcolor: theme.colors.white }}>
+            <PersonIcon sx={{ color: theme.colors.black }} />
           </Avatar>
 
           {user && can([userRoleAdmin, userRoleSuperAdmin]) && (
-            <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600 }}>
+            <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: theme.fonts.weight.medium }}>
               Редактировать профиль
             </Typography>
           )}
 
           {user && can([userRoleClient]) && (
-            <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600 }}>
+            <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight:  theme.fonts.weight.medium }}>
               Мои данные
             </Typography>
           )}
@@ -172,9 +173,8 @@ const UserFormEdition = () => {
                   onChange={inputChangeHandler}
                   variant="outlined"
                   sx={{
-                    backgroundColor: "white",
-                    borderRadius: "7px",
-                    mb: 5,
+                    backgroundColor: theme.colors.white,
+                    borderRadius: theme.spacing.exs,
                   }}
                   error={!!getFieldError("firstName") || Boolean(name)}
                   helperText={getFieldError("firstName") || name}
@@ -191,9 +191,8 @@ const UserFormEdition = () => {
                   onChange={inputChangeHandler}
                   variant="outlined"
                   sx={{
-                    backgroundColor: "white",
-                    borderRadius: "7px",
-                    mb: 5,
+                    backgroundColor: theme.colors.white,
+                    borderRadius: theme.spacing.exs,
                   }}
                   error={!!getFieldError("secondName") || Boolean(secondName)}
                   helperText={getFieldError("secondName") || secondName}
@@ -213,9 +212,9 @@ const UserFormEdition = () => {
                   onChange={inputChangeHandler}
                   variant="outlined"
                   sx={{
-                    backgroundColor: "white",
-                    borderRadius: "7px",
-                    mb: 2
+                    backgroundColor: theme.colors.white,
+                    borderRadius: theme.spacing.exs,
+                    mt: theme.spacing.sm,
                   }}
                   error={!!getFieldError("email") || Boolean(email)}
                   helperText={getFieldError("email") || email}
@@ -235,9 +234,9 @@ const UserFormEdition = () => {
                   onChange={inputChangeHandler}
                   variant="outlined"
                   sx={{
-                    backgroundColor: "white",
-                    borderRadius: "7px",
-                    mt:3,
+                    backgroundColor: theme.colors.white,
+                    borderRadius: theme.spacing.exs,
+                    mt: theme.spacing.sm,
                   }}
                   error={!!getFieldError("phone") || Boolean(phone)}
                   helperText={getFieldError("phone") || phone}
@@ -264,8 +263,8 @@ const UserFormEdition = () => {
                   disabled={isButtonFormInvalid}
                   variant="contained"
                   sx={{
-                    backgroundColor: "#FFEB3B",
-                    color: "black",
+                    backgroundColor: theme.colors.primary,
+                    color: theme.colors.white,
                     '@media (max-width: 500px)': {
                       mb: 2
                     },
@@ -281,8 +280,8 @@ const UserFormEdition = () => {
                   disabled={isButtonFormInvalid}
                   variant="contained"
                   sx={{
-                    backgroundColor: "#FFEB3B",
-                    color: "black",
+                    backgroundColor: theme.colors.primary,
+                    color: theme.colors.white,
                     '@media (max-width: 500px)': {
                       mb: 2
                     },
@@ -295,8 +294,11 @@ const UserFormEdition = () => {
                 type="button"
                 variant="contained"
                 sx={{
-                  backgroundColor: "rgb(255, 247, 204)",
-                  color: "black",
+                  backgroundColor:
+                    user?.role === "admin" || user?.role === "superAdmin"
+                      ? theme.colors.adminBackgroundYellow
+                      :  theme.colors.OLIVE_GREEN,
+                  color: theme.colors.white,
                 }}
                 onClick={handlePasswordChangeOpen}
               >

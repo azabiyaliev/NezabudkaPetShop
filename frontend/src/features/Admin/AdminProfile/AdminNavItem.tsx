@@ -1,6 +1,7 @@
 import { ListItemButton, ListItemText } from "@mui/material";
 import { NavLink, useLocation } from "react-router-dom";
 import { ReactNode } from "react";
+import theme from '../../../globalStyles/globalTheme.ts';
 
 interface Props {
   to: string;
@@ -18,8 +19,8 @@ const AdminNavItem = ({ to, icon, text }: Props) => {
       to={to}
       sx={{
         pl: 5,
-        backgroundColor: isActive ? "#e0f2f1" : "transparent",
-        borderLeft: isActive ? "4px solid #45624E" : "4px solid transparent",
+        backgroundColor: isActive ? "#D0F0C0" : "transparent",
+        borderLeft: isActive ? `4px solid ${theme.colors.primary} ` : "4px solid transparent",
         '& .MuiListItemText-root': {
           fontWeight: isActive ? "bold" : "normal",
         }
