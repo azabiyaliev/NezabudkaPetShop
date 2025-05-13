@@ -84,11 +84,6 @@ const CategoryNavMenu: React.FC<Props> = ({ openMenu, closeMenu }) => {
       >
         {user && can(["admin", "superAdmin"]) && (
           <>
-            <DialogTitle
-              sx={{ fontFamily: "Nunito, sans-serif", fontWeight: 600 }}
-            >
-              Панель админа
-            </DialogTitle>
             <ModalClose onClick={toggleAdminBar} />
             <Divider />
             <Box

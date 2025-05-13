@@ -17,14 +17,24 @@ const Layout: React.FC<LayoutProps> = ({ children, beforeContainer, isWide }) =>
         minHeight: "100vh",
       }}
     >
-      <header>
-        <Header />
+      <header
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100%",
+          zIndex: 1000,
+          backgroundColor: "white",
+          boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+        }}
+      >
+        <Header/>
       </header>
       {beforeContainer}
       <main
         style={{
           flex: 1,
-          marginBottom:"100px"
+          marginBottom: "100px"
         }}
       >
         {isWide ? (
@@ -42,7 +52,7 @@ const Layout: React.FC<LayoutProps> = ({ children, beforeContainer, isWide }) =>
         )}
       </main>
       <footer>
-        <Footer />
+        <Footer/>
       </footer>
     </Box>
   );
