@@ -281,7 +281,7 @@ describe('OrderForm component', () => {
       );
     });
 
-    const phoneInput = screen.getByLabelText('Телефон'); // Updated to match actual label
+    const phoneInput = screen.getByLabelText('Телефон');
     await act(async () => {
       fireEvent.change(phoneInput, {target: {value: '123'}});
     });
@@ -304,7 +304,7 @@ describe('OrderForm component', () => {
       );
     });
 
-    const emailInput = screen.getByLabelText('Эл. адрес'); // Updated to match actual label
+    const emailInput = screen.getByLabelText('Эл. адрес');
     await act(async () => {
       fireEvent.change(emailInput, {target: {value: 'invalid-email'}});
     });
