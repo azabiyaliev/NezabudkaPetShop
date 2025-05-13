@@ -276,7 +276,7 @@ export interface ProductResponse {
   productFeedClass?: string;
   productManufacturer?: string;
   promoPercentage?: number;
-  promoPrice?: number;
+  promoPrice: number;
 }
 
 export interface AdminDataMutation {
