@@ -387,6 +387,7 @@ const ManageCategories = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            mx: 5
           }}
         >
           <Box sx={{ position: "relative", display: "flex", justifyContent: "center" }}>
@@ -448,6 +449,7 @@ const ManageCategories = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            mx: 5
           }}
         >
           <Box sx={{ position: "relative", display: "flex", justifyContent: "center" }}>
