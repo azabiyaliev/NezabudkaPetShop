@@ -211,13 +211,21 @@ const Filters = () => {
     if (filters.minPrice !== null) filtersToApply.minPrice = filters.minPrice;
     if (filters.maxPrice !== null) filtersToApply.maxPrice = filters.maxPrice;
 
+    const cleanedFilters: Record<string, string | number | boolean | (string | number)[]> = {};
+
+    Object.entries(filtersToApply).forEach(([key, value]) => {
+      if (value !== null && value !== undefined) {
+        cleanedFilters[key] = value as string | number | boolean | (string | number)[];
+      }
+    });
+
     if (id) {
       dispatch(getFilteredProducts({
         categoryId: Number(id),
-        filters: filtersToApply
+        filters: cleanedFilters,
       }));
     } else {
-      dispatch(getFilteredProductsWithoutCategory(filtersToApply));
+      dispatch(getFilteredProductsWithoutCategory(cleanedFilters));
     }
   };
 
