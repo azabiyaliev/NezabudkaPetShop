@@ -178,6 +178,9 @@ const AdminForm = () => {
         borderRadius: 4,
         width: '50%',
         mx: 'auto',
+        "@media (max-width: 900px)": {
+          width: '85%',
+        },
       }}
     >
       <Typography

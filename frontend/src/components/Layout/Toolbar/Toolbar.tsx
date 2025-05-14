@@ -1,5 +1,5 @@
 import { Badge, Box, Button, Container, InputBase, Toolbar, useMediaQuery, } from '@mui/material';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { useAppDispatch, useAppSelector, usePermission, } from '../../../app/hooks.ts';
 import ExistsUser from './ExistsUser.tsx';
 import UnknownUser from './UnknownUser.tsx';
@@ -56,6 +56,10 @@ const MainToolbar = () => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [open, setOpen] = useState(false);
   const isMobile = useMediaQuery("(max-width:600px)");
+
+  const location = useLocation();
+
+  const isClientsPage = location.pathname === '/private/clients' || location.pathname === '/private/admin-table' || location.pathname === '/private/brands' || location.pathname === '/private/products';
 
   useEffect(() => {
     if (user && can([userRoleClient])) {
@@ -316,7 +320,7 @@ const MainToolbar = () => {
                 paddingBottom: "15px",
                 "@media (max-width: 1430px)": {
                   paddingTop: theme.spacing.exs,
-                  paddingBottom: 0,
+                  paddingBottom:  theme.spacing.exs,
                 },
                 "@media (max-width: 1100px)": {
                   display: "flex",
@@ -329,19 +333,36 @@ const MainToolbar = () => {
                 <Box
                   onClick={() => setOpenCategoryMenu(true)}
                   sx={{
-                    display: "none",
-                    "@media (max-width: 900px)": {
-                      paddingTop: "7px",
-                      paddingBottom: "7px",
-                      borderRadius: theme.spacing.xs,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      cursor: "pointer",
-                      transition: "background 0.3s ease",
-                      position: "relative",
-                      marginRight: theme.spacing.sm,
-                    },
+                    display: 'none',
+                    ...(isClientsPage
+                      ? {
+                        "@media (max-width: 1390px)": {
+                          display: 'flex',
+                          paddingTop: '7px',
+                          paddingBottom: '7px',
+                          borderRadius: theme.spacing.xs,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          cursor: 'pointer',
+                          transition: 'background 0.3s ease',
+                          position: 'relative',
+                          marginRight: theme.spacing.sm,
+                        },
+                      }
+                      : {
+                        "@media (max-width: 900px)": {
+                          display: 'flex',
+                          paddingTop: '7px',
+                          paddingBottom: '7px',
+                          borderRadius: theme.spacing.xs,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          cursor: 'pointer',
+                          transition: 'background 0.3s ease',
+                          position: 'relative',
+                          marginRight: theme.spacing.sm,
+                        },
+                      }),
                   }}
                 >
                   <MenuIcon sx={{ color: theme.colors.white }} />

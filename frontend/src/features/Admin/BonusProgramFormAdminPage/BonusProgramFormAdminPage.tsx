@@ -30,6 +30,7 @@ const BonusProgramFormAdminPage = () => {
         sx={{
           flexShrink: 0,
           height: "100%",
+          marginRight: 2,
           "@media (max-width: 900px)": {
             display: "none",
           },

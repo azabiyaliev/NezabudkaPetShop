@@ -1,7 +1,5 @@
 import {
   List,
-  ListItem,
-  ListItemText,
   ListSubheader,
   Divider, Box,
 } from '@mui/material';
@@ -24,7 +22,7 @@ import {
   Diversity2Outlined,
   ListAltOutlined,
 } from '@mui/icons-material';
-import { NavLink } from 'react-router-dom';
+import HomeIcon from '@mui/icons-material/Home';
 import AdminNavItem from './AdminNavItem.tsx';
 import { userRoleAdmin, userRoleSuperAdmin } from '../../../globalConstants.ts';
 import theme from '../../../globalStyles/globalTheme.ts';
@@ -76,17 +74,11 @@ const AdminBar = () => {
         >
           {can([userRoleAdmin]) && (
             <>
-              <ListItem
-                component={NavLink}
-                to={`/private_account`}
-                sx={{pl: 0}}
-              >
-                <ListItemText
-                  primary="Личный кабинет"
-                  sx={{ color: theme.colors.primary }}
-                  primaryTypographyProps={{ fontWeight: 600, fontSize: 14 }}
+                <AdminNavItem
+                  to={`/private_account`}
+                  icon={<HomeIcon sx={iconSx} />}
+                  text="Личный кабинет"
                 />
-              </ListItem>
               <Divider sx={{ my: 0.8 }} />
             </>
           )}

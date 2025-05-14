@@ -21,8 +21,7 @@ import { Box } from "@mui/joy";
 import PublishedWithChangesIcon from "@mui/icons-material/PublishedWithChanges";
 import AdminBar from "../../../features/Admin/AdminProfile/AdminBar.tsx";
 import AddNewPhotoForm from "./AddNewPhotoForm.tsx";
-import theme from '../../../globalStyles/globalTheme.ts';
-
+import theme from "../../../globalStyles/globalTheme.ts";
 
 const DragAndDropPhoto = () => {
   const photos = useAppSelector(selectPhotoCarousel) || [];
@@ -145,7 +144,11 @@ const DragAndDropPhoto = () => {
       <Box
         sx={{
           flexShrink: 0,
-          height: "100%",
+          position: "sticky",
+          top: 20,
+          alignSelf: "flex-start",
+          zIndex: 1000,
+          marginRight: 2,
           "@media (max-width: 900px)": {
             display: "none",
           },
@@ -153,13 +156,23 @@ const DragAndDropPhoto = () => {
       >
         <AdminBar />
       </Box>
-      
-      <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center" }}>
+
+      <Box
+        sx={{
+          flexGrow: 1,
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
         <Box sx={{ width: "100%", maxWidth: "900px", px: 2 }}>
           <Typography
             variant="h6"
             gutterBottom
-            sx={{ textAlign: "center", fontWeight: theme.fonts.weight.medium, mt: 2 }}
+            sx={{
+              textAlign: "center",
+              fontWeight: theme.fonts.weight.medium,
+              mt: 2,
+            }}
           >
             Управление каруселью
           </Typography>
@@ -193,7 +206,7 @@ const DragAndDropPhoto = () => {
               marginTop: "40px",
               justifyContent: "center",
               "@media (max-width: 900px)": {
-                flexDirection: "column",
+                flexDirection: "row",
                 alignItems: "center",
                 gap: "20px",
               },

@@ -105,9 +105,8 @@ const OrderStats = () => {
       <Box
         sx={{
           flexShrink: 0,
-          width: 250,
           height: "100%",
-          "@media (max-width: 1360px)": {
+          "@media (max-width: 900px)": {
             display: "none",
           },
         }}

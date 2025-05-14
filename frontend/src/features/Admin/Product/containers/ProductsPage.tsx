@@ -18,7 +18,7 @@ const ProductsPage = () => {
 
   return (
     <Box sx={{ display: "flex", margin: "30px 0",
-      "@media (max-width: 1300px)": {
+      "@media (max-width: 1390px)": {
         flexDirection: "column",
       },
     }}>
@@ -26,7 +26,7 @@ const ProductsPage = () => {
         sx={{
           flexShrink: 0,
           height: "100%",
-          "@media (max-width: 900px)": {
+          "@media (max-width: 1390px)": {
             display: "none",
           },
         }}

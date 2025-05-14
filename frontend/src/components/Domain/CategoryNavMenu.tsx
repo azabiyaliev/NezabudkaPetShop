@@ -61,7 +61,6 @@ const CategoryNavMenu: React.FC<Props> = ({ openMenu, closeMenu }) => {
         content: {
           sx: {
             bgcolor: "transparent",
-            p: { md: 3, sm: 0 },
             boxShadow: "none",
             width: 400,
             "@media (max-width: 400px)": {
@@ -80,15 +79,17 @@ const CategoryNavMenu: React.FC<Props> = ({ openMenu, closeMenu }) => {
           gap: 2,
           height: "100%",
           overflow: "auto",
+          "@media (max-width: 1390px)": {
+            paddingRight: 0
+          },
         }}
       >
         {user && can(["admin", "superAdmin"]) && (
           <>
             <ModalClose onClick={toggleAdminBar} />
-            <Divider />
             <Box
               sx={{
-                p: 2,
+                pt: 5,
                 display: "flex",
                 flexDirection: "column",
                 height: "100%",
