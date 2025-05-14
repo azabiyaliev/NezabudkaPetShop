@@ -262,11 +262,10 @@ export const changePasswordAsync = createAsyncThunk<
   { state: RootState; rejectValue: ErrorMutation }
 >(
   "user/changePassword",
-  async ({ currentPassword, newPassword }, { rejectWithValue }) => {
-    console.log("Sending PATCH request with:", {
-      currentPassword,
-      newPassword,
-    });
+  async ({ currentPassword, newPassword }, { rejectWithValue, getState }) => {
+    const state = getState();
+    const token = state.users.user?.token;
+
     try {
       const response = await axiosApi.patch(
         "/users/new-password",
@@ -274,6 +273,11 @@ export const changePasswordAsync = createAsyncThunk<
           currentPassword,
           newPassword,
         },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       return response.data;
     } catch (error) {

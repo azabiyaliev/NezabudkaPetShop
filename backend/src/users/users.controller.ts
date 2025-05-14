@@ -89,31 +89,19 @@ export class UsersController {
   @UseGuards(TokenAuthGuard)
   @Patch('new-password')
   async changeAuthorizedPassword(
-    @Req() req: Request & { user: RequestUser },
-    @Body() body: { currentPassword?: string; newPassword: string },
+      @Req() req: Request & { user: RequestUser },
+      @Body() body: { currentPassword?: string; newPassword: string },
   ) {
     if (!body.currentPassword) {
       throw new BadRequestException('Текущий пароль обязателен');
     }
 
     const userId = req.user.id;
-    const user = await this.userService.findOne(userId);
-    if (!user) {
-      throw new HttpException('Пользователь не найден', HttpStatus.NOT_FOUND);
-    }
-
-    const isMatch = await bcrypt.compare(body.currentPassword, user.password);
-    if (!isMatch) {
-      throw new HttpException(
-        'Неверный текущий пароль',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
 
     return this.userService.updatePassword(
-      userId,
-      body.newPassword,
-      body.currentPassword,
+        userId,
+        body.currentPassword,
+        body.newPassword,
     );
   }
 
