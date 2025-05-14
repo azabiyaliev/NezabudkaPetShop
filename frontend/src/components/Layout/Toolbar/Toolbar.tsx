@@ -37,6 +37,7 @@ import {
   Star, Truck
 } from 'phosphor-react';
 import StorefrontIcon from '@mui/icons-material/Storefront';
+import { SPACING } from '../../../globalStyles/stylesObjects.ts';
 
 
 const MainToolbar = () => {
@@ -344,6 +345,9 @@ const MainToolbar = () => {
                       position: "relative",
                       marginRight: theme.spacing.sm,
                     },
+                    "@media (max-width: 375px)": {
+                      marginRight: SPACING.exs,
+                    },
                   }}
                 >
                   <MenuIcon sx={{ color: theme.colors.white }} />
@@ -372,7 +376,6 @@ const MainToolbar = () => {
                       },
                     }}
                   />
-                  <div>
                     <Typography
                       sx={{
                         fontSize: {
@@ -393,7 +396,6 @@ const MainToolbar = () => {
                     >
                       Незабудка
                     </Typography>
-                  </div>
                 </NavLink>
               </div>
 
