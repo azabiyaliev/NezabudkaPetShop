@@ -16,17 +16,23 @@ const CompanyPage = () => {
 
   return (
     <Container maxWidth="xl">
-      <div className="d-flex">
-        <div className="col-3 mt-5">
+      <Box sx={{
+        display: 'flex',
+        "@media (max-width: 820px)": {
+          display: 'block',
+        },
+      }}>
+        <Box sx={{
+          mt: 5,
+        }}>
           <ByuerBarTopTollBar />
-        </div>
+        </Box>
 
-        <div className="col-9 mt-5" style={{ display: 'flex', justifyContent: 'center' }}>
-          <Container >
-            <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600 }}>
-              О компании
-            </Typography>
-
+        <Box sx={{mt: 5}}>
+          <Typography variant="h6" gutterBottom sx={{textAlign: 'center', fontWeight: 600}}>
+            О компании
+          </Typography>
+          <div className="col-9, w-100" style={{display: 'flex', justifyContent: 'center'}}>
             <Box
               sx={{
                 borderRadius: '5px',
@@ -36,13 +42,13 @@ const CompanyPage = () => {
               }}
             >
               <div
-                dangerouslySetInnerHTML={{ __html: company?.text || '<p>Информация пока не добавлена.</p>' }}
-                style={{ lineHeight: 1.6, fontSize: '16px', color: '#333' }}
+                dangerouslySetInnerHTML={{__html: company?.text || '<p>Информация пока не добавлена.</p>'}}
+                style={{lineHeight: 1.6, fontSize: '16px', color: '#333'}}
               />
             </Box>
-          </Container>
-        </div>
-      </div>
+          </div>
+        </Box>
+      </Box>
     </Container>
   );
 };
