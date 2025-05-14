@@ -1,8 +1,8 @@
 import React, { useRef, useEffect } from "react";
 import Quill from "quill";
 import "quill/dist/quill.snow.css";
-import { Box, Paper, Typography } from "@mui/material";
-import './styles.css'
+import { Box, Typography } from "@mui/material";
+import './styles.css';
 
 interface Props {
   value: string;
@@ -17,9 +17,16 @@ export const deliveryPriceInfoTemplate =
   "Ленинский – 0 сом " +
   "Первомайский - 0 сом " +
   "Свердловский – 0 сом " +
-  "Октябрьский - 0 сом"
+  "Октябрьский - 0 сом";
 
-const TextEditor: React.FC<Props> = ({ value, onChange, error = false, helperText, placeholder = "Введите описание", validateDeliveryPriceInfo = deliveryPriceInfoTemplate }) => {
+const TextEditor: React.FC<Props> = ({
+  value,
+  onChange,
+  error = false,
+  helperText,
+  placeholder = "Введите описание",
+  validateDeliveryPriceInfo = deliveryPriceInfoTemplate,
+}) => {
   const quillRef = useRef<HTMLDivElement | null>(null);
   const editorInstance = useRef<Quill | null>(null);
   const lastSetValue = useRef<string>("");
@@ -36,7 +43,7 @@ const TextEditor: React.FC<Props> = ({ value, onChange, error = false, helperTex
         placeholder,
         modules: {
           toolbar: [
-            [{ 'header': [] }, { 'font': [] }],
+            [{ header: [] }, { font: [] }],
             [{ list: "ordered" }, { list: "bullet" }],
             ["bold", "italic", "underline", "strike"],
             [{ align: [] }],
@@ -51,12 +58,11 @@ const TextEditor: React.FC<Props> = ({ value, onChange, error = false, helperTex
 
       quill.on("text-change", () => {
         const html = quill.root.innerHTML;
-        if (!isContentEmpty(html)) {
-          onChange(html);
-          lastSetValue.current = html;
-        } else {
-          onChange("");
-          lastSetValue.current = "";
+
+        if (html !== lastSetValue.current) {
+          const newValue = isContentEmpty(html) ? "" : html;
+          onChange(newValue);
+          lastSetValue.current = newValue;
         }
       });
     }
@@ -74,7 +80,13 @@ const TextEditor: React.FC<Props> = ({ value, onChange, error = false, helperTex
     }
   }, [value]);
 
-  if (validateDeliveryPriceInfo !== deliveryPriceInfoTemplate) return helperText ? <Typography variant="body2" color="error" sx={{ mt: 1, ml: 1 }}>{helperText}</Typography> : null;
+  if (validateDeliveryPriceInfo !== deliveryPriceInfoTemplate) {
+    return helperText ? (
+      <Typography variant="body2" color="error" sx={{ mt: 1, ml: 1 }}>
+        {helperText}
+      </Typography>
+    ) : null;
+  }
 
   return (
     <Box>
@@ -83,9 +95,7 @@ const TextEditor: React.FC<Props> = ({ value, onChange, error = false, helperTex
           {helperText}
         </Typography>
       )}
-      <Paper elevation={3}>
-        <div ref={quillRef} style={{ height: "200px", borderRadius: "4px" }} />
-      </Paper>
+      <div ref={quillRef} style={{ height: "200px", borderRadius: "4px" }} />
     </Box>
   );
 };

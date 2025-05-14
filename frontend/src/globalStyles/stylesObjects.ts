@@ -13,6 +13,11 @@ export const COLORS = {
   white: '#ffffff',
   black: '#000000',
   rgbaGrey: 'rgba(241,239,239,0.61)',
+  tooltip_color:'rgba(0, 0, 0, 0.3)',
+  lightGrey: '#ddd',
+  adminBackgroundGreen: '#1B4332',
+  adminBackgroundYellow: '#A3B72F',
+  blurBackground: 'rgba(0, 0, 0, 0.4)',
 
 
   BORDER_CART: 'rgba(102,100,97,0.61)',
@@ -27,6 +32,7 @@ export const COLORS = {
   GRAY_BROWN: '#736E68',
   DARK_GRAY: '#666461',
   TAUPE: '#B1A799',
+  FOOTER_COLOR:"rgba(0, 0, 0, 0.87)",
 }
 
 //ОТСТУПЫ
@@ -50,6 +56,7 @@ export const FONTS = {
     xs: '12px',
     sm: '14px',
     default: '16px',
+    big_default:'18px',
     lg: '20px',
     xl: '24px',
     xxl: '30px',
@@ -69,6 +76,7 @@ export const MEDIA_REQ = {
     sm: '320px',
     md: '360px',
     lg: '414px',
+    xl: '480px',
   },
   tablet: {
     sm: '600px',

@@ -9,6 +9,9 @@ import { addErrorFromSlice, addLoadingFromSlice } from '../../../store/brands/br
 import { useNavigate } from 'react-router-dom';
 import { enqueueSnackbar } from 'notistack';
 import { userRoleAdmin, userRoleSuperAdmin } from '../../../globalConstants.ts';
+import theme from '../../../globalStyles/globalTheme.ts';
+import Typography from '@mui/joy/Typography';
+
 
 const NewBrandPage = () => {
   const user = useAppSelector(selectUser);
@@ -30,17 +33,26 @@ const NewBrandPage = () => {
     <Box
       sx={{
         display: "flex",
-        margin: "30px 0",
+        margin: "30px auto",
         "@media (max-width: 900px)": {
           flexWrap: "wrap",
         },
       }}
     >
       <AdminBar />
-      <Box sx={{ml:"100px", mx: "auto",}}>
-        <BrandForm addNewBrand={addNewBrand} isLoading={loading} brandError={addError} />
+      <Box sx={{
+        textAlign: 'center', width: '100%',
+      }}>
+        <Box>
+          <Typography level="h4" gutterBottom sx={{ textAlign: 'center', fontWeight: theme.fonts.weight.medium,
+            "@media (max-width: 900px)": {
+              mt: 5,
+            },}}>
+            Добавление нового бренда
+          </Typography>
+          <BrandForm addNewBrand={addNewBrand} isLoading={loading} brandError={addError}/>
+        </Box>
       </Box>
-
     </Box>
   );
 };

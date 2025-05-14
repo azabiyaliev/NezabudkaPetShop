@@ -11,9 +11,6 @@ const EditionSitePage = () => {
   useEffect(() => {
     dispatch(fetchSite())
       .unwrap()
-      .then((data) => {
-        console.log("Data fetched:", data);
-      })
       .catch((error) => {
         console.error("Error fetching site data:", error);
       });

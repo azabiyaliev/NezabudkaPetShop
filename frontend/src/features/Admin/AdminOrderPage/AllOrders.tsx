@@ -2,18 +2,20 @@ import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { getAllOrders } from "../../../store/orders/ordersThunk";
 import {
-  Box,
-  CircularProgress,
+  Box, Button,
+  CircularProgress, Drawer, IconButton,
   MenuItem,
   Select,
   SelectChangeEvent,
   Typography,
-} from "@mui/material";
-import OrderAdminItem from "./OrdersItem.tsx";
+} from '@mui/material';
+import OrderAdminItem, { OrderStatus } from './OrdersItem.tsx';
 import dayjs from "dayjs";
 import { IOrder } from "../../../types";
 import CustomPagination from "../../../components/Pagination/Pagination.tsx";
 import AdminBar from "../AdminProfile/AdminBar.tsx";
+import MenuIcon from '@mui/icons-material/Menu';
+import { SPACING } from '../../../globalStyles/stylesObjects.ts';
 
 const AllOrders = () => {
   const dispatch = useAppDispatch();
@@ -21,6 +23,7 @@ const AllOrders = () => {
   const loading = useAppSelector((state) => state.orders.isLoading);
   const [statusFilter, setStatusFilter] = useState<string>("All");
   const [timeFilter, setTimeFilter] = useState<string>("All");
+  const [isAdminBarOpen, setIsAdminBarOpen] = useState(false);
 
   useEffect(() => {
     dispatch(getAllOrders());
@@ -40,43 +43,122 @@ const AllOrders = () => {
 
   const filterByTime = (order: IOrder) => {
     const orderDate = dayjs(order.createdAt);
+
     if (timeFilter === "Today") {
-      return orderDate.isSame(dayjs(), "day");
+      return orderDate.startOf("day").isSame(dayjs().startOf("day"));
     }
+
     if (timeFilter === "Last7Days") {
       return orderDate.isAfter(dayjs().subtract(7, "day").startOf("day"));
     }
+
     if (timeFilter === "Last30Days") {
       return orderDate.isAfter(dayjs().subtract(30, "day").startOf("day"));
     }
     return true;
   };
-  const filteredOrders = orders.filter(
-    (order) => filterByStatus(order) && filterByTime(order),
-  );
 
+  const filteredAndSortedOrders = orders
+    .filter((order) => filterByStatus(order) && filterByTime(order))
+    .sort((a, b) => {
+      if (a.status === OrderStatus.Canceled && b.status !== OrderStatus.Canceled) {
+        return 1;
+      }
+      if (a.status !== OrderStatus.Canceled && b.status === OrderStatus.Canceled) {
+        return -1;
+      }
+      return 0;
+    });
+
+  const toggleAdminBar = () => setIsAdminBarOpen(!isAdminBarOpen);
   return (
     <Box
       sx={{
         display: "flex",
         margin: "30px 0",
-        "@media (max-width: 900px)": {
-          flexDirection: "column",
-        },
+        position: "relative",
       }}
     >
-      <Box sx={{  flexShrink: 0, height: "100%",
-        "@media (max-width: 900px)": {
-          width: "100%",
-        },}}>
+      <IconButton
+        onClick={toggleAdminBar}
+        sx={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          display: "block",
+          zIndex: 10,
+          "@media (min-width: 1360px)": {
+            display: "none",
+          },
+        }}
+      >
+        <MenuIcon />
+      </IconButton>
+
+      <Drawer
+        anchor="left"
+        open={isAdminBarOpen}
+        onClose={toggleAdminBar}
+        sx={{
+          "& .MuiDrawer-paper": {
+            width: 400,
+          },
+        }}
+      >
+        <Box
+          sx={{
+            p: 2,
+            display: "flex",
+            flexDirection: "column",
+            height: "100%",
+          }}
+        >
+          <Typography variant="h6" sx={{ mb: 2 }}>
+            Admin Panel
+          </Typography>
+          <AdminBar />
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{ mt: "auto" }}
+            onClick={toggleAdminBar}
+          >
+            Закрыть
+          </Button>
+        </Box>
+      </Drawer>
+
+      <Box
+        sx={{
+          flexShrink: 0,
+          width: 250,
+          height: "100%",
+          "@media (max-width: 1360px)": {
+            display: "none",
+          },
+        }}
+      >
         <AdminBar />
       </Box>
-      <Box sx={{display: 'flex', justifyContent: 'center', flexDirection: 'column', marginLeft: 5}}>
+
+      <Box
+        sx={{
+          width: "80%",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          flexWrap: 'wrap',
+          marginLeft: SPACING.main_spacing,
+        }}
+      >
         <Box>
           <Typography
             variant="h6"
             gutterBottom
-            sx={{ textAlign: "center", fontWeight: 600 }}
+            sx={{
+              textAlign: "center",
+              fontWeight: 600,
+            }}
           >
             Заказы
           </Typography>
@@ -87,30 +169,47 @@ const AllOrders = () => {
               gap: "20px",
               alignItems: "baseline",
               justifyContent: "center",
+              flexWrap: "wrap",
               "@media (max-width: 500px)": {
                 flexDirection: "column",
-                alignItems: "center",
+                gap: 2,
               },
             }}
           >
             <Select
               value={statusFilter}
               onChange={handleStatusFilterChange}
-              sx={{ mb: 3, minWidth: 200 }}
+              sx={{
+                mb: {
+                  xs: 0,
+                  md: 3,
+                },
+                minWidth: 200,
+                "@media (max-width: 600px)": {
+                  minWidth: 150,
+                },
+              }}
             >
               <MenuItem value="All">Все</MenuItem>
-              <MenuItem value="Pending">Pending</MenuItem>
-              <MenuItem value="Confirmed">Confirmed</MenuItem>
-              <MenuItem value="Packed">Packed</MenuItem>
-              <MenuItem value="Shipped">Shipped</MenuItem>
-              <MenuItem value="Delivered">Delivered</MenuItem>
-              <MenuItem value="Returned">Returned</MenuItem>
+              <MenuItem value="Pending">В обработке</MenuItem>
+              <MenuItem value="Confirmed">Подтвержден</MenuItem>
+              <MenuItem value="Packed">Упакован</MenuItem>
+              <MenuItem value="Shipped">Отправлен</MenuItem>
+              <MenuItem value="Delivered">Доставлен</MenuItem>
+              <MenuItem value="Received">Получен</MenuItem>
+              <MenuItem value="Returned">Возвращен</MenuItem>
+              <MenuItem value="Canceled">Отменен</MenuItem>
             </Select>
 
             <Select
               value={timeFilter}
               onChange={handleTimeFilterChange}
-              sx={{ minWidth: 200 }}
+              sx={{
+                minWidth: 200,
+                "@media (max-width: 600px)": {
+                  minWidth: 150,
+                },
+              }}
             >
               <MenuItem value="All">За всё время</MenuItem>
               <MenuItem value="Today">Сегодня</MenuItem>
@@ -122,13 +221,13 @@ const AllOrders = () => {
 
         {loading ? (
           <CircularProgress />
-        ) : filteredOrders.length === 0 ? (
+        ) : filteredAndSortedOrders.length === 0 ? (
           <Typography variant="h6" sx={{ mt: 4 }}>
             Заказов за выбранный период нет.
           </Typography>
         ) : (
           <CustomPagination
-            items={filteredOrders}
+            items={filteredAndSortedOrders}
             renderItem={(item) => <OrderAdminItem key={item.id} order={item} />}
             columns={2}
           />

@@ -2,6 +2,7 @@ import Grid from "@mui/material/Grid2";
 import { Button, TextField } from "@mui/material";
 import React, { useEffect, useState } from 'react';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
+import theme from '../../globalStyles/globalTheme.ts';
 
 interface Props {
   name: string;
@@ -65,9 +66,9 @@ const FileInputCategory: React.FC<Props> = ({ name, label, onGetFile, file, inpu
             variant="contained"
             onClick={activateInput}
             sx={{
-              background: "white",
-              border: "1px solid #237803",
-              borderRadius: "10px",
+              background: theme.colors.white,
+              border: `1px solid ${theme.colors.primary} `,
+              borderRadius: theme.spacing.exs,
               height: '100%',
               padding: "6px 12px",
               display: "flex",
@@ -75,7 +76,7 @@ const FileInputCategory: React.FC<Props> = ({ name, label, onGetFile, file, inpu
               justifyContent: "center",
             }}
           >
-            <AddPhotoAlternateIcon sx={{ color: "#237803" }} />
+            <AddPhotoAlternateIcon sx={{ color: theme.colors.primary }} />
           </Button>
         </Grid>
       </Grid>

@@ -1,6 +1,6 @@
 import { Box, Collapse, ListItemButton, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
+import { useAppDispatch, useAppSelector, usePermission } from "../../../app/hooks.ts";
 import { getProducts, getProductsByCategory, } from '../../../store/products/productsThunk.ts';
 import { selectProducts, selectProductsByCategory } from '../../../store/products/productsSlice.ts';
 import { getFavoriteProducts } from '../../../store/favoriteProducts/favoriteProductsThunks.ts';
@@ -19,6 +19,7 @@ import ArrowDropDownOutlinedIcon from '@mui/icons-material/ArrowDropDownOutlined
 import { alpha } from '@mui/material/styles';
 import { COLORS, FONTS, SPACING } from '../../../globalStyles/stylesObjects.ts';
 import CustomPagination from '../../../components/Pagination/Pagination.tsx';
+import Container from '@mui/material/Container';
 
 const AllProductsCardsPage = () => {
   const dispatch = useAppDispatch();
@@ -31,28 +32,25 @@ const AllProductsCardsPage = () => {
   const navigate = useNavigate();
   const selectedId = Number(id);
   const [expandedIds, setExpandedIds] = useState<number[]>([]);
-
-  // Определяем, какие продукты отображать: все или по категории
+  const can = usePermission(user);
   const products = id ? categoryProducts : allProducts;
 
   useEffect(() => {
     dispatch(fetchCategoriesThunk());
 
-    if (user && user.role === userRoleClient) {
+    if (user && can([userRoleClient])) {
       dispatch(clearCart());
       dispatch(fetchCart());
     } else {
       dispatch(getFromLocalStorage());
     }
-  }, [dispatch, user]);
+  }, [dispatch, user, can]);
 
   useEffect(() => {
-    // Если есть id категории, загружаем товары по категории
     if (id && categories.length) {
       const numId = Number(id);
       dispatch(getProductsByCategory(numId));
     }
-    // Если id нет, загружаем все товары
     else if (!id) {
       dispatch(getProducts(''));
     }
@@ -75,17 +73,49 @@ const AllProductsCardsPage = () => {
     return a.existence ? -1 : 1;
   });
 
+  const countProductsByCategory = (
+    products: typeof allProducts,
+    allCategories: ICategories[]
+  ) => {
+    const countMap: Record<number, number> = {};
+
+    const subToParentMap: Record<number, number> = {};
+    allCategories.forEach((cat) => {
+      cat.subcategories?.forEach((sub) => {
+        subToParentMap[sub.id] = cat.id;
+      });
+    });
+
+    products.forEach((product) => {
+      product.productCategory.forEach(({ category }) => {
+        const catId = category.id;
+
+        countMap[catId] = (countMap[catId] || 0) + 1;
+
+        const parentId = subToParentMap[catId];
+        if (parentId) {
+          countMap[parentId] = (countMap[parentId] || 0) + 1;
+        }
+      });
+    });
+
+    return countMap;
+  };
+
+
+  const productCountMap = countProductsByCategory(allProducts, categories);
+
+
   const renderCategories = (categories: (ICategories | Subcategory)[], depth = 0) => {
     const items = [];
 
-    // Вспомогательная функция для создания элемента меню
     const createMenuItem = (
       key: string | number,
       title: string,
       isSelected: boolean,
       onClick: () => void,
       hasSubcategories?: boolean,
-      subcategoryCount?: number,
+      productCount?: number,
       toggleSubcategories?: (e: React.MouseEvent) => void,
       isExpanded?: boolean
     ) => (
@@ -145,7 +175,7 @@ const AllProductsCardsPage = () => {
                   alignItems: 'center',
                   justifyContent: 'center',
                   cursor: 'pointer',
-                  padding: '10px',
+                  padding: 0,
                   transition: 'transform 0.3s ease',
                   transform: isExpanded ? 'rotate(90deg)' : 'rotate(0deg)',
                 }}
@@ -171,7 +201,7 @@ const AllProductsCardsPage = () => {
               {title}
             </Typography>
 
-            {subcategoryCount !== undefined && (
+            {productCount !== undefined && productCount > 0 && (
               <Typography
                 variant="caption"
                 sx={{
@@ -183,15 +213,15 @@ const AllProductsCardsPage = () => {
                   fontSize: FONTS.size.xs,
                 }}
               >
-                {subcategoryCount}
+                {productCount}
               </Typography>
             )}
+
           </Box>
         </ListItemButton>
       </Box>
     );
 
-    // Добавляем пункт "Все товары" только на верхнем уровне
     if (depth === 0) {
       items.push(
         createMenuItem(
@@ -205,7 +235,6 @@ const AllProductsCardsPage = () => {
       );
     }
 
-    // Добавляем остальные категории
     categories.forEach(category => {
       const hasSubcategories = category.subcategories && category.subcategories.length > 0;
       const isExpanded = expandedIds.includes(category.id);
@@ -217,7 +246,7 @@ const AllProductsCardsPage = () => {
         isSelected,
         () => handleSelectCategory(category.id),
         hasSubcategories,
-        hasSubcategories ? category.subcategories?.length : undefined,
+        productCountMap[category.id],
         hasSubcategories ? (e) => {
           e.stopPropagation();
           handleToggleCategory(category.id);
@@ -241,6 +270,7 @@ const AllProductsCardsPage = () => {
   };
 
   return (
+    <Container maxWidth="xl">
       <Grid container spacing={2} sx={{mt: 4}}>
         <Grid size={3}>
           <Box
@@ -348,6 +378,8 @@ const AllProductsCardsPage = () => {
           )}
         </Grid>
       </Grid>
+    </Container>
+
   );
 };
 

@@ -6,6 +6,7 @@ export interface RegisterMutation {
   phone: string;
   bonus?: number
   guestEmail?: string;
+  recaptchaToken: string;
 }
 
 export interface LogInMutation {
@@ -143,7 +144,6 @@ export interface CategoryMutation {
   title: string;
   subcategories?: Subcategory[];
   parentId?: number | null;
-  icon?: File | null | string;
   image?: File | null | string;
 }
 
@@ -154,7 +154,6 @@ export interface ICategoriesMutation {
   parentId: number | null;
   subcategories: Subcategory[];
   parent: { id:number, title: string };
-  icon: string | null;
   image: string | null;
 }
 
@@ -163,7 +162,6 @@ export interface Subcategory {
   title: string;
   parentId: string | number | null;
   subcategories?: Subcategory[];
-  icon?: File | null;
   image?: File | null;
 }
 
@@ -179,6 +177,7 @@ export interface ProductRequest {
   productManufacturer?: string | null;
   existence?: boolean;
   sales?: boolean;
+  isBestseller?: boolean;
   brandId?: string;
   categoryId: number[];
   id?: number;
@@ -251,6 +250,7 @@ export interface ProductResponse {
   productDescription: string;
   existence: boolean;
   sales: boolean;
+  isBestseller?: boolean;
   brandId: string;
   brand: IBrand;
   reviews: [];
@@ -303,8 +303,7 @@ export interface IOrder {
   userId: number;
   bonusUsed?: number;
   user: User;
-  items: ICart[];
-
+  items: ICartItem[];
   createdAt: string;
   updatedAt: string;
 }
@@ -321,6 +320,7 @@ export interface OrderMutation {
   deliveryMethod: string;
   userId: string;
   items: ICartMutation[];
+  recaptchaToken: string;
 }
 
 export interface OrderItem {

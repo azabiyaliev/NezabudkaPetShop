@@ -5,15 +5,13 @@ import TextEditor from "../../TextEditor/TextEditor.tsx";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
 import { useNavigate } from "react-router-dom";
 import { AdminInfoMutation } from "../../../types";
-import { fetchCompanyPage } from "../../../store/companyPage/companyPageThunk.ts";
-import { toast } from "react-toastify";
 import { enqueueSnackbar } from "notistack";
-import AdminBar from "../../../features/Admin/AdminProfile/AdminBar.tsx";
 import { selectAdminInfo } from "../../../store/adminInfo/adminInfoSlice.ts";
 import {
   fetchAdminInfo,
   updateAdminInfo,
 } from "../../../store/adminInfo/adminInfoThunk.ts";
+import theme from "../../../globalStyles/globalTheme.ts";
 
 const initialState = {
   information: "",
@@ -45,7 +43,10 @@ const AdminInfoForm = () => {
   const submitHandler = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!adminInfo?.id) {
-      toast.error("Ваш id неверный!");
+        enqueueSnackbar(
+            "Ваш ID неверный",
+            { variant: "error" },
+        );
       return;
     }
     try {
@@ -53,34 +54,26 @@ const AdminInfoForm = () => {
         updateAdminInfo({ id: adminInfo.id, data: form }),
       ).unwrap();
       enqueueSnackbar(
-        "Вы успешно отредактировали личный кабинет для администрации",
+        "Вы успешно отредактировали личный кабинет администрации",
         { variant: "success" },
       );
-      navigate(`/private/admin_info/${adminInfo.id}`);
-      await dispatch(fetchCompanyPage());
+      navigate(`/private/admin_info`);
     } catch (error) {
       console.error(error);
+        enqueueSnackbar(
+            "Не удалось отредактировать личный кабинет администарции",
+            { variant: "error" },
+        );
     }
   };
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        margin: "30px 0",
-        "@media (max-width: 900px)": {
-          flexWrap: "wrap",
-        },
-      }}
-    >
-      <AdminBar />
-
+    <Box>
       <Box
         sx={{
           flexGrow: 1,
           display: "flex",
           justifyContent: "center",
-          marginLeft: 5,
           "@media (max-width: 900px)": {
             marginLeft: 0,
           },
@@ -90,7 +83,7 @@ const AdminInfoForm = () => {
           <Typography
             variant="h6"
             gutterBottom
-            sx={{ textAlign: "center", fontWeight: 600 }}
+            sx={{ textAlign: "center", fontWeight: theme.fonts.weight.medium }}
           >
             Редактирование личного кабинета для администариции
           </Typography>
@@ -132,7 +125,7 @@ const AdminInfoForm = () => {
             <Button
               variant="contained"
               type="submit"
-              sx={{ mt: 3, alignSelf: "center", backgroundColor: "darkgreen" }}
+              sx={{ mt: theme.spacing.sm, alignSelf: "center", backgroundColor: theme.colors.primary }}
             >
               Сохранить
             </Button>

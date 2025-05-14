@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Avatar, Box, Button, Container, TextField, Typography, } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
@@ -10,6 +10,7 @@ import { register } from '../../../store/users/usersThunk.ts';
 import 'react-toastify/dist/ReactToastify.css';
 import { regEmail, regPhone } from '../../../globalConstants.ts';
 import { enqueueSnackbar } from 'notistack';
+import ReCAPTCHA from 'react-google-recaptcha';
 
 
 const initialState = {
@@ -18,6 +19,7 @@ const initialState = {
   email: "",
   password: "",
   phone: "",
+  recaptchaToken: ""
 };
 const RegisterUser = () => {
   const dispatch = useAppDispatch();
@@ -26,6 +28,8 @@ const RegisterUser = () => {
   const [phoneError, setPhoneError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [form, setForm] = useState<RegisterMutation>(initialState);
+  const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
 
   const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -47,14 +51,24 @@ const RegisterUser = () => {
 
   const submitHandler = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!recaptchaToken) {
+      enqueueSnackbar("Пожалуйста, подтвердите что вы не робот", { variant: 'error' });
+      return;
+    }
+
     try {
-    const response = await dispatch(register(form)).unwrap();
+    const response = await dispatch(register({
+      ...form,
+      recaptchaToken
+    })).unwrap();
       setForm({
         firstName: "",
         secondName: "",
         email: "",
         password: "",
         phone: "",
+        recaptchaToken: ""
       });
 
       if (response && response.user.bonus > 0) {
@@ -64,6 +78,8 @@ const RegisterUser = () => {
       }
       navigate("/");
     } catch (error) {
+      recaptchaRef.current?.reset();
+      setRecaptchaToken(null);
       console.log(error);
     }
   };
@@ -182,6 +198,14 @@ const RegisterUser = () => {
                 />
               </Grid>
             </Grid>
+
+            <Box sx={{ my: 2 }}>
+              <ReCAPTCHA
+                ref={recaptchaRef}
+                sitekey={import.meta.env.VITE_REACT_APP_RECAPTCHA_SITE_KEY}
+                onChange={(token) => setRecaptchaToken(token)}
+              />
+            </Box>
 
             <Button
               type="submit"

@@ -1,11 +1,11 @@
-import { Box, Typography, CardMedia, Button, Breadcrumbs } from '@mui/material';
-import "../css/product.css";
-import { useAppDispatch, useAppSelector, usePermission } from "../../../app/hooks.ts";
-import  { useEffect, useState } from 'react';
-import { getOneProduct } from "../../../store/products/productsThunk.ts";
-import { useParams } from 'react-router-dom';
+import { Box, Breadcrumbs, Button, CardMedia, Container, IconButton, Link as MuiLink, Typography } from '@mui/material';
+import '../css/product.css';
+import { useAppDispatch, useAppSelector, usePermission } from '../../../app/hooks.ts';
+import { useEffect, useState } from 'react';
+import { getOneProduct } from '../../../store/products/productsThunk.ts';
+import { Link as RouterLink, useParams } from 'react-router-dom';
 import { selectProduct } from '../../../store/products/productsSlice.ts';
-import { apiUrl, userRoleClient } from '../../../globalConstants.ts';
+import { apiUrl, userRoleAdmin, userRoleClient, userRoleSuperAdmin } from '../../../globalConstants.ts';
 import HistoryProducts from '../../../components/Domain/HistoryProducts/HistoryProducts.tsx';
 import '../../../components/TextEditor/styles.css'
 import theme from '../../../globalStyles/globalTheme.ts';
@@ -20,17 +20,19 @@ import {
   addFavoriteProduct,
   getLocalFavoriteProducts,
   removeFavoriteProduct
-} from "../../../store/favoriteProducts/favoriteProductLocal.ts";
+} from '../../../store/favoriteProducts/favoriteProductLocal.ts';
 import {
-  addFavoriteProducts, getFavoriteProducts,
+  addFavoriteProducts,
+  getFavoriteProducts,
   removeFavoriteProductThunk
-} from "../../../store/favoriteProducts/favoriteProductsThunks.ts";
+} from '../../../store/favoriteProducts/favoriteProductsThunks.ts';
 import { selectDelivery } from '../../../store/deliveryPage/deliveryPageSlice.ts';
 import { fetchDeliveryPage } from '../../../store/deliveryPage/deliveryPageThunk.ts';
-import { Link as MuiLink } from '@mui/material';
-import { Link as RouterLink } from "react-router-dom";
 import { addProductToHistory } from '../../../store/historyProduct/historyProductSlice.ts';
-import { selectedFavorite } from "../../../store/favoriteProducts/favoriteProductsSlice.ts";
+import { selectedFavorite } from '../../../store/favoriteProducts/favoriteProductsSlice.ts';
+import { COLORS, FONTS, SPACING } from '../../../globalStyles/stylesObjects.ts';
+import ReactHtmlParser from 'html-react-parser';
+import { Tooltip } from '@mui/joy';
 
 const ProductPage = () => {
   const dispatch = useAppDispatch();
@@ -170,7 +172,7 @@ const ProductPage = () => {
 
 
   return (
-    <div>
+    <Container maxWidth="xl">
       <Box className="product-box">
         <Breadcrumbs
           separator="›"
@@ -234,10 +236,28 @@ const ProductPage = () => {
           }}>
             <Box sx={{
               width: "35%",
+              position: 'relative',
               '@media (max-width: 850px)': {
                 width: "40%",
               },
             }}>
+              {product.sales && (
+                <Box sx={{
+                  position: 'absolute',
+                  top: 10,
+                  left: 8,
+                  backgroundColor: COLORS.warning,
+                  color: COLORS.white,
+                  padding: `${SPACING.exs} ${SPACING.xs}`,
+                  borderRadius: '5px',
+                  fontWeight: FONTS.weight.bold,
+                  fontSize: FONTS.size.sm,
+                  cursor: 'pointer',
+                  zIndex: 2,
+                }}>
+                  - {product.promoPercentage}%
+                </Box>
+              )}
               <CardMedia
                 component="img"
                 image={apiUrl + "/" + product.productPhoto}
@@ -246,7 +266,6 @@ const ProductPage = () => {
                   width: "100%",
                   maxHeight: 500,
                   objectFit: "contain",
-                  border: "1px solid lightgray",
                   backgroundColor: theme.colors.background,
                 }}
               />
@@ -274,15 +293,27 @@ const ProductPage = () => {
                 {product.productName}
               </Typography>
 
-              <Typography sx={{
-                fontSize: theme.fonts.size.lg,
-                fontWeight: theme.fonts.weight.normal,
-                '@media (max-width: 850px)': {
-                  textAlign: "center",
-                },
-              }}>
-                {product.productPrice} сом/шт
-              </Typography>
+              {product.sales ? <>
+                  <Typography fontWeight={600} sx={{
+                    textDecoration: 'line-through',
+                    color: COLORS.text,
+                  }}>
+                    {product.productPrice.toLocaleString('ru-RU').replace(/,/g, ' ')} сом
+                  </Typography>
+                  <Typography fontWeight={600} sx={{ color: COLORS.warning }}>
+                    {product.promoPrice && product.promoPrice.toLocaleString('ru-RU').replace(/,/g, ' ')} сом
+                  </Typography>
+              </> :
+                <Typography sx={{
+                  fontSize: theme.fonts.size.lg,
+                  fontWeight: theme.fonts.weight.normal,
+                  '@media (max-width: 850px)': {
+                    textAlign: "center",
+                  },
+                }}>
+                  {product.productPrice} сом/шт
+                </Typography>
+              }
 
               <Typography sx={{
                 color: theme.colors.text,
@@ -367,55 +398,129 @@ const ProductPage = () => {
                   },
                 }}
               >
-                <Button
-                  onClick={() => addProductToCart(product)}
-                  variant="contained"
-                  className="cart-button"
-                  disabled={isAddToCartDisabled}
-                  sx={{
-                    width: "200px",
-                    pt: theme.spacing.sm,
-                    pl: theme.spacing.xl,
-                    pr: theme.spacing.md,
-                    pb: theme.spacing.sm,
-                    borderRadius: "40px",
-                    backgroundColor: theme.colors.black,
-                    color: theme.colors.white,
-                    fontSize: theme.fonts.size.default,
-                    textTransform: "none",
-                    '@media (max-width: 470px)': {
-                      width: "100%",
-                      pt: theme.spacing.xs,
-                      pl: theme.spacing.sm,
-                      pr: theme.spacing.sm,
-                      pb: theme.spacing.xs,
-                      fontSize: theme.fonts.size.sm,
-                    },
-                  }}
-                >
-                  {isAddToCartDisabled ? "Нет в наличии" : "В корзину"}
-                </Button>
-
-                <Button
-                  onClick={() => toggleFavorite(product.id)}
-                  sx={{
-                    width: "46px",
-                    height: "46px",
-                    borderRadius: "50%",
-                  }}
-                >
-                  {isFavorite ? (
-                    <FavoriteIcon sx={{ fontSize: 50, color: theme.colors.error }} />
-                  ) : (
-                    <FavoriteBorderIcon sx={{ fontSize: 50, color: theme.colors.black }} />
-                  )}
-                </Button>
+               <>
+               {user && (can([userRoleAdmin, userRoleSuperAdmin])) ?
+                 <Tooltip
+                   title={'Вы не можете добавлять товар в корзину'}
+                   placement="bottom-start"
+                   variant="plain"
+                   sx={{color: COLORS.white, backgroundColor: COLORS.yellow}}
+                 >
+                   <span>
+                     <Button
+                       variant="contained"
+                       className="cart-button"
+                       disabled={user && (can([userRoleAdmin, userRoleSuperAdmin]))}
+                       sx={{
+                         width: "200px",
+                         padding: `${SPACING.sm} ${SPACING.lg}`,
+                         borderRadius: "40px",
+                         backgroundColor: COLORS.DARK_GREEN,
+                         color: theme.colors.white,
+                         fontSize: theme.fonts.size.default,
+                         textTransform: "none",
+                         "&:hover": {
+                           backgroundColor: COLORS.FOREST_GREEN,
+                         },
+                         '@media (max-width: 470px)': {
+                           width: "100%",
+                           pt: theme.spacing.xs,
+                           pl: theme.spacing.sm,
+                           pr: theme.spacing.sm,
+                           pb: theme.spacing.xs,
+                           fontSize: theme.fonts.size.sm,
+                         },
+                       }}
+                     >
+                      {isAddToCartDisabled ? "Нет в наличии" : "В корзину"}
+                     </Button>
+                   </span>
+                 </Tooltip> :
+                 <Button
+                   onClick={() => addProductToCart(product)}
+                   variant="contained"
+                   className="cart-button"
+                   disabled={user && (can([userRoleAdmin, userRoleSuperAdmin])) || isAddToCartDisabled}
+                   sx={{
+                     width: "200px",
+                     padding: `${SPACING.sm} ${SPACING.lg}`,
+                     borderRadius: "40px",
+                     backgroundColor: COLORS.primary,
+                     color: theme.colors.white,
+                     fontSize: theme.fonts.size.default,
+                     textTransform: "none",
+                     "&:hover": {
+                       backgroundColor: COLORS.FOREST_GREEN,
+                     },
+                     '@media (max-width: 470px)': {
+                       width: "100%",
+                       pt: theme.spacing.xs,
+                       pl: theme.spacing.sm,
+                       pr: theme.spacing.sm,
+                       pb: theme.spacing.xs,
+                       fontSize: theme.fonts.size.sm,
+                     },
+                   }}
+                 >
+                   {isAddToCartDisabled ? "Нет в наличии" : "В корзину"}
+                 </Button>}
+               </>
+               <>
+                 {user && (can([userRoleAdmin, userRoleSuperAdmin])) ?
+                   <Tooltip
+                     title={'Вы не можете добавлять товар в избранные'}
+                     placement="bottom-start"
+                     variant="plain"
+                     sx={{color: COLORS.white, backgroundColor: COLORS.yellow}}
+                   >
+                     <span>
+                       <IconButton
+                         disabled={user && (can([userRoleAdmin, userRoleSuperAdmin]))}
+                       >
+                         {isFavorite ? (
+                           <FavoriteIcon sx={{ fontSize: 50, color: theme.colors.error,
+                             '@media (max-width: 470px)': {
+                               fontSize: 30
+                             },
+                           }} />
+                         ) : (
+                           <FavoriteBorderIcon sx={{ fontSize: 50, color: theme.colors.black,
+                             '@media (max-width: 470px)': {
+                               fontSize: 30
+                             },
+                           }} />
+                         )}
+                       </IconButton>
+                     </span>
+                   </Tooltip> :
+                   <IconButton
+                     onClick={() => toggleFavorite(product.id)}
+                     sx={{
+                       width: "46px",
+                       height: "46px",
+                       borderRadius: "50%",
+                     }}
+                   >
+                     {isFavorite ? (
+                       <FavoriteIcon sx={{ fontSize: 50, color: theme.colors.error,
+                         '@media (max-width: 470px)': {
+                           fontSize: 30
+                         },
+                       }} />
+                     ) : (
+                       <FavoriteBorderIcon sx={{ fontSize: 50, color: theme.colors.black,
+                         '@media (max-width: 470px)': {
+                           fontSize: 30
+                         },
+                       }} />
+                     )}
+                   </IconButton>
+                 }
+               </>
               </Box>
-
             </Box>
           </Box>
         </Box>
-
       </Box>
       <Box sx={{ flex: 1, textAlign: "start", mt: theme.spacing.xl, ml: theme.spacing.xl, mr: theme.spacing.xl }}>
         <Box
@@ -461,18 +566,23 @@ const ProductPage = () => {
             dangerouslySetInnerHTML={{ __html: product?.productDescription || "" }}
           />
         ) : (
-          <Typography sx={{ fontSize: theme.fonts.size.default, mt: theme.spacing.sm }}>
-            {selectDeliveryInfo?.text}
-            <Box component="span" sx={{ display: "block", mt: theme.spacing.md }}>
-              {selectDeliveryInfo?.price}
-            </Box>
-          </Typography>
+          <>
+            {selectDeliveryInfo && (
+              <Typography sx={{ fontSize: theme.fonts.size.default, mt: theme.spacing.sm }}>
+                { ReactHtmlParser(selectDeliveryInfo.text) }
+              </Typography>
+            )}
+            {selectDeliveryInfo && ( <Typography component="span" sx={{ display: "block", mt: theme.spacing.md }}>
+              { ReactHtmlParser(selectDeliveryInfo.price) }
+            </Typography>
+            )}
+          </>
         )}
       </Box>
       <Box sx={{ mt: theme.spacing.xxl }}>
         {cart && (<HistoryProducts cart={cart} />)}
       </Box>
-    </div>
+    </Container>
   );
 };
 

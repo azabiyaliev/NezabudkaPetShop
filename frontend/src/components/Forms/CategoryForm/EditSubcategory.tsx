@@ -7,7 +7,8 @@ import {
   fetchCategoriesThunk,
   updateSubcategoryThunk
 } from '../../../store/categories/categoriesThunk.ts';
-import { toast } from 'react-toastify';
+import { enqueueSnackbar } from 'notistack';
+import theme from '../../../globalStyles/globalTheme.ts';
 
 interface EditSubcategoryProps {
   subcategory: {
@@ -17,9 +18,6 @@ interface EditSubcategoryProps {
   };
   onClose: () => void;
 }
-
-const WARNING_EMPTY_FIELD = "Не оставляйте поля пустыми!";
-const SUCCESSFUL_SUBCATEGORY_UPDATE = "Подкатегория успешно обновлена!";
 
 const EditSubcategory: React.FC<EditSubcategoryProps> = ({ subcategory,  onClose}) => {
   const [editedSubcategory, setEditedSubcategory] = useState<CategoryMutation>({
@@ -32,7 +30,7 @@ const EditSubcategory: React.FC<EditSubcategoryProps> = ({ subcategory,  onClose
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (editedSubcategory.title.trim() === "") {
-      toast.warning(WARNING_EMPTY_FIELD, { position: 'top-center' });
+      enqueueSnackbar('Не оставляйте поля пустыми!', { variant: 'error' });
       return;
     }
 
@@ -45,8 +43,7 @@ const EditSubcategory: React.FC<EditSubcategoryProps> = ({ subcategory,  onClose
       },
       token: user.token,
     }));
-
-    toast.success(SUCCESSFUL_SUBCATEGORY_UPDATE, { position: 'top-center' });
+    enqueueSnackbar('Подкатегория успешно обновлена!', { variant: 'success' });
 
     await dispatch(fetchCategoriesThunk());
     onClose();
@@ -86,7 +83,7 @@ const EditSubcategory: React.FC<EditSubcategoryProps> = ({ subcategory,  onClose
         onChange={inputChangeHandler}
       />
 
-      <Button type="submit" variant="contained" sx={{ bgcolor: "#237803", color: "white" }}>
+      <Button type="submit" variant="contained" sx={{ bgcolor: theme.colors.primary, color: theme.colors.white }}>
         Сохранить изменения
       </Button>
     </Box>

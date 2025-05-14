@@ -433,10 +433,10 @@ export class OrdersService {
     }
 
     if (updateStatus.status === 'Canceled') {
-      await this.prisma.order.delete({
-        where: { id: orderId, status: 'Canceled' },
-      });
-      return { message: 'Заказ был отменен' };
+      const telegramMessage = await this.telegramBot.sendMessage(
+        `Заказ ${orderId} был отменен`,
+      );
+      return { telegramMessage, message: 'Заказ был отменен' };
     }
     return order;
   }
@@ -475,15 +475,16 @@ export class OrdersService {
       },
     });
   }
-  async transferOrders(guestEmail: string, userId: number) {
-    return this.prisma.order.updateMany({
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  async autoDeletingCanceledOrder() {
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    await this.prisma.order.deleteMany({
       where: {
-        guestEmail,
-        userId: null,
-      },
-      data: {
-        guestEmail: null,
-        userId,
+        status: OrderStatus.Canceled,
+        createdAt: {
+          lte: sevenDaysAgo,
+        },
       },
     });
   }

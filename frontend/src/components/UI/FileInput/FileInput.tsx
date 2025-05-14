@@ -8,6 +8,7 @@ import {
 } from "@mui/material";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { useTheme } from '@mui/material/styles';
+import theme from '../../../globalStyles/globalTheme.ts';
 
 interface Props {
   name: string;
@@ -32,7 +33,7 @@ const FileInput: React.FC<Props> = ({
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [fileName, setFileName] = useState("");
-  const theme = useTheme();
+  const usetheme = useTheme();
 
   const activateInput = () => inputRef.current?.click();
 
@@ -61,10 +62,10 @@ const FileInput: React.FC<Props> = ({
         name={name}
         ref={inputRef}
         onChange={onFileChange}
-        style={{ display: "none" }}
+        style={{ display: "none"}}
       />
 
-      <InputLabel htmlFor={id}>{label}</InputLabel>
+      <InputLabel sx={{ mt:theme.spacing.sm}} htmlFor={id}>{label}</InputLabel>
 
       <OutlinedInput
         id={id}
@@ -86,14 +87,14 @@ const FileInput: React.FC<Props> = ({
               color: error ? "#FF0000" : "#1976d2",
             }}
           >
-            <AddPhotoAlternateIcon sx={{color: "gray"}} />
+            <AddPhotoAlternateIcon sx={{color: theme.colors.primary}} />
           </Button>
         }
-        sx={{ cursor: "pointer", backgroundColor: "white" }}
+        sx={{ cursor: "pointer", backgroundColor: "white", mt:theme.spacing.sm, p: theme.spacing.exs}}
       />
 
       {error && (
-        <FormHelperText sx={{ color: theme.palette.error.main }}>
+        <FormHelperText sx={{ color: usetheme.palette.error.main }}>
           {helperText}
         </FormHelperText>
       )}

@@ -23,7 +23,11 @@ export const register = createAsyncThunk<
   try {
     const { data: user } = await axiosApi.post<RegisterResponse>(
       "/auth/register",
-      registerMutation,
+      {
+        ...registerMutation,
+        recaptchaToken: registerMutation.recaptchaToken
+      }
+
     );
 
     if(registerMutation.guestEmail) {

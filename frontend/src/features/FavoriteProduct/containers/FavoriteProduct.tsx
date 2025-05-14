@@ -10,12 +10,13 @@ import {
 } from '../../../store/favoriteProducts/favoriteProductLocal.ts';
 import axiosApi from '../../../axiosApi.ts';
 import { ProductResponse } from '../../../types';
-import image from '../../../assets/image_transparent.png';
+import image from '../../../assets/image_transparent.webp';
 import { useNavigate } from 'react-router-dom';
 import ProductCard from '../../../components/Domain/ProductCard/ProductCard.tsx';
 import { cartFromSlice, getFromLocalStorage } from '../../../store/cart/cartSlice.ts';
 import { userRoleClient } from '../../../globalConstants.ts';
 import { fetchCart } from '../../../store/cart/cartThunk.ts';
+import Container from '@mui/material/Container';
 
 const FavoriteProduct = () => {
   const dispatch = useAppDispatch();
@@ -56,39 +57,64 @@ const FavoriteProduct = () => {
   }, [dispatch, user]);
 
   return (
-    <Box>
-      <Breadcrumbs aria-label="breadcrumb" sx={{ margin: '20px 0' }}>
-        <Link
-          underline="hover"
-          color="inherit"
-          onClick={() => navigate("/")}
-          sx={{ cursor: "pointer" }}
-        >
-          Главная
-        </Link>
-        <Typography color="text.primary">Избранное</Typography>
-      </Breadcrumbs>
+    <Container maxWidth="xl">
+      <Box>
+        <Breadcrumbs aria-label="breadcrumb" sx={{ margin: '20px 0' }}>
+          <Link
+            underline="hover"
+            color="inherit"
+            onClick={() => navigate("/")}
+            sx={{ cursor: "pointer" }}
+          >
+            Главная
+          </Link>
+          <Typography color="text.primary">Избранное</Typography>
+        </Breadcrumbs>
 
-      <Typography
-        variant="h4"
-        sx={{
-          margin: "20px 0",
-          fontFamily: "Nunito, sans-serif",
-          textAlign: "center",
-          fontWeight: "bold",
-        }}
-      >
-        Избранное
-      </Typography>
-      <Box  sx={{ display: "flex", justifyContent: "center", flexWrap: "wrap" }}>
-        {user ? (
-          favorites.length === 0 ? (
+        <Typography
+          variant="h4"
+          sx={{
+            margin: "20px 0",
+            fontFamily: "Nunito, sans-serif",
+            textAlign: "center",
+            fontWeight: "bold",
+          }}
+        >
+          Избранное
+        </Typography>
+        <Box  sx={{ display: "flex", justifyContent: "center", flexWrap: "wrap" }}>
+          {user ? (
+            favorites.length === 0 ? (
+              <Box sx={{ textAlign: 'center', margin: '30px 0'}}>
+                <img
+                  width="200"
+                  height="200"
+                  src={image}
+                  alt="shopping-cart-emoji"
+                />
+                <Typography
+                  variant="h4"
+                  sx={{
+                    margin: "20px 0",
+                    fontFamily: "Nunito, sans-serif",
+                  }}
+                >
+                  Здесь появятся ваши любимые товары
+                </Typography>
+              </Box>
+            ) : (
+              favorites.map((fav) => (
+                <Box key={fav.id}>
+                  {cart && (<ProductCard product={fav.product} cart={cart} />)}
+                </Box>
+              ))
+            )
+          ) : localFavorites.length === 0 ? (
             <Box sx={{ textAlign: 'center', margin: '30px 0'}}>
-              <img
-                width="200"
-                height="200"
-                src={image}
-                alt="shopping-cart-emoji"
+              <img width="200"
+                   height="200"
+                   src={image}
+                   alt="shopping-cart-emoji"
               />
               <Typography
                 variant="h4"
@@ -101,38 +127,16 @@ const FavoriteProduct = () => {
               </Typography>
             </Box>
           ) : (
-            favorites.map((fav) => (
-              <Box key={fav.id}>
-                {cart && (<ProductCard product={fav.product} cart={cart} />)}
+            localFavorites.map((item) => (
+              <Box key={item.id}>
+                {cart && (<ProductCard product={item} cart={cart} />)}
               </Box>
             ))
-          )
-        ) : localFavorites.length === 0 ? (
-          <Box sx={{ textAlign: 'center', margin: '30px 0'}}>
-            <img width="200"
-                 height="200"
-                 src={image}
-                 alt="shopping-cart-emoji"
-            />
-            <Typography
-              variant="h4"
-              sx={{
-                margin: "20px 0",
-                fontFamily: "Nunito, sans-serif",
-              }}
-            >
-              Здесь появятся ваши любимые товары
-            </Typography>
-          </Box>
-        ) : (
-          localFavorites.map((item) => (
-            <Box key={item.id}>
-              {cart && (<ProductCard product={item} cart={cart} />)}
-            </Box>
-          ))
-        )}
+          )}
+        </Box>
       </Box>
-    </Box>
+    </Container>
+
   );
 };
 

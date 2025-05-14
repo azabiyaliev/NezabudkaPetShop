@@ -1,6 +1,6 @@
 import ClientBar from "../../../../components/Domain/Client/ClientBar.tsx";
 import { useAppDispatch, useAppSelector } from "../../../../app/hooks.ts";
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, Container, Paper, Typography } from '@mui/material';
 import { useEffect } from "react";
 import { selectClientInfo } from "../../../../store/clientInfo/clientInfoSlice.ts";
 import { fetchClientInfo } from "../../../../store/clientInfo/clientInfoThunk.ts";
@@ -13,8 +13,9 @@ const ClientProfile = () => {
     dispatch(fetchClientInfo());
   }, [dispatch]);
 
+
   return (
-    <>
+    <Container maxWidth="xl">
       <Box
         sx={{
           display: "flex",
@@ -55,7 +56,7 @@ const ClientProfile = () => {
           </Paper>
         </Box>
       </Box>
-    </>
+    </Container>
   );
 };
 

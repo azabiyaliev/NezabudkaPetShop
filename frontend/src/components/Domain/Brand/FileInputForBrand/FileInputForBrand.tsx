@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Box, Button, TextField } from '@mui/material';
 import Grid from '@mui/material/Grid2';
+import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
+import theme from "../../../../globalStyles/globalTheme.ts";
 
 interface Props {
   onChange: React.ChangeEventHandler<HTMLInputElement>;
@@ -53,9 +55,17 @@ const FileInputForBrand: React.FC<Props> = ({
       />
       <Grid container spacing={2} alignItems="center">
         <Box
-          sx={{ display: "flex", alignItems: "center", gap: 2, width: "100%" }}
+          sx={{ display: "flex", alignItems: "center", gap: 2, width: "100%",
+            '@media (max-width: 560px)': {
+              display: "block",
+            },
+          }}
         >
-          <Box sx={{ width: "70%" }}>
+          <Box sx={{ width: "70%",
+            '@media (max-width: 560px)': {
+              width: "100%",
+            },
+          }}>
             <TextField
               sx={{ width: "100%" }}
               label={label}
@@ -64,19 +74,27 @@ const FileInputForBrand: React.FC<Props> = ({
               onClick={activateInput}
             />
           </Box>
-          <Box sx={{ width: "30%" }}>
+          <Box sx={{ width: "30%",
+            '@media (max-width: 560px)': {
+              width: "100%",
+              mt: 1
+            },
+          }}>
             <Button
-              variant="text"
+              variant="contained"
               onClick={activateInput}
               sx={{
-                color: "white",
-                width: "100%",
-                height: "50px",
-                background:
-                  "linear-gradient(90deg, rgba(250, 134, 1, 1) 0%, rgba(250, 179, 1, 1) 28%, rgba(250, 143, 1, 1) 100%)",
+                background: theme.colors.white,
+                border: `1px solid ${theme.colors.primary} `,
+                borderRadius: theme.spacing.exs,
+                height: '100%',
+                padding: "13px 12px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
               }}
             >
-              Выбрать изображение
+              <AddPhotoAlternateIcon sx={{ color: theme.colors.primary }} />
             </Button>
           </Box>
         </Box>

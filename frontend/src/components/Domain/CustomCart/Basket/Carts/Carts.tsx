@@ -4,7 +4,7 @@ import { ICartItem } from '../../../../../types';
 import React from 'react';
 import Cart from '../../Basket/Carts/Cart/Cart.tsx';
 import Tooltip from '@mui/joy/Tooltip';
-import { FONTS, SPACING } from '../../../../../globalStyles/stylesObjects.ts';
+import { COLORS, FONTS, SPACING } from '../../../../../globalStyles/stylesObjects.ts';
 
 interface Props {
   products: ICartItem[];
@@ -16,9 +16,9 @@ const Carts: React.FC<Props> = ({ products, deleteAllProduct}) => {
     <>
       <Box
         sx={{
-          border: "1px solid #e5e2dc",
+          border: `1px solid ${COLORS.BORDER_CART}`,
           padding: SPACING.md,
-          borderRadius: "20px",
+          borderRadius: SPACING.xl,
           marginBottom: "20px",
           "@media (max-width: 820px)": {
             width: "100%",

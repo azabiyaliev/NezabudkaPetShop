@@ -130,37 +130,40 @@ const HomePage = () => {
     }
   }, [dispatch, user]);
 
-  const sortedProducts = [...topSellingProducts].sort((a, b) => {
+  const bestsellerProducts = topSellingProducts.filter(product => product.isBestseller);
+  const sortedProducts = [...bestsellerProducts].sort((a, b) => {
     if (a.existence === b.existence) return 0;
     return a.existence ? -1 : 1;
   });
 
   return (
-    <Container maxWidth="xl">
-      <CustomCart openCart={openCart} closeCart={closeCart}/>
-      <Box sx={{
-        marginTop:theme.spacing.main_spacing,
-      }}>
-        <Typography
+    <Box>
+      <Container maxWidth="xl">
+        <Box
           sx={{
-            fontSize: theme.fonts.size.xxxl,
-            fontWeight: FONTS.weight.bold,
-            margin: `${SPACING.xxl} 0`,
-            color: theme.colors.text,
-            textAlign: "center",
+            marginTop: theme.spacing.main_spacing,
           }}
         >
-          Каталог
-        </Typography>
-        <CategoryCard/>
-      </Box>
-
+          <Typography
+            sx={{
+              fontSize: theme.fonts.size.xxxl,
+              fontWeight: FONTS.weight.bold,
+              margin: `${SPACING.xxl} 0`,
+              color: theme.colors.text,
+              textAlign: "center",
+            }}
+          >
+            Каталог
+          </Typography>
+          <CategoryCard />
+        </Box>
+      </Container>
+      <CustomCart openCart={openCart} closeCart={closeCart} />
       {promotionalProducts.length > 0 && (
         <Box
           sx={{
-            marginTop:theme.spacing.huge,
-            width: '100vw',
-            marginLeft: 'calc(-50vw + 50%)',
+            marginTop: theme.spacing.huge,
+            width: "100%",
             backgroundColor: theme.colors.rgbaGrey,
             paddingTop: theme.spacing.main_spacing,
             paddingBottom: theme.spacing.xxxl,
@@ -183,37 +186,39 @@ const HomePage = () => {
           </Container>
         </Box>
       )}
-
-      {topSellingProducts.length > 0 && (
-        <Box sx={{
-          marginTop:theme.spacing.main_spacing,
-        }}>
-          <Typography
+      <Container maxWidth="xl">
+        {bestsellerProducts.length > 0 && (
+          <Box
             sx={{
-              fontSize: theme.fonts.size.xxxl,
-              fontWeight: FONTS.weight.bold,
-              color: theme.colors.text,
-              textAlign: "center",
-              marginBottom: theme.spacing.md
+              marginTop: theme.spacing.main_spacing,
             }}
           >
-            Хиты продаж
-          </Typography>
-          {cart && (
-            <TopSellingProducts products={sortedProducts} cart={cart} />
-          )}
-        </Box>
-      )}
+            <Typography
+              sx={{
+                fontSize: theme.fonts.size.xxxl,
+                fontWeight: FONTS.weight.bold,
+                color: theme.colors.text,
+                textAlign: "center",
+                marginBottom: theme.spacing.md,
+              }}
+            >
+              Хиты продаж
+            </Typography>
+            {cart && (
+              <TopSellingProducts products={sortedProducts} cart={cart} />
+            )}
+          </Box>
+        )}
 
+      </Container>
       {brands.length > 0 && (
         <Box
           sx={{
-            marginTop:theme.spacing.sixty,
-            width: '100vw',
-            marginLeft: 'calc(-50vw + 50%)',
+            marginTop: theme.spacing.sixty,
+            width: "100%",
             backgroundColor: theme.colors.rgbaGrey,
             paddingTop: theme.spacing.main_spacing,
-            paddingBottom: theme.spacing.huge
+            paddingBottom: theme.spacing.huge,
           }}
         >
           <Container maxWidth="xl">
@@ -232,24 +237,28 @@ const HomePage = () => {
           </Container>
         </Box>
       )}
-      <Box sx={{
-        marginTop: theme.spacing.main_spacing,
-      }}>
-      <Typography
-        sx={{
-          fontSize: theme.fonts.size.xxxl,
-          fontWeight: FONTS.weight.bold,
-          marginTop: `${SPACING.main_spacing} 0`,
-          paddingBottom:theme.spacing.sm,
-          color: theme.colors.text,
-          textAlign: "center",
-        }}
-      >
-       Контакты
-      </Typography>
-      <ContactBlock/>
-      </Box>
-    </Container>
+      <Container maxWidth="xl">
+        <Box
+          sx={{
+            marginTop: theme.spacing.main_spacing,
+          }}
+        >
+          <Typography
+            sx={{
+              fontSize: theme.fonts.size.xxxl,
+              fontWeight: FONTS.weight.bold,
+              marginTop:` ${SPACING.main_spacing} 0`,
+              paddingBottom: theme.spacing.sm,
+              color: theme.colors.text,
+              textAlign: "center",
+            }}
+          >
+            Контакты
+          </Typography>
+          <ContactBlock />
+        </Box>
+      </Container>
+    </Box>
   );
 };
 

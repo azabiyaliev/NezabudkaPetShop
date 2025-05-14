@@ -29,7 +29,6 @@ export const addNewCategory = createAsyncThunk<
   formData.append("title", category.title);
   if (category.parentId) formData.append("parentId", category.parentId.toString());
 
-  if (category.icon) formData.append("icon", category.icon);
   if (category.image) formData.append("image", category.image);
 
   try {
@@ -59,7 +58,9 @@ export const addNewSubcategory = createAsyncThunk<
   async ({ id, subcategories, token }, { rejectWithValue }) => {
     const formData = new FormData();
 
-    subcategories.forEach((sub) => formData.append("subcategories[]", sub));
+    subcategories.forEach((sub, index) => {
+      formData.append(`subcategories[${index}].title`, sub);
+    });
 
     try {
       await axiosApi.post(
@@ -98,12 +99,6 @@ export const updateCategoryThunk = createAsyncThunk<
     try {
       const formData = new FormData();
       formData.append("title", category.title);
-
-      if (category.icon instanceof File) {
-        formData.append("icon", category.icon);
-      } else if (category.icon === null) {
-        formData.append("icon", '');
-      }
 
       if (category.image instanceof File) {
         formData.append("image", category.image);

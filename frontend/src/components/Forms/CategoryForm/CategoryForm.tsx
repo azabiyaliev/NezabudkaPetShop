@@ -1,11 +1,11 @@
-import { TextField, Button, Box, Typography, Grid, Paper, IconButton } from "@mui/material";
+import { TextField, Button, Box, Typography, Paper, IconButton } from "@mui/material";
 import React, { useCallback, useRef, useState } from "react";
 import { CategoryMutation } from '../../../types';
-import { toast } from "react-toastify";
-import AddIcon from '@mui/icons-material/Add';
 import FileInputCategory from '../../FileInput/FileInputCategory.tsx';
 import { apiUrl } from '../../../globalConstants.ts';
 import CloseIcon from '@mui/icons-material/Close';
+import { enqueueSnackbar } from 'notistack';
+import theme from '../../../globalStyles/globalTheme.ts';
 
 export interface Props {
   onSubmit: (category: CategoryMutation) => void;
@@ -13,11 +13,8 @@ export interface Props {
 
 const initialState: CategoryMutation = {
   title: '',
-  icon: null,
   image: null,
 };
-
-const WARNING_EMPTY_SUBCATEGORY = "Введите название подкатегории!";
 
 const CategoryForm: React.FC<Props> = ({ onSubmit }) => {
   const [category, setCategory] = useState<CategoryMutation>(initialState);
@@ -28,7 +25,7 @@ const CategoryForm: React.FC<Props> = ({ onSubmit }) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (category.title.trim() === "") {
-      return toast.warning(WARNING_EMPTY_SUBCATEGORY, { position: "top-center" });
+      return enqueueSnackbar('Введите название подкатегории!', { variant: 'error' });
     }
 
     onSubmit({ ...category });
@@ -56,14 +53,6 @@ const CategoryForm: React.FC<Props> = ({ onSubmit }) => {
     }
   };
 
-  const deleteIconHandler = () => {
-    setCategory((prevState) => ({
-      ...prevState,
-      icon: null,
-    }));
-    if (iconInputRef.current) iconInputRef.current.value = '';
-  };
-
   const deleteImageHandler = () => {
     setCategory((prevState) => ({
       ...prevState,
@@ -73,14 +62,14 @@ const CategoryForm: React.FC<Props> = ({ onSubmit }) => {
   };
 
   return (
-    <Paper elevation={3} sx={{ p: 4, borderRadius: 3, maxWidth: 800, margin: "10px auto" }}>
-      <Typography  gutterBottom sx={{ textAlign: 'start', fontWeight: 600, mb:"10px" }}>
+    <Paper elevation={3} sx={{ p: 4, borderRadius: 3, maxWidth: 800, margin: "10px auto" , width: "100%"}}>
+      <Typography  gutterBottom sx={{ textAlign: 'center', fontWeight: 600, mb:"10px" }}>
         Добавить новую категорию
       </Typography>
 
       <Box component="form" onSubmit={handleSubmit} noValidate autoComplete="off">
-        <Grid container spacing={3}>
-          <Grid item xs={12}>
+        <Box sx={{ display: "flex", justifyContent: "space-between", gap: 2, mt: 2, alignItems: "center", flexDirection: "column" }}>
+          <Box sx={{ width: "100%"}}>
             <TextField
               label="Название категории"
               name="title"
@@ -90,44 +79,9 @@ const CategoryForm: React.FC<Props> = ({ onSubmit }) => {
               required
               variant="outlined"
             />
-          </Grid>
+          </Box>
 
-          {/* ICON */}
-          <Grid item xs={12} sm={6}>
-            <FileInputCategory
-              id="icon"
-              name="icon"
-              label="Иконка категории"
-              onGetFile={onFileChange}
-              file={category.icon || null}
-              inputRef={iconInputRef}
-            />
-            {category.icon && (
-              <Box sx={{ mt: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
-                <img
-                  style={{
-                    width: "50px",
-                    height: "50px",
-                    objectFit: "contain",
-                    border: "1px solid #ddd",
-                    borderRadius: 4,
-                  }}
-                  src={
-                    category.icon instanceof File
-                      ? URL.createObjectURL(category.icon)
-                      : apiUrl + category.icon
-                  }
-                  alt="Иконка превью"
-                />
-                <IconButton onClick={deleteIconHandler} size="small" color="error">
-                  <CloseIcon />
-                </IconButton>
-              </Box>
-            )}
-          </Grid>
-
-          {/* IMAGE */}
-          <Grid item xs={12} sm={6}>
+          <Box sx={{ display: "flex", justifyContent: "space-between", gap: 2, alignItems: "center" }}>
             <FileInputCategory
               id="image"
               name="image"
@@ -136,52 +90,81 @@ const CategoryForm: React.FC<Props> = ({ onSubmit }) => {
               file={category.image || null}
               inputRef={imageInputRef}
             />
-            {category.image && (
-              <Box sx={{ mt: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
-                <img
-                  style={{
-                    width: "50px",
-                    height: "50px",
-                    objectFit: "contain",
-                    border: "1px solid #ddd",
-                    borderRadius: 4,
-                  }}
-                  src={
-                    category.image instanceof File
-                      ? URL.createObjectURL(category.image)
-                      : apiUrl + category.image
-                  }
-                  alt="Превью изображения"
-                />
-                <IconButton onClick={deleteImageHandler} size="small" color="error">
-                  <CloseIcon />
-                </IconButton>
-              </Box>
-            )}
-          </Grid>
 
-          <Grid item xs={12} textAlign="right">
+            <Box
+              sx={{
+                mt: 1,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '100px',
+                height: '100px',
+                backgroundColor: theme.colors.rgbaGrey,
+                border: `1px dashed ${theme.colors.DARK_GRAY} `,
+                borderRadius: 4,
+                position: 'relative',
+              }}
+            >
+              {category.image ? (
+                <>
+                  <img
+                    style={{
+                      maxWidth: '100%',
+                      maxHeight: '100%',
+                      objectFit: 'contain',
+                      borderRadius: 4,
+                    }}
+                    src={
+                      category.image instanceof File
+                        ? URL.createObjectURL(category.image)
+                        : apiUrl + category.image
+                    }
+                    alt="Превью изображения"
+                  />
+                  <IconButton
+                    onClick={deleteImageHandler}
+                    size="small"
+                    color="error"
+                    sx={{
+                      position: 'absolute',
+                      top: 0,
+                      right: 0,
+                      backgroundColor: theme.colors.white,
+                    }}
+                  >
+                    <CloseIcon />
+                  </IconButton>
+                </>
+              ) : (
+                <Typography
+                  component="span"
+                  sx={{
+                    color: theme.colors.DARK_GRAY,
+                    fontSize: theme.fonts.size.xs,
+                    textAlign: 'center',
+                  }}
+                >
+                  Нет изображения
+                </Typography>
+              )}
+            </Box>
+          </Box>
+
+          <Box>
             <Button
               type="submit"
               variant="contained"
               size="large"
-              startIcon={<AddIcon />}
               sx={{
-                backgroundColor: "#237803",
-                color: "white",
-                px: 4,
-                py: 1.5,
-                borderRadius: "8px",
+                backgroundColor: theme.colors.primary,
+                color: theme.colors.white,
                 fontWeight: 500,
-                "&:hover": {
-                  backgroundColor: "#1e6600",
-                },
               }}
             >
               Добавить
             </Button>
-          </Grid>
-        </Grid>
+          </Box>
+        </Box>
       </Box>
     </Paper>
   );

@@ -2,6 +2,7 @@ import { Box } from '@mui/material';
 import { NavLink } from 'react-router-dom';
 import { useAppSelector } from '../../../../app/hooks.ts';
 import { selectUser } from '../../../../store/users/usersSlice.ts';
+import theme from '../../../../globalStyles/globalTheme.ts';
 
 const CabinetBlockFooter = () => {
   const user = useAppSelector(selectUser);
@@ -40,28 +41,27 @@ const CabinetBlockFooter = () => {
   return (
     <Box sx={{ textAlign: "left" }}>
       {user && (user.role === "admin" || user.role === "superAdmin" )&& (
-          <p style={{ color: "lightgray", fontSize: "14px", marginBottom: "8px" }}>
+          <p style={{ color: "lightgray", fontSize: "14px", marginBottom: theme.spacing.xs }}>
             Кабинет администрации
           </p>
       )}
 
       {user?.role !== "admin" && user?.role !== "superAdmin" && (
-          <p style={{ color: "lightgray", fontSize: "14px", marginBottom: "8px" }}>
+          <p style={{ color: theme.colors.rgbaGrey, fontSize:  theme.fonts.size.sm, marginBottom: "8px", fontWeight: theme.fonts.weight.medium }}>
             Кабинет покупателя
           </p>
       )}
       <Box component="ul" sx={{ listStyle: "none", padding: 0, margin: 0 }}>
         {links.map((item) => (
-          <Box component="li" key={item.to} sx={{ marginBottom: "4px" }}>
+          <Box component="li" key={item.to} sx={{ marginBottom: theme.spacing.exs }}>
             <NavLink
               to={item.to}
               style={{
-                color: "white",
+                color: theme.colors.white,
                 textDecoration: "none",
                 transition: "color 0.3s",
+                fontSize:  theme.fonts.size.sm
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "yellow")}
-              onMouseLeave={(e) => (e.currentTarget.style.color = "white")}
             >
               {item.label}
             </NavLink>

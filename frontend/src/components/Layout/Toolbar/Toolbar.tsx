@@ -1,12 +1,9 @@
-import { Badge, Box, Button, Container, InputBase, Toolbar, } from '@mui/material';
+import { Badge, Box, Button, Container, InputBase, Toolbar, useMediaQuery, } from '@mui/material';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector, usePermission, } from '../../../app/hooks.ts';
 import ExistsUser from './ExistsUser.tsx';
 import UnknownUser from './UnknownUser.tsx';
-import logo from '../../../assets/logo-nezabudka.png';
-import backImage from '../../../assets/фон.png';
-import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import logo from '../../../assets/logo-nezabudka.webp';
 import Typography from '@mui/material/Typography';
 import './Fonts.css';
 import { selectEditSite } from '../../../store/editionSite/editionSiteSlice.ts';
@@ -25,14 +22,22 @@ import CategoryNavMenu from '../../Domain/CategoryNavMenu.tsx';
 import { cartFromSlice, getFromLocalStorage, } from '../../../store/cart/cartSlice.ts';
 import { userRoleAdmin, userRoleClient, userRoleSuperAdmin } from '../../../globalConstants.ts';
 import IconButton from '@mui/joy/IconButton';
-import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
 import { fetchUserIdBonus } from '../../../store/users/usersThunk.ts';
 import Tooltip from '@mui/joy/Tooltip';
-import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import { selectedFavorite } from '../../../store/favoriteProducts/favoriteProductsSlice.ts';
 import { getLocalFavoriteProducts } from '../../../store/favoriteProducts/favoriteProductLocal.ts';
 import { ClickAwayListener } from "@mui/material";
 import theme from "../../../globalStyles/globalTheme.ts";
+import PhoneIcon from '@mui/icons-material/Phone';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import {
+  Heart,
+  MagnifyingGlass,
+  ShoppingCartSimple,
+  Star, Truck
+} from 'phosphor-react';
+import StorefrontIcon from '@mui/icons-material/Storefront';
+
 
 const MainToolbar = () => {
   const [openCart, setOpenCart] = useState<boolean>(false);
@@ -51,14 +56,13 @@ const MainToolbar = () => {
   const [focused, setFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [open, setOpen] = useState(false);
-
+  const isMobile = useMediaQuery("(max-width:600px)");
 
   useEffect(() => {
     if (user && can([userRoleClient])) {
       setFavoriteCount(favoriteProducts.length);
       return;
     }
-
 
     const update = () => {
       setFavoriteCount(getLocalFavoriteProducts().length);
@@ -75,9 +79,6 @@ const MainToolbar = () => {
     };
   }, [favoriteProducts, user, can]);
 
-
-
-
   useEffect(() => {
     if (user?.id) {
       dispatch(fetchUserIdBonus(String(user.id))).unwrap();
@@ -93,7 +94,7 @@ const MainToolbar = () => {
   }, [search]);
 
   useEffect(() => {
-    if(!user) {
+    if (!user) {
       dispatch(getFromLocalStorage());
     }
     dispatch(fetchSite()).unwrap();
@@ -113,7 +114,7 @@ const MainToolbar = () => {
     }
 
     return products.filter((product) =>
-      product.productName.toLowerCase().includes(debouncedSearch.toLowerCase())
+      product.productName.toLowerCase().includes(debouncedSearch.toLowerCase()),
     );
   }, [debouncedSearch, products]);
 
@@ -137,16 +138,15 @@ const MainToolbar = () => {
       return acc;
     }, 0);
 
-
   const escapeRegExp = (string: string) => {
-    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   };
 
   const highlightText = (text: string, search: string) => {
     if (!search) return text;
 
     const escapedSearch = escapeRegExp(search);
-    const reg = new RegExp(`(${escapedSearch})`, 'gi');
+    const reg = new RegExp(`(${escapedSearch})`, "gi");
 
     const parts = text.split(reg);
 
@@ -157,10 +157,9 @@ const MainToolbar = () => {
         </strong>
       ) : (
         part
-      )
+      ),
     );
   };
-
 
   return (
     <div>
@@ -172,21 +171,22 @@ const MainToolbar = () => {
         }}
       >
         {(!user || (user.role !== "admin" && user.role !== "superAdmin")) && (
-          <Container  maxWidth="xl">
+          <Container maxWidth="xl">
             <Box
               sx={{
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-                gap: "30px",
-                marginTop: "5px",
+                gap: theme.spacing.lg,
+                marginTop: theme.spacing.exs,
+                marginBottom: theme.spacing.exs,
               }}
             >
               <Box
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  gap: "10px",
+                  gap: theme.spacing.xs,
                 }}
               >
                 <a
@@ -194,18 +194,21 @@ const MainToolbar = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{
-                    color: "black",
+                    color: theme.colors.text,
                     textDecoration: "none",
                     display: "flex",
                     alignItems: "center",
-                    paddingRight: "10px",
+                    paddingRight: theme.spacing.xs,
                   }}
                 >
                   <Typography
                     sx={{
-                      color: "black",
-                      fontSize: 16,
-                      "@media (max-width: 800px)": { fontSize: 13 },
+                      color: theme.colors.text,
+                      fontSize: theme.fonts.size.default,
+                      fontWeight: theme.fonts.weight.medium,
+                      "@media (max-width: 800px)": {
+                        fontSize: theme.fonts.size.xs,
+                      },
                     }}
                   >
                     {site?.address}
@@ -216,15 +219,20 @@ const MainToolbar = () => {
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  gap: "10px",
+                  gap: theme.spacing.xs,
                   cursor: "pointer",
                 }}
               >
                 <Typography
                   sx={{
-                    borderRight: "1px solid black",
-                    paddingRight: "10px",
-                    "@media (max-width: 800px)": { fontSize: 13 },
+                    borderRight: `1px solid ${theme.colors.text}`,
+                    paddingRight: theme.spacing.xs,
+                    color: theme.colors.text,
+                    fontSize: theme.fonts.size.default,
+                    fontWeight: theme.fonts.weight.medium,
+                    "@media (max-width: 800px)": {
+                      fontSize: theme.fonts.size.xs,
+                    },
                     "@media (max-width: 560px)": {
                       borderRight: "none",
                       paddingRight: "0px",
@@ -233,19 +241,50 @@ const MainToolbar = () => {
                 >
                   <a
                     href={`tel:${site?.phone}`}
-                    style={{ textDecoration: "none", color: "black" }}
+                    style={{
+                      textDecoration: "none",
+                      color: theme.colors.text,
+                      display: "flex",
+                      alignItems: "center",
+                    }}
                   >
+                    <PhoneIcon
+                      sx={{
+                        fontSize: theme.fonts.size.lg,
+                        "@media (max-width: 800px)": {
+                          fontSize: theme.fonts.size.big_default,
+                        },
+                        "@media (max-width: 560px)": {
+                          fontSize: theme.fonts.size.default,
+                        },
+                      }}
+                    />
                     {site?.phone}
                   </a>
                 </Typography>
 
                 <Typography
                   sx={{
-                    "@media (max-width: 800px)": { fontSize: 13 },
+                    display: "flex",
+                    alignItems: "center",
+                    color: theme.colors.text,
+                    fontSize: theme.fonts.size.default,
+                    fontWeight: theme.fonts.weight.medium,
+                    "@media (max-width: 800px)": {
+                      fontSize: theme.fonts.size.xs,
+                    },
                     "@media (max-width: 560px)": { display: "none" },
                   }}
                 >
-                  ({site && site.schedule})
+                  <AccessTimeIcon
+                    sx={{
+                      fontSize: theme.fonts.size.lg,
+                      "@media (max-width: 800px)": {
+                        fontSize: theme.fonts.size.big_default,
+                      },
+                    }}
+                  />
+                  {site && site.schedule}
                 </Typography>
               </Box>
             </Box>
@@ -254,10 +293,14 @@ const MainToolbar = () => {
       </Box>
       <div
         style={{
-          backgroundColor: user?.role === "superAdmin" ? "#FE5D26" : "#75AF4C",
-          backgroundImage: `url("${backImage}")`,
-          backgroundSize: "15%",
+          background:
+            user?.role === "superAdmin"
+              ? `linear-gradient(135deg, ${theme.colors.adminBackgroundGreen} 0%, #A3B72F 50%, ${theme.colors.adminBackgroundYellow} 100%)`
+              : theme.colors.primary,
+          backgroundSize: "200%",
           backgroundPosition: "center",
+          borderBottom: `1px solid ${theme.colors.white}`,
+          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
         }}
       >
         <Container maxWidth="xl" style={{ padding: "0px" }}>
@@ -274,7 +317,7 @@ const MainToolbar = () => {
                 paddingTop: "15px",
                 paddingBottom: "15px",
                 "@media (max-width: 1430px)": {
-                  paddingTop: "5px",
+                  paddingTop: theme.spacing.exs,
                   paddingBottom: 0,
                 },
                 "@media (max-width: 1100px)": {
@@ -284,7 +327,7 @@ const MainToolbar = () => {
                 },
               }}
             >
-              <div style={{ display: "flex", alignItems: "center" }} >
+              <div style={{ display: "flex", alignItems: "center" }}>
                 <Box
                   onClick={() => setOpenCategoryMenu(true)}
                   sx={{
@@ -292,18 +335,18 @@ const MainToolbar = () => {
                     "@media (max-width: 900px)": {
                       paddingTop: "7px",
                       paddingBottom: "7px",
-                      borderRadius: "10px",
+                      borderRadius: theme.spacing.xs,
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
                       cursor: "pointer",
                       transition: "background 0.3s ease",
                       position: "relative",
-                      marginRight: "20px",
+                      marginRight: theme.spacing.sm,
                     },
                   }}
                 >
-                  <MenuIcon sx={{ color: "white" }} />
+                  <MenuIcon sx={{ color: theme.colors.white }} />
                 </Box>
                 <NavLink
                   to="/"
@@ -321,6 +364,11 @@ const MainToolbar = () => {
                       "@media (max-width: 800px)": {
                         height: "50px",
                         width: "50px",
+                        marginRight: "0px",
+                      },
+                      "@media (max-width: 400px)": {
+                        height: "40px",
+                        width: "40px",
                       },
                     }}
                   />
@@ -333,13 +381,13 @@ const MainToolbar = () => {
                           md: "28px",
                         },
                         textTransform: "uppercase",
-                        fontWeight: "bold",
-                        fontFamily: "COMIC SANS MS, Roboto, Arial, sans-serif",
-                        color: "white",
+                        fontWeight: theme.fonts.weight.bold,
+                        fontFamily: "Tahoma, sans-serif",
+                        color: theme.colors.white,
                         cursor: "pointer",
                         marginRight: theme.spacing.xs,
                         "@media (max-width: 500px)": {
-                          paddingRight: "10px",
+                          paddingRight: theme.spacing.xs,
                         },
                       }}
                     >
@@ -349,7 +397,7 @@ const MainToolbar = () => {
                 </NavLink>
               </div>
 
-              {(user && can(["client"])) || !user && !focused ? (
+              {(user && can(["client"])) || (!user && !focused) ? (
                 <Box
                   sx={{
                     display: "flex",
@@ -365,12 +413,11 @@ const MainToolbar = () => {
                     component={NavLink}
                     to="/all-products"
                     sx={{
-                      fontSize: "20px",
+                      fontSize: theme.fonts.size.lg,
                       textDecoration: "none",
-                      color: "white",
-                      fontWeight: "bold",
+                      color: theme.colors.white,
                       "@media (max-width: 1230px)": {
-                        fontSize: "17px",
+                        fontSize: theme.fonts.size.default,
                       },
                       "@media (max-width: 1100px)": {
                         display: "none",
@@ -381,35 +428,16 @@ const MainToolbar = () => {
                   </Box>
                   <Box
                     component={NavLink}
-                    to="/contacts"
-                    sx={{
-                      fontSize: "20px",
-                      textDecoration: "none",
-                      color: "white",
-                      fontWeight: "bold",
-                      "@media (max-width: 1230px)": {
-                        fontSize: "17px",
-                      },
-                      "@media (max-width: 1100px)": {
-                        display: "none",
-                      },
-                    }}
-                  >
-                    Контакты
-                  </Box>
-                  <Box
-                    component={NavLink}
                     to="/delivery"
                     sx={{
                       textDecoration: "none",
-                      color: "white",
-                      fontWeight: "bold",
+                      color: theme.colors.white,
                       display: "flex",
                       alignItems: "center",
-                      gap: "5px",
-                      fontSize: "20px",
+                      gap: theme.spacing.exs,
+                      fontSize: theme.fonts.size.lg,
                       "@media (max-width: 1230px)": {
-                        fontSize: "17px",
+                        fontSize: theme.fonts.size.default,
                       },
                     }}
                   >
@@ -424,9 +452,30 @@ const MainToolbar = () => {
                       Доставка и оплата
                     </Box>
                   </Box>
+                  <Box
+                    component={NavLink}
+                    to="/contacts"
+                    sx={{
+                      fontSize: theme.fonts.size.lg,
+                      textDecoration: "none",
+                      color: theme.colors.white,
+                      "@media (max-width: 1230px)": {
+                        fontSize: theme.fonts.size.default,
+                      },
+                      "@media (max-width: 1100px)": {
+                        display: "none",
+                      },
+                    }}
+                  >
+                    Контакты
+                  </Box>
                 </Box>
               ) : null}
-              <ClickAwayListener onClickAway={() => { setFocused(false); }}>
+              <ClickAwayListener
+                onClickAway={() => {
+                  setFocused(false);
+                }}
+              >
                 <Box
                   sx={{
                     display: "flex",
@@ -437,7 +486,7 @@ const MainToolbar = () => {
                     maxWidth: focused ? "500px" : "50px",
                     "@media (max-width: 1060px)": {
                       display: "none",
-                    }
+                    },
                   }}
                 >
                   <Box
@@ -445,49 +494,40 @@ const MainToolbar = () => {
                     sx={{
                       position: "relative",
                       marginLeft: "auto",
-                      width: focused ? "100%" : "50px",
+                      width: "100%",
+                      maxWidth: "400px",
                       height: "50px",
                       paddingRight: "50px",
                       transition: "all 0.5s",
                       borderRadius: "25px",
-                      backgroundColor: theme.colors.white,
                       overflow: "hidden",
                       boxSizing: "border-box",
                       zIndex: 10,
                       display: "flex",
                       alignItems: "center",
-                      "&:focus-within": {
-                        cursor: "pointer",
-                        border: `1px solid ${theme.colors.yellow}`,
-                        boxShadow: `0px 0px 10px ${theme.colors.yellow}`,
-                        "& .MuiInputBase-root": {
-                          display: "block",
-                        },
-                        "& .MuiIconButton-root": {
-                          backgroundColor: theme.colors.yellow,
-                          color: theme.colors.text,
-                        },
-                      },
+                      border: focused
+                        ? `1px solid ${theme.colors.yellow}`
+                        : "1px solid transparent",
+                      boxShadow: focused
+                        ? `0px 0px 10px ${theme.colors.yellow}`
+                        : "none",
+                      backgroundColor: focused
+                        ? theme.colors.white
+                        : "transparent",
                     }}
                   >
                     <InputBase
                       inputRef={inputRef}
                       sx={{
-                        position: "absolute",
-                        top: 10,
-                        left: 0,
-                        width: "100%",
-                        height: "42.5px",
-                        lineHeight: "30px",
-                        outline: 0,
-                        border: 0,
-                        display: focused ? "block" : "none",
-                        fontSize: theme.fonts.size.default,
+                        width: focused ? "100%" : "0",
+                        opacity: focused ? 1 : 0,
+                        height: "100%",
                         borderRadius: "20px",
-                        padding: `0 ${theme.spacing.sm}`,
-                        transition: "all 0.3s ease-in-out",
+                        padding: focused ? `0 ${theme.spacing.sm}` : 0,
+                        transition: "all 0.5s ease",
+                        fontSize: theme.fonts.size.default,
                         color: theme.colors.text,
-                        backgroundColor: theme.colors.white,
+                        backgroundColor: "transparent",
                         flexGrow: 1,
                       }}
                       placeholder="Поиск товара"
@@ -497,23 +537,34 @@ const MainToolbar = () => {
                     />
                     <IconButton
                       onClick={() => {
-                        setFocused(true)
+                        setFocused(true);
                         inputRef.current?.focus();
                       }}
                       sx={{
-                        boxSizing: "border-box",
                         width: "42.5px",
                         height: "42.5px",
                         position: "absolute",
-                        top: 5,
                         right: 3,
                         borderRadius: "50%",
-                        color: focused ? theme.colors.text : theme.colors.primary,
+                        padding: 0,
+                        color: "inherit",
+                        backgroundColor: "transparent",
                         transition: "all 0.5s",
-                        backgroundColor: focused ? theme.colors.yellow : "transparent",
+                        "&:hover": {
+                          backgroundColor: "transparent",
+                        },
+                        "&:focus": {
+                          backgroundColor: "transparent",
+                        },
                       }}
                     >
-                      <SearchIcon />
+                      <MagnifyingGlass
+                        size={28}
+                        weight="regular"
+                        color={
+                          focused ? theme.colors.DARK_GREEN : theme.colors.white
+                        }
+                      />
                     </IconButton>
                   </Box>
 
@@ -543,17 +594,23 @@ const MainToolbar = () => {
                                 ? `/private/edit_product/${product.id}`
                                 : `/product/${product.id}`
                             }
-                            onClick={() => { setSearch(""); setFocused(false); }}
+                            onClick={() => {
+                              setSearch("");
+                              setFocused(false);
+                            }}
                           >
                             <Box
                               sx={{
                                 padding: theme.spacing.xs,
                                 borderBottom: `1px solid ${theme.colors.background}`,
-                                display: focused ? "block" : "none"
+                                display: focused ? "block" : "none",
                               }}
                             >
                               <Box
-                                sx={{ fontSize: theme.fonts.size.default, fontWeight: theme.fonts.weight.normal }}
+                                sx={{
+                                  fontSize: theme.fonts.size.default,
+                                  fontWeight: theme.fonts.weight.normal,
+                                }}
                               >
                                 {highlightText(product.productName, search)}
                               </Box>
@@ -561,7 +618,12 @@ const MainToolbar = () => {
                           </NavLink>
                         ))
                       ) : (
-                        <Box sx={{ padding: theme.spacing.xs, display: focused ? "block": "none" }}>
+                        <Box
+                          sx={{
+                            padding: theme.spacing.xs,
+                            display: focused ? "block" : "none",
+                          }}
+                        >
                           Товаров не найдено
                         </Box>
                       )}
@@ -571,7 +633,13 @@ const MainToolbar = () => {
               </ClickAwayListener>
 
               {/*Toolbar*/}
-              <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: theme.spacing.xs,
+                }}
+              >
                 {(user && can(["client"])) || !user ? (
                   <Box
                     sx={{
@@ -579,7 +647,7 @@ const MainToolbar = () => {
                       justifyContent: "space-between",
                     }}
                   >
-                    <Box sx={{ display: "flex", gap: "10px" }}>
+                    <Box sx={{ display: "flex", gap: theme.spacing.xs }}>
                       <Box
                         component={NavLink}
                         to="/delivery"
@@ -595,23 +663,23 @@ const MainToolbar = () => {
                             padding: { xs: "9px", sm: "10px", md: "7px 20px" },
                             borderRadius: { xs: "50%", md: "10px" },
                           },
+                          "@media (max-width: 400px)": {
+                            paddingRight: 0,
+                          },
                         }}
                       >
                         <Tooltip
                           sx={{
-                            backgroundColor: 'rgba(0, 0, 0, 0.3)',
-                            backdropFilter: 'blur(10px)',
+                            backgroundColor: theme.colors.tooltip_color,
+                            backdropFilter: "blur(10px)",
                           }}
-                          title='Информация о доставке'>
-                        <LocalShippingIcon
-                          sx={{
-                            color: "#fff",
-                            fontSize: { xs: "20px", sm: "24px", md: '30px' },
-                            "@media (max-width: 500px)": {
-                              fontSize: "20px",
-                            },
-                          }}
-                        />
+                          title="Информация о доставке"
+                        >
+                          <Truck
+                            size={isMobile ? 20 : 28}
+                            weight="regular"
+                            color={theme.colors.white}
+                          />
                         </Tooltip>
                       </Box>
                       {/*Cart*/}
@@ -626,37 +694,37 @@ const MainToolbar = () => {
                           justifyContent: "center",
                           cursor: "pointer",
                           transition: "background 0.3s ease",
+                          "@media (max-width: 400px)": {
+                            paddingRight: 0,
+                          },
                         }}
                       >
-                        <Badge
-                          badgeContent={sum}
-                          overlap="circular"
-                          color="warning"
+                        <Tooltip
+                          title="Корзина"
                           sx={{
-                            backgroundColor: user ? "transparent" : undefined,
-                            "& .MuiBadge-badge": {
-                              top: "-3px",
-                              right: "-4px",
-                            },
+                            backgroundColor: theme.colors.tooltip_color,
+                            backdropFilter: "blur(10px)",
                           }}
                         >
-                          <Tooltip
+                          <Badge
+                            badgeContent={sum}
+                            overlap="circular"
+                            color="warning"
                             sx={{
-                              backgroundColor: 'rgba(0, 0, 0, 0.3)',
-                              backdropFilter: 'blur(10px)',
-                            }}
-                            title='Корзина'>
-                          <AddShoppingCartIcon
-                            sx={{
-                              color: "#fff",
-                              fontSize: { xs: "20px", sm: "24px", md: '30px' },
-                              '&:hover': {
-                                color: theme.colors.yellow,
+                              backgroundColor: user ? "transparent" : undefined,
+                              "& .MuiBadge-badge": {
+                                top: "-3px",
+                                right: "-4px",
                               },
                             }}
-                          />
-                          </Tooltip>
-                        </Badge>
+                          >
+                            <ShoppingCartSimple
+                              size={isMobile ? 20 : 28}
+                              weight="regular"
+                              color={theme.colors.white}
+                            />
+                          </Badge>
+                        </Tooltip>
                       </Box>
                       {/*Cart*/}
 
@@ -668,7 +736,7 @@ const MainToolbar = () => {
                           backgroundColor: "transparent",
                           padding: { xs: "10px", sm: "10px", md: "7px" },
                           borderRadius: { xs: "50%", md: "10px" },
-                          display: "flex",
+                          display:  "flex",
                           alignItems: "center",
                           justifyContent: "center",
                           cursor: "pointer",
@@ -690,22 +758,16 @@ const MainToolbar = () => {
                         >
                           <Tooltip
                             sx={{
-                              backgroundColor: 'rgba(0, 0, 0, 0.3)',
-                              backdropFilter: 'blur(10px)',
+                              backgroundColor: theme.colors.tooltip_color,
+                              backdropFilter: "blur(10px)",
                             }}
-                            title='Избранное'>
-                          <FavoriteBorderIcon
-                            sx={{
-                              color: "#fff",
-                              fontSize: { xs: "20px", sm: "24px", md: '30px' },
-                              "@media (max-width: 500px)": {
-                                fontSize: "20px",
-                              },
-                              '&:hover': {
-                                color: theme.colors.yellow,
-                              },
-                            }}
-                          />
+                            title="Избранное"
+                          >
+                            <Heart
+                              size={isMobile ? 20 : 28}
+                              weight="regular"
+                              color={theme.colors.white}
+                            />
                           </Tooltip>
                         </Badge>
                       </Box>
@@ -714,48 +776,59 @@ const MainToolbar = () => {
                       {/*Bonus*/}
                       <Tooltip
                         sx={{
-                          backgroundColor: 'rgba(0, 0, 0, 0.3)',
-                          backdropFilter: 'blur(10px)',
+                          backgroundColor: theme.colors.tooltip_color,
+                          backdropFilter: "blur(10px)",
                         }}
                         title={
-                        <Box sx={{ textAlign: "center", padding: "10px", maxWidth: "300px" }}>
-                          <Typography
+                          <Box
                             sx={{
-                              fontWeight: "bold",
-                              fontSize: "16px",
-                              marginBottom: "5px",
-                              color: "#fff",
+                              textAlign: "center",
+                              padding: "10px",
+                              maxWidth: "300px",
                             }}
                           >
-                            Мои бонусы
-                          </Typography>
-                          <Typography
-                            sx={{
-                              fontSize: "14px",
-                              color: "#fff",
-                            }}
-                          >
-                            Вы можете получить бонусы за каждый оформленный заказ и в дальнейшем
-                            использовать накопленные бонусы для покупки товара.
-                          </Typography>
-                        </Box>
-                      }
+                            <Typography
+                              sx={{
+                                fontWeight: "bold",
+                                fontSize: "16px",
+                                marginBottom: "5px",
+                                color: theme.colors.white,
+                              }}
+                            >
+                              Мои бонусы
+                            </Typography>
+                            <Typography
+                              sx={{
+                                fontSize: "14px",
+                                color: theme.colors.white,
+                              }}
+                            >
+                              Вы можете получить бонусы за каждый оформленный
+                              заказ и в дальнейшем использовать накопленные
+                              бонусы для покупки товара.
+                            </Typography>
+                          </Box>
+                        }
                       >
                         <NavLink
-                          to={ user ? `/my_account/users/account/${user?.id}` : '/bonus_program'}
+                          to={
+                            user
+                              ? `/my_account/users/account/${user?.id}`
+                              : "/bonus_program"
+                          }
                           style={{ textDecoration: "none" }}
                         >
                           <Box
                             sx={{
                               backgroundColor: "transparent",
-                              padding: "10px",
+                              padding: theme.spacing.xs,
                               borderRadius: "10px",
                               display: { xs: "none", md: "flex" },
                               alignItems: "center",
                               justifyContent: "center",
                               cursor: "pointer",
                               transition: "background 0.3s ease",
-                              color: "#333",
+                              color: theme.colors.tooltip_color,
                             }}
                           >
                             <Badge
@@ -763,27 +836,25 @@ const MainToolbar = () => {
                               overlap="circular"
                               color="warning"
                               sx={{
-                                backgroundColor: user ? "transparent" : undefined,
+                                backgroundColor: user
+                                  ? "transparent"
+                                  : undefined,
                                 "& .MuiBadge-badge": {
                                   top: "-3px",
                                   right: "-1px",
                                 },
                               }}
                             >
-                            <CurrencyExchangeIcon
-                              sx={{
-                                color: "#fff",
-                                marginRight: user?.bonus ? "10px" : 0,
-                                '&:hover': {
-                                  color: theme.colors.yellow,
-                                },
-                              }}
-                            />
+                              <Star
+                                size={28}
+                                weight="regular"
+                                color={theme.colors.white}
+                              />
                             </Badge>
                           </Box>
                         </NavLink>
                       </Tooltip>
-                    {/*  Bonus*/}
+                      {/*  Bonus*/}
                     </Box>
 
                     <Box
@@ -792,9 +863,9 @@ const MainToolbar = () => {
                         bottom: 0,
                         left: 0,
                         width: "100%",
-                        backgroundColor: "#fff",
+                        backgroundColor: theme.colors.white,
                         boxShadow: "0px -2px 5px #8EA58C",
-                        padding: "20px 0",
+                        padding: "10px 0",
                         display: { xs: "flex", md: "none" },
                         justifyContent: "space-around",
                         alignItems: "center",
@@ -824,63 +895,24 @@ const MainToolbar = () => {
                               sx={{
                                 width: "27px",
                                 height: "27px",
-                                color: "black",
+                                color: theme.colors.black,
                               }}
                             />
                           </Button>
                         </Badge>
-                        <Typography
-                          sx={{
-                            color: "black",
-                            fontSize: "14px",
-                            textTransform: "uppercase",
-                            marginTop: "7px",
-                          }}
-                        >
-                          Заказы
-                        </Typography>
                       </NavLink>
 
                       <NavLink
-                        to="/favorite-products"
+                        to="/all-products"
                         style={{ textDecoration: "none" }}
                       >
-                        <Badge
-                          badgeContent={favoriteCount}
-                          overlap="circular"
-                          color="warning"
-                        >
-                          <Button
-                            sx={{
-                              color: "black",
-                              display: "flex",
-                              flexDirection: "column",
-                              alignItems: "center",
-                              padding: 0,
-                              gap: "8px",
-                            }}
-                          >
-                            <FavoriteBorderIcon
-                              sx={{
-                                width: "27px",
-                                height: "27px",
-                                color: "black",
-                                marginLeft: "20px",
-                              }}
-                            />
-                          </Button>
-                        </Badge>
-                        <Typography
-                          sx={{
-                            color: "black",
-                            fontSize: "14px",
-                            textTransform: "uppercase",
-                            marginTop: "7px",
-                            textAlign: "center",
-                          }}
-                        >
-                          Избранные
-                        </Typography>
+                       <StorefrontIcon
+                         sx={{
+                           width: "27px",
+                           height: "27px",
+                           color: theme.colors.black,
+                         }}
+                       />
                       </NavLink>
 
                       {user ? <ExistsUser /> : <UnknownUser />}
@@ -888,13 +920,20 @@ const MainToolbar = () => {
                   </Box>
                 ) : null}
 
-                <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "10px"}}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: "10px",
+                  }}
+                >
                   {user && can(["admin", "superAdmin"]) && (
                     <Box
                       sx={{
                         display: "none",
                         "@media (max-width: 1100px)": {
-                          backgroundColor: "#FDE910",
+                          backgroundColor: theme.colors.yellow,
                           borderRadius: "10px",
                           display: "flex",
                           alignItems: "center",
@@ -914,12 +953,12 @@ const MainToolbar = () => {
                       >
                         <Box
                           sx={{
-                            backgroundColor: "#FDE910",
-                            paddingTop: "10px",
-                            paddingBottom: "10px",
-                            paddingRight: "20px",
-                            paddingLeft: "20px",
-                            borderRadius: "10px",
+                            backgroundColor: theme.colors.yellow,
+                            paddingTop: theme.spacing.xs,
+                            paddingBottom: theme.spacing.xs,
+                            paddingRight: theme.spacing.sm,
+                            paddingLeft: theme.spacing.sm,
+                            borderRadius: theme.spacing.xs,
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
@@ -927,14 +966,14 @@ const MainToolbar = () => {
                             transition: "background 0.3s ease",
                             "@media (max-width: 800px)": {
                               borderRadius: "50%",
-                              paddingTop: "10px",
-                              paddingBottom: "10px",
-                              paddingRight: "10px",
-                              paddingLeft: "10px",
+                              paddingTop: theme.spacing.xs,
+                              paddingBottom: theme.spacing.xs,
+                              paddingRight: theme.spacing.xs,
+                              paddingLeft: theme.spacing.xs,
                             },
                           }}
                         >
-                          <SettingsIcon sx={{ color: "rgb(52, 51, 50)" }} />
+                          <SettingsIcon sx={{ color: theme.colors.black }} />
                         </Box>
                       </NavLink>
                     </Box>
@@ -962,11 +1001,11 @@ const MainToolbar = () => {
                     bottom: 0,
                     left: 0,
                     width: "100%",
-                    backgroundColor: "#fff",
-                    boxShadow: "0px -2px 5px #8EA58C",
-                    padding: "20px 0",
+                    backgroundColor: theme.colors.white,
+                    boxShadow: `0px -2px 5px ${theme.colors.primary}`,
+                    padding: "10px 0",
                     display: "none",
-                    justifyContent: "space-around",
+                    justifyContent: "space-evenly",
                     alignItems: "center",
                     zIndex: 1000,
                     "@media (max-width: 900px)": {
@@ -976,7 +1015,12 @@ const MainToolbar = () => {
                 >
                   <NavLink
                     to="/private/client_orders"
-                    style={{ textDecoration: "none", marginTop: "5px" }}
+                    style={{
+                      textDecoration: "none",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                    }}
                   >
                     <Badge
                       badgeContent={sum}
@@ -987,7 +1031,7 @@ const MainToolbar = () => {
                         sx={{
                           color: "black",
                           display: "flex",
-                          flexDirection: "row",
+                          flexDirection: "column",
                           alignItems: "center",
                           padding: 0,
                           gap: "8px",
@@ -997,26 +1041,21 @@ const MainToolbar = () => {
                           sx={{
                             width: "27px",
                             height: "27px",
-                            color: "black",
+                            color: theme.colors.black,
                           }}
                         />
                       </Button>
                     </Badge>
-                    <Typography
-                      sx={{
-                        color: "black",
-                        fontSize: "14px",
-                        textTransform: "uppercase",
-                        marginTop: "7px",
-                      }}
-                    >
-                      Заказы
-                    </Typography>
                   </NavLink>
 
                   <NavLink
                     to="/private/clients"
-                    style={{ textDecoration: "none" }}
+                    style={{
+                      textDecoration: "none",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                    }}
                   >
                     <Badge
                       badgeContent={sum}
@@ -1025,7 +1064,7 @@ const MainToolbar = () => {
                     >
                       <Button
                         sx={{
-                          color: "black",
+                          color: theme.colors.black,
                           display: "flex",
                           flexDirection: "column",
                           alignItems: "center",
@@ -1043,19 +1082,28 @@ const MainToolbar = () => {
                         />
                       </Button>
                     </Badge>
-                    <Typography
+                  </NavLink>
+
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Button
                       sx={{
-                        color: "black",
-                        fontSize: "14px",
-                        textTransform: "uppercase",
-                        marginTop: "7px",
-                        textAlign: "center",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        padding: 0,
+                        gap: "8px",
                       }}
                     >
-                      Клиенты
-                    </Typography>
-                  </NavLink>
-                  {user ? <ExistsUser /> : <UnknownUser />}
+                      {user ? <ExistsUser /> : <UnknownUser />}
+                    </Button>
+                  </Box>
                 </Box>
               )}
             </Toolbar>
@@ -1113,7 +1161,8 @@ const MainToolbar = () => {
                       }}
                       onBlur={(e) => {
                         e.target.style.borderColor = "#475726";
-                        e.target.style.boxShadow = "0 4px 10px rgba(91, 113, 51, 0.3)";
+                        e.target.style.boxShadow =
+                          "0 4px 10px rgba(91, 113, 51, 0.3)";
                       }}
                     />
                     <button
@@ -1124,7 +1173,7 @@ const MainToolbar = () => {
                         background: "transparent",
                         border: "none",
                         cursor: "pointer",
-                        color: "#8EA58C",
+                        color: theme.colors.primary,
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
@@ -1142,7 +1191,7 @@ const MainToolbar = () => {
                           width: "100%",
                           maxHeight: 300,
                           overflowY: "auto",
-                          backgroundColor: "white",
+                          backgroundColor: theme.colors.white,
                           boxShadow: 3,
                           zIndex: 1000,
                           marginTop: 1,
@@ -1174,7 +1223,7 @@ const MainToolbar = () => {
                               <div
                                 style={{
                                   padding: "10px",
-                                  borderBottom: "1px solid #ddd",
+                                  borderBottom: `1px solid ${theme.colors.lightGrey}`,
                                 }}
                               >
                                 {highlightText(product.productName, search)}
@@ -1182,7 +1231,9 @@ const MainToolbar = () => {
                             </NavLink>
                           ))
                         ) : (
-                          <div style={{ padding: "10px" }}>Товаров не найдено</div>
+                          <div style={{ padding: "10px" }}>
+                            Товаров не найдено
+                          </div>
                         )}
                       </Box>
                     )}

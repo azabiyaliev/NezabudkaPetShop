@@ -3,13 +3,14 @@ import FormControl from '@mui/joy/FormControl';
 import React, { useState } from 'react';
 import { BrandError, IBrandForm } from '../../../types';
 import FileInputForBrand from '../../Domain/Brand/FileInputForBrand/FileInputForBrand.tsx';
-import { Alert, Button, Typography } from '@mui/material';
+import { Alert, Button } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import ButtonSpinner from '../../UI/ButtonSpinner/ButtonSpinner.tsx';
 import { apiUrl } from '../../../globalConstants.ts';
 import TextEditor from '../../TextEditor/TextEditor.tsx';
 import { Box } from '@mui/joy';
 import CloseIcon from '@mui/icons-material/Close';
+import { COLORS } from '../../../globalStyles/stylesObjects.ts';
 
 interface Props {
   addNewBrand: (brand: IBrandForm) => void;
@@ -86,13 +87,14 @@ const BrandForm: React.FC<Props> = ({
     <form
       onSubmit={onSubmit}
       style={{
-        marginLeft: '30px'
+        margin: '20px 30px',
       }}
     >
       <main>
         <Sheet
           sx={{
             maxWidth: 800,
+            padding: '30px 20px',
             mx: "auto",
             display: "flex",
             flexDirection: "column",
@@ -103,11 +105,6 @@ const BrandForm: React.FC<Props> = ({
           }}
           variant="outlined"
         >
-          <div>
-            <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600 }}>
-              {!isBrand ? "Добавление нового" : "Редактирование"} бренда
-            </Typography>
-          </div>
           {brandError && brandError.errors ?
             <Alert severity="error" sx={{ width: "100%" }}>
               {brandError.errors.title}
@@ -155,22 +152,24 @@ const BrandForm: React.FC<Props> = ({
               <CloseIcon onClick={() => deleteLogo()}/>
             </Box>
           )}
-          <Button
-            variant="text"
-            sx={{
-              color: "white",
-              textTransform: "uppercase",
-              border: newBrand.title.trim().length === 0 ? "1px solid lightgrey" : null,
-              background: isLoading || newBrand.title.trim().length === 0
-                ? "transparent"
-                : "linear-gradient(90deg, rgba(250, 134, 1, 1) 0%, rgba(250, 179, 1, 1) 28%, rgba(250, 143, 1, 1) 100%)",
-            }}
-            type="submit"
-            disabled={isLoading || newBrand.title.trim().length === 0}
-          >
-            {!isBrand ? "Создать" : "Сохранить"}
-            {isLoading ? <ButtonSpinner /> : null}
-          </Button>
+          <Box sx={{ display: "flex", justifyContent: "center" }}>
+            <Button
+              variant="text"
+              sx={{
+                color: COLORS.white,
+                textTransform: "uppercase",
+                border: newBrand.title.trim().length === 0 ? "1px solid lightgrey" : null,
+                background: isLoading || newBrand.title.trim().length === 0
+                  ? "transparent"
+                  : COLORS.primary,
+              }}
+              type="submit"
+              disabled={isLoading || newBrand.title.trim().length === 0}
+            >
+              {!isBrand ? "Создать" : "Сохранить"}
+              {isLoading ? <ButtonSpinner /> : null}
+            </Button>
+          </Box>
         </Sheet>
       </main>
     </form>

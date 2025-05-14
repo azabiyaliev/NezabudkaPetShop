@@ -140,7 +140,7 @@ export class SeedService {
 
     await this.prisma.siteEdition.create({
       data: {
-        instagram: 'https://www.instagram.com/nezabudka.zoo/',
+        instagram: 'https://www.instagram.com/nezabudka.bishkek?igsh=MXg5ankzZ3JwdjFvag==',
         whatsapp: 'https://api.whatsapp.com/send?phone=99655533889',
         schedule: '10:00-20:00',
         address: 'г. Бишкек, Гоголя 127',
@@ -154,32 +154,32 @@ export class SeedService {
 
     const carouselPhotos = [
       {
-        photo: '/fixtures/editionSitePhoto/animal1.jpg',
-        link: 'https://example.com/photo1.jpg',
+        photo: '/fixtures/editionSitePhoto/animal1.webp',
+        link: 'http://localhost:5173/#',
         title: 'Купи корм',
         description: 'Лучший выбор кормов для всех пород животных',
       },
       {
-        photo: '/fixtures/editionSitePhoto/animal2.jpg',
-        link: 'https://example.com/photo2.jpg',
+        photo: '/fixtures/editionSitePhoto/animal2.webp',
+        link: 'http://localhost:5173/#',
         title: 'Игрушки',
         description: 'Развлечение и забота о вашем любимце каждый день',
       },
       {
-        photo: '/fixtures/editionSitePhoto/animal3.jpg',
-        link: 'https://example.com/photo3.jpg',
+        photo: '/fixtures/editionSitePhoto/animal3.webp',
+        link: 'http://localhost:5173/#',
         title: 'Скидки до 50%',
         description: 'Успейте купить всё необходимое по выгодной цене',
       },
       {
-        photo: '/fixtures/editionSitePhoto/animal4.jpg',
-        link: 'https://example.com/photo4.jpg',
+        photo: '/fixtures/editionSitePhoto/animal4.webp',
+        link: 'http://localhost:5173/#',
         title: 'Аксессуары',
         description: 'Ошейники, миски, переноски и всё для комфорта',
       },
       {
-        photo: '/fixtures/editionSitePhoto/animal5.jpg',
-        link: 'https://example.com/photo5.jpg',
+        photo: '/fixtures/editionSitePhoto/animal5.webp',
+        link: 'http://localhost:5173/#',
         title: 'Уход',
         description: 'Щётки, шампуни и средства для здоровой шерсти',
       },
@@ -231,35 +231,35 @@ export class SeedService {
     ];
 
     const logo = [
-      '/fixtures/Brands/Cosma.png',
+      '/fixtures/Brands/Cosma.webp',
       '/fixtures/Brands/James_Wellbeloved.webp',
-      '/fixtures/Brands/bayer.png',
-      '/fixtures/Brands/avz.png',
-      '/fixtures/Brands/Pedigree.png',
+      '/fixtures/Brands/bayer.webp',
+      '/fixtures/Brands/avz.webp',
+      '/fixtures/Brands/Pedigree.webp',
       '/fixtures/Brands/Brit.webp',
       '/fixtures/Brands/Hills.webp',
       '/fixtures/Brands/Applaws.webp',
-      '/fixtures/Brands/ANIMAL_ISLAND.jpg',
-      '/fixtures/Brands/dog-chow-logo.png',
-      '/fixtures/Brands/gourmet.png',
-      '/fixtures/Brands/happy-cat.png',
+      '/fixtures/Brands/ANIMAL_ISLAND.webp',
+      '/fixtures/Brands/dog-chow-logo.webp',
+      '/fixtures/Brands/gourmet.webp',
+      '/fixtures/Brands/happy-cat.webp',
       '/fixtures/Brands/CFL.webp',
-      '/fixtures/Brands/purizon.jpg',
-      '/fixtures/Brands/Burns.png',
-      '/fixtures/Brands/flexi-logo.png',
-      '/fixtures/Brands/friskies.png',
-      '/fixtures/Brands/proplan.png',
+      '/fixtures/Brands/purizon.webp',
+      '/fixtures/Brands/Burns.webp',
+      '/fixtures/Brands/flexi-logo.webp',
+      '/fixtures/Brands/friskies.webp',
+      '/fixtures/Brands/proplan.webp',
       '/fixtures/Brands/ArdenGrange.webp',
-      '/fixtures/Brands/happy-dog.png',
+      '/fixtures/Brands/happy-dog.webp',
       '/fixtures/Brands/Jarvi.svg',
-      '/fixtures/Brands/catchow_logofina.jpg',
+      '/fixtures/Brands/catchow_logofina.webp',
       '/fixtures/Brands/Qushy.webp',
       '/fixtures/Brands/RosiesFarm.webp',
       '/fixtures/Brands/ROYAL_CANIN.webp',
       '/fixtures/Brands/SkogsFRO.webp',
-      '/fixtures/Brands/Tigerino.jpg',
+      '/fixtures/Brands/Tigerino.webp',
       '/fixtures/Brands/Whiskas.webp',
-      '/fixtures/Brands/wolf-of-wilderness_f.png',
+      '/fixtures/Brands/wolf-of-wilderness_f.webp',
       '/fixtures/Brands/Мнямс.webp',
     ];
 
@@ -304,16 +304,16 @@ export class SeedService {
     }
 
     const mainCategories = [
-      { title: 'Собаки', image: '/fixtures/categoryIcons/10.png' },
-      { title: 'Кошки', image: '/fixtures/categoryIcons/7.png' },
-      { title: 'Грызуны', image: '/fixtures/categoryIcons/6.png' },
-      { title: 'Птицы', image: '/fixtures/categoryIcons/3.png' },
-      { title: 'Рыбки', image: '/fixtures/categoryIcons/4.png' },
+      { title: 'Собаки', image: '/fixtures/categoryIcons/10.webp' },
+      { title: 'Кошки', image: '/fixtures/categoryIcons/7.webp' },
+      { title: 'Грызуны', image: '/fixtures/categoryIcons/6.webp' },
+      { title: 'Птицы', image: '/fixtures/categoryIcons/3.webp' },
+      { title: 'Рыбки', image: '/fixtures/categoryIcons/4.webp' },
       {
         title: 'Рептилии',
-        image: '/fixtures/categoryIcons/lizard_transparent.png',
+        image: '/fixtures/categoryIcons/lizard_transparent.webp',
       },
-      { title: 'Другие питомцы', image: '/fixtures/categoryIcons/1.png' },
+      { title: 'Другие питомцы', image: '/fixtures/categoryIcons/1.webp' },
     ];
 
     const categories = [];
@@ -386,37 +386,14 @@ export class SeedService {
       ],
     };
 
-    const iconPaths = [
-      '/fixtures/categoryIcons/1icon.png',
-      '/fixtures/categoryIcons/2icon.png',
-      '/fixtures/categoryIcons/3icon.png',
-      '/fixtures/categoryIcons/4icon.png',
-      '/fixtures/categoryIcons/5icon.png',
-      '/fixtures/categoryIcons/6icon.png',
-      '/fixtures/categoryIcons/7icon.png',
-      '/fixtures/categoryIcons/8icon.png',
-      '/fixtures/categoryIcons/9icon.png',
-      '/fixtures/categoryIcons/icon10.png',
-      '/fixtures/categoryIcons/dog-food.png',
-      '/fixtures/categoryIcons/yarn-ball.png',
-      '/fixtures/categoryIcons/pet-cage.png',
-      '/fixtures/categoryIcons/fish-bowl.png',
-      '/fixtures/categoryIcons/pet-feeder.png',
-      '/fixtures/categoryIcons/tray.png',
-      '/fixtures/categoryIcons/terrarium.png',
-    ];
-
     const subCategories = [];
     for (const category of categories) {
       const subcats = subCategoryData[category.title] || [];
       for (const subcat of subcats) {
-        const randomIcon =
-          iconPaths[Math.floor(Math.random() * iconPaths.length)];
         const subcategory = await this.prisma.category.create({
           data: {
             title: subcat,
             parentId: category.id,
-            icon: randomIcon,
           },
         });
         subCategories.push(subcategory);
@@ -540,13 +517,14 @@ export class SeedService {
 
         const productName = `${randomPrefix} ${randomType} – ${subCategory.title}${parentCategory ? ' для ' + parentCategory.title.toLowerCase() : ''}`;
 
-        const productData: ProductData = {
+        const productData: ProductData & { isBestseller: boolean } = {
           productName,
           productPrice: randomPrice,
           productDescription: `${subCategory.title}. ${randomDescription}`,
           brandId: randomBrand.id,
           productPhoto: randomPhoto,
           existence,
+          isBestseller: Math.random() < 0.3,
           sales: onSale,
           productWeight: randomWeight,
           productManufacturer: randomManufacturer,
@@ -662,11 +640,18 @@ export class SeedService {
         });
       }
 
+      function randomDate(start: Date, end: Date): Date {
+        return new Date(
+          start.getTime() + Math.random() * (end.getTime() - start.getTime()),
+        );
+      }
+
       await this.prisma.order.create({
         data: {
           userId: randomClient.id,
           status: randomStatus,
           address,
+          createdAt: randomDate(new Date(2025, 3, 1), new Date()),
           guestPhone: randomClient.phone,
           guestEmail: randomClient.email,
           guestName: randomClient.firstName,
@@ -685,6 +670,7 @@ export class SeedService {
 
     await this.prisma.statistic.create({
       data: {
+        id: 1,
         date: new Date(),
         pickUpStatistic: Math.floor(Math.random() * 1000),
         deliveryStatistic: Math.floor(Math.random() * 1000),
@@ -699,14 +685,64 @@ export class SeedService {
     await this.prisma.adminInfo.create({
       data: {
         information:
-          'Добро пожаловать в зоомагазин "Незабудка"!\n\nМы рады видеть вас среди наших клиентов. Здесь вы найдете всё необходимое для здоровья и счастья вашего питомца. Мы заботимся о каждом хвостике и предлагаем только лучшие товары и сервис. Спасибо, что выбрали нас!',
+          `
+          <div style="font-family: Arial, sans-serif; padding: 24px; border-radius: 12px; color: black; max-width: 800px; margin: 0 auto;">
+  <h4 style="margin-top: 0; text-align: center; color: black;">Добро пожаловать в зоомагазин<span style="font-style: italic;">«Незабудка»</span>!</h4>
+  <p style="font-size: 16px; line-height: 1.6;">
+    Мы рады видеть вас среди наших клиентов. Здесь вы найдёте всё необходимое для <strong>здоровья</strong> и <strong>счастья</strong> вашего питомца.
+  </p>
+  <p style="font-size: 16px; line-height: 1.6;">
+    Мы заботимся о каждом хвостике 🐾 и предлагаем только <strong>лучшие товары</strong> и <strong>качественный сервис</strong>.
+  </p>
+  <p style="font-size: 16px; line-height: 1.6;">
+    Спасибо, что выбрали нас!
+  </p>
+
+  <hr style="margin: 24px 0; border: none; border-top: 1px solid #aed581;" />
+
+  <h3 style="color: black;">Памятка для сотрудников</h3>
+  <ul style="font-size: 16px; line-height: 1.6; padding-left: 20px;">
+    <li>Всегда поддерживайте чистоту и порядок в торговом зале.</li>
+    <li>Следите за сроками годности товаров и своевременно проводите ротацию.</li>
+    <li>Консультируйте клиентов доброжелательно и профессионально.</li>
+    <li>Обязательно уточняйте потребности клиента перед рекомендациями.</li>
+    <li>Соблюдайте кассовую дисциплину и правила работы с товароучётной системой.</li>
+    <li>Регулярно пополняйте полки и обновляйте выкладку.</li>
+    <li>Всегда информируйте администратора о нестандартных ситуациях или жалобах.</li>
+    <li>Улыбайтесь и создавайте приятную атмосферу в магазине 😊</li>
+  </ul>
+</div>
+          `,
       },
     });
 
     await this.prisma.clientInfo.create({
       data: {
         information:
-          'Добро пожаловать в зоомагазин "Незабудка"!\n\nМы рады видеть вас среди наших клиентов. Здесь вы найдете всё необходимое для здоровья и счастья вашего питомца. Мы заботимся о каждом хвостике и предлагаем только лучшие товары и сервис. Спасибо, что выбрали нас!',
+         `
+         <div style="font-family: Arial, sans-serif; padding: 24px; border-radius: 12px; color: black; max-width: 800px; margin: 0 auto;">
+  <h4 style="margin-top: 0; text-align: center;">Уважаемые покупатели!</h4>
+  <p style="font-size: 16px; line-height: 1.6;">
+    Добро пожаловать в зоомагазин <strong>«Незабудка»</strong> 🐾<br />
+    Мы ценим ваше доверие и делаем всё, чтобы покупки у нас были удобными и приятными!
+  </p>
+
+  <h3 style="margin-top: 24px;">Памятка для клиентов:</h3>
+  <ul style="font-size: 16px; line-height: 1.6; padding-left: 20px;">
+    <li>Если вы не нашли нужный товар — обратитесь к консультанту, мы всегда готовы помочь.</li>
+    <li>Проверяйте срок годности и целостность упаковки перед покупкой.</li>
+    <li>Сохраняйте чек до окончания срока действия гарантии или обмена.</li>
+    <li>Уточняйте правила возврата и обмена — мы придерживаемся всех норм законодательства.</li>
+    <li>Вы можете оформить заказ онлайн и забрать его в магазине или оформить доставку.</li>
+    <li>Следите за акциями и специальными предложениями — мы регулярно радуем клиентов скидками.</li>
+    <li>Если у вас есть замечания или предложения — мы всегда рады обратной связи!</li>
+  </ul>
+
+  <p style="margin-top: 24px; font-size: 16px; line-height: 1.6;">
+    Спасибо, что выбираете <strong>«Незабудку»</strong>. Мы здесь, чтобы заботиться о ваших питомцах вместе с вами! 🐶🐱🐰
+  </p>
+</div>
+         `,
       },
     });
 

@@ -4,7 +4,7 @@ import {
   updatePhotoOrder,
 } from "../../../store/photoCarousel/photoCarouselSlice.ts";
 import { apiUrl } from "../../../globalConstants.ts";
-import { Button } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import { DragEvent, useEffect, useState } from "react";
 import { PhotoCarousel } from "../../../types";
 import { useNavigate } from "react-router-dom";
@@ -17,10 +17,12 @@ import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Swal from "sweetalert2";
 import { enqueueSnackbar } from "notistack";
-import { Box, Typography } from "@mui/joy";
+import { Box } from "@mui/joy";
 import PublishedWithChangesIcon from "@mui/icons-material/PublishedWithChanges";
 import AdminBar from "../../../features/Admin/AdminProfile/AdminBar.tsx";
 import AddNewPhotoForm from "./AddNewPhotoForm.tsx";
+import theme from '../../../globalStyles/globalTheme.ts';
+
 
 const DragAndDropPhoto = () => {
   const photos = useAppSelector(selectPhotoCarousel) || [];
@@ -90,7 +92,7 @@ const DragAndDropPhoto = () => {
     try {
       await dispatch(updatePhotoOrders(updatedPhotos)).unwrap();
       navigate("/");
-      enqueueSnackbar("Вы успешно изменили порядок фото в карусели! 🎉", {
+      enqueueSnackbar("Вы успешно изменили порядок фото в карусели!", {
         variant: "success",
       });
     } catch (error) {
@@ -105,8 +107,8 @@ const DragAndDropPhoto = () => {
         text: "Вы уверены, что хотите удалить эту фотографию?",
         icon: "warning",
         showCancelButton: true,
-        confirmButtonColor: "#d33",
-        cancelButtonColor: "#3085d6",
+        confirmButtonColor: theme.colors.warning,
+        cancelButtonColor: theme.colors.OLIVE_GREEN,
         confirmButtonText: "Удалить",
         cancelButtonText: "Отмена",
       });
@@ -114,11 +116,15 @@ const DragAndDropPhoto = () => {
       if (result.isConfirmed) {
         try {
           await dispatch(deletePhoto({ id: photoId })).unwrap();
-          Swal.fire("Удалено!", "Фотография успешно удалена.", "success");
+          enqueueSnackbar("Фотография успешно удалена.", {
+            variant: "success",
+          });
           await dispatch(fetchPhoto()).unwrap();
         } catch (error) {
           console.error("Ошибка удаления:", error);
-          Swal.fire("Ошибка", "Не удалось удалить фотографию.", "error");
+          enqueueSnackbar("Не удалось удалить фотографию.", {
+            variant: "error",
+          });
         }
       }
     } else {
@@ -140,6 +146,14 @@ const DragAndDropPhoto = () => {
       
       <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center" }}>
         <Box sx={{ width: "100%", maxWidth: "900px", px: 2 }}>
+          <Typography
+            variant="h6"
+            gutterBottom
+            sx={{ textAlign: "center", fontWeight: theme.fonts.weight.medium, mt: 2 }}
+          >
+            Управление каруселью
+          </Typography>
+
           <AddNewPhotoForm />
 
           <Box
@@ -151,12 +165,11 @@ const DragAndDropPhoto = () => {
           />
 
           <Typography
-            level="body-sm"
             sx={{
               textAlign: "center",
-              color: "gray",
-              marginBottom: "20px",
-              fontSize: "14px",
+              color: theme.colors.DARK_GRAY,
+              marginBottom: theme.spacing.sm,
+              fontSize: theme.fonts.size.sm,
             }}
           >
             Чтобы изменить порядок фото, просто перетащите их мышкой
@@ -186,9 +199,7 @@ const DragAndDropPhoto = () => {
                     width: "250px",
                     height: "150px",
                     overflow: "hidden",
-                    borderRadius: "8px",
-                    border: "1px solid #ccc",
-                    boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
+                    borderRadius: theme.spacing.exs,
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
@@ -211,7 +222,7 @@ const DragAndDropPhoto = () => {
                       position: "absolute",
                       top: 7,
                       right: 10,
-                      backgroundColor: "#FDE910",
+                      backgroundColor: theme.colors.primary,
                       borderRadius: "50%",
                       width: "30px",
                       height: "30px",
@@ -221,7 +232,7 @@ const DragAndDropPhoto = () => {
                       alignItems: "center",
                     }}
                   >
-                    <ModeEditIcon style={{ color: "rgb(52, 51, 50)" }} />
+                    <ModeEditIcon style={{ color: theme.colors.white }} />
                   </Button>
 
                   <Button
@@ -238,7 +249,7 @@ const DragAndDropPhoto = () => {
                       alignItems: "center",
                     }}
                   >
-                    <DeleteIcon style={{ color: "#B00000" }} />
+                    <DeleteIcon style={{ color: theme.colors.error }} />
                   </Button>
 
                   <Box
@@ -278,11 +289,8 @@ const DragAndDropPhoto = () => {
               variant="contained"
               color="primary"
               sx={{
-                backgroundColor: "#738A6E",
+                backgroundColor: theme.colors.primary,
                 color: "white",
-                marginRight: "20px",
-                fontSize: "16px",
-                borderRadius: "20px",
               }}
             >
               Сохранить порядок
@@ -305,8 +313,8 @@ const DragAndDropPhoto = () => {
                 display: "none",
                 "@media (max-width: 550px)": {
                   display: "flex",
-                  backgroundColor: "#738A6E",
-                  color: "white",
+                  backgroundColor: theme.colors.primary,
+                  color: theme.colors.white,
                   borderRadius: "50%",
                   width: "45px",
                   height: "45px",

@@ -4,24 +4,29 @@ import {
   Button,
   MenuItem,
   TextField,
-  Typography,
+  Grid,
+  InputAdornment, IconButton,
 } from '@mui/material';
-import Grid from '@mui/material/Grid2';
 import { AdminDataMutation } from '../../../types';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
-import { createAdmin, getOneAdmin, updateAdmin } from '../../../store/admins/adminThunks.ts';
+import {
+  createAdmin,
+  getOneAdmin,
+  updateAdmin,
+} from '../../../store/admins/adminThunks.ts';
 import {
   clearErrors,
   createLoading,
   selectAdminError,
   selectOneAdmin,
-  updateLoading
+  updateLoading,
 } from '../../../store/admins/adminSlice.ts';
 import { regEmail, regPhone } from '../../../globalConstants.ts';
-import { toast } from 'react-toastify';
 import { useNavigate, useParams } from 'react-router-dom';
-
-
+import { enqueueSnackbar } from 'notistack';
+import theme from '../../../globalStyles/globalTheme.ts';
+import Typography from '@mui/joy/Typography';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 const initialAdmin: AdminDataMutation = {
   firstName: '',
@@ -34,9 +39,10 @@ const initialAdmin: AdminDataMutation = {
 
 const AdminForm = () => {
   const [adminData, setAdminData] = useState(initialAdmin);
-  const [phoneError, setPhoneError] = useState("");
-  const [emailError, setEmailError] = useState("");
-
+  const [phoneError, setPhoneError] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -48,42 +54,47 @@ const AdminForm = () => {
   const { id } = useParams();
   const isEdit = Boolean(id);
 
-
   useEffect(() => {
     if (id) {
       dispatch(getOneAdmin(Number(id)));
     }
-  },[dispatch, id])
+  }, [dispatch, id]);
 
   useEffect(() => {
     if (isEdit && currentAdmin) {
-      setAdminData({ ...currentAdmin});
-    } else  {
+      setAdminData({ ...currentAdmin });
+    } else {
       setAdminData(initialAdmin);
     }
   }, [currentAdmin, isEdit]);
 
   useEffect(() => {
-    dispatch(clearErrors())
+    dispatch(clearErrors());
   }, [dispatch]);
-
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setAdminData((prev) => ({ ...prev, [name]: value }));
 
-    if (name === "phone") {
-      if (value.trim() === "") {
-        setPhoneError("");
+    if (name === 'phone') {
+      if (value.trim() === '') {
+        setPhoneError('');
       } else {
-        setPhoneError(regPhone.test(value) ? "" : "Неправильный формат телефона");
+        setPhoneError(regPhone.test(value) ? '' : 'Неправильный формат телефона');
       }
     }
-    if (name === "email") {
-      if (value.trim() === "") {
-        setEmailError("");
+    if (name === 'email') {
+      if (value.trim() === '') {
+        setEmailError('');
       } else {
-        setEmailError(regEmail.test(value) ? "" : "Неправильный формат email");
+        setEmailError(regEmail.test(value) ? '' : 'Неправильный формат email');
+      }
+    }
+    if (name === 'password') {
+      if (value.trim() === '') {
+        setPasswordError('');
+      } else {
+        setPasswordError(value.length < 6 ? 'Пароль должен содержать минимум 6 символов' : '');
       }
     }
   };
@@ -95,11 +106,14 @@ const AdminForm = () => {
 
     if (isEdit && currentAdmin) {
       const isChanged = Object.keys(dataToSend).some((key) => {
-        return dataToSend[key as keyof AdminDataMutation] !== currentAdmin[key as keyof AdminDataMutation];
+        return (
+          dataToSend[key as keyof AdminDataMutation] !==
+          currentAdmin[key as keyof AdminDataMutation]
+        );
       });
 
       if (!isChanged) {
-        toast.info('Нет изменений для сохранения', { position: 'bottom-left' });
+        enqueueSnackbar('Нет изменений для сохранения', { variant: 'warning' });
         return;
       }
     }
@@ -107,20 +121,21 @@ const AdminForm = () => {
     try {
       if (isEdit) {
         await dispatch(updateAdmin({ id: Number(id), adminData })).unwrap();
-        toast.success('Админ успешно обновлён!', { position: 'bottom-left' });
+        enqueueSnackbar('Вы успешно отредактировали администратора', {
+          variant: 'success',
+        });
         navigate('/private/admin-table');
       } else {
         await dispatch(createAdmin(adminData)).unwrap();
-        toast.success('Админ успешно создан!', { position: 'bottom-left' });
-        navigate('/');
+        enqueueSnackbar('Вы успешно создали администратора', {
+          variant: 'success',
+        });
+        navigate('/private/admin-table');
       }
-
     } catch (error) {
       console.error(error);
     }
   };
-
-
 
   const getFieldError = (fieldName: string) => {
     if (!error?.errors) return undefined;
@@ -131,8 +146,8 @@ const AdminForm = () => {
       const generalError = error.errors.general.toLowerCase();
 
       if (
-        (fieldName !== "email" && generalError.includes("email")) ||
-        (fieldName !== "phone" && generalError.includes("номер"))
+        (fieldName !== 'email' && generalError.includes('email')) ||
+        (fieldName !== 'phone' && generalError.includes('номер'))
       ) {
         return undefined;
       }
@@ -151,71 +166,74 @@ const AdminForm = () => {
     { name: 'phone', label: 'Телефон' },
   ];
 
-  const fields = isEdit ? allFields.filter((field) => field.name !== 'password') : allFields;
+  const fields = isEdit
+    ? allFields.filter((field) => field.name !== 'password')
+    : allFields;
 
   return (
     <Box
       component="form"
       onSubmit={onSubmit}
       sx={{
-        p: 4,
         borderRadius: 4,
-        maxWidth: 900,
+        width: '50%',
         mx: 'auto',
       }}
     >
-
-      <Typography  gutterBottom sx={{ textAlign: 'center', fontWeight: 600, fontSize:"22px" }}>
+      <Typography
+        level="h4"
+        gutterBottom
+        sx={{
+          textAlign: 'center',
+          fontWeight: theme.fonts.weight.medium,
+          mb: theme.spacing.sm,
+          mt: isEdit ? '20px' : 0,
+          "@media (max-width: 900px)": {
+            mt: isEdit ? theme.spacing.md : theme.spacing.sm,
+          },
+        }}
+      >
         {isEdit ? 'Редактирование администратора' : 'Создание администратора'}
       </Typography>
 
-      <Grid sx={{
-        display: "grid",
-        gridTemplateColumns: "repeat(2, 1fr)",
-        gap: 4,
-        '@media (max-width: 600px)': {
-          gridTemplateColumns: '1fr',
-        },
-      }}>
+      <Grid container spacing={0} direction="column">
         {fields.map((field, index) => {
           const isPhone = field.name === 'phone';
           const isEmail = field.name === 'email';
+          const isPassword = field.name === 'password';
 
           const fieldError =
-            getFieldError(field.name) || (isPhone ? phoneError : isEmail ? emailError : '');
-
+            getFieldError(field.name) ||
+            (isPhone ? phoneError : isEmail ? emailError : isPassword ? passwordError : '');
 
           return (
-            <Grid key={index} >
+            <Grid item xs={12} key={index}>
               <TextField
-                variant="standard"
+                variant="outlined"
                 fullWidth
                 label={field.label}
                 name={field.name}
-                type={field.type || 'text'}
+                type={isPassword ? (showPassword ? 'text' : 'password') : field.type || 'text'}
                 value={adminData[field.name as keyof AdminDataMutation] || ''}
                 error={Boolean(fieldError)}
                 helperText={fieldError || ' '}
                 onChange={onChange}
+                InputProps={
+                  isPassword
+                    ? {
+                      endAdornment: (
+                        <InputAdornment position="end">
+                            <IconButton onClick={() => setShowPassword((prev) => !prev)}>
+                              {showPassword ? <Visibility /> : <VisibilityOff />}
+                            </IconButton>
+                        </InputAdornment>
+                      ),
+                    }
+                    : undefined
+                }
                 sx={{
-                  "& .MuiFormHelperText-root": {
-                    minHeight: "20px",
-                  },
-                  '& .MuiInput-underline:before': {
-                    borderBottomColor: '#a3b391',
-                  },
-                  '& .MuiInput-underline:hover:before': {
-                    borderBottomColor: '#7d996a',
-                  },
-                  '& .MuiInput-underline:after': {
-                    borderBottomColor: '#f5c518',
-                  },
-                  '& label.Mui-focused': {
-                    color: '#354d2b',
-                  },
-                  '& input:-webkit-autofill': {
-                    boxShadow: '0 0 0 1000px white inset',
-                  },
+                  backgroundColor: theme.colors.white,
+                  borderRadius: theme.spacing.exs,
                 }}
               />
             </Grid>
@@ -223,56 +241,42 @@ const AdminForm = () => {
         })}
 
         {!isEdit && (
-          <Grid>
+          <Grid item xs={12}>
             <TextField
-              variant="standard"
-              select
+              variant="outlined"
               fullWidth
+              select
               label="Роль"
               name="role"
               value={adminData.role}
               onChange={onChange}
               sx={{
-                '& label': { color: '#354d2b' },
-                '& .MuiInput-underline:before': {
-                  borderBottomColor: '#a3b391',
-                },
-                '& .MuiInput-underline:hover:before': {
-                  borderBottomColor: '#7d996a',
-                },
-                '& .MuiInput-underline:after': {
-                  borderBottomColor: '#f5c518',
-                },
-                '& label.Mui-focused': {
-                  color: '#354d2b',
-                },
-
+                backgroundColor: theme.colors.white,
+                borderRadius: theme.spacing.exs,
               }}
             >
               <MenuItem value="admin">Admin</MenuItem>
             </TextField>
           </Grid>
         )}
-      </Grid>
-      <Grid>
-        <Button
-          variant="contained"
-          type="submit"
-          fullWidth
-          sx={{
-            mt: 2,
-            bgcolor: '#fde910',
-            color: '#333',
-            fontWeight: 'bold',
-            borderRadius: '30px',
-            padding: '12px 0',
-            textTransform: 'uppercase',
-            '&:hover': { bgcolor: '#fcd400' },
-          }}
-          disabled={isUpdate || isCreate}
-        >
-          {isEdit ? 'сохранить' : 'создать'}
-        </Button>
+
+        <Grid item xs={12}>
+          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+            <Button
+              variant="contained"
+              type="submit"
+              sx={{
+                backgroundColor: theme.colors.primary,
+                color: theme.colors.white,
+                mt: theme.spacing.sm,
+                px: 4,
+              }}
+              disabled={isUpdate || isCreate || (!isEdit && passwordError !== '')}
+            >
+              {isEdit ? 'сохранить' : 'создать'}
+            </Button>
+          </Box>
+        </Grid>
       </Grid>
     </Box>
   );

@@ -1,4 +1,4 @@
-import errorImg from "../../assets/errorCat.png";
+import errorImg from "../../assets/errorCat.webp";
 import { Box } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import SouthIcon from '@mui/icons-material/South';

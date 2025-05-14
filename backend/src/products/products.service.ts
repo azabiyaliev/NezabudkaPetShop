@@ -26,6 +26,7 @@ export class ProductsService {
   //FOR ADMIN/USER
   async getAllProducts(searchKeyword?: string, brand?: number) {
     const products = await this.prismaService.products.findMany({
+      orderBy: { id: 'desc' },
       where: {
         OR: [
           {
@@ -109,9 +110,16 @@ export class ProductsService {
   async getTopSellingProducts() {
     const products = await this.prismaService.products.findMany({
       where: {
-        orderedProductsStats: {
-          gt: 0,
-        },
+        AND: [
+          {
+            orderedProductsStats: {
+              gt: 0,
+            },
+          },
+          {
+            isBestseller: true,
+          },
+        ],
       },
       orderBy: {
         orderedProductsStats: 'desc',
@@ -153,6 +161,7 @@ export class ProductsService {
       productWeight,
       productManufacturer,
       promoPercentage,
+      isBestseller,
     } = createProductsDto;
 
     if (!categoryId || categoryId.length === 0) {
@@ -191,6 +200,7 @@ export class ProductsService {
         promoPercentage: promo,
         sales,
         existence: existence === 'true',
+        isBestseller: isBestseller === 'true',
         startDateSales,
         endDateSales,
         productCategory: {
@@ -299,6 +309,7 @@ export class ProductsService {
         productPrice: true,
         sales: true,
         existence: true,
+        isBestseller: true,
         startDateSales: true,
         endDateSales: true,
         promoPrice: true,
@@ -333,6 +344,7 @@ export class ProductsService {
       productFeedClass,
       productWeight,
       promoPercentage,
+      isBestseller,
     }: CreateProductsDto,
     file?: Express.Multer.File,
   ) {
@@ -364,6 +376,7 @@ export class ProductsService {
         brandId: Number(brandId),
         existence: existence === 'true',
         sales: sales ?? false,
+        isBestseller: isBestseller === 'true',
         startDateSales: sales ? startDateSales : null,
         endDateSales: sales ? endDateSales : null,
         productWeight: productWeight ? Number(productWeight) : null,
@@ -535,7 +548,6 @@ export class ProductsService {
     let categoryIds: number[] = [];
 
     if (!category.parentId) {
-      // Родительская категория: найти все подкатегории
       const subcategories = await this.prismaService.category.findMany({
         where: { parentId: id },
         select: { id: true },
@@ -544,7 +556,6 @@ export class ProductsService {
       categoryIds = subcategories.map((cat) => cat.id);
       categoryIds.push(id);
     } else {
-      // Обычная категория
       categoryIds = [id];
     }
 

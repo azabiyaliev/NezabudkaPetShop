@@ -19,6 +19,7 @@ import { TokenAuthGuard } from '../token.auth/token-auth.guard';
 import { RolesGuard } from '../token.auth/token.role.guard';
 import { Roles } from '../roles/roles.decorator';
 import { UpdateStatusDto } from '../dto/update-status.dto';
+import { RecaptchaGuard } from '../recaptcha/recaptcha.guard';
 
 @Controller('orders')
 export class OrdersController {
@@ -49,9 +50,7 @@ export class OrdersController {
 
   @Get('guest-orders')
   async getGuestOrders(@Query('guestEmail') guestEmail?: string) {
-    if (guestEmail) {
-      return await this.ordersService.getUserOrders(undefined, guestEmail);
-    }
+    return await this.ordersService.getUserOrders(undefined, guestEmail);
   }
 
   @Post('transfer-guest-orders')
@@ -66,7 +65,7 @@ export class OrdersController {
     );
   }
 
-  @UseGuards(TokenAuthGuard)
+  @UseGuards(TokenAuthGuard, RecaptchaGuard)
   @HttpCode(200)
   @Post('checkout')
   async registerOrder(
@@ -77,6 +76,7 @@ export class OrdersController {
     return this.ordersService.createOrder(orderDto, userId);
   }
 
+  @UseGuards(RecaptchaGuard)
   @HttpCode(200)
   @Post('guest-checkout')
   async createGuestOrder(@Body() orderDto: CreateOrderDto) {
@@ -87,8 +87,8 @@ export class OrdersController {
     }
   }
 
-  @UseGuards(TokenAuthGuard, RolesGuard)
-  @Roles('admin', 'superAdmin')
+  @UseGuards(RolesGuard)
+  @Roles('client', 'admin', 'superAdmin')
   @Patch(':id')
   async updateOrderStatus(
     @Param('id') orderId: string,

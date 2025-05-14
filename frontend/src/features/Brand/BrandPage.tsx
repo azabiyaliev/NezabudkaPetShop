@@ -42,13 +42,12 @@ const BrandPage = () => {
   });
 
   return brand && (
-    <Container>
+    <Container maxWidth="xl">
       {cart && ( <OneBrand brand={brand} products={sortedProducts} cart={cart}/>)}
       {products.length === 0 && (
         <Typography
           level="h2"
           sx={{
-            fontFamily: "Nunito, sans-serif",
             color: "#237803",
             fontSize: '30px',
             margin: '30px 0',

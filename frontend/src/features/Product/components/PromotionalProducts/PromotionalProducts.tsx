@@ -7,6 +7,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
 import ProductCard from '../../../../components/Domain/ProductCard/ProductCard.tsx';
+import theme from '../../../../globalStyles/globalTheme.ts';
 
 interface Props {
   products: ProductResponse[];
@@ -19,10 +20,11 @@ const PromotionalProducts: React.FC<Props> = ({ products, cart }) => {
       sx={{
         width: '100%',
         margin: '0 auto',
-        padding: '20px 0',
+        padding: `${theme.spacing.sm} 0`,
         position: 'relative',
+        overflow: 'visible',
         '& .swiper': {
-          paddingBottom: '10px',
+          paddingBottom: theme.spacing.xs,
         },
         '& .swiper-pagination': {
           position: 'absolute',
@@ -32,40 +34,42 @@ const PromotionalProducts: React.FC<Props> = ({ products, cart }) => {
           textAlign: 'center',
         },
         '& .swiper-pagination-bullet': {
-          backgroundColor: '#888',
-          width: '10px',
-          height: '10px',
-          margin: '0 5px',
+          backgroundColor: theme.colors.GRAY_BROWN,
+          width: theme.spacing.xs,
+          height: theme.spacing.xs,
+          margin: `0 ${theme.spacing.exs}`,
           opacity: 1,
         },
         '& .swiper-pagination-bullet-active': {
-          backgroundColor: '#237803',
+          backgroundColor: theme.colors.primary,
         },
         '& .swiper-button-next, & .swiper-button-prev': {
-          color: '#237803',
-          width: '40px',
-          height: '40px',
+          color: theme.colors.primary,
+          width: '32px',
+          height: '32px',
           top: '50%',
           transform: 'translateY(-50%)',
           zIndex: 1,
         },
         '& .swiper-button-prev': {
-          left: '-7px',
+          left: '-5px',
         },
         '& .swiper-button-next': {
-          right: '-7px',
+          right: '-5px',
         },
       }}
     >
-      <Swiper
+
+    <Swiper
         modules={[Pagination, Navigation, Autoplay]}
-        spaceBetween={6}
-        slidesPerView={4}
+        spaceBetween={0}
+        slidesPerView={5}
         breakpoints={{
           0: { slidesPerView: 1 },
-          600: { slidesPerView: 2 },
-          1200: { slidesPerView: 3 },
-          1350: { slidesPerView: 4 },
+          480: { slidesPerView: 2 },
+          768: { slidesPerView: 3 },
+          1024: { slidesPerView: 4 },
+          1280: { slidesPerView: 5 },
         }}
         loop={true}
         grabCursor={true}
@@ -75,6 +79,7 @@ const PromotionalProducts: React.FC<Props> = ({ products, cart }) => {
           disableOnInteraction: false,
           pauseOnMouseEnter: true,
         }}
+
         pagination={{
           clickable: true,
           dynamicBullets: true,
@@ -89,7 +94,6 @@ const PromotionalProducts: React.FC<Props> = ({ products, cart }) => {
               justifyContent: 'center',
               alignItems: 'flex-start',
               height: '100%',
-              width: 250,
             }}
           >
             <Box
@@ -99,8 +103,9 @@ const PromotionalProducts: React.FC<Props> = ({ products, cart }) => {
                 flexDirection: 'column',
                 alignItems: 'center',
                 position: 'relative',
+                padding: '0',
                 '& a:not(:has(img))': {
-                  height: '80px',
+                  height: theme.spacing.huge,
                 },
                 '& a img': {
                   height: '150px',

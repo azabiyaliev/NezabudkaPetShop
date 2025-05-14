@@ -54,6 +54,8 @@ import { AdminInfoService } from './admin_info/admin_info.service';
 import { ClientInfoModule } from './client_info/client_info.module';
 import { ClientInfoController } from './client_info/client_info.controller';
 import { ClientInfoService } from './client_info/client_info.service';
+import { RecaptchaModule } from './recaptcha/recaptcha.module';
+import { RecaptchaService } from './recaptcha/recaptcha.service';
 
 @Module({
   imports: [
@@ -80,6 +82,7 @@ import { ClientInfoService } from './client_info/client_info.service';
     CommonModule,
     AdminInfoModule,
     ClientInfoModule,
+    RecaptchaModule,
   ],
   controllers: [
     AppController,
@@ -116,6 +119,7 @@ import { ClientInfoService } from './client_info/client_info.service';
     IntegrationService,
     AdminInfoService,
     ClientInfoService,
+    RecaptchaService,
   ],
 })
 export class AppModule {}

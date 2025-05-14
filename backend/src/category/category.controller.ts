@@ -15,19 +15,7 @@ import { CategoryService } from './category.service';
 import { CategoryDto } from '../dto/category.dto';
 import { SubcategoryDto } from '../dto/subCategoryDto';
 import { memoryStorage } from 'multer';
-import {
-  ImageProcessorService,
-  ResizeOptions,
-} from '../common/image-processor.service';
-
-// Специфичные настройки для иконок категорий
-const CATEGORY_ICON_OPTIONS: ResizeOptions = {
-  width: 200,
-  height: 200,
-  fit: 'contain',
-  quality: 90,
-  withoutEnlargement: true,
-};
+import { ImageProcessorService } from '../common/image-processor.service';
 
 @Controller('category')
 export class CategoryController {
@@ -46,18 +34,7 @@ export class CategoryController {
     @Body() categoryDto: CategoryDto,
     @UploadedFiles() files: Express.Multer.File[],
   ) {
-    const icon = files.find((f) => f.fieldname === 'icon');
     const image = files.find((f) => f.fieldname === 'image');
-
-    if (icon) {
-      const iconPath = await this.imageProcessorService.convertToWebP(
-        icon,
-        './public/category',
-        CATEGORY_ICON_OPTIONS,
-      );
-      categoryDto.icon = iconPath;
-    }
-
     if (image) {
       const imagePath = await this.imageProcessorService.convertToWebP(
         image,
@@ -69,7 +46,6 @@ export class CategoryController {
 
     const savedCategory = await this.categoryService.createCategory(
       categoryDto,
-      categoryDto.icon || null,
       categoryDto.image || null,
     );
     return savedCategory;
@@ -98,24 +74,11 @@ export class CategoryController {
     @UploadedFiles() files: Express.Multer.File[],
   ) {
     const existingCategory = await this.categoryService.getOneCategory(id);
-    const oldIcon = existingCategory?.icon;
     const oldImage = existingCategory?.image;
 
-    let newIcon: string | null = oldIcon ?? null;
     let newImage: string | null = oldImage ?? null;
 
-    const iconFile = files.find((f) => f.fieldname === 'icon');
     const imageFile = files.find((f) => f.fieldname === 'image');
-
-    if (iconFile) {
-      newIcon = await this.imageProcessorService.convertToWebP(
-        iconFile,
-        './public/category',
-        CATEGORY_ICON_OPTIONS,
-      );
-    } else if (categoryDto.icon === null || categoryDto.icon === '') {
-      newIcon = null;
-    }
 
     if (imageFile) {
       newImage = await this.imageProcessorService.convertToWebP(
@@ -129,7 +92,6 @@ export class CategoryController {
 
     return this.categoryService.updateCategory(id, {
       ...categoryDto,
-      icon: newIcon,
       image: newImage,
     });
   }
@@ -162,19 +124,8 @@ export class CategoryController {
       const title = (body as Record<string, string>)[
         `subcategories[${i}].title`
       ];
-      const iconFile = files.find((f) => f.fieldname === `icon_${i}`);
       const imageFile = files.find((f) => f.fieldname === `image_${i}`);
-
-      let iconPath = null;
       let imagePath = null;
-
-      if (iconFile) {
-        iconPath = await this.imageProcessorService.convertToWebP(
-          iconFile,
-          './public/category',
-          CATEGORY_ICON_OPTIONS,
-        );
-      }
 
       if (imageFile) {
         imagePath = await this.imageProcessorService.convertToWebP(
@@ -186,7 +137,6 @@ export class CategoryController {
 
       subcategories.push({
         title,
-        icon: iconPath,
         image: imagePath,
       });
 

@@ -132,6 +132,7 @@ model Products {
 
   existence       Boolean   @default(true)
   sales           Boolean   @default(false)
+  isBestseller    Boolean @default(false) @map("is_bestseller")
   startDateSales  DateTime?
   endDateSales    DateTime?
   promoPercentage Int?      @map("sale_percentage")
@@ -146,7 +147,7 @@ model Products {
   Favorite             Favorite[]
   CartItem             CartItem[]
   ProductUpdateHistory ProductUpdateHistory[]
-  productCategory ProductCategory[]
+  productCategory      ProductCategory[]
 
   @@map("products")
 }
@@ -226,7 +227,6 @@ enum OrderStatus {
   Shipped
   Delivered
   Received
-  Returned
   Canceled
 }
 

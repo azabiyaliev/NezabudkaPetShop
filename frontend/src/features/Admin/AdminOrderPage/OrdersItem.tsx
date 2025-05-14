@@ -31,8 +31,10 @@ import {
   getAllOrders,
   updateOrderStatus,
 } from "../../../store/orders/ordersThunk.ts";
-import { toast } from "react-toastify";
 import { DeliveryMethod } from "../../Order/OrderForm.tsx";
+import Swal from "sweetalert2";
+import { enqueueSnackbar } from 'notistack';
+import theme from '../../../globalStyles/globalTheme.ts';
 
 interface Props {
   order: IOrder;
@@ -67,40 +69,67 @@ const OrderAdminItem: React.FC<Props> = ({ order }) => {
         }),
       ).unwrap();
       await dispatch(getAllOrders());
+      enqueueSnackbar('Статус заказа обновлен', { variant: 'success' });
       setIsEditingStatus(false);
-      toast.success("Статус заказа обновлен");
     } catch {
-      toast.error("Ошибка при обновлении статуса");
+      enqueueSnackbar('Ошибка при обновлении статуса', { variant: 'error' });
     }
   };
 
-  const getStatusColor = () => {
-    switch (order.status) {
-      case "Canceled":
-      case "Returned":
-        return "error";
-      case "Pending":
-        return "warning";
-      case "Confirmed":
-        return "info";
-      case "Packed":
-        return "primary";
-      case "Shipped":
-        return "secondary";
-      case "Delivered":
-        return "success";
-      case "Received":
-        return "success";
-      default:
-        return "default";
-    }
+  const translateOrderStatus = (status: OrderStatus): string => {
+    const statusTranslations: Record<OrderStatus, string> = {
+      Pending: 'В обработке',
+      Confirmed: 'Подтвержден',
+      Packed: 'Упакован',
+      Shipped: 'Отправлен',
+      Delivered: 'Доставлен',
+      Received: 'Получен',
+      Returned: 'Возвращен',
+      Canceled: 'Отменен'
+    };
+
+    return statusTranslations[status] || status;
   };
+
+  const getStatusColor = (status: OrderStatus): 'error' | 'warning' | 'success' | 'info' | 'default' | 'primary' | 'secondary' => {
+    const colorMap: Record<OrderStatus, 'error' | 'warning' | 'success' | 'info' | 'default' | 'primary' | 'secondary'> = {
+      Canceled: 'error',
+      Pending: 'warning',
+      Confirmed: 'info',
+      Packed: 'primary',
+      Shipped: 'secondary',
+      Delivered: 'success',
+      Received: 'success',
+      Returned: 'error'
+    };
+
+    return colorMap[status] || 'default';
+  };
+
 
   const handleDelete = async () => {
-    if (order.status === "Delivered" || order.status === "Received") {
-      await dispatch(deleteOrder(String(order.id)));
-      await dispatch(getAllOrders());
-      toast.success("Заказ удалён");
+    if (order.status !== "Delivered" && order.status !== "Received") return;
+
+    const result = await Swal.fire({
+      title: "Удалить заказ?",
+      text: "Вы уверены, что хотите удалить этот заказ? Это действие необратимо.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: theme.colors.warning,
+      cancelButtonColor: theme.colors.OLIVE_GREEN,
+      confirmButtonText: "Удалить",
+      cancelButtonText: "Отмена",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await dispatch(deleteOrder(String(order.id))).unwrap();
+        await dispatch(getAllOrders());
+        enqueueSnackbar('Заказ успешно удалён!', { variant: 'success' });
+      } catch (error) {
+        console.error("Ошибка при удалении заказа:", error);
+        enqueueSnackbar('Заказ не удалось удалить', { variant: 'success' });
+      }
     }
   };
 
@@ -130,7 +159,11 @@ const OrderAdminItem: React.FC<Props> = ({ order }) => {
             <Typography variant="h6" component="div">
               Заказ #{order.id}
             </Typography>
-            <Chip label={order.status} color={getStatusColor()} size="small" />
+            <Chip
+              label={translateOrderStatus(order.status as OrderStatus)}
+              color={getStatusColor(order.status as OrderStatus)}
+              size="small"
+            />
           </Box>
 
           {isEditingStatus ? (
@@ -201,6 +234,7 @@ const OrderAdminItem: React.FC<Props> = ({ order }) => {
                 <Button
                   variant="outlined"
                   onClick={() => setIsEditingStatus(true)}
+                  disabled={order.status === OrderStatus.Canceled}
                 >
                   Изменить статус
                 </Button>
@@ -310,7 +344,7 @@ const OrderAdminItem: React.FC<Props> = ({ order }) => {
               <Box
                 sx={{
                   flexGrow: 1,
-                  overflowY: 'auto',
+                  overflowY: "auto",
                   maxHeight: 290,
                   mb: 2,
                 }}
@@ -329,7 +363,10 @@ const OrderAdminItem: React.FC<Props> = ({ order }) => {
                           }
                           secondary={
                             item.product?.productDescription && (
-                              <Typography variant="caption" color="text.secondary">
+                              <Typography
+                                variant="caption"
+                                color="text.secondary"
+                              >
                                 {item.product.productDescription}
                               </Typography>
                             )
@@ -349,7 +386,6 @@ const OrderAdminItem: React.FC<Props> = ({ order }) => {
                   )}
                 </List>
               </Box>
-
 
               <Divider sx={{ my: 2 }} />
 

@@ -73,4 +73,7 @@ export class CreateProductsDto {
 
   @IsOptional()
   promoPrice?: number;
+
+  @IsOptional()
+  isBestseller?: string;
 }

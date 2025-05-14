@@ -7,10 +7,10 @@ import { toast } from 'react-toastify';
 import { enqueueSnackbar } from 'notistack';
 import { fetchDeliveryPage, updateDeliveryPage } from '../../../store/deliveryPage/deliveryPageThunk.ts';
 import { Box } from '@mui/joy';
-import { Button, Typography } from '@mui/material';
+import { Button, Grid, Typography } from "@mui/material";
 import TextEditor, { deliveryPriceInfoTemplate } from '../../TextEditor/TextEditor.tsx';
 import TextField from '@mui/material/TextField';
-import AdminBar from '../../../features/Admin/AdminProfile/AdminBar.tsx';
+import theme from '../../../globalStyles/globalTheme.ts';
 
 const initialState = {
   text: "",
@@ -32,11 +32,16 @@ const DeliveryPageForm = () => {
   useEffect(() => {
     dispatch(fetchDeliveryPage())
       .unwrap()
-      .then((delivery) => {
-        if (delivery) {
-          setForm(delivery);
+      .then((deliveryData) => {
+        if (deliveryData) {
+          setForm(prev => {
+            if (JSON.stringify(prev) !== JSON.stringify(deliveryData)) {
+              return deliveryData;
+            }
+            return prev;
+          });
         }
-      })
+      });
   }, [dispatch]);
 
   const onChangeEditorText = (html: string) => {
@@ -54,6 +59,8 @@ const DeliveryPageForm = () => {
   };
 
   const onChangeEditorCheckoutDeliveryPriceInfo = (html: string) => {
+    if (html === form.checkoutDeliveryPriceInfo) return;
+
     const priceRegex = /\d+\s*сом/g;
     const prices = html.match(priceRegex) || [];
     const hasZeroPrice = prices.some(price => parseInt(price.replace(/\D/g, ''), 10) === 0);
@@ -69,7 +76,7 @@ const DeliveryPageForm = () => {
       ...prevState,
       checkoutDeliveryPriceInfo: html,
     }));
-  }
+  };
 
   const handleMapChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const mapValue = e.target.value;
@@ -93,6 +100,7 @@ const DeliveryPageForm = () => {
     e.preventDefault();
     if (!delivery?.id) {
       toast.error("Ваш id неверный!");
+      enqueueSnackbar('Ваш ID неверный!', { variant: 'error' });
       return;
     }
 
@@ -124,23 +132,12 @@ const DeliveryPageForm = () => {
       await dispatch(fetchDeliveryPage())
     } catch (error) {
       console.error(error);
+      enqueueSnackbar('Ввм неудалось отредактировать страницу "Доставка и оплата"!', { variant: 'error' });
     }
   };
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: { xs: 'column', md: 'row' },
-        gap: 2,
-        mt: "30px",
-        width: '100%',
-      }}
-    >
-      <Box sx={{ width: { xs: '100%', md: '500px' }, flexShrink: 0 }}>
-        <AdminBar />
-      </Box>
-
+    <Box>
       <Box
         sx={{
           flexGrow: 1,
@@ -162,10 +159,10 @@ const DeliveryPageForm = () => {
               flexDirection: 'column',
               alignItems: 'center',
               width: '100%',
-              mt:5,
+              mt:theme.spacing.sm,
             }}
           >
-            <Box sx={{mb: 5}}>
+            <Box sx={{mb: theme.spacing.sm}}>
               <Typography
                 variant="body2"
                 sx={{
@@ -205,11 +202,18 @@ const DeliveryPageForm = () => {
             />
 
             <Typography
-              variant="subtitle1"
-              sx={{ mb: 1, alignSelf: 'flex-start', fontWeight: 500 }}
+              variant="body2"
+              sx={{
+                alignSelf: 'flex-start',
+                color: 'text.secondary',
+                fontWeight: 400,
+                mb: 0.5,
+                mt:theme.spacing.sm,
+              }}
             >
               Цена за зону доставки
             </Typography>
+
             <Box
             sx={{
               display: 'flex',
@@ -230,40 +234,65 @@ const DeliveryPageForm = () => {
               </Typography>
               </Box>
             </Box>
-            {delivery?.map && (
-              <Box
-                sx={{
-                  width: '100%',
-                  height: {
-                    xs: '300px',
-                    md: '400px',
-                  },
-                  borderRadius: '12px',
-                }}
-              >
+            <Box sx={{ mt: theme.spacing.lg, width: '100%' }}>
+              <Grid container spacing={2} alignItems="flex-start">
 
-                <iframe
-                  src={delivery.map}
-                  width="100%"
-                  height="100%"
-                  style={{ border: 0 }}
-                  allowFullScreen
-                  loading="lazy"
-                  title="Delivery map"
-                />
-              </Box>
-            )}
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    label="Ссылка на карту"
+                    value={form.map}
+                    onChange={handleMapChange}
+                    fullWidth
+                    required
+                    error={!!mapError}
+                    helperText={mapError || ''}
+                  />
+                  <Box sx={{ mt: 1, p: 1, bgcolor: theme.colors.rgbaGrey, border: `1px dashed ${theme.colors.DARK_GRAY}`, borderRadius: 1 }}>
+                    <Typography variant="body2" sx={{ fontWeight: 500, mb: 0.5 }}>
+                      Как вставить карту Google:
+                    </Typography>
+                    <Typography variant="caption" component="div" color="text.secondary">
+                      1. Откройте <b>Google My Maps</b> и создайте карту.<br />
+                      2. Нажмите <b>"Поделиться" → "Встроить карту"</b>.<br />
+                      3. Скопируйте ссылку, начинающуюся с:<br />
+                      <code>https://www.google.com/maps/d/u/0/embed?mid=...</code><br />
+                      4. Вставьте её в поле выше.
+                    </Typography>
+                  </Box>
+                </Grid>
 
-            <TextField
-              label="Ссылка на карту"
-              value={form.map}
-              onChange={handleMapChange}
-              fullWidth
-              required
-              error={!!mapError}
-              helperText={mapError || ''}
-              sx={{ mt: 2 }}
-            />
+                <Grid item xs={12} md={6}>
+                    <Box
+                      sx={{
+                        flex: '0 1 450px',
+                        width: '100%',
+                        maxWidth: '350px',
+                        height: '350px',
+                        borderRadius: '5px',
+                        overflow: 'hidden',
+                        boxShadow: '0 2px 6px rgba(0, 0, 0, 0.1)',
+                        position: 'relative',
+                        order: { xs: 1, md: 2 },
+                        float: "right",
+                      }}
+                    >
+                      <iframe
+                        src={delivery?.map}
+                        width="600px"
+                        height="600px"
+                        style={{
+                          position: 'absolute',
+                          top: '-70px',
+                          border: 0,
+                        }}
+                        allowFullScreen
+                        loading="lazy"
+                        referrerPolicy="no-referrer-when-downgrade"
+                      />
+                    </Box>
+                </Grid>
+              </Grid>
+            </Box>
 
             <Button
               variant="contained"

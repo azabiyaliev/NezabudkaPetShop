@@ -12,6 +12,7 @@ import { apiUrl } from '../../../globalConstants.ts';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import CloseIcon from '@mui/icons-material/Close';
 import FileInput from '../../UI/FileInput/FileInput.tsx';
+import theme from '../../../globalStyles/globalTheme.ts';
 interface FormEditPhotoProps {
   photoId: number;
 }
@@ -81,11 +82,11 @@ const FormEditPhoto: React.FC<FormEditPhotoProps> = ({ photoId }) => {
 
     try {
       await dispatch(updatePhoto({ photo: editPhoto })).unwrap();
-      navigate('/edit-carousel');
+      navigate('/private/edit-carousel');
       enqueueSnackbar('Вы отредатировали фото для карусели;)', { variant: 'success' });
     } catch (error) {
       console.error('Ошибка обновления фото:', error);
-      enqueueSnackbar('Ошибка при обновлении фото.', { variant: 'warning' });
+      enqueueSnackbar('Ошибка при редактировании фото.', { variant: 'warning' });
     }
   };
 
@@ -105,8 +106,8 @@ const FormEditPhoto: React.FC<FormEditPhotoProps> = ({ photoId }) => {
   };
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: { xs: 2, md: 4 } }}>
-      <NavLink to="/private/edit-carousel" style={{ textDecoration: 'none', color: '#738A6E', alignSelf: 'flex-start' }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+      <NavLink to="/private/edit-carousel" style={{ textDecoration: 'none', color: theme.colors.primary, alignSelf: 'flex-start' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <ArrowBackIcon sx={{ mr: 1 }} />
           Вернуться к карусели
         </Box>
@@ -118,8 +119,8 @@ const FormEditPhoto: React.FC<FormEditPhotoProps> = ({ photoId }) => {
           p: 3,
           width: '100%',
           maxWidth: 700,
-          borderRadius: 3,
-          backgroundColor: '#fff',
+          borderRadius: theme.spacing.exs,
+          backgroundColor: theme.colors.white,
           boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
         }}
       >
@@ -130,14 +131,17 @@ const FormEditPhoto: React.FC<FormEditPhotoProps> = ({ photoId }) => {
         <form onSubmit={handlePhotoSubmit}>
           <TextField
             fullWidth
-            size="small"
             label="Ссылка"
             name="link"
             value={editPhoto.link}
             onChange={inputChangeHandler}
             error={Boolean(linkError)}
             helperText={linkError}
-            sx={{ mb: 2 }}
+            sx={{
+              backgroundColor: theme.colors.white,
+              borderRadius: theme.spacing.exs,
+              mt: theme.spacing.sm,
+            }}
           />
 
           <FileInput
@@ -152,19 +156,21 @@ const FormEditPhoto: React.FC<FormEditPhotoProps> = ({ photoId }) => {
 
           <TextField
             fullWidth
-            size="small"
             label="Заголовок"
             name="title"
             value={editPhoto.title}
             onChange={inputChangeHandler}
             error={Boolean(title)}
             helperText={title}
-            sx={{ mt: 2, mb: 2 }}
+            sx={{
+              backgroundColor: theme.colors.white,
+              borderRadius: theme.spacing.exs,
+              mt: theme.spacing.xs,
+            }}
           />
 
           <TextField
             fullWidth
-            size="small"
             label="Описание"
             name="description"
             value={editPhoto.description}
@@ -173,11 +179,15 @@ const FormEditPhoto: React.FC<FormEditPhotoProps> = ({ photoId }) => {
             minRows={2}
             error={Boolean(description)}
             helperText={description}
-            sx={{ mb: 2 }}
+            sx={{
+              backgroundColor: theme.colors.white,
+              borderRadius: theme.spacing.exs,
+              mt: theme.spacing.sm,
+            }}
           />
 
           {editPhoto.photo && (
-            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 2 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: theme.spacing.sm }}>
               <img
                 src={
                   editPhoto.photo instanceof File
@@ -192,6 +202,7 @@ const FormEditPhoto: React.FC<FormEditPhotoProps> = ({ photoId }) => {
                   borderRadius: '8px',
                   border: '1px solid #ddd',
                   marginBottom: '8px',
+                  marginTop: theme.spacing.sm
                 }}
               />
               <CloseIcon
@@ -205,20 +216,14 @@ const FormEditPhoto: React.FC<FormEditPhotoProps> = ({ photoId }) => {
             </Box>
           )}
 
-          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'center'}}>
             <Button
               disabled={isFormInvalid}
               variant="contained"
               type="submit"
               sx={{
-                backgroundColor: isFormInvalid ? 'lightgray' : '#FDE910',
-                color: 'rgb(52, 51, 50)',
-                borderRadius: '20px',
-                textTransform: 'none',
-                fontWeight: 600,
-                "&:hover": {
-                  backgroundColor: isFormInvalid ? 'lightgray' : '#e0d809',
-                }
+                backgroundColor: isFormInvalid ? theme.colors.rgbaGrey : theme.colors.primary,
+                color: theme.colors.white,
               }}
             >
               Сохранить

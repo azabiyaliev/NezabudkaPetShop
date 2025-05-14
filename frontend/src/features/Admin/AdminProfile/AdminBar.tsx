@@ -10,9 +10,6 @@ import {
   usePermission,
 } from '../../../app/hooks.ts';
 import { selectUser } from '../../../store/users/usersSlice.ts';
-import { selectCompany } from '../../../store/companyPage/compantPageSlice.ts';
-import { selectDelivery } from '../../../store/deliveryPage/deliveryPageSlice.ts';
-import { selectBonusProgram } from '../../../store/bonusProgramPage/bonusProgramPageSlice.ts';
 import {
   EditNote,
   PlaylistAddOutlined,
@@ -28,17 +25,11 @@ import {
   ListAltOutlined,
 } from '@mui/icons-material';
 import { NavLink } from 'react-router-dom';
-import { selectAdminInfo } from '../../../store/adminInfo/adminInfoSlice.ts';
-import { selectClientInfo } from "../../../store/clientInfo/clientInfoSlice.ts";
 import AdminNavItem from './AdminNavItem.tsx';
 import { userRoleAdmin, userRoleSuperAdmin } from '../../../globalConstants.ts';
-const iconSx = { color: "#45624E", mr: 1 };
+import theme from '../../../globalStyles/globalTheme.ts';
+const iconSx = { color: theme.colors.primary, mr: theme.spacing.exs };
 const AdminBar = () => {
-  const company = useAppSelector(selectCompany);
-  const delivery = useAppSelector(selectDelivery);
-  const bonusProgram = useAppSelector(selectBonusProgram);
-  const adminInfo = useAppSelector(selectAdminInfo);
-  const clientInfo = useAppSelector(selectClientInfo);
   const user = useAppSelector(selectUser);
   const can = usePermission(user);
 
@@ -53,6 +44,7 @@ const AdminBar = () => {
         height: 'fit-content',
         maxHeight: '100vh',
         overflowY: 'auto',
+        marginBottom: '20px',
         '@media (max-width: 900px)': {
           width: '100%',
           padding: '16px',
@@ -91,7 +83,7 @@ const AdminBar = () => {
               >
                 <ListItemText
                   primary="Личный кабинет"
-                  sx={{ color: 'rgba(46, 46, 46, 0.7)' }}
+                  sx={{ color: theme.colors.primary }}
                   primaryTypographyProps={{ fontWeight: 600, fontSize: 14 }}
                 />
               </ListItem>
@@ -136,13 +128,13 @@ const AdminBar = () => {
           {can(['superAdmin']) && (
             <>
               <AdminNavItem
-                to={`/private/admin_info/${adminInfo?.id}`}
+                to={`/private/admin_info`}
                 icon={<EditNoteOutlined sx={iconSx} />}
                 text="Информация для администрации"
               />
 
               <AdminNavItem
-                to={`/private/client_info/${clientInfo?.id}`}
+                to={`/private/client_info`}
                 icon={<EditNoteOutlined sx={iconSx} />}
                 text="Информация для клиента"
               />
@@ -169,17 +161,17 @@ const AdminBar = () => {
           <Divider />
           <ListSubheader sx={{ bgcolor: 'inherit', fontWeight: 600, pl: 0,  position: 'static', }}>Управление контентом</ListSubheader>
           <AdminNavItem
-            to={`/private/my_company/${company?.id}`}
+            to={`/private/my_company`}
             icon={<EditNote sx={iconSx} />}
             text="О компании"
           />
           <AdminNavItem
-            to={`/private/delivery/${delivery?.id}`}
+            to={`/private/delivery`}
             icon={<EditNote sx={iconSx} />}
             text="Доставка и оплата"
           />
           <AdminNavItem
-            to={`/private/bonus_program/${bonusProgram?.id}`}
+            to={`/private/bonus_program`}
             icon={<EditNote sx={iconSx} />}
             text="Бонусная программа"
           />

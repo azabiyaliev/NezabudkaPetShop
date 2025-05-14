@@ -6,10 +6,9 @@ import { selectCompany } from '../../../store/companyPage/compantPageSlice.ts';
 import TextEditor from '../../TextEditor/TextEditor.tsx';
 import { Button, Typography } from '@mui/material';
 import { fetchCompanyPage, updateCompanyPage } from '../../../store/companyPage/companyPageThunk.ts';
-import { toast } from 'react-toastify';
 import { enqueueSnackbar } from 'notistack';
 import { Box } from '@mui/joy';
-import AdminBar from '../../../features/Admin/AdminProfile/AdminBar.tsx';
+import theme from '../../../globalStyles/globalTheme.ts';
 
 const initialState = {
   text: ""
@@ -41,7 +40,7 @@ const CompanyPageForm = () => {
   const submitHandler = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!company?.id) {
-      toast.error("Ваш id неверный!");
+      enqueueSnackbar('Ваш ID неверный', { variant: 'error' });
       return;
     }
     try {
@@ -51,23 +50,12 @@ const CompanyPageForm = () => {
       await dispatch(fetchCompanyPage());
     } catch (error) {
       console.error(error);
+      enqueueSnackbar('Вам неудалось отредактировать страницу "О компании"!', { variant: 'error' });
     }
   };
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: { xs: 'column', md: 'row' },
-        mt: "30px",
-        width: '100%',
-        "@media (max-width: 900px)": {
-          flexWrap: "wrap",
-          flexDirection: "column",
-        },
-      }}
-    >
-      <AdminBar />
+    <Box>
       <Box
         sx={{
           flexGrow: 1,
@@ -90,7 +78,7 @@ const CompanyPageForm = () => {
               flexDirection: 'column',
               alignItems: 'center',
               width: '100%',
-              mt: 5,
+              mt: theme.spacing.sm,
             }}
           >
             <Typography

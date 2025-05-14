@@ -1,6 +1,5 @@
 import { ProductRequest } from "../../../../types";
 import React, { FormEvent, useEffect, useState } from "react";
-import { toast } from "react-toastify";
 import {
   Box,
   Button,
@@ -19,14 +18,16 @@ import { brandsFromSlice } from "../../../../store/brands/brandsSlice.ts";
 import { getBrands } from "../../../../store/brands/brandsThunk.ts";
 import { selectCategories } from "../../../../store/categories/categoriesSlice.ts";
 import { fetchCategoriesThunk } from "../../../../store/categories/categoriesThunk.ts";
-import { orange } from "@mui/material/colors";
 import FormControl from "@mui/material/FormControl";
 import FileInput from "../../../../components/FileInput/FileInput.tsx";
 import { addProductLoading } from "../../../../store/products/productsSlice.ts";
 import TextEditor from '../../../../components/TextEditor/TextEditor.tsx';
 import { apiUrl } from '../../../../globalConstants.ts';
 import CloseIcon from '@mui/icons-material/Close';
-import theme from '../../../../globalStyles/globalTheme.ts';
+import { enqueueSnackbar } from 'notistack';
+import { COLORS } from '../../../../globalStyles/stylesObjects.ts';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
 
 interface Props {
@@ -42,6 +43,7 @@ const initialState: ProductRequest = {
   productDescription: "",
   existence: false,
   sales: false,
+  isBestseller: false,
   brandId: "",
   categoryId: [],
   startDateSales: null,
@@ -176,23 +178,23 @@ const ProductForm: React.FC<Props> = ({
     e.preventDefault();
 
     if (!form.productName.trim()) {
-      return toast.warning("Необходимо название товара!");
+      return enqueueSnackbar('Необходимо название товара!', { variant: 'error' });
     }
 
     if (!form.productPrice || form.productPrice <= 0) {
-      return toast.warning("Цена должна быть больше 0!");
+      return enqueueSnackbar('Цена должна быть больше 0!', { variant: 'error' });
     }
 
     if (!form.productDescription.trim()) {
-      return toast.warning("Необходимо добавить описание товара!");
+      return enqueueSnackbar('Необходимо добавить описание товара!', { variant: 'error' });
     }
 
     if (!form.categoryId) {
-      return toast.warning("Необходимо выбрать категорию!");
+      return enqueueSnackbar('Необходимо выбрать категорию!', { variant: 'error' });
     }
 
     if (!form.productPhoto) {
-      return toast.warning("Необходимо изображение товара!");
+      return enqueueSnackbar('Необходимо изображение товара!', { variant: 'error' });
     }
 
     if (form.sales) {
@@ -202,27 +204,26 @@ const ProductForm: React.FC<Props> = ({
       startDate.setHours(0, 0, 0, 0);
 
       if (!form.startDateSales || !form.endDateSales) {
-        return toast.warning("Укажите даты начала и окончания акции!");
+        return enqueueSnackbar('Укажите даты начала и окончания акции!', { variant: 'error' });
       }
 
       if (form.startDateSales > form.endDateSales) {
-        return toast.warning("Дата окончания не может быть раньше начала!");
+        return enqueueSnackbar('Дата окончания не может быть раньше начала!', { variant: 'error' });
       }
 
       if (startDate < now) {
-        return toast.warning("Дата начало акции не может раньше сегодняшнего дня!")
+        return enqueueSnackbar('Дата начало акции не может раньше сегодняшнего дня!', { variant: 'error' });
       }
     }
 
     if(form.promoPercentage === undefined) return form.promoPercentage;
 
     if(form.promoPercentage < 0 || form.promoPercentage > 100) {
-      return toast.warning('Процент не может быть ниже 0 и выше 100!')
+      return enqueueSnackbar('Процент не может быть ниже 0 и выше 100!', { variant: 'error' });
     }
 
 
     onSubmit({ ...form });
-
 
     if (!isProduct) {
       setForm(initialState);
@@ -267,16 +268,17 @@ const ProductForm: React.FC<Props> = ({
   );
 
   return (
-    <form onSubmit={submitFormHandler}>
-      <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600, mt:3 }}>
-        {!isProduct ? "Добавление товара" : "Редактирование товара"}
-      </Typography>
+    <form onSubmit={submitFormHandler} style={{
+      border: '1px solid #ccc',
+      borderRadius: "4px",
+      boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
+      padding: '30px 20px',
+      marginTop: '20px'
+    }}>
       <Box
         sx={{
-          width: "100%",
           marginTop: 1,
           mx: "auto",
-          p: 2,
         }}
       >
         <Grid container direction="column" spacing={2}>
@@ -284,12 +286,6 @@ const ProductForm: React.FC<Props> = ({
             <TextField
               sx={{
                 width: "100%",
-                "& label.Mui-focused": { color: orange[500] },
-                "& .MuiOutlinedInput-root": {
-                  "& fieldset": { borderColor: "#ccc" },
-                  "&:hover fieldset": { borderColor: orange[500] },
-                  "&.Mui-focused fieldset": { borderColor: orange[500] },
-                },
               }}
               id="productName"
               name="productName"
@@ -302,27 +298,21 @@ const ProductForm: React.FC<Props> = ({
             />
           </Grid>
           <Grid size={{ xs: 12 }}>
-              <TextField
-                sx={{
-                  width: "100%",
-                  "& label.Mui-focused": { color: orange[500] },
-                  "& .MuiOutlinedInput-root": {
-                    "& fieldset": { borderColor: "#ccc" },
-                    "&:hover fieldset": { borderColor: orange[500] },
-                    "&.Mui-focused fieldset": { borderColor: orange[500] },
-                  },
-                }}
-                type="number"
-                id="productPrice"
-                name="productPrice"
-                label="Цена"
-                required
-                value={form.productPrice}
-                onChange={inputChangeHandler}
-                inputProps={{ min: 1 }}
-                error={!!priceError}
-                helperText={priceError}
-              />
+            <TextField
+              sx={{
+                width: "100%",
+              }}
+              type="number"
+              id="productPrice"
+              name="productPrice"
+              label="Цена"
+              required
+              value={form.productPrice}
+              onChange={inputChangeHandler}
+              inputProps={{ min: 1 }}
+              error={!!priceError}
+              helperText={priceError}
+            />
           </Grid>
           <Grid size={{ xs: 12 }}>
             <TextEditor
@@ -341,14 +331,6 @@ const ProductForm: React.FC<Props> = ({
             <Grid size={{ xs: 12 }}>
               <FormControl
                 fullWidth
-                sx={{
-                  "& label.Mui-focused": { color: orange[500] },
-                  "& .MuiOutlinedInput-root": {
-                    "& fieldset": { borderColor: "#ccc" },
-                    "&:hover fieldset": { borderColor: orange[500] },
-                    "&.Mui-focused fieldset": { borderColor: orange[500] },
-                  },
-                }}
               >
                 <InputLabel id="brand">Бренд</InputLabel>
                 <Select
@@ -506,7 +488,19 @@ const ProductForm: React.FC<Props> = ({
           <Grid size={{ xs: 12 }}>
             <Button
               onClick={toggleAdvancedFields}
-              sx={{ mt: 2, mb: 2, color: orange[500] }}
+              sx={{
+                mt: 2,
+                mb: 2,
+                color: COLORS.primary,
+                border: `1px solid ${COLORS.primary}`,
+                borderRadius: 2,
+                px: 2,
+                py: 1,
+                textTransform: "none",
+                fontWeight: 500,
+                transition: "all 0.3s ease",
+              }}
+              endIcon={showAdvancedFields ? <ExpandLessIcon /> : <ExpandMoreIcon />}
             >
               {showAdvancedFields ? "Скрыть дополнительные поля" : "Показать дополнительные поля"}
             </Button>
@@ -520,14 +514,6 @@ const ProductForm: React.FC<Props> = ({
                   value={form.productSize}
                   onChange={inputChangeHandler}
                   fullWidth
-                  sx={{
-                    "& label.Mui-focused": { color: orange[500] },
-                    "& .MuiOutlinedInput-root": {
-                      "& fieldset": { borderColor: "#ccc" },
-                      "&:hover fieldset": { borderColor: orange[500] },
-                      "&.Mui-focused fieldset": { borderColor: orange[500] },
-                    }
-                  }}
                   error={!!sizeError}
                   helperText={sizeError}
                 />
@@ -539,14 +525,6 @@ const ProductForm: React.FC<Props> = ({
                   value={form.productAge}
                   onChange={inputChangeHandler}
                   fullWidth
-                  sx={{
-                    "& label.Mui-focused": { color: orange[500] },
-                    "& .MuiOutlinedInput-root": {
-                      "& fieldset": { borderColor: "#ccc" },
-                      "&:hover fieldset": { borderColor: orange[500] },
-                      "&.Mui-focused fieldset": { borderColor: orange[500] },
-                    }
-                  }}
                   error={!!ageError}
                   helperText={ageError}
                 />
@@ -559,14 +537,6 @@ const ProductForm: React.FC<Props> = ({
                   value={form.productWeight}
                   onChange={inputChangeHandler}
                   fullWidth
-                  sx={{
-                    "& label.Mui-focused": { color: orange[500] },
-                    "& .MuiOutlinedInput-root": {
-                      "& fieldset": { borderColor: "#ccc" },
-                      "&:hover fieldset": { borderColor: orange[500] },
-                      "&.Mui-focused fieldset": { borderColor: orange[500] },
-                    }
-                  }}
                   error={!!weightError}
                   helperText={weightError}
                 />
@@ -578,14 +548,6 @@ const ProductForm: React.FC<Props> = ({
                   value={form.productFeedClass}
                   onChange={inputChangeHandler}
                   fullWidth
-                  sx={{
-                    "& label.Mui-focused": { color: orange[500] },
-                    "& .MuiOutlinedInput-root": {
-                      "& fieldset": { borderColor: "#ccc" },
-                      "&:hover fieldset": { borderColor: orange[500] },
-                      "&.Mui-focused fieldset": { borderColor: orange[500] },
-                    }
-                  }}
                   error={!!feedClassError}
                   helperText={feedClassError}
                 />
@@ -597,14 +559,6 @@ const ProductForm: React.FC<Props> = ({
                   value={form.productManufacturer}
                   onChange={inputChangeHandler}
                   fullWidth
-                  sx={{
-                    "& label.Mui-focused": { color: orange[500] },
-                    "& .MuiOutlinedInput-root": {
-                      "& fieldset": { borderColor: "#ccc" },
-                      "&:hover fieldset": { borderColor: orange[500] },
-                      "&.Mui-focused fieldset": { borderColor: orange[500] },
-                    }
-                  }}
                   error={!!manufacturerError}
                   helperText={manufacturerError}
                 />
@@ -617,7 +571,7 @@ const ProductForm: React.FC<Props> = ({
                 <Checkbox
                   sx={{
                     "&.Mui-checked": {
-                      color: orange[500],
+                      color: COLORS.primary,
                     },
                   }}
                   checked={form.existence}
@@ -637,7 +591,7 @@ const ProductForm: React.FC<Props> = ({
                 <Checkbox
                   sx={{
                     "&.Mui-checked": {
-                      color: orange[500],
+                      color:  COLORS.primary,
                     },
                   }}
                   checked={form.sales}
@@ -648,9 +602,33 @@ const ProductForm: React.FC<Props> = ({
               }
               label="Участвует в акции"
             />
+
+            <FormControlLabel
+              control={
+                <Checkbox
+                  sx={{
+                    "&.Mui-checked": {
+                      color:  COLORS.primary,
+                    },
+                  }}
+                  checked={form.isBestseller || false}
+                  onChange={(e) =>
+                    setForm((prev) => ({ ...prev, isBestseller: e.target.checked }))
+                  }
+                />
+              }
+              label="Хит продаж"
+            />
             {form.sales && (
-              <Grid container spacing={2}>
-                <Grid size={{ xs: 5 }} >
+              <Grid
+                container
+                spacing={2}
+                sx={{
+                  mt: 2,
+                  justifyContent: "center",
+                }}
+              >
+                <Grid item>
                   <TextField
                     label="Дата начала акции"
                     type="date"
@@ -658,18 +636,11 @@ const ProductForm: React.FC<Props> = ({
                     InputLabelProps={{ shrink: true }}
                     value={form.startDateSales ?? ""}
                     onChange={inputChangeHandler}
-                    sx={{
-                      width: "100%",
-                      "& label.Mui-focused": { color: orange[500] },
-                      "& .MuiOutlinedInput-root": {
-                        "& fieldset": { borderColor: "#ccc" },
-                        "&:hover fieldset": { borderColor: orange[500] },
-                        "&.Mui-focused fieldset": { borderColor: orange[500] },
-                      }
-                    }}
+                    sx={{ width: 300 }}
                   />
                 </Grid>
-                <Grid size={{ xs: 5 }}>
+
+                <Grid item>
                   <TextField
                     label="Дата окончания акции"
                     type="date"
@@ -677,42 +648,46 @@ const ProductForm: React.FC<Props> = ({
                     InputLabelProps={{ shrink: true }}
                     value={form.endDateSales ?? ""}
                     onChange={inputChangeHandler}
-                    sx={{
-                      width: "100%",
-                      "& label.Mui-focused": { color: orange[500] },
-                      "& .MuiOutlinedInput-root": {
-                        "& fieldset": { borderColor: "#ccc" },
-                        "&:hover fieldset": { borderColor: orange[500] },
-                        "&.Mui-focused fieldset": { borderColor: orange[500] },
-                      }
-                    }}
+                    sx={{ width: 300 }}
                   />
                 </Grid>
-                <Grid>
+
+                <Grid item>
                   <TextField
-                  label='Скидочные проценты %'
-                  id="promoPercentage"
-                  name='promoPercentage'
-                  type='number'
-                  value={form.promoPercentage}
-                  onChange={inputChangeHandler}/>
-                  <Typography sx={{marginTop: theme.spacing.xs}}>
-                    Цена с {form.promoPercentage}% будет равна {promoFinalPrice} cом
-                  </Typography>
+                    label="Скидка (%)"
+                    id="promoPercentage"
+                    name="promoPercentage"
+                    type="number"
+                    inputProps={{ min: 0, max: 100 }}
+                    value={form.promoPercentage ?? ""}
+                    onChange={inputChangeHandler}
+                    sx={{ width: 300 }}
+                  />
+                  {form.promoPercentage && Number(form.promoPercentage) > 0 && (
+                    <Typography variant="body2" sx={{ mt: 1, color: "text.secondary" }}>
+                      Цена со скидкой {form.promoPercentage}%:{" "}
+                      <strong>{promoFinalPrice} сом</strong>
+                    </Typography>
+                  )}
                 </Grid>
               </Grid>
             )}
           </Grid>
-          <Grid>
-            <Button
-              type="submit"
-              sx={{ color: "#ff9800", width: "100%" }}
-              variant="outlined"
-              color="inherit"
-              disabled={!disableButton || loading}
-            >
-              {!isProduct ? "Добавить" : "Сохранить"}
-            </Button>
+          <Grid container justifyContent="center">
+            <Grid item>
+              <Button
+                type="submit"
+                sx={{
+                  color: COLORS.white,
+                  background: disableButton ? COLORS.primary : null,
+                }}
+                variant="outlined"
+                color="inherit"
+                disabled={!disableButton || loading}
+              >
+                {!isProduct ? "Добавить" : "Сохранить"}
+              </Button>
+            </Grid>
           </Grid>
         </Grid>
       </Box>
