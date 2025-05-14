@@ -98,7 +98,7 @@ const MainToolbar = () => {
       dispatch(getFromLocalStorage());
     }
     dispatch(fetchSite()).unwrap();
-  }, [dispatch]);
+  }, [dispatch, user]);
 
   useEffect(() => {
     if (debouncedSearch.trim()) {

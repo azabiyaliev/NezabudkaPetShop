@@ -69,6 +69,12 @@ export const userSlice = createSlice({
       state.user = null;
       localStorage.removeItem('guestEmail');
     },
+    clearLoginError: (state) => {
+      state.loginError = null;
+    },
+    clearRegisterError: (state) => {
+      state.registerError = null;
+    },
   },
   extraReducers: (build) => {
     build
@@ -207,4 +213,4 @@ export const userSlice = createSlice({
 });
 
 export const userReducer = userSlice.reducer;
-export const  {setMeChecked, unsetUser} = userSlice.actions
+export const  {setMeChecked, unsetUser, clearLoginError, clearRegisterError} = userSlice.actions
