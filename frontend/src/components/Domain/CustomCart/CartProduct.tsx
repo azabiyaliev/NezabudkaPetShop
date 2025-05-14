@@ -69,7 +69,7 @@ const CartProduct: React.FC<Props> = ({ productCart, closeCart }) => {
               justifyContent: 'center',
               borderRadius: '50%',
               fontWeight: FONTS.weight.bold,
-              fontSize: FONTS.size.xs,
+              fontSize: '11px',
               cursor: 'pointer',
               zIndex: 2,
             }}>
