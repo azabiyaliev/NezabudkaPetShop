@@ -1,4 +1,14 @@
-import { Box, Breadcrumbs, Button, CardMedia, Container, IconButton, Link as MuiLink, Typography } from '@mui/material';
+import {
+  Badge,
+  Box,
+  Breadcrumbs,
+  Button,
+  CardMedia,
+  Container,
+  IconButton,
+  Link as MuiLink,
+  Typography
+} from '@mui/material';
 import '../css/product.css';
 import { useAppDispatch, useAppSelector, usePermission } from '../../../app/hooks.ts';
 import { useEffect, useState } from 'react';
@@ -38,7 +48,6 @@ const ProductPage = () => {
   const dispatch = useAppDispatch();
   const { id } = useParams<{ id: string }>();
   const product = useAppSelector(selectProduct);
-  const [quantity, setQuantity] = useState<number>(1);
   const cart = useAppSelector(cartFromSlice);
   const user = useAppSelector(selectUser);
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
@@ -47,7 +56,7 @@ const ProductPage = () => {
   const favoriteProducts = useAppSelector(selectedFavorite);
   const isAddToCartDisabled = !product?.existence;
   const cartItem = cart?.products.find(item => item.product?.id === product?.id);
-  const can = usePermission(user)
+  const can = usePermission(user);
 
   useEffect(() => {
     if (id && product && product.id && product.productName) {
@@ -88,25 +97,17 @@ const ProductPage = () => {
     dispatch(fetchDeliveryPage());
   }, [dispatch]);
 
-  useEffect(() => {
-    if (cartItem && cartItem.quantity !== quantity) {
-      setQuantity(cartItem.quantity);
-    } else if (!cartItem && quantity !== 1) {
-      setQuantity(1);
-    }
-  }, [cartItem, quantity]);
-
   if (!product) {
     return <Typography sx={{ padding: 4 }}>Загрузка товара...</Typography>;
   }
 
   const addProductToCart = async (product: ProductResponse) => {
-    if (user && cart) {
+    if (user && can([userRoleClient]) && cart) {
       await dispatch(
         addItem({
           cartId: cart.id,
           productId: product.id,
-          quantity: quantity,
+          quantity: 1,
         })
       ).unwrap();
 
@@ -169,7 +170,6 @@ const ProductPage = () => {
   const breadcrumbs = product.productCategory?.[0]?.category
     ? getBreadcrumbs(product.productCategory[0].category)
     : [];
-
 
   return (
     <Container maxWidth="xl">
@@ -436,34 +436,50 @@ const ProductPage = () => {
                      </Button>
                    </span>
                  </Tooltip> :
-                 <Button
-                   onClick={() => addProductToCart(product)}
-                   variant="contained"
-                   className="cart-button"
-                   disabled={user && (can([userRoleAdmin, userRoleSuperAdmin])) || isAddToCartDisabled}
+                 <Badge
+                   badgeContent={cartItem && cartItem.quantity}
                    sx={{
-                     width: "200px",
-                     padding: `${SPACING.sm} ${SPACING.lg}`,
-                     borderRadius: "40px",
-                     backgroundColor: COLORS.primary,
-                     color: theme.colors.white,
-                     fontSize: theme.fonts.size.default,
-                     textTransform: "none",
-                     "&:hover": {
-                       backgroundColor: COLORS.FOREST_GREEN,
-                     },
-                     '@media (max-width: 470px)': {
-                       width: "100%",
-                       pt: theme.spacing.xs,
-                       pl: theme.spacing.sm,
-                       pr: theme.spacing.sm,
-                       pb: theme.spacing.xs,
-                       fontSize: theme.fonts.size.sm,
+                     '& .MuiBadge-badge': {
+                       margin: '10px',
+                       backgroundColor: COLORS.adminBackgroundYellow,
+                       color: COLORS.background,
+                       width: SPACING.xl,
+                       height: SPACING.xl,
+                       borderRadius: '50%',
+                       fontSize: FONTS.size.default,
+                       fontWeight: FONTS.weight.bold,
                      },
                    }}
                  >
-                   {isAddToCartDisabled ? "Нет в наличии" : "В корзину"}
-                 </Button>}
+                   <Button
+                     onClick={() => addProductToCart(product)}
+                     variant="contained"
+                     className="cart-button"
+                     disabled={user && (can([userRoleAdmin, userRoleSuperAdmin])) || isAddToCartDisabled}
+                     sx={{
+                       width: "200px",
+                       padding: `${SPACING.sm} ${SPACING.lg}`,
+                       borderRadius: "40px",
+                       backgroundColor: COLORS.primary,
+                       color: theme.colors.white,
+                       fontSize: theme.fonts.size.default,
+                       textTransform: "none",
+                       "&:hover": {
+                         backgroundColor: COLORS.FOREST_GREEN,
+                       },
+                       '@media (max-width: 470px)': {
+                         width: "100%",
+                         pt: theme.spacing.xs,
+                         pl: theme.spacing.sm,
+                         pr: theme.spacing.sm,
+                         pb: theme.spacing.xs,
+                         fontSize: theme.fonts.size.sm,
+                       },
+                     }}
+                   >
+                     {isAddToCartDisabled ? "Нет в наличии" : "В корзину"}
+                   </Button>
+                 </Badge>}
                </>
                <>
                  {user && (can([userRoleAdmin, userRoleSuperAdmin])) ?

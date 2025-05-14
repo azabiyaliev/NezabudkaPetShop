@@ -15,7 +15,7 @@ import { deleteItemCart, fetchCart, updateCartItem } from '../../../../../../sto
 import { selectUser } from '../../../../../../store/users/usersSlice.ts';
 import { enqueueSnackbar } from 'notistack';
 import { Link } from 'react-router-dom';
-import { COLORS, SPACING } from '../../../../../../globalStyles/stylesObjects.ts';
+import { COLORS, FONTS, SPACING } from '../../../../../../globalStyles/stylesObjects.ts';
 
 interface Props {
   product: ICartItem;
@@ -93,6 +93,7 @@ const Cart: React.FC<Props> = ({ product, isFirst }) => {
         >
           <Box
             sx={{
+              position: 'relative',
               marginRight: SPACING.sm,
               display: "inline-block",
               "& img": {
@@ -100,13 +101,47 @@ const Cart: React.FC<Props> = ({ product, isFirst }) => {
                 height: "110px",
                 objectFit: "cover",
               },
+              "@media (max-width: 450px)": {
+                "& img": {
+                  margin: '0 55%'
+                },
+              },
             }}
           >
+            {product.product.sales && (
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: -20,
+                  right: -20,
+                  backgroundColor: COLORS.warning,
+                  color: COLORS.white,
+                  padding: `${SPACING.exs} ${SPACING.xs}`,
+                  borderRadius: '5px',
+                  fontWeight: FONTS.weight.bold,
+                  fontSize: FONTS.size.sm,
+                  transform: 'rotate(25deg)',
+                  transformOrigin: 'top left',
+                  zIndex: 10,
+                  minWidth: '60px',
+                  textAlign: 'center',
+                  "@media (max-width: 450px)": {
+                    top: 15,
+                    right: 50,
+                    left: 25,
+                    transform: 'rotate(-35deg)',
+                  },
+                }}
+              >
+                -{product.product.promoPercentage}%
+              </Box>
+            )}
             <img
               src={apiUrl + product.product.productPhoto}
               alt={product.product.productName}
             />
           </Box>
+
           <Box
             sx={{
               width: "100%",
@@ -115,6 +150,9 @@ const Cart: React.FC<Props> = ({ product, isFirst }) => {
               '@media (max-width: 800px)': {
                 width: '70%',
               },
+              "@media (max-width: 450px)": {
+                display: 'none',
+              }
             }}
           >
             <Box>
@@ -165,17 +203,44 @@ const Cart: React.FC<Props> = ({ product, isFirst }) => {
                   marginRight: "10px",
                 }}
               >
-                <Typography
-                  level="h3"
-                  sx={{
-                    fontSize: "lg",
-                    mb: 0.5,
-                    width: "110px",
-                    color: `${COLORS.yellow}`,
-                  }}
-                >
-                  {product.product.productPrice.toLocaleString('ru-RU').replace(/,/g, ' ')} сом
-                </Typography>
+                {product.product.sales ?
+                  <>
+                    <Typography
+                      level="h3"
+                      sx={{
+                        fontSize: "lg",
+                        mb: 0.5,
+                        width: "110px",
+                        textDecoration: 'line-through',
+                        color: COLORS.text,
+                      }}
+                    >
+                      {product.product.productPrice.toLocaleString('ru-RU').replace(/,/g, ' ')} сом
+                    </Typography>
+                    <Typography
+                      level="h3"
+                      sx={{
+                        fontSize: "lg",
+                        mb: 0.5,
+                        width: "110px",
+                        color: `${COLORS.yellow}`,
+                      }}
+                    >
+                      {product.product.promoPrice.toLocaleString('ru-RU').replace(/,/g, ' ')} сом
+                    </Typography>
+                  </> :
+                  <Typography
+                    level="h3"
+                    sx={{
+                      fontSize: "lg",
+                      mb: 0.5,
+                      width: "110px",
+                      color: `${COLORS.yellow}`,
+                    }}
+                  >
+                    {product.product.productPrice.toLocaleString('ru-RU').replace(/,/g, ' ')} сом
+                  </Typography>
+                }
               </Box>
               <Box
                 sx={{
@@ -246,7 +311,9 @@ const Cart: React.FC<Props> = ({ product, isFirst }) => {
                     color: `${COLORS.yellow}`,
                   }}
                 >
-                  {(product.product.productPrice * product.quantity).toLocaleString('ru-RU').replace(/,/g, ' ')} сом
+                  {product.product.sales
+                    ? (product.product.promoPrice * product.quantity).toLocaleString('ru-RU').replace(/,/g, ' ')
+                    : (product.product.productPrice * product.quantity).toLocaleString('ru-RU').replace(/,/g, ' ')} сом
                 </Typography>
               </Box>
             </Box>
@@ -334,6 +401,9 @@ const Cart: React.FC<Props> = ({ product, isFirst }) => {
         "@media (max-width: 685px)": {
           display: "flex",
         },
+        '@media (max-width: 450px)': {
+          display: "none",
+        },
       }}>
         <Box
           sx={{
@@ -343,20 +413,44 @@ const Cart: React.FC<Props> = ({ product, isFirst }) => {
             },
           }}
         >
-          <Typography
-            level="h3"
-            sx={{
-              fontSize: "lg",
-              mb: 0.5,
-              width: "110px",
-              color: `${COLORS.yellow}`,
-              "@media (max-width: 470px)": {
-                width: "100px",
-              },
-            }}
-          >
-            {product.product.productPrice.toLocaleString('ru-RU').replace(/,/g, ' ')} сом
-          </Typography>
+          {product.product.sales ?
+            <>
+              <Typography
+                level="h3"
+                sx={{
+                  fontSize: "lg",
+                  mb: 0.5,
+                  width: "110px",
+                  textDecoration: 'line-through',
+                  color: COLORS.text,
+                }}
+              >
+                {product.product.productPrice.toLocaleString('ru-RU').replace(/,/g, ' ')} сом
+              </Typography>
+              <Typography
+                level="h3"
+                sx={{
+                  fontSize: "lg",
+                  mb: 0.5,
+                  width: "110px",
+                  color: `${COLORS.yellow}`,
+                }}
+              >
+                {product.product.promoPrice.toLocaleString('ru-RU').replace(/,/g, ' ')} сом
+              </Typography>
+            </> :
+            <Typography
+              level="h3"
+              sx={{
+                fontSize: "lg",
+                mb: 0.5,
+                width: "110px",
+                color: `${COLORS.yellow}`,
+              }}
+            >
+              {product.product.productPrice.toLocaleString('ru-RU').replace(/,/g, ' ')} сом
+            </Typography>
+          }
         </Box>
         <Box
           sx={{
@@ -423,12 +517,158 @@ const Cart: React.FC<Props> = ({ product, isFirst }) => {
             sx={{
               fontSize: "lg",
               mb: 0.5,
-              ml: '25px',
               width: "110px",
               color: `${COLORS.yellow}`,
             }}
           >
-            {(product.product.productPrice * product.quantity).toLocaleString('ru-RU').replace(/,/g, ' ')} сом
+            {product.product.sales
+              ? (product.product.promoPrice * product.quantity).toLocaleString('ru-RU').replace(/,/g, ' ')
+              : (product.product.productPrice * product.quantity).toLocaleString('ru-RU').replace(/,/g, ' ')} сом
+          </Typography>
+        </Box>
+      </Box>
+      <Box sx={{
+        display: "none",
+        "@media (max-width: 450px)": {
+          display: "block",
+        },
+      }}>
+        <Box>
+          <Link
+            to={`/product/${product.product.id}`}
+            style={{
+              textDecoration: 'none',
+            }}
+          >
+            <Typography
+              sx={{
+                fontSize: "md",
+                mb: 1,
+                mr: 0.5,
+                wordWrap: "break-word",
+                marginTop: '5px',
+                textAlign: "center",
+                '&:hover': {
+                  color: COLORS.primary,
+                },
+              }}
+            >
+              {product.product.productName}
+            </Typography>
+          </Link>
+        </Box>
+        <Box
+          sx={{
+            textAlign: 'center'
+          }}
+        >
+          {product.product.sales ?
+            <>
+              <Typography
+                level="h3"
+                sx={{
+                  fontSize: "lg",
+                  mb: 0.5,
+                  textDecoration: 'line-through',
+                  color: COLORS.text,
+                }}
+              >
+                {product.product.productPrice.toLocaleString('ru-RU').replace(/,/g, ' ')} сом
+              </Typography>
+              <Typography
+                level="h3"
+                sx={{
+                  fontSize: "lg",
+                  mb: 0.5,
+                  color: `${COLORS.yellow}`,
+                }}
+              >
+                {product.product.promoPrice.toLocaleString('ru-RU').replace(/,/g, ' ')} сом
+              </Typography>
+            </> :
+            <Typography
+              level="h3"
+              sx={{
+                fontSize: "lg",
+                mb: 0.5,
+                color: `${COLORS.yellow}`,
+              }}
+            >
+              {product.product.productPrice.toLocaleString('ru-RU').replace(/,/g, ' ')} сом
+            </Typography>
+          }
+        </Box>
+        <Box
+          sx={{
+            marginRight: "5px",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 1,
+              pt: 2,
+              mb: 2,
+            }}
+          >
+            <IconButton
+              sx={{
+                borderRadius: "50%",
+                backgroundColor: product.quantity <= 1 ? "lightgray" : "rgb(112,168,71)",
+                border: "transparent",
+                "&:hover": {
+                  backgroundColor: product.quantity <= 1 ? "lightgray" : "#237803",
+                },
+              }}
+              size="sm"
+              variant="outlined"
+              onClick={() => removeQuantity(product.product)}
+              disabled={product.quantity <= 1}
+            >
+              <Remove sx={{ color: "white" }} />
+            </IconButton>
+            <Typography
+              textColor="text.secondary"
+              sx={{ fontWeight: "md", fontFamily: "Nunito, sans-serif" }}
+            >
+              {product.quantity}
+            </Typography>
+            <IconButton
+              sx={{
+                borderRadius: "50%",
+                backgroundColor: "rgb(112,168,71)",
+                border: "transparent",
+                "&:hover": {
+                  backgroundColor: "#237803",
+                },
+              }}
+              size="sm"
+              variant="outlined"
+              onClick={() => addQuantity(product.product)}
+            >
+              <Add sx={{ color: "white" }} />
+            </IconButton>
+          </Box>
+        </Box>
+        <Box
+          sx={{
+            marginRight: "10px",
+            textAlign: 'center',
+          }}
+        >
+          <Typography
+            level="h3"
+            sx={{
+              fontSize: "lg",
+              mb: 0.5,
+              color: `${COLORS.yellow}`,
+            }}
+          >
+            {product.product.sales
+              ? (product.product.promoPrice * product.quantity).toLocaleString('ru-RU').replace(/,/g, ' ')
+              : (product.product.productPrice * product.quantity).toLocaleString('ru-RU').replace(/,/g, ' ')} сом
           </Typography>
         </Box>
       </Box>
