@@ -7,6 +7,7 @@ import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import { useAppDispatch } from '../../../app/hooks.ts';
 import { sendPasswordCode } from "../../../store/users/usersThunk.ts";
 import { enqueueSnackbar } from 'notistack';
+import { COLORS } from "../../../globalStyles/stylesObjects.ts";
 
 
 interface Props {
@@ -147,8 +148,8 @@ const ModalWindow: React.FC<Props> = ({ open, setOpen }) => {
             onClick={handleSubmitEmail}
             variant="contained"
             sx={{
-              backgroundColor: "#FFEB3B",
-              color: "black",
+              backgroundColor: COLORS.primary,
+              color: COLORS.white,
               width: "auto",
               maxWidth: "300px",
               borderRadius: "20px",
