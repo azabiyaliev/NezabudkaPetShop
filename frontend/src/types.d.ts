@@ -1,3 +1,5 @@
+import { DeliveryMethod, PaymentMethod } from './features/Order/OrderForm.tsx';
+
 export interface RegisterMutation {
   firstName: string;
   secondName: string;
@@ -253,7 +255,6 @@ export interface ProductResponse {
   isBestseller?: boolean;
   brandId: string;
   brand: IBrand;
-  reviews: [];
   categoryId: number[];
   subcategoryId?: string[];
   productCategory: {
