@@ -1,9 +1,9 @@
 # Build Stage
-FROM node:20 AS BUILD
+FROM node:20 AS build
 
 WORKDIR /app
 
-COPY package*.json ./\
+COPY package*.json ./
 
 RUN npm install
 
@@ -19,11 +19,17 @@ FROM node:20-alpine AS production
 
 WORKDIR /app
 
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/dist ./dist
+COPY --from=build /app/package*.json ./
+COPY --from=build /app/dist ./dist
 
-RUN npm install
+COPY --from=build /app/prisma ./prisma
+COPY --from=build /app/.env .env
+
+COPY --from=build /app/public ./public
+
+RUN npm install --omit=dev
 
 EXPOSE 8000
 
-CMD ["node", "dist/main"]
+CMD ["sh", "-c", "npx prisma migrate deploy && node dist/main"]
+
