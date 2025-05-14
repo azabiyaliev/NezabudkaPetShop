@@ -144,6 +144,30 @@ const OrderAdminItem: React.FC<Props> = ({ order }) => {
         maxWidth: 400,
         display: "flex",
         flexDirection: "column",
+        "@media (max-width: 1325px)": {
+          flexBasis: "48%",
+          maxWidth: "48%",
+        },
+        "@media (max-width: 1255px)": {
+          flexBasis: "58%",
+          maxWidth: "58%",
+        },
+        "@media (max-width: 1100px)": {
+          flexBasis: "48%",
+          maxWidth: "48%",
+        },
+        "@media (max-width: 941px)": {
+          flexBasis: "75%",
+          maxWidth: "75%",
+        },
+        "@media (max-width: 900px)": {
+          flexBasis: "48%",
+          maxWidth: "48%",
+        },
+        "@media (max-width: 685px)": {
+          flexBasis: "100%",
+          maxWidth: "100%",
+        },
       }}
     >
       <Box sx={{ display: "flex", flexDirection: "column", flexGrow: 1 }}>
@@ -219,6 +243,12 @@ const OrderAdminItem: React.FC<Props> = ({ order }) => {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "space-between",
+                  "@media (max-width: 1255px)": {
+                    flexWrap: "wrap",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 1
+                  },
                 }}
               >
                 <Button
@@ -228,6 +258,11 @@ const OrderAdminItem: React.FC<Props> = ({ order }) => {
                   disabled={
                     order.status !== "Delivered" && order.status !== "Received"
                   }
+                  sx={{
+                    "@media (max-width: 1255px)": {
+                      width: "100%",
+                    },
+                  }}
                 >
                   Удалить заказ
                 </Button>
@@ -235,6 +270,11 @@ const OrderAdminItem: React.FC<Props> = ({ order }) => {
                   variant="outlined"
                   onClick={() => setIsEditingStatus(true)}
                   disabled={order.status === OrderStatus.Canceled}
+                  sx={{
+                    "@media (max-width: 1255px)": {
+                      width: "100%",
+                    },
+                  }}
                 >
                   Изменить статус
                 </Button>

@@ -74,7 +74,7 @@ const AllOrders = () => {
         display: "flex",
         margin: "30px 0",
         position: "relative",
-        "@media (max-width: 900px)": {
+        "@media (max-width: 1100px)": {
           alignItems: "center",
           justifyContent: "center",
         },
@@ -83,13 +83,18 @@ const AllOrders = () => {
       <Box
         sx={{
           flexShrink: 0,
-          height: "100%",
+          position: "sticky",
+          top: 20,
+          alignSelf: "flex-start",
+          zIndex: 1000,
+          marginRight: 2,
           "@media (max-width: 900px)": {
             display: "none",
           },
         }}
       >
-        <AdminBar />
+
+      <AdminBar />
       </Box>
 
       <Box
@@ -100,7 +105,7 @@ const AllOrders = () => {
           alignItems: "center",
           flexWrap: 'wrap',
           marginLeft: SPACING.main_spacing,
-          "@media (max-width: 900px)": {
+          "@media (max-width: 1255px)": {
             marginLeft: 0
           },
         }}
