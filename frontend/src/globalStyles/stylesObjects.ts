@@ -7,6 +7,7 @@ export const COLORS = {
   yellow: '#FFC000', //ЖЕЛТЫЕ ТОНА
   error: '#840003', //ОШИБКА
   warning: '#C50005', //ПРЕДУПРЖДЕНИЕ
+  second_warning: '#f9f1ad',
   info: '#17a2b8',
   text: '#212529', //ДЕФОЛТНЫЙ ТЕКСТ
   background: '#f8f9fa',
@@ -23,6 +24,7 @@ export const COLORS = {
 
   BORDER_CART: 'rgba(102,100,97,0.61)',
   DARK_GREEN: '#34610B',
+  BORDER_BACKGROUND: '#ebeeef',
   FOREST_GREEN: '#152D00',
   LIGHT_GREEN: '#92CC5F',
   PALE_GREEN: '#C2EE9A',
@@ -83,5 +85,6 @@ export const MEDIA_REQ = {
     sm: '600px',
     md: '768px',
     lg: '900px',
+    xl: '1124px',
   },
 }
