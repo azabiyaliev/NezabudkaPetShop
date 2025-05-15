@@ -299,14 +299,12 @@ const MainToolbar = () => {
           </Container>
         )}
       </Box>
-      <div
-        style={{
+      <Box
+        sx={{
           background:
-            user?.role === "superAdmin"
-              ? `linear-gradient(135deg, ${theme.colors.adminBackgroundGreen} 0%, #A3B72F 50%, ${theme.colors.adminBackgroundYellow} 100%)`
+            can([userRoleSuperAdmin])
+              ? `linear-gradient(135deg, ${theme.colors.adminBackgroundGreen} 0%, #A3B72F 50%, ${theme.colors.adminBackgroundYellow} 100%) center / 200%`
               : theme.colors.primary,
-          backgroundSize: "200%",
-          backgroundPosition: "center",
           borderBottom: `1px solid ${theme.colors.white}`,
           boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
         }}
@@ -1277,7 +1275,7 @@ const MainToolbar = () => {
             </Box>
           </Box>
         </Container>
-      </div>
+      </Box>
     </div>
   );
 };
