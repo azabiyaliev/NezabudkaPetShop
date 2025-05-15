@@ -1,5 +1,5 @@
 import { Badge, Box, Button, Container, InputBase, Toolbar, useMediaQuery, } from '@mui/material';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { useAppDispatch, useAppSelector, usePermission, } from '../../../app/hooks.ts';
 import ExistsUser from './ExistsUser.tsx';
 import UnknownUser from './UnknownUser.tsx';
@@ -37,7 +37,6 @@ import {
   Star, Truck
 } from 'phosphor-react';
 import StorefrontIcon from '@mui/icons-material/Storefront';
-import { SPACING } from '../../../globalStyles/stylesObjects.ts';
 
 
 const MainToolbar = () => {
@@ -48,7 +47,6 @@ const MainToolbar = () => {
   const site = useAppSelector(selectEditSite);
   const cart = useAppSelector(cartFromSlice);
   const favoriteProducts = useAppSelector(selectedFavorite);
-  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const products = useAppSelector(selectProducts);
   const [search, setSearch] = useState("");
@@ -58,6 +56,10 @@ const MainToolbar = () => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [open, setOpen] = useState(false);
   const isMobile = useMediaQuery("(max-width:600px)");
+
+  const location = useLocation();
+
+  const isClientsPage = location.pathname === '/private/clients' || location.pathname === '/private/admin-table' || location.pathname === '/private/brands' || location.pathname === '/private/products';
 
   useEffect(() => {
     if (user?.id) {
@@ -131,7 +133,6 @@ const MainToolbar = () => {
 
   const closeMenu = () => {
     setOpenCategoryMenu(false);
-    navigate("/");
   };
 
   const checkProductInCart: number[] = Array.isArray(cart?.products)
@@ -325,7 +326,7 @@ const MainToolbar = () => {
                 paddingBottom: "15px",
                 "@media (max-width: 1430px)": {
                   paddingTop: theme.spacing.exs,
-                  paddingBottom: 0,
+                  paddingBottom:  theme.spacing.exs,
                 },
                 "@media (max-width: 1100px)": {
                   display: "flex",
@@ -341,22 +342,36 @@ const MainToolbar = () => {
                 <Box
                   onClick={() => setOpenCategoryMenu(true)}
                   sx={{
-                    display: "none",
-                    "@media (max-width: 900px)": {
-                      paddingTop: "7px",
-                      paddingBottom: "7px",
-                      borderRadius: theme.spacing.xs,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      cursor: "pointer",
-                      transition: "background 0.3s ease",
-                      position: "relative",
-                      marginRight: theme.spacing.sm,
-                    },
-                    "@media (max-width: 375px)": {
-                      marginRight: SPACING.exs,
-                    },
+                    display: 'none',
+                    ...(isClientsPage
+                      ? {
+                        "@media (max-width: 1390px)": {
+                          display: 'flex',
+                          paddingTop: '7px',
+                          paddingBottom: '7px',
+                          borderRadius: theme.spacing.xs,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          cursor: 'pointer',
+                          transition: 'background 0.3s ease',
+                          position: 'relative',
+                          marginRight: theme.spacing.sm,
+                        },
+                      }
+                      : {
+                        "@media (max-width: 900px)": {
+                          display: 'flex',
+                          paddingTop: '7px',
+                          paddingBottom: '7px',
+                          borderRadius: theme.spacing.xs,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          cursor: 'pointer',
+                          transition: 'background 0.3s ease',
+                          position: 'relative',
+                          marginRight: theme.spacing.sm,
+                        },
+                      }),
                   }}
                 >
                   <MenuIcon sx={{ color: theme.colors.white }} />
@@ -385,6 +400,7 @@ const MainToolbar = () => {
                       },
                     }}
                   />
+                  <div>
                     <Typography
                       sx={{
                         fontSize: {
@@ -408,6 +424,7 @@ const MainToolbar = () => {
                     >
                       Незабудка
                     </Typography>
+                  </div>
                 </NavLink>
               </div>
 
@@ -848,11 +865,26 @@ const MainToolbar = () => {
                               color: theme.colors.tooltip_color,
                             }}
                           >
+                            <Badge
+                              badgeContent={user?.bonus}
+                              overlap="circular"
+                              color="warning"
+                              sx={{
+                                backgroundColor: user
+                                  ? "transparent"
+                                  : undefined,
+                                "& .MuiBadge-badge": {
+                                  top: "-3px",
+                                  right: "-1px",
+                                },
+                              }}
+                            >
                               <Star
                                 size={28}
                                 weight="regular"
                                 color={theme.colors.white}
                               />
+                            </Badge>
                           </Box>
                         </NavLink>
                       </Tooltip>

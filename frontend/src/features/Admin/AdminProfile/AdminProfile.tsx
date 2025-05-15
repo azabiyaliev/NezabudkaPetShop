@@ -33,7 +33,18 @@ const AdminProfile = () => {
             },
           }}
         >
-          <AdminBar />
+          <Box
+            sx={{
+              flexShrink: 0,
+              height: "100%",
+              marginRight: 2,
+              "@media (max-width: 900px)": {
+                display: "none",
+              },
+            }}
+          >
+            <AdminBar />
+          </Box>
           <Box sx={{margin: '0 auto'}}>
             <Typography
               variant="h6"
