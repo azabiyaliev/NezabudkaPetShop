@@ -37,6 +37,7 @@ import {
   Star, Truck
 } from 'phosphor-react';
 import StorefrontIcon from '@mui/icons-material/Storefront';
+import { SPACING } from '../../../globalStyles/stylesObjects.ts';
 
 
 const MainToolbar = () => {
@@ -325,6 +326,9 @@ const MainToolbar = () => {
                   justifyContent: "space-between",
                   alignItems: "center",
                 },
+                "@media (max-width: 405px)": {
+                  paddingLeft: '10px',
+                },
               }}
             >
               <div style={{ display: "flex", alignItems: "center" }}>
@@ -343,6 +347,9 @@ const MainToolbar = () => {
                       transition: "background 0.3s ease",
                       position: "relative",
                       marginRight: theme.spacing.sm,
+                    },
+                    "@media (max-width: 375px)": {
+                      marginRight: SPACING.exs,
                     },
                   }}
                 >
@@ -372,7 +379,6 @@ const MainToolbar = () => {
                       },
                     }}
                   />
-                  <div>
                     <Typography
                       sx={{
                         fontSize: {
@@ -389,11 +395,13 @@ const MainToolbar = () => {
                         "@media (max-width: 500px)": {
                           paddingRight: theme.spacing.xs,
                         },
+                        "@media (max-width: 400px)": {
+                          paddingRight: 0,
+                        },
                       }}
                     >
                       Незабудка
                     </Typography>
-                  </div>
                 </NavLink>
               </div>
 
@@ -638,6 +646,9 @@ const MainToolbar = () => {
                   display: "flex",
                   alignItems: "center",
                   gap: theme.spacing.xs,
+                  "@media (max-width: 400px)": {
+                    gap: 0,
+                  },
                 }}
               >
                 {(user && can(["client"])) || !user ? (

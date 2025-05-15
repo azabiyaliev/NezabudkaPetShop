@@ -175,6 +175,7 @@ const UserFormEdition = () => {
                   sx={{
                     backgroundColor: theme.colors.white,
                     borderRadius: theme.spacing.exs,
+
                   }}
                   error={!!getFieldError("firstName") || Boolean(name)}
                   helperText={getFieldError("firstName") || name}
@@ -193,6 +194,9 @@ const UserFormEdition = () => {
                   sx={{
                     backgroundColor: theme.colors.white,
                     borderRadius: theme.spacing.exs,
+                    '@media (max-width: 765px)': {
+                      mt: 3,
+                    },
                   }}
                   error={!!getFieldError("secondName") || Boolean(secondName)}
                   helperText={getFieldError("secondName") || secondName}

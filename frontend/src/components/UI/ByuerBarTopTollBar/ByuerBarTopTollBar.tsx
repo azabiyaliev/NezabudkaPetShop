@@ -1,12 +1,22 @@
 import { List, ListItem, ListItemText } from '@mui/material';
 import { NavLink, useLocation } from 'react-router-dom';
+import { Box } from '@mui/joy';
 
 const ByuerBarTopTollBar = () => {
   const location = useLocation();
 
   return (
-    <div>
-      <List sx={{ p: 0, display: 'flex', flexDirection: 'column', gap: 1, width:"250px" }}>
+    <Box>
+      <List sx={{
+        p: 0,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 1,
+        width: "250px",
+        "@media (max-width: 820px)": {
+          width: "100%",
+        },
+      }}>
         <ListItem
           component={NavLink}
           to="/my_company"
@@ -16,6 +26,11 @@ const ByuerBarTopTollBar = () => {
             borderBottom:
               location.pathname === '/my_company' ? '1px solid #228B22' : 'none',
             transition: 'border-bottom 0.3s',
+            width: '80%',
+            "@media (max-width: 820px)": {
+              width: "100%",
+              textAlign: 'center',
+            },
           }}
         >
           <ListItemText
@@ -34,13 +49,18 @@ const ByuerBarTopTollBar = () => {
             textDecoration: 'none',
             borderBottom:
               location.pathname === '/delivery' ? '1px solid #228B22' : 'none',
-            transition: 'border-bottom 0.1s',
+            transition: 'border-bottom 0.3s',
+            width: '80%',
+            "@media (max-width: 820px)": {
+              width: "100%",
+              textAlign: 'center',
+            },
           }}
         >
           <ListItemText
             primary="Доставка и оплата"
             primaryTypographyProps={{
-              sx: { color: '#000', fontWeight: 500, fontSize: '1rem' },
+              sx: { color: '#000', fontWeight: 500, fontSize: '1rem'},
             }}
           />
         </ListItem>
@@ -54,6 +74,11 @@ const ByuerBarTopTollBar = () => {
             borderBottom:
               location.pathname === '/bonus_program' ? '1px solid #228B22' : 'none',
             transition: 'border-bottom 0.3s',
+            width: '80%',
+            "@media (max-width: 820px)": {
+              width: "100%",
+              textAlign: 'center',
+            },
           }}
         >
           <ListItemText
@@ -73,6 +98,11 @@ const ByuerBarTopTollBar = () => {
             borderBottom:
               location.pathname === '/contacts' ? '1px solid #228B22' : 'none',
             transition: 'border-bottom 0.3s',
+            width: '80%',
+            "@media (max-width: 820px)": {
+              width: "100%",
+              textAlign: 'center',
+            },
           }}
         >
           <ListItemText
@@ -83,7 +113,7 @@ const ByuerBarTopTollBar = () => {
           />
         </ListItem>
       </List>
-    </div>
+    </Box>
   );
 };
 
