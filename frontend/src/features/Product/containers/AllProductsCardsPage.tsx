@@ -521,7 +521,6 @@ const AllProductsCardsPage = () => {
                       variant="h5"
                       sx={{
                         mt: 2,
-                        mb: 4,
                         textAlign: "center",
                         fontWeight: FONTS.weight.bold,
                       }}
