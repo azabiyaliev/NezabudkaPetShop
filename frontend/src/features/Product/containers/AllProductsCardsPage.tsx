@@ -1,25 +1,39 @@
-import { Box, Collapse, ListItemButton, Typography } from '@mui/material';
-import React, { useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector, usePermission } from "../../../app/hooks.ts";
-import { getProducts, getProductsByCategory, } from '../../../store/products/productsThunk.ts';
-import { selectProducts, selectProductsByCategory } from '../../../store/products/productsSlice.ts';
-import { getFavoriteProducts } from '../../../store/favoriteProducts/favoriteProductsThunks.ts';
-import { selectUser } from '../../../store/users/usersSlice.ts';
-import { useNavigate, useParams } from 'react-router-dom';
-import { fetchCategoriesThunk } from '../../../store/categories/categoriesThunk.ts';
-import { selectCategories } from '../../../store/categories/categoriesSlice.ts';
-import { cartFromSlice, clearCart, getFromLocalStorage } from '../../../store/cart/cartSlice.ts';
-import { fetchCart } from '../../../store/cart/cartThunk.ts';
-import { userRoleClient } from '../../../globalConstants.ts';
-import Grid from '@mui/material/Grid2';
-import Filters from '../../Filters/Filters.tsx';
-import ProductCard from '../../../components/Domain/ProductCard/ProductCard.tsx';
-import { ICategories, Subcategory } from '../../../types';
-import ArrowDropDownOutlinedIcon from '@mui/icons-material/ArrowDropDownOutlined';
-import { alpha } from '@mui/material/styles';
-import { COLORS, FONTS, SPACING } from '../../../globalStyles/stylesObjects.ts';
-import CustomPagination from '../../../components/Pagination/Pagination.tsx';
-import Container from '@mui/material/Container';
+import { Box, Collapse, ListItemButton, Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import {
+  useAppDispatch,
+  useAppSelector,
+  usePermission,
+} from "../../../app/hooks.ts";
+import {
+  getProducts,
+  getProductsByCategory,
+} from "../../../store/products/productsThunk.ts";
+import {
+  selectProducts,
+  selectProductsByCategory,
+} from "../../../store/products/productsSlice.ts";
+import { getFavoriteProducts } from "../../../store/favoriteProducts/favoriteProductsThunks.ts";
+import { selectUser } from "../../../store/users/usersSlice.ts";
+import { useNavigate, useParams } from "react-router-dom";
+import { fetchCategoriesThunk } from "../../../store/categories/categoriesThunk.ts";
+import { selectCategories } from "../../../store/categories/categoriesSlice.ts";
+import {
+  cartFromSlice,
+  clearCart,
+  getFromLocalStorage,
+} from "../../../store/cart/cartSlice.ts";
+import { fetchCart } from "../../../store/cart/cartThunk.ts";
+import { userRoleClient } from "../../../globalConstants.ts";
+import Grid from "@mui/material/Grid2";
+import Filters from "../../Filters/Filters.tsx";
+import ProductCard from "../../../components/Domain/ProductCard/ProductCard.tsx";
+import { ICategories, Subcategory } from "../../../types";
+import ArrowDropDownOutlinedIcon from "@mui/icons-material/ArrowDropDownOutlined";
+import { alpha } from "@mui/material/styles";
+import { COLORS, FONTS, SPACING } from "../../../globalStyles/stylesObjects.ts";
+import CustomPagination from "../../../components/Pagination/Pagination.tsx";
+import Container from "@mui/material/Container";
 
 const AllProductsCardsPage = () => {
   const dispatch = useAppDispatch();
@@ -50,9 +64,8 @@ const AllProductsCardsPage = () => {
     if (id && categories.length) {
       const numId = Number(id);
       dispatch(getProductsByCategory(numId));
-    }
-    else if (!id) {
-      dispatch(getProducts(''));
+    } else if (!id) {
+      dispatch(getProducts(""));
     }
 
     if (user) dispatch(getFavoriteProducts());
@@ -75,7 +88,7 @@ const AllProductsCardsPage = () => {
 
   const countProductsByCategory = (
     products: typeof allProducts,
-    allCategories: ICategories[]
+    allCategories: ICategories[],
   ) => {
     const countMap: Record<number, number> = {};
 
@@ -102,11 +115,12 @@ const AllProductsCardsPage = () => {
     return countMap;
   };
 
-
   const productCountMap = countProductsByCategory(allProducts, categories);
 
-
-  const renderCategories = (categories: (ICategories | Subcategory)[], depth = 0) => {
+  const renderCategories = (
+    categories: (ICategories | Subcategory)[],
+    depth = 0,
+  ) => {
     const items = [];
 
     const createMenuItem = (
@@ -117,53 +131,64 @@ const AllProductsCardsPage = () => {
       hasSubcategories?: boolean,
       productCount?: number,
       toggleSubcategories?: (e: React.MouseEvent) => void,
-      isExpanded?: boolean
+      isExpanded?: boolean,
     ) => (
       <Box
         key={key}
         sx={{
-          position: 'relative',
+          position: "relative",
           ml: `calc(${SPACING.xs} * ${depth})`,
           mb: SPACING.xs,
           borderRadius: 2,
-          backgroundColor: isSelected ? alpha(COLORS.primary, 0.08) : COLORS.white,
+          backgroundColor: isSelected
+            ? alpha(COLORS.primary, 0.08)
+            : COLORS.white,
           border: isSelected
             ? `1px solid ${alpha(COLORS.primary, 0.4)}`
-            : '1px solid transparent',
-          boxShadow: isSelected ? `0 0 8px ${alpha(COLORS.primary, 0.2)}` : 'none',
-          cursor: 'pointer',
-          transition: 'all 0.3s ease',
-          '&:hover': {
+            : "1px solid transparent",
+          boxShadow: isSelected
+            ? `0 0 8px ${alpha(COLORS.primary, 0.2)}`
+            : "none",
+          cursor: "pointer",
+          transition: "all 0.3s ease",
+          "&:hover": {
             backgroundColor: isSelected
               ? alpha(COLORS.primary, 0.12)
               : alpha(COLORS.black, 0.04),
-            transform: 'translateX(6px)',
+            transform: "translateX(6px)",
           },
-          '&::before': {
+          "&::before": {
             content: '""',
-            position: 'absolute',
+            position: "absolute",
             left: 0,
-            top: '50%',
-            transform: 'translateY(-50%)',
+            top: "50%",
+            transform: "translateY(-50%)",
             width: 3,
-            height: '60%',
-            backgroundColor: isSelected ? COLORS.primary : 'transparent',
-            borderRadius: '0 4px 4px 0',
-            transition: 'all 0.3s ease',
+            height: "60%",
+            backgroundColor: isSelected ? COLORS.primary : "transparent",
+            borderRadius: "0 4px 4px 0",
+            transition: "all 0.3s ease",
           },
         }}
       >
         <ListItemButton
           onClick={onClick}
           sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
             px: SPACING.sm,
             py: SPACING.xs,
           }}
         >
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: SPACING.sm, flexGrow: 1 }}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: SPACING.sm,
+              flexGrow: 1,
+            }}
+          >
             {hasSubcategories && toggleSubcategories && (
               <Box
                 onClick={(e) => {
@@ -171,13 +196,13 @@ const AllProductsCardsPage = () => {
                   toggleSubcategories(e);
                 }}
                 sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer',
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
                   padding: 0,
-                  transition: 'transform 0.3s ease',
-                  transform: isExpanded ? 'rotate(90deg)' : 'rotate(0deg)',
+                  transition: "transform 0.3s ease",
+                  transform: isExpanded ? "rotate(90deg)" : "rotate(0deg)",
                 }}
               >
                 <ArrowDropDownOutlinedIcon
@@ -191,11 +216,13 @@ const AllProductsCardsPage = () => {
 
             <Typography
               sx={{
-                fontWeight: isSelected ? FONTS.weight.medium : FONTS.weight.normal,
+                fontWeight: isSelected
+                  ? FONTS.weight.medium
+                  : FONTS.weight.normal,
                 color: isSelected ? COLORS.primary : COLORS.text,
                 fontSize: FONTS.size.default,
                 flexGrow: 1,
-                textAlign: 'left',
+                textAlign: "left",
               }}
             >
               {title}
@@ -207,7 +234,7 @@ const AllProductsCardsPage = () => {
                 sx={{
                   backgroundColor: alpha(COLORS.black, 0.05),
                   px: 1,
-                  py: '2px',
+                  py: "2px",
                   borderRadius: 1,
                   color: COLORS.text,
                   fontSize: FONTS.size.xs,
@@ -216,7 +243,6 @@ const AllProductsCardsPage = () => {
                 {productCount}
               </Typography>
             )}
-
           </Box>
         </ListItemButton>
       </Box>
@@ -225,18 +251,19 @@ const AllProductsCardsPage = () => {
     if (depth === 0) {
       items.push(
         createMenuItem(
-          'all-products',
-          'Все товары',
+          "all-products",
+          "Все товары",
           !id,
-          () => navigate('/all-products'),
+          () => navigate("/all-products"),
           false,
-          allProducts.length
-        )
+          allProducts.length,
+        ),
       );
     }
 
-    categories.forEach(category => {
-      const hasSubcategories = category.subcategories && category.subcategories.length > 0;
+    categories.forEach((category) => {
+      const hasSubcategories =
+        category.subcategories && category.subcategories.length > 0;
       const isExpanded = expandedIds.includes(category.id);
       const isSelected = selectedId === category.id;
 
@@ -247,11 +274,13 @@ const AllProductsCardsPage = () => {
         () => handleSelectCategory(category.id),
         hasSubcategories,
         productCountMap[category.id],
-        hasSubcategories ? (e) => {
-          e.stopPropagation();
-          handleToggleCategory(category.id);
-        } : undefined,
-        isExpanded
+        hasSubcategories
+          ? (e) => {
+              e.stopPropagation();
+              handleToggleCategory(category.id);
+            }
+          : undefined,
+        isExpanded,
       );
 
       items.push(
@@ -262,7 +291,7 @@ const AllProductsCardsPage = () => {
               {renderCategories(category.subcategories!, depth + 1)}
             </Box>
           )}
-        </React.Fragment>
+        </React.Fragment>,
       );
     });
 
@@ -271,79 +300,95 @@ const AllProductsCardsPage = () => {
 
   return (
     <Container maxWidth="xl">
-      <Grid container spacing={2} sx={{mt: 4}}>
+      <Grid container spacing={2} sx={{ mt: 4 }}>
         <Grid size={3}>
           <Box
             sx={{
-              position: 'sticky',
+              position: "sticky",
               top: 0,
-              height: '100vh',
-              overflowY: 'auto',
-              overflowX: 'hidden',
-              paddingRight: '8px',
-              scrollbarWidth: 'thin',
-              '&::-webkit-scrollbar': {
-                width: '6px',
+              height: "100vh",
+              overflowY: "auto",
+              overflowX: "hidden",
+              paddingRight: "8px",
+              scrollbarWidth: "thin",
+              "&::-webkit-scrollbar": {
+                width: "6px",
               },
-              '&::-webkit-scrollbar-thumb': {
-                borderRadius: '4px',
+              "&::-webkit-scrollbar-thumb": {
+                borderRadius: "4px",
               },
             }}
           >
-            <Box  sx={{
-              backgroundColor: COLORS.background,
-              borderRadius: 2,
-              p: SPACING.sm,
-            }}>
+            <Box
+              sx={{
+                backgroundColor: COLORS.background,
+                borderRadius: 2,
+                p: SPACING.sm,
+              }}
+            >
               <Typography
                 variant="h6"
                 sx={{
                   mb: 2,
                   fontWeight: FONTS.weight.medium,
                   color: COLORS.text,
-                  textAlign: 'center',
+                  textAlign: "center",
                 }}
               >
                 {(() => {
-                  if (!id) return 'Все товары';
+                  if (!id) return "Все товары";
 
-                  const category = categories.find((cat) => cat.id === selectedId);
-                  const parent = categories.find((cat) =>
-                    cat.subcategories?.some((sub) => sub.id === selectedId)
+                  const category = categories.find(
+                    (cat) => cat.id === selectedId,
                   );
-                  return (parent || category)?.title || 'Категории';
+                  const parent = categories.find((cat) =>
+                    cat.subcategories?.some((sub) => sub.id === selectedId),
+                  );
+                  return (parent || category)?.title || "Категории";
                 })()}
               </Typography>
               {renderCategories(categories)}
             </Box>
-            <Filters />
+            <Box
+              sx={{
+              "@media (max-width: 1150px)": {
+                display: "none",
+              },
+            }}
+            >
+              <Filters />
+            </Box>
+
           </Box>
         </Grid>
         <Grid size={9}>
-          {id && (() => {
-            const parent = categories.find((cat) =>
-              cat.subcategories?.some((sub) => sub.id === selectedId)
-            );
-            const sub = parent?.subcategories?.find((s) => s.id === selectedId);
+          {id &&
+            (() => {
+              const parent = categories.find((cat) =>
+                cat.subcategories?.some((sub) => sub.id === selectedId),
+              );
+              const sub = parent?.subcategories?.find(
+                (s) => s.id === selectedId,
+              );
 
-            return (
-              <Collapse in={!!sub} timeout={300} unmountOnExit>
-                <Box>
-                  <Typography
-                    variant="h4"
-                    sx={{
-                      mt: 2,
-                      mb: 4,
-                      textAlign: "center",
-                      fontWeight: FONTS.weight.bold,
-                    }}
-                  >
-                    {sub?.title || ''}
-                  </Typography>
-                </Box>
-              </Collapse>
-            );
-          })()}
+              return (
+                <Collapse in={!!sub} timeout={300} unmountOnExit>
+                  <Box>
+                    <Typography
+                      variant="h4"
+                      sx={{
+                        mt: 2,
+                        mb: 4,
+                        textAlign: "center",
+                        fontWeight: FONTS.weight.bold,
+                      }}
+                    >
+                      {sub?.title || ""}
+                    </Typography>
+                  </Box>
+                </Collapse>
+              );
+            })()}
 
           <Typography
             variant="h4"
@@ -354,18 +399,24 @@ const AllProductsCardsPage = () => {
               fontWeight: FONTS.weight.bold,
             }}
           >
-            {id ? (() => {
-              const category = categories.find((cat) => cat.id === selectedId);
-              const parent = categories.find((cat) =>
-                cat.subcategories?.some((sub) => sub.id === selectedId)
-              );
-              return (parent || category)?.title || '';
-            })() : 'Все товары'}
+            {id
+              ? (() => {
+                  const category = categories.find(
+                    (cat) => cat.id === selectedId,
+                  );
+                  const parent = categories.find((cat) =>
+                    cat.subcategories?.some((sub) => sub.id === selectedId),
+                  );
+                  return (parent || category)?.title || "";
+                })()
+              : "Все товары"}
           </Typography>
 
           {products.length === 0 ? (
             <Typography textAlign="center" mt={4} color="text.secondary">
-              {id ? 'Товары в данной категории отсутствуют.' : 'Товары отсутствуют.'}
+              {id
+                ? "Товары в данной категории отсутствуют."
+                : "Товары отсутствуют."}
             </Typography>
           ) : (
             <CustomPagination
@@ -379,7 +430,6 @@ const AllProductsCardsPage = () => {
         </Grid>
       </Grid>
     </Container>
-
   );
 };
 
