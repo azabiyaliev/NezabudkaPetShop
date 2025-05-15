@@ -121,9 +121,7 @@ const OrderStats = () => {
           display: "flex",
           flexDirection: "column",
           gap: 4,
-          ml: { lg: "250px" },
           "@media (max-width: 900px)": {
-            ml: 0,
             width: "100%",
           },
         }}

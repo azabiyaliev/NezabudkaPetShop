@@ -105,7 +105,7 @@ const AllOrders = () => {
           alignItems: "center",
           flexWrap: 'wrap',
           marginLeft: SPACING.main_spacing,
-          "@media (max-width: 1255px)": {
+          "@media (max-width: 1750px)": {
             marginLeft: 0
           },
         }}

@@ -144,19 +144,11 @@ const OrderAdminItem: React.FC<Props> = ({ order }) => {
         maxWidth: 400,
         display: "flex",
         flexDirection: "column",
-        "@media (max-width: 1325px)": {
+        "@media (max-width: 1355px)": {
           flexBasis: "48%",
           maxWidth: "48%",
         },
-        "@media (max-width: 1255px)": {
-          flexBasis: "58%",
-          maxWidth: "58%",
-        },
-        "@media (max-width: 1100px)": {
-          flexBasis: "48%",
-          maxWidth: "48%",
-        },
-        "@media (max-width: 941px)": {
+        "@media (max-width: 955px)": {
           flexBasis: "75%",
           maxWidth: "75%",
         },
@@ -164,7 +156,7 @@ const OrderAdminItem: React.FC<Props> = ({ order }) => {
           flexBasis: "48%",
           maxWidth: "48%",
         },
-        "@media (max-width: 685px)": {
+        "@media (max-width: 700px)": {
           flexBasis: "100%",
           maxWidth: "100%",
         },
@@ -243,7 +235,7 @@ const OrderAdminItem: React.FC<Props> = ({ order }) => {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "space-between",
-                  "@media (max-width: 1255px)": {
+                  "@media (max-width: 1285px)": {
                     flexWrap: "wrap",
                     alignItems: "center",
                     justifyContent: "center",
@@ -259,7 +251,7 @@ const OrderAdminItem: React.FC<Props> = ({ order }) => {
                     order.status !== "Delivered" && order.status !== "Received"
                   }
                   sx={{
-                    "@media (max-width: 1255px)": {
+                    "@media (max-width: 1285px)": {
                       width: "100%",
                     },
                   }}
@@ -271,7 +263,7 @@ const OrderAdminItem: React.FC<Props> = ({ order }) => {
                   onClick={() => setIsEditingStatus(true)}
                   disabled={order.status === OrderStatus.Canceled}
                   sx={{
-                    "@media (max-width: 1255px)": {
+                    "@media (max-width: 1285px)": {
                       width: "100%",
                     },
                   }}
