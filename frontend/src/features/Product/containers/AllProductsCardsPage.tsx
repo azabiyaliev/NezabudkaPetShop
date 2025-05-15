@@ -1,4 +1,4 @@
-import { Box, Collapse, ListItemButton, Typography } from "@mui/material";
+import { Box, Button, Collapse, Fade, List, ListItem, ListItemButton, Modal, Typography } from '@mui/material';
 import React, { useEffect, useState } from "react";
 import {
   useAppDispatch,
@@ -25,7 +25,6 @@ import {
 } from "../../../store/cart/cartSlice.ts";
 import { fetchCart } from "../../../store/cart/cartThunk.ts";
 import { userRoleClient } from "../../../globalConstants.ts";
-import Grid from "@mui/material/Grid2";
 import Filters from "../../Filters/Filters.tsx";
 import ProductCard from "../../../components/Domain/ProductCard/ProductCard.tsx";
 import { ICategories, Subcategory } from "../../../types";
@@ -34,6 +33,12 @@ import { alpha } from "@mui/material/styles";
 import { COLORS, FONTS, SPACING } from "../../../globalStyles/stylesObjects.ts";
 import CustomPagination from "../../../components/Pagination/Pagination.tsx";
 import Container from "@mui/material/Container";
+import TuneIcon from "@mui/icons-material/Tune";
+import FilterNavMenu from "../../Filters/FilterNavMenu.tsx";
+import theme from "../../../globalStyles/globalTheme.ts";
+import CloseIcon from '@mui/icons-material/Close';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import PetsIcon from '@mui/icons-material/Pets';
 
 const AllProductsCardsPage = () => {
   const dispatch = useAppDispatch();
@@ -48,6 +53,17 @@ const AllProductsCardsPage = () => {
   const [expandedIds, setExpandedIds] = useState<number[]>([]);
   const can = usePermission(user);
   const products = id ? categoryProducts : allProducts;
+  const [openFilterMenu, setOpenFilterMenu] = useState<boolean>(false);
+
+  const [openModal, setOpenModal] = useState(false);
+  const [currentCategory, setCurrentCategory] = useState<ICategories | null>(null);
+
+  const handleOpenModal = () => setOpenModal(true);
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    setCurrentCategory(null);
+  };
 
   useEffect(() => {
     dispatch(fetchCategoriesThunk());
@@ -298,10 +314,108 @@ const AllProductsCardsPage = () => {
     return items;
   };
 
+  const closeFilterMenu = () => {
+    setOpenFilterMenu(false);
+  };
+
+  const renderCategoriesInModal = (categoriesList: ICategories[]) => {
+    return (
+      <>
+        <ListItem disablePadding key="all-products">
+          <ListItemButton
+            onClick={() => navigate("/all-products")}
+            sx={{
+              borderRadius: 2,
+              mx: 1,
+              my: 0.5,
+              py: 1,
+              px: 2,
+              transition: "0.2s",
+              "&:hover": {
+                backgroundColor: "#f1f8e9",
+              },
+            }}
+          >
+            <Typography fontWeight="bold">Все товары</Typography>
+          </ListItemButton>
+        </ListItem>
+
+        {categoriesList.map((category) => (
+          <ListItem disablePadding key={category.id}>
+            <ListItemButton
+              onClick={() =>
+                category.subcategories?.length
+                  ? setCurrentCategory(category)
+                  : handleSelectCategory(category.id)
+              }
+              sx={{
+                borderRadius: 2,
+                mx: 1,
+                my: 0.5,
+                py: 1,
+                px: 2,
+                transition: "0.2s",
+                "&:hover": {
+                  backgroundColor: "#f1f8e9",
+                },
+              }}
+            >
+              <Typography fontWeight={500}>{category.title}</Typography>
+              {category.subcategories?.length ? (
+                <ArrowDropDownOutlinedIcon sx={{ ml: 1 }} />
+              ) : null}
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </>
+    );
+  };
+
+
+  const renderSubcategoriesInModal = (category: ICategories) => {
+    return category.subcategories?.map((sub) => (
+      <ListItem disablePadding key={sub.id}>
+        <ListItemButton
+          onClick={() => handleSelectCategory(sub.id)}
+          sx={{
+            pl: 5,
+            py: 1,
+            mx: 1,
+            my: 0.5,
+            borderRadius: 2,
+            transition: "0.2s",
+            "&:hover": {
+              backgroundColor: "#f1f8e9",
+            },
+          }}
+        >
+          <Typography>{sub.title}</Typography>
+        </ListItemButton>
+      </ListItem>
+    ));
+  };
+
+
   return (
     <Container maxWidth="xl">
-      <Grid container spacing={2} sx={{ mt: 4 }}>
-        <Grid size={3}>
+      <Box
+        sx={{
+          display: "flex",
+          mt: 4,
+          "@media (max-width: 1150px)": {
+            justifyContent: "center",
+          },
+        }}
+      >
+        <Box
+          sx={{
+            flex: "0 0 25%",
+            maxWidth: "25%",
+            "@media (max-width: 1150px)": {
+              display: "none",
+            },
+          }}
+        >
           <Box
             sx={{
               position: "sticky",
@@ -349,19 +463,48 @@ const AllProductsCardsPage = () => {
               </Typography>
               {renderCategories(categories)}
             </Box>
-            <Box
-              sx={{
-              "@media (max-width: 1150px)": {
-                display: "none",
-              },
-            }}
-            >
-              <Filters />
-            </Box>
+
+            <Filters />
 
           </Box>
-        </Grid>
-        <Grid size={9}>
+        </Box>
+
+        <Box
+          sx={{
+            flex: "1 1 75%",
+            maxWidth: "75%",
+            "@media (max-width: 1150px)": {
+              maxWidth: "100%",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+            },
+          }}
+        >
+          <Typography
+            variant="h3"
+            sx={{
+              mt: 2,
+              mb: 2,
+              textAlign: "center",
+              fontWeight: FONTS.weight.bold,
+            }}
+          >
+            <PetsIcon sx={{mr: 1, color: COLORS.primary, fontSize: 30}}/>
+            {id
+              ? (() => {
+                const category = categories.find(
+                  (cat) => cat.id === selectedId,
+                );
+                const parent = categories.find((cat) =>
+                  cat.subcategories?.some((sub) => sub.id === selectedId),
+                );
+                return (parent || category)?.title || "";
+              })()
+              : "Все товары"}
+            <PetsIcon sx={{ml: 1, color: COLORS.primary, fontSize: 30}}/>
+          </Typography>
+
           {id &&
             (() => {
               const parent = categories.find((cat) =>
@@ -375,7 +518,7 @@ const AllProductsCardsPage = () => {
                 <Collapse in={!!sub} timeout={300} unmountOnExit>
                   <Box>
                     <Typography
-                      variant="h4"
+                      variant="h5"
                       sx={{
                         mt: 2,
                         mb: 4,
@@ -390,27 +533,127 @@ const AllProductsCardsPage = () => {
               );
             })()}
 
-          <Typography
-            variant="h4"
+
+          <Modal
+            open={openModal}
+            onClose={handleCloseModal}
+          >
+            <Fade in={openModal}>
+              <Box
+                sx={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                  width: "85%",
+                  maxWidth: 400,
+                  backgroundColor: "white",
+                  boxShadow: 24,
+                  p: 4,
+                  borderRadius: 3,
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 2,
+                }}
+              >
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <Typography variant="h6">
+                    {currentCategory ? "Выберите подкатегорию" : "Выберите категорию"}
+                  </Typography>
+                  <CloseIcon onClick={handleCloseModal} sx={{ cursor: "pointer" }} />
+                </Box>
+
+                <List>
+                  {!currentCategory
+                    ? renderCategoriesInModal(categories)
+                    : renderSubcategoriesInModal(currentCategory)}
+                </List>
+
+                {currentCategory && (
+                  <Button
+                    variant="contained"
+                    startIcon={<ArrowBackIcon />}
+                    onClick={() => setCurrentCategory(null)}
+                    sx={{
+                      mt: 2,
+                      backgroundColor: COLORS.PALE_GREEN,
+                      color: theme.colors.primary,
+                      borderRadius: 2,
+                      textTransform: "none",
+                      boxShadow: "0px 3px 6px rgba(0,0,0,0.1)",
+                      "&:hover": {
+                        backgroundColor: "#b2f2bb",
+                      },
+                    }}
+                  >
+                    Назад к категориям
+                  </Button>
+
+                )}
+              </Box>
+            </Fade>
+          </Modal>
+
+          <Button
+            onClick={handleOpenModal}
             sx={{
-              mt: 2,
-              mb: 4,
-              textAlign: "center",
-              fontWeight: FONTS.weight.bold,
+              backgroundColor: '#c2f3ad',
+              color: theme.colors.primary,
+              boxShadow: "0 -2px 4px rgba(0, 0, 0, 0.08), 0 4px 6px rgba(0, 0, 0, 0.16)",
+              borderRadius: 2,
+              textTransform: "none",
+              margin: "20px auto 20px",
+              "@media (min-width: 1150px)": {
+                display: "none",
+              },
             }}
           >
-            {id
-              ? (() => {
-                  const category = categories.find(
-                    (cat) => cat.id === selectedId,
-                  );
-                  const parent = categories.find((cat) =>
-                    cat.subcategories?.some((sub) => sub.id === selectedId),
-                  );
-                  return (parent || category)?.title || "";
-                })()
-              : "Все товары"}
-          </Typography>
+            Выбрать категорию
+          </Button>
+
+          <FilterNavMenu
+            closeMenu={closeFilterMenu}
+            openMenu={openFilterMenu}
+          />
+
+          <Box
+            sx={{
+              display: "none",
+              justifyContent: "center",
+              "@media (max-width: 1150px)": {
+                display: "flex",
+              },
+            }}
+          >
+            <Box
+              sx={{
+                borderRadius: 3,
+                background: "#fff",
+                boxShadow:
+                  "0 -2px 4px rgba(0, 0, 0, 0.08), 0 4px 6px rgba(0, 0, 0, 0.16)",
+                width: "90%",
+              }}
+            >
+              <Box
+                onClick={() => setOpenFilterMenu(true)}
+                sx={{
+                  cursor: "pointer",
+                  fontWeight: FONTS.weight.medium,
+                  color: COLORS.text,
+                  padding: 2,
+                }}
+              >
+                Фильтры
+                <TuneIcon sx={{ color: theme.colors.primary, marginLeft: 1 }} />
+              </Box>
+            </Box>
+          </Box>
 
           {products.length === 0 ? (
             <Typography textAlign="center" mt={4} color="text.secondary">
@@ -427,9 +670,10 @@ const AllProductsCardsPage = () => {
               )}
             />
           )}
-        </Grid>
-      </Grid>
+        </Box>
+      </Box>
     </Container>
+
   );
 };
 
