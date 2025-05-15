@@ -39,18 +39,7 @@ const NewBrandPage = () => {
         },
       }}
     >
-      <Box
-        sx={{
-          display: "flex",
-          margin: "30px auto",
-          "@media (max-width: 900px)": {
-            flexWrap: "wrap",
-          },
-        }}
-      >
-        <AdminBar />
-      </Box>
-
+      <AdminBar />
       <Box sx={{
         textAlign: 'center', width: '100%',
       }}>
