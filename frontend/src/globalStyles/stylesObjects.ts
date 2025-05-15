@@ -39,6 +39,7 @@ export const COLORS = {
 export const SPACING = {
   exs: '5px',
   xs: '10px',
+  radius: '16px',
   sm: '20px',
   md: '25px',
   lg: '35px',

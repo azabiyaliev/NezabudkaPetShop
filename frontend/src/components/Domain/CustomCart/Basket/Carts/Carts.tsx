@@ -18,7 +18,7 @@ const Carts: React.FC<Props> = ({ products, deleteAllProduct}) => {
         sx={{
           border: `1px solid ${COLORS.BORDER_CART}`,
           padding: SPACING.md,
-          borderRadius: SPACING.xl,
+          borderRadius: SPACING.radius,
           marginBottom: "20px",
           "@media (max-width: 820px)": {
             width: "100%",
