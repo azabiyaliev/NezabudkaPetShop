@@ -169,6 +169,9 @@ const Footer = () => {
             color: theme.colors.DARK_GRAY,
             textAlign: "center",
             marginTop: theme.spacing.xl,
+            '@media (max-width: 900px)': {
+              pb: 2,
+            },
           }}
         >
           &copy; {new Date().getFullYear()} Nezabudka. Все права защищены.

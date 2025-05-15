@@ -326,6 +326,9 @@ const MainToolbar = () => {
                   justifyContent: "space-between",
                   alignItems: "center",
                 },
+                "@media (max-width: 405px)": {
+                  paddingLeft: '10px',
+                },
               }}
             >
               <div style={{ display: "flex", alignItems: "center" }}>
@@ -391,6 +394,9 @@ const MainToolbar = () => {
                         marginRight: theme.spacing.xs,
                         "@media (max-width: 500px)": {
                           paddingRight: theme.spacing.xs,
+                        },
+                        "@media (max-width: 400px)": {
+                          paddingRight: 0,
                         },
                       }}
                     >
@@ -640,6 +646,9 @@ const MainToolbar = () => {
                   display: "flex",
                   alignItems: "center",
                   gap: theme.spacing.xs,
+                  "@media (max-width: 400px)": {
+                    gap: 0,
+                  },
                 }}
               >
                 {(user && can(["client"])) || !user ? (
