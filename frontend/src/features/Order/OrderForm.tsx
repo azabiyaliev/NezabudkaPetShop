@@ -1,9 +1,9 @@
 import React, { FormEvent, useEffect, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../app/hooks.ts';
 import { checkoutAuthUserOrder } from '../../store/orders/ordersThunk.ts';
-import { Box, Button, Paper, TextField } from '@mui/material';
+import { Box, Button, TextField } from '@mui/material';
 import Grid from '@mui/material/Grid2';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import { OrderMutation } from '../../types';
 import { cartFromSlice, clearCart } from '../../store/cart/cartSlice.ts';
@@ -283,7 +283,7 @@ try {
             sx={{
               border: `1px solid ${COLORS.BORDER_CART}`,
               padding: SPACING.sm,
-              borderRadius: SPACING.xl,
+              borderRadius: SPACING.radius,
               marginBottom: SPACING.md,
               '@media (max-width: 480px)': {
                 display: 'none',
@@ -295,11 +295,9 @@ try {
               {user && user.role === 'client' && (
                 <Box
                   sx={{
-                    border: `1px solid ${COLORS.BORDER_CART}`,
-                    borderRadius: SPACING.sm,
+                    border: `1px dotted ${COLORS.BORDER_CART}`,
                     padding: SPACING.sm,
                     margin: `${SPACING.xs} 0`,
-                    backgroundColor: COLORS.background,
                   }}
                 >
                   <Typography
@@ -406,10 +404,9 @@ try {
             <Box
               sx={{
                 border: `1px solid ${COLORS.BORDER_CART}`,
-                borderRadius: SPACING.xl,
+                borderRadius: SPACING.radius,
                 padding: SPACING.md,
                 marginBottom: SPACING.md,
-                backgroundColor: COLORS.background,
               }}
             >
               <Typography
@@ -499,11 +496,10 @@ try {
               <Box
                 sx={{
                   border: `1px solid ${COLORS.BORDER_CART}`,
-                  borderRadius: SPACING.xl,
+                  borderRadius: SPACING.radius,
                   padding: SPACING.md,
                   flex: 1,
                   minWidth: '300px',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
                   backgroundColor: COLORS.white,
                   '@media (max-width: 768px)': {
                     width: '100%',
@@ -513,7 +509,7 @@ try {
                 <Typography
                   variant="h6"
                   sx={{
-                    marginBottom: SPACING.md,
+                    marginBottom: SPACING.radius,
                     fontWeight: FONTS.weight.medium,
                     color: COLORS.text,
                     '@media (max-width: 600px)': {
@@ -585,18 +581,17 @@ try {
 
               <Box sx={{
                 border: `1px solid ${COLORS.BORDER_CART}`,
-                borderRadius: SPACING.xl,
+                borderRadius: SPACING.radius,
                 padding: SPACING.md,
                 flex: 1,
                 minWidth: '300px',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
                 backgroundColor: COLORS.white,
                 '@media (max-width: 768px)': {
                   width: '100%',
                 },
               }}>
                 <Typography variant="h6" sx={{
-                  marginBottom: SPACING.md,
+                  marginBottom: SPACING.radius,
                   fontWeight: FONTS.weight.medium,
                   color: COLORS.text,
                   '@media (max-width: 600px)': {
@@ -671,33 +666,20 @@ try {
                     xs: '300px',
                     md: '400px',
                   },
-                  borderRadius: '12px',
                 }}
               >
-
-                <Paper
-                  elevation={3}
+                <Box
                   sx={{
                     p: 2,
-                    backgroundColor: '#fafafa',
-                    borderRadius: 2,
+                    borderRadius: '16px',
                     marginBottom: '20px',
+                    border: `1px solid ${COLORS.BORDER_CART}`,
                   }}
                 >
-                  <div
-                    className="quill-content"
-                    dangerouslySetInnerHTML={{
-                      __html:
-                        delivery?.checkoutDeliveryPriceInfo ||
-                        '<p> <a href="/delivery">Ознакомьтесь с информацией о зонах доставки здесь.</a></p>',
-                    }}
-                    style={{
-                      fontSize: '16px',
-                      color: '#333',
-                    }}
-                  />
-                </Paper>
-
+                  <Link to='/delivery'>
+                    Ознакомьтесь с информацией о зонах доставки здесь.
+                  </Link>
+                </Box>
                 <Box
                   sx={{
                     width: '100%',

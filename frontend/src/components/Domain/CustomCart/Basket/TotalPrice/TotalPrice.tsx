@@ -184,7 +184,7 @@ const TotalPrice: React.FC<Props> = ({ products, bonusUsed }) => {
                   fontWeight: "bold",
                 }}
               >
-                 {bonusToReceive.toLocaleString('ru-RU').replace(/,/g, ' ')} бонусов
+                 {bonusToReceive.toLocaleString('ru-RU')} бонуса
               </span>
             </Typography>
           </ListItem>
