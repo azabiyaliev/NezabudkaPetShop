@@ -8,7 +8,7 @@ import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { LogInMutation } from '../../../types';
 import { facebookLogin, googleLogin, login, } from '../../../store/users/usersThunk.ts';
-import { toast, ToastContainer } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import FacebookLogin from '@greatsumini/react-facebook-login';
 import FacebookIcon from '@mui/icons-material/Facebook';
@@ -22,6 +22,7 @@ import MailIcon from "@mui/icons-material/Mail";
 import { useGoogleLogin } from '@react-oauth/google';
 import GoogleIcon from '@mui/icons-material/Google';
 import { clearLoginError } from '../../../store/users/usersSlice.ts';
+import { enqueueSnackbar } from "notistack";
 
 
 const LoginUser = () => {
@@ -80,14 +81,8 @@ const LoginUser = () => {
       const errorMessage =
         (error as { response: { data: { message: string } } })?.response?.data
           ?.message || "Произошла ошибка. Повторите попытку.";
-      toast.error(errorMessage, {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
+      enqueueSnackbar(errorMessage, {
+        variant: "error",
       });
 
     }
