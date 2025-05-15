@@ -18,6 +18,7 @@ export const COLORS = {
   adminBackgroundGreen: '#1B4332',
   adminBackgroundYellow: '#A3B72F',
   blurBackground: 'rgba(0, 0, 0, 0.4)',
+  menu_bg_color:'rgba(0,0,0,0.68)',
 
 
   BORDER_CART: 'rgba(102,100,97,0.61)',
