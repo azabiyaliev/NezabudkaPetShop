@@ -80,6 +80,7 @@ const BrandForHomePage:React.FC<Props> = ({brands}) => {
                   height: '80px',
                   objectFit: 'contain',
                   backgroundColor: COLORS.white,
+                  boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
                 }}
               />
             )}
