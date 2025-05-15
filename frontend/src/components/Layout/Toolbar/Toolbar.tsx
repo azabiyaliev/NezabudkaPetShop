@@ -22,7 +22,7 @@ import CategoryNavMenu from '../../Domain/CategoryNavMenu.tsx';
 import { cartFromSlice, getFromLocalStorage, } from '../../../store/cart/cartSlice.ts';
 import { userRoleAdmin, userRoleClient, userRoleSuperAdmin } from '../../../globalConstants.ts';
 import IconButton from '@mui/joy/IconButton';
-import { fetchUserIdBonus } from '../../../store/users/usersThunk.ts';
+import { fetchUserById, fetchUserIdBonus } from '../../../store/users/usersThunk.ts';
 import Tooltip from '@mui/joy/Tooltip';
 import { selectedFavorite } from '../../../store/favoriteProducts/favoriteProductsSlice.ts';
 import { getLocalFavoriteProducts } from '../../../store/favoriteProducts/favoriteProductLocal.ts';
@@ -60,6 +60,12 @@ const MainToolbar = () => {
   const isMobile = useMediaQuery("(max-width:600px)");
 
   useEffect(() => {
+    if (user?.id) {
+      dispatch(fetchUserById(String(user.id)));
+    }
+  }, [dispatch, user?.id]);
+
+  useEffect(() => {
     if (user && can([userRoleClient])) {
       setFavoriteCount(favoriteProducts.length);
       return;
@@ -82,7 +88,7 @@ const MainToolbar = () => {
 
   useEffect(() => {
     if (user?.id) {
-      dispatch(fetchUserIdBonus(String(user.id))).unwrap();
+      dispatch(fetchUserIdBonus(String(user.id)));
     }
   }, [dispatch, user?.id]);
 
@@ -842,26 +848,11 @@ const MainToolbar = () => {
                               color: theme.colors.tooltip_color,
                             }}
                           >
-                            <Badge
-                              badgeContent={user?.bonus}
-                              overlap="circular"
-                              color="warning"
-                              sx={{
-                                backgroundColor: user
-                                  ? "transparent"
-                                  : undefined,
-                                "& .MuiBadge-badge": {
-                                  top: "-3px",
-                                  right: "-1px",
-                                },
-                              }}
-                            >
                               <Star
                                 size={28}
                                 weight="regular"
                                 color={theme.colors.white}
                               />
-                            </Badge>
                           </Box>
                         </NavLink>
                       </Tooltip>
