@@ -21,6 +21,10 @@ const CartPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    document.title = `Оформление заказа`;
+  }, []);
+
+  useEffect(() => {
     if (user && (user.role === userRoleClient)) {
       dispatch(fetchCart()).unwrap();
     }

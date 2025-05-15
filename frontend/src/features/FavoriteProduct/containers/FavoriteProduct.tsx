@@ -27,6 +27,10 @@ const FavoriteProduct = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    document.title = `Избранное`;
+  }, []);
+
+  useEffect(() => {
     if (user) {
       const localFavoriteProducts = getLocalFavoriteProducts()
       if (localFavoriteProducts) {

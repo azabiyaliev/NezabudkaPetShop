@@ -128,6 +128,10 @@ const UserFormEdition = () => {
     Boolean(name) ||
     Boolean(secondName)
 
+  useEffect(() => {
+    document.title = "Мои данные";
+  }, []);
+
   return (
     <>
         <Box

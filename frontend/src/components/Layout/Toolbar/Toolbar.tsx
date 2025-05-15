@@ -161,6 +161,8 @@ const MainToolbar = () => {
     );
   };
 
+
+
   return (
     <div>
       <CategoryNavMenu openMenu={openCategoryMenu} closeMenu={closeMenu} />

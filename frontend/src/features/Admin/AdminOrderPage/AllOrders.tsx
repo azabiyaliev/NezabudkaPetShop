@@ -71,6 +71,11 @@ const AllOrders = () => {
     });
 
   const toggleAdminBar = () => setIsAdminBarOpen(!isAdminBarOpen);
+
+  useEffect(() => {
+    document.title = "Все заказы";
+  }, []);
+
   return (
     <Box
       sx={{

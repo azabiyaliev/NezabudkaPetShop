@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Avatar, Box, Button, Container, Divider } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid2';
@@ -89,6 +89,10 @@ const LoginUser = () => {
       undefined
     );
   };
+
+  useEffect(() => {
+    document.title = `Вход в аккаунт`;
+  }, []);
 
   return (
     <div>

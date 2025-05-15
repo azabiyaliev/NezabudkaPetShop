@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Avatar, Box, Button, Container, TextField, Typography, } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
@@ -104,6 +104,10 @@ const RegisterUser = () => {
 
     return undefined;
   };
+
+  useEffect(() => {
+    document.title = `Регистрация`;
+  }, []);
 
   return (
     <div>

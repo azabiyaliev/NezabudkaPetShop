@@ -15,6 +15,11 @@ const DeliveryPage = () => {
     dispatch(fetchDeliveryPage()).unwrap();
   }, [dispatch]);
 
+  useEffect(() => {
+    document.title = `Доставка и оплата`;
+  }, []);
+
+
   return (
     <Container maxWidth="xl">
       <div className="d-flex">

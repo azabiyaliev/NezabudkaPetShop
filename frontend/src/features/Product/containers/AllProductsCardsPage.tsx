@@ -600,14 +600,11 @@ const AllProductsCardsPage = () => {
                     onClick={() => setCurrentCategory(null)}
                     sx={{
                       mt: 2,
-                      backgroundColor: COLORS.PALE_GREEN,
-                      color: theme.colors.primary,
+                      backgroundColor:  COLORS.primary,
+                      color: theme.colors.white,
                       borderRadius: 2,
                       textTransform: "none",
                       boxShadow: "0px 3px 6px rgba(0,0,0,0.1)",
-                      "&:hover": {
-                        backgroundColor: "#b2f2bb",
-                      },
                     }}
                   >
                     Назад к категориям
@@ -621,8 +618,8 @@ const AllProductsCardsPage = () => {
           <Button
             onClick={handleOpenModal}
             sx={{
-              backgroundColor: '#c2f3ad',
-              color: theme.colors.primary,
+              backgroundColor:  COLORS.primary,
+              color: theme.colors.white,
               boxShadow: "0 -2px 4px rgba(0, 0, 0, 0.08), 0 4px 6px rgba(0, 0, 0, 0.16)",
               borderRadius: 2,
               textTransform: "none",

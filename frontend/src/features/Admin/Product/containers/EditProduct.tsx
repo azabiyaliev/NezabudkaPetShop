@@ -38,6 +38,10 @@ const EditProduct = () => {
     }
   };
 
+  useEffect(() => {
+    document.title = "Редактирование товара";
+  }, []);
+
   return (
     <Box
       sx={{

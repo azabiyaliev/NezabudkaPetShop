@@ -21,6 +21,10 @@ const AdminProfile = () => {
     dispatch(fetchAdminInfo());
   }, [dispatch]);
 
+  useEffect(() => {
+      document.title = "Личный кабинет";
+  }, []);
+
   return (
     <>
       {user && can([userRoleAdmin]) && (

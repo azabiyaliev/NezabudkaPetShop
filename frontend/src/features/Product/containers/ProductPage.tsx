@@ -47,7 +47,17 @@ const ProductPage = () => {
   const favoriteProducts = useAppSelector(selectedFavorite);
   const isAddToCartDisabled = !product?.existence;
   const cartItem = cart?.products.find(item => item.product?.id === product?.id);
-  const can = usePermission(user)
+  const can = usePermission(user);
+
+  useEffect(() => {
+      if (id) {
+        if (product) {
+          document.title = `${product.productName}`;
+        } else {
+          document.title = "Продукт не найден";
+        }
+    }
+  }, [id, product]);
 
   useEffect(() => {
     if (id && product && product.id && product.productName) {

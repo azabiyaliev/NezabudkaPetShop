@@ -14,6 +14,10 @@ const CompanyPage = () => {
     dispatch(fetchCompanyPage()).unwrap();
   }, [dispatch]);
 
+  useEffect(() => {
+    document.title = ` О компании`;
+  }, []);
+
   return (
     <Container maxWidth="xl">
       <div className="d-flex">

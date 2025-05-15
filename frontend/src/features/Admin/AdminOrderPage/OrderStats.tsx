@@ -14,6 +14,10 @@ const OrderStats = () => {
   const [isAdminBarOpen, setIsAdminBarOpen] = useState(false);
 
   useEffect(() => {
+    document.title = "Статистика заказов";
+  }, []);
+
+  useEffect(() => {
     dispatch(getStatistics());
 
     const interval = setInterval(() => {
@@ -91,6 +95,8 @@ const OrderStats = () => {
   ];
 
   const toggleAdminBar = () => setIsAdminBarOpen(!isAdminBarOpen);
+
+
   return (
     <Box
       sx={{
