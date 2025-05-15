@@ -66,6 +66,25 @@ const AllProductsCardsPage = () => {
   };
 
   useEffect(() => {
+    if (categories.length > 0) {
+      if (id) {
+        const category = categories.find((cat) => cat.id === Number(id)) ||
+          categories
+            .flatMap((cat) => cat.subcategories || [])
+            .find((subcat) => subcat.id === Number(id));
+
+        if (category) {
+          document.title = `${category.title}`;
+        } else {
+          document.title = "Категория не найдена";
+        }
+      } else {
+        document.title = "Все товары";
+      }
+    }
+  }, [id, categories]);
+
+  useEffect(() => {
     dispatch(fetchCategoriesThunk());
 
     if (user && can([userRoleClient])) {
