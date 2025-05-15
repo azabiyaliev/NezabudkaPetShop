@@ -86,7 +86,7 @@ const ModalWindowPasswordChange: React.FC<Props> = ({ open, setOpen }) => {
             boxShadow: "0px 8px 24px #344C3D",
             padding: "10px",
             width:"70%",
-            height:"40%",
+            height:"auto",
           },
         }}
       >

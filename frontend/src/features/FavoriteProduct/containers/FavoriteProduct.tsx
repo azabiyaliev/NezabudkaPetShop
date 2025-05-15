@@ -94,10 +94,10 @@ const FavoriteProduct = () => {
                   alt="shopping-cart-emoji"
                 />
                 <Typography
-                  variant="h4"
                   sx={{
-                    margin: "20px 0",
-                    fontFamily: "Nunito, sans-serif",
+                    fontSize: theme.fonts.size.xl,
+                    color: theme.colors.text,
+                    textAlign: "center",
                   }}
                 >
                   Здесь появятся ваши любимые товары
@@ -118,10 +118,10 @@ const FavoriteProduct = () => {
                    alt="shopping-cart-emoji"
               />
               <Typography
-                variant="h4"
                 sx={{
-                  margin: "20px 0",
-                  fontFamily: "Nunito, sans-serif",
+                  fontSize: theme.fonts.size.xl,
+                  color: theme.colors.text,
+                  textAlign: "center",
                 }}
               >
                 Здесь появятся ваши любимые товары
