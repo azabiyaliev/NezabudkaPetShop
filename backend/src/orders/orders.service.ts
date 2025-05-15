@@ -138,6 +138,7 @@ export class OrdersService {
       paymentMethod,
       bonusUsed = 0,
       deliveryMethod,
+      totalPrice,
     } = createOrderDto;
 
     let bonusToUse = 0;
@@ -316,12 +317,19 @@ export class OrdersService {
         paymentMethod,
         bonusUsed: bonusToUse,
         deliveryMethod,
+        totalPrice,
         items: {
           create: items.map((item) => ({
             productId: item.productId,
             products: item.products,
             quantity: item.quantity,
             orderAmount: item.orderAmount * item.quantity,
+            productName: item.productName,
+            productPrice: item.productPrice,
+            promoPrice: item.promoPrice,
+            promoPercentage: item.promoPercentage,
+            sales: item.sales,
+            productPhoto: item.productPhoto,
           })),
         },
       },
@@ -384,7 +392,7 @@ export class OrdersService {
 
     return {
       ...order,
-      user: updatedUser || order.user,
+      user: updatedUser || order.userId,
     };
   }
 
@@ -412,16 +420,19 @@ export class OrdersService {
     }
 
     if (updateStatus.status === 'Delivered') {
-      const updateStats = order.items.map((item) =>
-        this.prisma.products.update({
-          where: { id: item.productId },
-          data: {
-            orderedProductsStats: {
-              increment: item.quantity,
+      const updateStats = order.items.map((item) => {
+        if (item.productId !== null) {
+          return this.prisma.products.update({
+            where: { id: item.productId },
+            data: {
+              orderedProductsStats: {
+                increment: item.quantity,
+              },
             },
-          },
-        }),
-      );
+          });
+        }
+        return null;
+      });
       await Promise.all(updateStats);
 
       await this.prisma.order.update({

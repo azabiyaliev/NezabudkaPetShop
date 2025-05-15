@@ -132,7 +132,7 @@ model Products {
 
   existence       Boolean   @default(true)
   sales           Boolean   @default(false)
-  isBestseller    Boolean @default(false) @map("is_bestseller")
+  isBestseller    Boolean   @default(false) @map("is_bestseller")
   startDateSales  DateTime?
   endDateSales    DateTime?
   promoPercentage Int?      @map("sale_percentage")
@@ -181,26 +181,30 @@ model Order {
   bonusUsed      Int            @default(0)
   useBonus       Boolean        @default(false)
 
-  userId Int?        @map("user_id")
-  user   User?       @relation(fields: [userId], references: [id])
-  items  OrderItem[]
+  userId     Int?        @map("user_id")
+  user       User?       @relation(fields: [userId], references: [id])
+  items      OrderItem[]
+  totalPrice Int         @default(0) @map("total_price")
 
   @@map("orders")
 }
 
 model OrderItem {
-  id Int @id @default(autoincrement())
-
-  quantity    Int
-  orderAmount Int @map("order_amount")
-
-  productId Int      @map("product_id")
-  product   Products @relation(fields: [productId], references: [id])
-  orderId   Int      @map("order_id")
-  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id              Int       @id @default(autoincrement())
+  quantity        Int
+  orderAmount     Int       @map("order_amount")
+  productId       Int?      @map("product_id")
+  product         Products? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  orderId         Int       @map("order_id")
+  order           Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productName     String?   @map("product_name")
+  productPrice    Int?      @map("product_price")
+  sales           Boolean?  @default(false)
+  promoPercentage Int?      @map("sale_percentage")
+  promoPrice      Int?      @map("promo_price")
+  productPhoto    String?   @map("product_photo")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
 
   @@map("order_items")
 }
