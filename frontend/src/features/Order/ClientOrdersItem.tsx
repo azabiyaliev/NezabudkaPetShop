@@ -1,25 +1,16 @@
-import React from 'react';
-import {
-  Card,
-  CardContent,
-  Typography,
-  Divider,
-  Box,
-  CardMedia,
-  Button,
-  Chip,
-} from '@mui/material';
-import { IOrder } from '../../types';
+import { Box, Button, Card, CardContent, CardMedia, Chip, Divider, Typography } from '@mui/material';
+import theme from '../../globalStyles/globalTheme.ts';
+import { COLORS, FONTS, MEDIA_REQ, SPACING } from '../../globalStyles/stylesObjects.ts';
 import dayjs from 'dayjs';
-import { apiUrl } from '../../globalConstants.ts';
 import { useAppDispatch } from '../../app/hooks.ts';
-import { GetClientOrders, GetGuestOrders, updateOrderStatus } from '../../store/orders/ordersThunk.ts';
 import { useNavigate } from 'react-router-dom';
+import { IOrder } from '../../types';
+import { GetClientOrders, GetGuestOrders, updateOrderStatus } from '../../store/orders/ordersThunk.ts';
 import { OrderStatus } from '../Admin/AdminOrderPage/OrdersItem.tsx';
-import { COLORS, FONTS, SPACING } from '../../globalStyles/stylesObjects.ts';
 import { enqueueSnackbar } from 'notistack';
 import Swal from 'sweetalert2';
-import theme from '../../globalStyles/globalTheme.ts';
+import { apiUrl } from '../../globalConstants.ts';
+import Grid from '@mui/material/Grid2';
 
 interface Props {
   order: IOrder;
@@ -37,10 +28,13 @@ const OrderCard: React.FC<Props> = ({ order }) => {
       text: "Вы уверены, что хотите отменить этот заказ? Это действие нельзя отменить.",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: theme.colors.warning,
-      cancelButtonColor: theme.colors.OLIVE_GREEN,
-      confirmButtonText: "Отменить заказ",
-      cancelButtonText: "Отмена",
+      confirmButtonColor: COLORS.warning,
+      cancelButtonColor: COLORS.OLIVE_GREEN,
+      confirmButtonText: "Да, отменить",
+      cancelButtonText: "Нет, оставить",
+      customClass: {
+        popup: 'beautiful-sweetalert',
+      }
     });
 
     if (result.isConfirmed) {
@@ -49,12 +43,15 @@ const OrderCard: React.FC<Props> = ({ order }) => {
           orderId: String(order.id),
           updatedStatus: OrderStatus.Canceled,
         }));
-        await dispatch(GetClientOrders());
-        await dispatch(GetGuestOrders(order.guestEmail));
-        enqueueSnackbar('Заказ отменен', { variant: 'success' });
+        if (order.guestEmail) {
+          await dispatch(GetGuestOrders(order.guestEmail));
+        } else {
+          await dispatch(GetClientOrders());
+        }
+        enqueueSnackbar('Заказ успешно отменен', { variant: 'success' });
       } catch (error) {
         console.error("Ошибка при отмене заказа:", error);
-        enqueueSnackbar('Не удалось отменить заказ', { variant: 'error' });
+        enqueueSnackbar('Не удалось отменить заказ. Попробуйте позже.', { variant: 'error' });
       }
     }
   };
@@ -67,63 +64,59 @@ const OrderCard: React.FC<Props> = ({ order }) => {
       Shipped: 'Отправлен',
       Delivered: 'Доставлен',
       Received: 'Получен',
-      Returned: 'Возвращен',
       Canceled: 'Отменен'
     };
-
     return statusTranslations[status] || status;
   };
 
-
-  const getStatusColor = (status: OrderStatus): 'error' | 'warning' | 'success' | 'info' | 'default' | 'primary' | 'secondary' => {
-    const colorMap: Record<OrderStatus, 'error' | 'warning' | 'success' | 'info' | 'default' | 'primary' | 'secondary'> = {
-      Canceled: 'error',
-      Pending: 'warning',
-      Confirmed: 'info',
-      Packed: 'primary',
-      Shipped: 'secondary',
-      Delivered: 'success',
-      Received: 'success',
-      Returned: 'error'
-    };
-
-    return colorMap[status] || 'default';
+  const getStatusChipProps = (status: OrderStatus): { label: string; color: 'error' | 'warning' | 'success' | 'info' | 'primary' | 'secondary' | 'default'; variant: 'filled' | 'outlined' } => {
+    const translatedStatus = translateOrderStatus(status);
+    switch (status) {
+      case OrderStatus.Canceled:
+        return { label: translatedStatus, color: 'error', variant: 'filled' };
+      case OrderStatus.Pending:
+        return { label: translatedStatus, color: 'warning', variant: 'outlined' };
+      case OrderStatus.Confirmed:
+      case OrderStatus.Packed:
+        return { label: translatedStatus, color: 'info', variant: 'outlined' };
+      case OrderStatus.Shipped:
+        return { label: translatedStatus, color: 'primary', variant: 'outlined' };
+      case OrderStatus.Delivered:
+      case OrderStatus.Received:
+        return { label: translatedStatus, color: 'success', variant: 'filled' };
+      default:
+        return { label: translatedStatus, color: 'default', variant: 'outlined' };
+    }
   };
+
+  const statusChipProps = getStatusChipProps(order.status as OrderStatus);
 
   return (
     <Card
       sx={{
-        borderRadius: 4,
-        boxShadow: 4,
-        overflow: 'hidden',
-        mb: 3,
-        maxWidth: '700px',
-        width: '100%',
+        height: 'auto',
+        minHeight: '500px',
+        borderRadius: '15px',
+        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
+        mb: SPACING.md,
         backgroundColor: COLORS.white,
-        mx: 'auto',
-        '@media (max-width: 750px)': {
-          width: '80%',
+        transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
+        '&:hover': {
+          transform: 'translateY(-4px)',
+          boxShadow: '0 8px 20px rgba(0, 0, 0, 0.12)',
         },
-        '@media (max-width: 480px)': {
-          mb: 2,
-          width: '50%',
+        borderLeft: `5px solid ${statusChipProps.color === 'error' ? COLORS.warning : COLORS.primary}`,
+        [`@media (max-width: ${MEDIA_REQ.tablet.md})`]: {
+          height: 'auto',
         },
-        '@media (max-width: 365px)': {
-          width: '50%',
-        }
       }}
     >
-      <CardContent
-        sx={{
-          p: SPACING.md,
-          '@media (max-width: 768px)': {
-            p: SPACING.sm,
-          },
-          '@media (max-width: 480px)': {
-            p: SPACING.xs,
-          },
-        }}
-      >
+      <CardContent sx={{
+        p: { xs: SPACING.sm, md: SPACING.md },
+        [`@media (max-width: ${MEDIA_REQ.mobile.lg})`]: {
+          p: SPACING.xs,
+        },
+      }}>
         <Box
           sx={{
             display: 'flex',
@@ -132,50 +125,59 @@ const OrderCard: React.FC<Props> = ({ order }) => {
             alignItems: { xs: 'flex-start', sm: 'center' },
             mb: SPACING.sm,
             gap: SPACING.xs,
-            overflowX: 'hidden',
           }}
         >
           <Typography
             variant="h6"
-            fontWeight="bold"
+            component="div"
+            fontWeight={FONTS.weight.bold}
             sx={{
-              color: COLORS.text,
-              fontSize: { xs: FONTS.size.lg, sm: FONTS.size.xl },
-              lineHeight: 1.2,
-              wordWrap: 'break-word',
+              color: COLORS.DARK_GREEN,
+              fontSize: { xs: FONTS.size.lg, sm: FONTS.size.default },
+              [`@media (max-width: ${MEDIA_REQ.mobile.lg})`]: {
+                fontSize: FONTS.size.default,
+              },
             }}
           >
-            Заказ №{order.id} — {dayjs(order.createdAt).format('DD.MM.YYYY')}
+            Заказ №{order.id}
           </Typography>
-
           <Chip
-            label={translateOrderStatus(order.status as OrderStatus)}
-            color={getStatusColor(order.status as OrderStatus)}
+            label={statusChipProps.label}
+            color={statusChipProps.color}
+            variant={statusChipProps.variant}
+            size="small"
             sx={{
-              fontSize: { xs: '0.75rem', sm: '0.9rem' },
+              fontSize: FONTS.size.sm,
               height: 'auto',
-              mt: { xs: 1, sm: 0 },
               py: 0.5,
               px: 1.5,
+              borderRadius: '15px',
             }}
           />
         </Box>
+        <Typography variant="body2" color={COLORS.text} sx={{ mb: SPACING.sm }}>
+          Дата оформления: {dayjs(order.createdAt).format('DD MMMM YYYY, HH:mm')}
+        </Typography>
 
-        <Divider sx={{ my: SPACING.sm }} />
+        <Divider sx={{ my: SPACING.sm, borderColor: COLORS.DARK_GRAY }} />
 
+        <Typography variant="subtitle1" fontWeight={FONTS.weight.medium} sx={{
+          mb: SPACING.xs,
+          color: COLORS.text,
+          [`@media (max-width: ${MEDIA_REQ.mobile.lg})`]: {
+            fontSize: FONTS.size.default,
+          },
+        }}>
+          Товары в заказе:
+        </Typography>
         <Box
           sx={{
-            mb: SPACING.sm,
-            maxHeight: 155,
+            height: 350,
+            maxHeight: 200,
             overflowY: 'auto',
-            border: `1px solid ${COLORS.BORDER_CART}`,
-            borderRadius: 2,
-            p: SPACING.xs,
-            backgroundColor: COLORS.rgbaGrey,
-            '@media (max-width: 480px)': {
-              border: 'none',
-              backgroundColor: COLORS.white,
-              px: 0,
+            pr: 1,
+            [`@media (max-width: ${MEDIA_REQ.mobile.lg})`]: {
+              maxHeight: 150,
             },
           }}
         >
@@ -184,25 +186,21 @@ const OrderCard: React.FC<Props> = ({ order }) => {
               key={item.id}
               onClick={() => navigate(`/product/${item.product.id}`)}
               sx={{
+                display: 'flex',
+                alignItems: 'center',
                 p: SPACING.sm,
                 mb: SPACING.xs,
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
+                borderRadius: '150px',
+                transition: 'background-color 0.2s ease',
                 cursor: 'pointer',
-                border: `1px solid ${COLORS.BORDER_CART}`,
-                borderRadius: 2,
-                transition: 'all 0.3s ease',
+                backgroundColor: COLORS.white,
                 '&:hover': {
-                  boxShadow: `0 4px 6px ${COLORS.DARK_GRAY}`,
-                  backgroundColor: COLORS.background,
+                  backgroundColor: COLORS.LIGHT_GREEN,
                 },
-                '@media (max-width: 480px)': {
-                  border: 'none',
-                  borderBottom: `1px solid ${COLORS.BORDER_CART}`,
-                  flexDirection: 'row',
-                  alignItems: 'flex-start',
+                border: `1px solid ${COLORS.success}`,
+                [`@media (max-width: ${MEDIA_REQ.mobile.lg})`]: {
                   p: SPACING.xs,
+                  borderRadius: '10px',
                 },
               }}
             >
@@ -211,112 +209,137 @@ const OrderCard: React.FC<Props> = ({ order }) => {
                 image={apiUrl + '/' + item.product.productPhoto}
                 alt={item.product.productName}
                 sx={{
-                  width: '80px',
-                  height: '80px',
-                  borderRadius: 2,
-                  flexShrink: 0,
+                  width: { xs: '60px', sm: '80px' },
+                  height: { xs: '60px', sm: '80px' },
+                  borderRadius: '10px',
                   mr: SPACING.sm,
-                  '@media (max-width: 480px)': {
-                    width: '60px',
-                    height: '60px',
-                    mb: SPACING.xs,
-                    mr: SPACING.xs,
+                  [`@media (max-width: ${MEDIA_REQ.mobile.lg})`]: {
+                    width: '50px',
+                    height: '50px',
                   },
                 }}
               />
-
               <Box sx={{ flex: 1, overflow: 'hidden' }}>
                 <Typography
+                  title={item.product.productName}
                   sx={{
+                    fontWeight: FONTS.weight.medium,
+                    fontSize: { xs: FONTS.size.sm, sm: FONTS.size.default },
+                    color: COLORS.text,
                     whiteSpace: 'nowrap',
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
-                    fontWeight: FONTS.weight.medium,
-                    fontSize: { xs: FONTS.size.default, sm: FONTS.size.lg },
-                    color: COLORS.text,
+                    mb: 0.5,
+                    [`@media (max-width: ${MEDIA_REQ.mobile.lg})`]: {
+                      fontSize: FONTS.size.sm,
+                    },
                   }}
                 >
                   {item.product.productName}
                 </Typography>
-
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    mt: SPACING.xs,
-                    '@media (max-width: 480px)': {
-                      flexDirection: 'column',
-                      alignItems: 'flex-start',
-                      gap: SPACING.xs,
-                    },
-                  }}
-                >
-                  <Typography
-                    sx={{
-                      fontSize: { xs: FONTS.size.xs, sm: FONTS.size.sm },
-                      color: COLORS.DARK_GRAY,
-                    }}
-                  >
-                    {item.quantity} × {item.product.productPrice} сом
-                  </Typography>
-
-                  <Typography
-                    fontWeight="bold"
-                    sx={{
-                      color: COLORS.text,
-                      fontSize: { xs: FONTS.size.default, sm: FONTS.size.lg },
-                    }}
-                  >
-                    {item.quantity * item.product.productPrice} сом
-                  </Typography>
-                </Box>
+                <Grid container justifyContent="space-between" alignItems="center">
+                  <Grid>
+                    <Typography
+                      sx={{
+                        fontSize: { xs: FONTS.size.xs, sm: FONTS.size.sm },
+                        color: COLORS.DARK_GREEN,
+                        [`@media (max-width: ${MEDIA_REQ.mobile.lg})`]: {
+                          fontSize: FONTS.size.xs,
+                        },
+                      }}
+                    >
+                      {item.quantity} шт. × {item.product.productPrice} сом
+                    </Typography>
+                  </Grid>
+                  <Grid>
+                    <Typography
+                      fontWeight={FONTS.weight.bold}
+                      sx={{
+                        color: COLORS.primary,
+                        fontSize: { xs: FONTS.size.sm, sm: FONTS.size.default },
+                        [`@media (max-width: ${MEDIA_REQ.mobile.lg})`]: {
+                          fontSize: FONTS.size.sm,
+                        },
+                      }}
+                    >
+                      {item.quantity * item.product.productPrice} сом
+                    </Typography>
+                  </Grid>
+                </Grid>
               </Box>
             </Box>
           ))}
         </Box>
-        <Divider sx={{ my: SPACING.sm }} />
+
+        <Divider sx={{ my: SPACING.sm, borderColor: COLORS.DARK_GRAY }} />
+
         <Box
           sx={{
             display: 'flex',
             flexDirection: { xs: 'column', sm: 'row' },
             justifyContent: 'space-between',
-            alignItems: 'center',
+            alignItems: { xs: 'stretch', sm: 'center' },
             gap: SPACING.sm,
-            width: '100%',
-            '@media (max-width: 480px)': {
-              alignItems: 'flex-start',
-            },
+            mt: SPACING.sm,
           }}
         >
-          <Typography
-            variant="h6"
-            fontWeight="bold"
-            sx={{
-              color: COLORS.text,
-              fontSize: { xs: FONTS.size.lg, sm: FONTS.size.xl },
-            }}
-          >
-            Итого: {totalAmount} сом
-          </Typography>
+          <Box>
+            <Typography
+              variant="body1"
+              sx={{
+                color: COLORS.text,
+                fontSize: FONTS.size.sm,
+                [`@media (max-width: ${MEDIA_REQ.mobile.lg})`]: {
+                  fontSize: FONTS.size.xs,
+                },
+              }}
+            >
+              Сумма заказа:
+            </Typography>
+            <Typography
+              variant="h6"
+              component="div"
+              fontWeight={FONTS.weight.bold}
+              sx={{
+                color: COLORS.DARK_GREEN,
+                fontSize: { xs: FONTS.size.lg, sm: FONTS.size.big_default },
+                [`@media (max-width: ${MEDIA_REQ.mobile.lg})`]: {
+                  fontSize: FONTS.size.default,
+                },
+              }}
+            >
+              {totalAmount} сом
+            </Typography>
+          </Box>
 
-          <Button
-            variant="contained"
-            color="error"
-            onClick={cancelOrder}
-            sx={{
-              textTransform: 'none',
-              backgroundColor: COLORS.warning,
-              px: SPACING.md,
-              py: SPACING.xs,
-              borderRadius: SPACING.xs,
-              fontSize: { xs: FONTS.size.default, sm: FONTS.size.lg },
-              width: { xs: '100%', sm: 'auto' },
-            }}
-            disabled={order.status === OrderStatus.Canceled}
-          >
-            Отменить заказ
-          </Button>
+          {order.status !== OrderStatus.Canceled &&
+            order.status !== OrderStatus.Delivered &&
+            order.status !== OrderStatus.Received &&
+            <Button
+              variant="contained"
+              onClick={cancelOrder}
+              disabled={order.status === OrderStatus.Canceled}
+              sx={{
+                backgroundColor: COLORS.warning,
+                color: COLORS.white,
+                '&:hover': {
+                  backgroundColor: theme.colors.warning || '#C62828',
+                },
+                textTransform: 'none',
+                fontWeight: FONTS.weight.medium,
+                borderRadius: '15px',
+                px: SPACING.md,
+                py: SPACING.xs,
+                fontSize: { xs: FONTS.size.sm, sm: FONTS.size.default },
+                width: { xs: '100%', sm: 'auto' },
+                "@media (max-width: 1154px)": {
+                  py: '6px',
+                },
+              }}
+            >
+              Отменить заказ
+            </Button>
+          }
         </Box>
       </CardContent>
     </Card>

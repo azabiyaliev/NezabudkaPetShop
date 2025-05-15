@@ -47,7 +47,6 @@ export enum OrderStatus {
   Shipped = "Shipped",
   Delivered = "Delivered",
   Received = "Received",
-  Returned = "Returned",
   Canceled = "Canceled",
 }
 
@@ -84,7 +83,6 @@ const OrderAdminItem: React.FC<Props> = ({ order }) => {
       Shipped: 'Отправлен',
       Delivered: 'Доставлен',
       Received: 'Получен',
-      Returned: 'Возвращен',
       Canceled: 'Отменен'
     };
 
@@ -100,7 +98,6 @@ const OrderAdminItem: React.FC<Props> = ({ order }) => {
       Shipped: 'secondary',
       Delivered: 'success',
       Received: 'success',
-      Returned: 'error'
     };
 
     return colorMap[status] || 'default';
