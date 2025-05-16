@@ -1,0 +1,12 @@
+.ql-editor img {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+  margin: 10px auto;
+}
+.quill-content img {
+  max-width: 300px;
+  height: auto;
+  border-radius: 4px;
+}

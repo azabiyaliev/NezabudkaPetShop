@@ -1,0 +1,56 @@
+.pet-shop-swiper {
+  width: 100%;
+  height: 70vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.pet-shop-swiper .swiper-wrapper,
+.pet-shop-swiper .swiper-slide {
+  box-sizing: border-box;
+}
+
+.pet-shop-swiper .swiper-button-next,
+.pet-shop-swiper .swiper-button-prev {
+  display: none !important;
+}
+
+.pet-shop-swiper .swiper-pagination-bullet {
+  width: 10px;
+  height: 10px;
+  background: white;
+  border: 1px solid white;
+  opacity: 1;
+  transition: all 0.3s ease;
+}
+
+.pet-shop-swiper .swiper-pagination-bullet-active {
+  background: white;
+  transform: scale(1.2);
+}
+
+.pet-shop-swiper .swiper-pagination {
+  position: absolute;
+  bottom: 10px;
+}
+
+.swiper-slide {
+  transition: all 0.3s ease;
+  height: 100%;
+}
+
+.swiper-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.swiper-slide-active:hover img {
+  transform: scale(1.02);
+}
+
+@media (max-width: 768px) {
+  .pet-shop-swiper {
+    height: 100%;
+  }
+}

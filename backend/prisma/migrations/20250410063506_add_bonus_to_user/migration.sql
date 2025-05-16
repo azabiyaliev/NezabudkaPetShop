@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "users" ADD COLUMN     "bonus" INTEGER NOT NULL DEFAULT 0;

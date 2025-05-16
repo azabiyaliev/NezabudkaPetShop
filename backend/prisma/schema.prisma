@@ -1,0 +1,347 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            Int             @id @default(autoincrement())
+  isProtected   Boolean         @default(false)
+  email         String          @unique
+  firstName     String
+  secondName    String
+  password      String
+  phone         String?         @unique
+  role          Role            @default(client)
+  token         String?
+  googleID      String?         @unique
+  facebookID    String?         @unique
+  Order         Order[]
+  Review        Review[]
+  Comment       Comment[]
+  PasswordReset PasswordReset[]
+  Favorite      Favorite[]
+  bonus         Int             @default(0)
+  Cart          Cart[]
+
+  @@map("users")
+}
+
+enum Role {
+  client
+  admin
+  superAdmin
+}
+
+model adminInfo {
+  id          Int    @id @default(autoincrement())
+  information String @default("")
+
+  @@map("adminInfo")
+}
+
+model clientInfo {
+  id          Int    @id @default(autoincrement())
+  information String @default("")
+
+  @@map("clientInfo")
+}
+
+model PasswordReset {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  resetToken String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("passwordReset")
+}
+
+model Brand {
+  id          Int        @id @default(autoincrement())
+  title       String     @unique
+  logo        String?
+  description String?
+  products    Products[]
+
+  @@map("brands")
+}
+
+model SiteEdition {
+  id            Int    @id @default(autoincrement())
+  instagram     String
+  whatsapp      String
+  schedule      String
+  address       String
+  email         String
+  phone         String
+  linkAddress   String
+  mapGoogleLink String
+
+  @@map("editionSite")
+}
+
+model PhotoByCarousel {
+  id          Int    @id @default(autoincrement())
+  photo       String
+  link        String @default("")
+  order       Int    @default(0)
+  title       String @default("")
+  description String @default("")
+
+  @@map("photo_by_carousel")
+}
+
+model Category {
+  id              Int               @id @default(autoincrement())
+  title           String
+  parentId        Int?              @map("parent_id")
+  parent          Category?         @relation("CategorySubcategories", fields: [parentId], references: [id])
+  subcategories   Category[]        @relation("CategorySubcategories")
+  icon            String?
+  image           String?
+  productCategory ProductCategory[]
+
+  @@map("categories")
+}
+
+model Products {
+  id Int @id @default(autoincrement())
+
+  productName         String  @map("product_name")
+  productPhoto        String  @map("product_photo")
+  productPrice        Int     @map("product_price")
+  productDescription  String  @map("product_description")
+  productComment      String? @map("product_comment")
+  productWeight       Float?  @map("product_weight")
+  productSize         String? @map("product_size")
+  productAge          String? @map("product_age")
+  productFeedClass    String? @map("product_feed_class")
+  productManufacturer String? @map("product_manufacturer")
+
+  existence       Boolean   @default(true)
+  sales           Boolean   @default(false)
+  isBestseller    Boolean @default(false) @map("is_bestseller")
+  startDateSales  DateTime?
+  endDateSales    DateTime?
+  promoPercentage Int?      @map("sale_percentage")
+  promoPrice      Int?      @map("promo_price")
+
+  items                OrderItem[]
+  brandId              Int?        @map("brand_id")
+  brand                Brand?      @relation(fields: [brandId], references: [id])
+  orderedProductsStats Int         @default(0) @map("ordered_products_stats")
+
+  reviews              Review[]
+  Favorite             Favorite[]
+  CartItem             CartItem[]
+  ProductUpdateHistory ProductUpdateHistory[]
+  productCategory      ProductCategory[]
+
+  @@map("products")
+}
+
+model ProductCategory {
+  productId  Int
+  categoryId Int
+  product    Products @relation(fields: [productId], references: [id])
+  category   Category @relation(fields: [categoryId], references: [id])
+
+  @@id([productId, categoryId])
+}
+
+model Order {
+  id Int @id @default(autoincrement())
+
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  deliveredAt DateTime? @default(now()) @map("delivered_at")
+
+  status OrderStatus @default(Pending)
+
+  address        String?
+  guestEmail     String?        @map("guest_email")
+  guestName      String?        @map("guest_name")
+  guestLastName  String?        @map("guest_lastname")
+  guestPhone     String?        @map("guest_phone")
+  orderComment   String?        @map("order_comment")
+  paymentMethod  PaymentMethod  @default(ByCash) @map("payment_method")
+  deliveryMethod DeliveryMethod @default(Delivery) @map("delivery_method")
+  bonusUsed      Int            @default(0)
+  useBonus       Boolean        @default(false)
+
+  userId Int?        @map("user_id")
+  user   User?       @relation(fields: [userId], references: [id])
+  items  OrderItem[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id Int @id @default(autoincrement())
+
+  quantity    Int
+  orderAmount Int @map("order_amount")
+
+  productId Int      @map("product_id")
+  product   Products @relation(fields: [productId], references: [id])
+  orderId   Int      @map("order_id")
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("order_items")
+}
+
+model Statistic {
+  id Int @id @default(autoincrement())
+
+  date               DateTime @default(now())
+  totalOrders        Int      @default(0) @map("totalOrders")
+  pickUpStatistic    Int      @default(0) @map("pickup_stats")
+  deliveryStatistic  Int      @default(0) @map("delivery_stats")
+  paymentByCard      Int      @default(0) @map("payment_by_card")
+  paymentByCash      Int      @default(0) @map("payment_by_cash")
+  bonusUsage         Int      @default(0) @map("bonus_usage")
+  canceledOrderCount Int      @default(0) @map("canceled_order_count")
+
+  @@map("order_statistic")
+}
+
+enum OrderStatus {
+  Pending
+  Confirmed
+  Packed
+  Shipped
+  Delivered
+  Received
+  Canceled
+}
+
+enum PaymentMethod {
+  ByCard
+  ByCash
+}
+
+enum DeliveryMethod {
+  Delivery
+  PickUp
+}
+
+model Review {
+  id        Int       @id @default(autoincrement())
+  user      User      @relation(fields: [userId], references: [id])
+  userId    Int
+  rating    Int?
+  text      String?
+  product   Products  @relation(fields: [productId], references: [id])
+  productId Int
+  comments  Comment[]
+  createdAt DateTime  @default(now())
+
+  @@map("reviews")
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  review    Review   @relation(fields: [reviewId], references: [id])
+  reviewId  Int
+  comment   String
+  createdAt DateTime @default(now())
+
+  @@map("comments")
+}
+
+model Favorite {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @map("user_id")
+  user      User     @relation(fields: [userId], references: [id])
+  productId Int      @map("product_id")
+  product   Products @relation(fields: [productId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([userId, productId])
+  @@map("favorites")
+}
+
+model Cart {
+  id     Int  @id @default(autoincrement())
+  userId Int  @map("user_id")
+  user   User @relation(fields: [userId], references: [id])
+
+  products CartItem[]
+
+  @@map("carts")
+}
+
+model CartItem {
+  id        Int      @id @default(autoincrement())
+  cartId    Int
+  cart      Cart     @relation(fields: [cartId], references: [id])
+  productId Int
+  product   Products @relation(fields: [productId], references: [id])
+  quantity  Int
+
+  @@map("cart_items")
+}
+
+model CompanyPages {
+  id   Int    @id @default(autoincrement())
+  text String
+
+  @@map("companyPages")
+}
+
+model BonusProgramPage {
+  id   Int    @id @default(autoincrement())
+  text String
+
+  @@map("bonusProgramPage")
+}
+
+model DeliveryPage {
+  id                        Int     @id @default(autoincrement())
+  text                      String
+  price                     String
+  map                       String
+  checkoutDeliveryPriceInfo String? @map("checkout_delivery_page_info")
+
+  @@map("deliveryPage")
+}
+
+model IntegrationLog {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  requestBody Json
+  status      String
+  error       String?
+
+  @@map("integration_logs")
+}
+
+model ProductUpdateHistory {
+  id        Int      @id @default(autoincrement())
+  productId Int
+  fieldName String
+  oldValue  String
+  newValue  String
+  updatedAt DateTime @default(now())
+
+  product Products @relation(fields: [productId], references: [id])
+
+  @@map("product_update_history")
+}

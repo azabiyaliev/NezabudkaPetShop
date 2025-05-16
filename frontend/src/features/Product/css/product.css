@@ -1,0 +1,111 @@
+.product-box {
+  margin: 0 auto;
+  padding: 32px;
+}
+
+.product-grid {
+  display: flex;
+  justify-content: space-between;
+}
+
+.product-specs {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.product-specs li {
+  display: grid;
+  justify-content: space-between;
+  grid-template-columns: 1fr 1fr;
+  padding: 8px 0;
+  border-bottom: 1px dashed #ddd;
+  font-size: 16px;
+}
+
+.product-specs li strong {
+  font-weight: 500;
+}
+
+.product-card-box > div {
+  border-right: 1px solid #ddd;
+  border-left: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+}
+
+.product-card-box.columns-2 > div:not(:nth-child(2n)),
+.product-card-box.columns-3 > div:not(:nth-child(3n)),
+.product-card-box.columns-4 > div:not(:nth-child(4n)),
+.product-card-box.columns-5 > div:not(:nth-child(5n)) {
+  border-right: none;
+}
+
+.product-card-box > div:last-child {
+  border-right: 1px solid #ddd !important;
+}
+
+@media (min-width: 1200px) {
+  .product-card-box {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+  .product-card-box {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .product-card-box {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
+@media (min-width: 576px) and (max-width: 767px) {
+  .product-card-box {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (max-width: 575px) {
+  .product-card-box {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+.cart-button {
+  position: relative;
+  text-transform: none;
+}
+
+.cart-text,
+.cart-icon {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: all 0.3s ease;
+}
+
+.cart-text {
+  top: 50%;
+  width: 100px;
+  transform: translate(-50%, -50%);
+  opacity: 1;
+}
+
+.cart-icon {
+  bottom: -20px;
+  opacity: 0;
+}
+
+.cart-button:hover .cart-text {
+  top: -20px;
+  opacity: 0;
+}
+
+.cart-button:hover .cart-icon {
+  bottom: 50%;
+  transform: translate(-50%, 50%);
+  opacity: 1;
+}
