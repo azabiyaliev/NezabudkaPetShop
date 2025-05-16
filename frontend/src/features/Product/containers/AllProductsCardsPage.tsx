@@ -39,6 +39,7 @@ import theme from "../../../globalStyles/globalTheme.ts";
 import CloseIcon from '@mui/icons-material/Close';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import PetsIcon from '@mui/icons-material/Pets';
+import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 
 const AllProductsCardsPage = () => {
   const dispatch = useAppDispatch();
@@ -381,7 +382,7 @@ const AllProductsCardsPage = () => {
             >
               <Typography fontWeight={500}>{category.title}</Typography>
               {category.subcategories?.length ? (
-                <ArrowDropDownOutlinedIcon sx={{ ml: 1 }} />
+                <ArrowRightIcon sx={{ mr: 1 }} />
               ) : null}
             </ListItemButton>
           </ListItem>
