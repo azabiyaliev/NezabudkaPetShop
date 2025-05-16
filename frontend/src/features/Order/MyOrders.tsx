@@ -20,9 +20,8 @@ import { IOrder } from "../../types";
 import dayjs from "dayjs";
 import CustomPagination from "../../components/Pagination/Pagination.tsx";
 import ClientOrdersItem from "./ClientOrdersItem.tsx";
-import { NavLink, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { COLORS, FONTS, MEDIA_REQ, SPACING } from '../../globalStyles/stylesObjects.ts';
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { OrderStatus } from '../Admin/AdminOrderPage/OrdersItem.tsx';
 import image from '../../assets/image_transparent.webp';
 import Button from '@mui/joy/Button';
@@ -319,46 +318,12 @@ const MyOrders = () => {
           },
         }}
       >
-        <NavLink
-          to={`/all-products`}
-          style={{
-            position: "absolute",
-            left: 1,
-            textDecoration: "none",
-            color: COLORS.success,
-            fontSize: FONTS.size.lg,
-            display: "flex",
-            alignItems: "center",
-            [`@media (max-width: ${MEDIA_REQ.mobile.lg})`]: {
-              position: "relative",
-              marginBottom: SPACING.sm,
-              fontSize: FONTS.size.default,
-            },
-            [`@media (max-width: ${MEDIA_REQ.mobile.md})`]: {
-              position: "relative",
-              marginBottom: SPACING.sm,
-              fontSize: FONTS.size.sm,
-            },
-          }}
-        >
-          <ArrowBackIcon sx={{
-            fontSize: FONTS.size.lg,
-            marginRight: SPACING.xs,
-            [`@media (max-width: ${MEDIA_REQ.mobile.lg})`]: {
-              fontSize: FONTS.size.default,
-            },
-          }} />
-          Назад
-        </NavLink>
         <Typography
           variant="h4"
           sx={{
             fontWeight: FONTS.weight.bold,
             [`@media (max-width: ${MEDIA_REQ.tablet.md})`]: {
               fontSize: FONTS.size.xxl,
-            },
-            [`@media (max-width: ${MEDIA_REQ.mobile.lg})`]: {
-              fontSize: FONTS.size.xl,
             },
             [`@media (max-width: ${MEDIA_REQ.mobile.lg})`]: {
               fontSize: FONTS.size.default,
