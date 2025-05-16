@@ -833,26 +833,11 @@ const MainToolbar = () => {
                               color: theme.colors.tooltip_color,
                             }}
                           >
-                            <Badge
-                              badgeContent={user?.bonus}
-                              overlap="circular"
-                              color="warning"
-                              sx={{
-                                backgroundColor: user
-                                  ? "transparent"
-                                  : undefined,
-                                "& .MuiBadge-badge": {
-                                  top: "-3px",
-                                  right: "-1px",
-                                },
-                              }}
-                            >
                               <Star
                                 size={28}
                                 weight="regular"
                                 color={theme.colors.white}
                               />
-                            </Badge>
                           </Box>
                         </NavLink>
                       </Tooltip>
