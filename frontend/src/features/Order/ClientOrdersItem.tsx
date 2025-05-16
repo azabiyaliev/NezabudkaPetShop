@@ -1,6 +1,6 @@
 import { Box, Button, Card, CardContent, CardMedia, Chip, Divider, Typography } from '@mui/material';
 import theme from '../../globalStyles/globalTheme.ts';
-import { COLORS, FONTS, MEDIA_REQ, SPACING } from '../../globalStyles/stylesObjects.ts';
+import { COLORS, FONTS, SPACING } from '../../globalStyles/stylesObjects.ts';
 import dayjs from 'dayjs';
 import { useAppDispatch } from '../../app/hooks.ts';
 import { useNavigate } from 'react-router-dom';
@@ -95,7 +95,6 @@ const OrderCard: React.FC<Props> = ({ order }) => {
     <Card
       sx={{
         height: 'auto',
-        minHeight: '500px',
         borderRadius: '15px',
         boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
         mb: SPACING.md,
@@ -106,14 +105,11 @@ const OrderCard: React.FC<Props> = ({ order }) => {
           boxShadow: '0 8px 20px rgba(0, 0, 0, 0.12)',
         },
         borderLeft: `5px solid ${statusChipProps.color === 'error' ? COLORS.warning : COLORS.primary}`,
-        [`@media (max-width: ${MEDIA_REQ.tablet.md})`]: {
-          height: 'auto',
-        },
       }}
     >
       <CardContent sx={{
         p: { xs: SPACING.sm, md: SPACING.md },
-        [`@media (max-width: ${MEDIA_REQ.mobile.lg})`]: {
+        '@media (max-width: 754px)': {
           p: SPACING.xs,
         },
       }}>
@@ -134,8 +130,8 @@ const OrderCard: React.FC<Props> = ({ order }) => {
             sx={{
               color: COLORS.DARK_GREEN,
               fontSize: { xs: FONTS.size.lg, sm: FONTS.size.default },
-              [`@media (max-width: ${MEDIA_REQ.mobile.lg})`]: {
-                fontSize: FONTS.size.default,
+              '@media (max-width: 754px)': {
+                fontSize: FONTS.size.sm,
               },
             }}
           >
@@ -152,10 +148,17 @@ const OrderCard: React.FC<Props> = ({ order }) => {
               py: 0.5,
               px: 1.5,
               borderRadius: '15px',
+              '@media (max-width: 754px)': {
+                fontSize: FONTS.size.xs,
+              },
             }}
           />
         </Box>
-        <Typography variant="body2" color={COLORS.text} sx={{ mb: SPACING.sm }}>
+
+        <Typography variant="body2" color={COLORS.text} sx={{
+          mb: SPACING.sm,
+          fontSize: { xs: FONTS.size.xs, sm: FONTS.size.sm },
+        }}>
           Дата оформления: {dayjs(order.createdAt).format('DD MMMM YYYY, HH:mm')}
         </Typography>
 
@@ -164,21 +167,16 @@ const OrderCard: React.FC<Props> = ({ order }) => {
         <Typography variant="subtitle1" fontWeight={FONTS.weight.medium} sx={{
           mb: SPACING.xs,
           color: COLORS.text,
-          [`@media (max-width: ${MEDIA_REQ.mobile.lg})`]: {
-            fontSize: FONTS.size.default,
-          },
+          fontSize: { xs: FONTS.size.sm, sm: FONTS.size.default },
         }}>
           Товары в заказе:
         </Typography>
+
         <Box
           sx={{
-            height: 350,
-            maxHeight: 200,
+            maxHeight: { xs: 150, sm: 135 },
             overflowY: 'auto',
             pr: 1,
-            [`@media (max-width: ${MEDIA_REQ.mobile.lg})`]: {
-              maxHeight: 150,
-            },
           }}
         >
           {order.items.map((item) => (
@@ -188,9 +186,9 @@ const OrderCard: React.FC<Props> = ({ order }) => {
               sx={{
                 display: 'flex',
                 alignItems: 'center',
-                p: SPACING.sm,
+                p: { xs: SPACING.xs, sm: SPACING.sm },
                 mb: SPACING.xs,
-                borderRadius: '150px',
+                borderRadius: { xs: '10px', sm: '150px' },
                 transition: 'background-color 0.2s ease',
                 cursor: 'pointer',
                 backgroundColor: COLORS.white,
@@ -198,10 +196,6 @@ const OrderCard: React.FC<Props> = ({ order }) => {
                   backgroundColor: COLORS.LIGHT_GREEN,
                 },
                 border: `1px solid ${COLORS.success}`,
-                [`@media (max-width: ${MEDIA_REQ.mobile.lg})`]: {
-                  p: SPACING.xs,
-                  borderRadius: '10px',
-                },
               }}
             >
               <CardMedia
@@ -209,14 +203,10 @@ const OrderCard: React.FC<Props> = ({ order }) => {
                 image={apiUrl + '/' + item.product.productPhoto}
                 alt={item.product.productName}
                 sx={{
-                  width: { xs: '60px', sm: '80px' },
-                  height: { xs: '60px', sm: '80px' },
+                  width: { xs: '50px', sm: '80px' },
+                  height: { xs: '50px', sm: '80px' },
                   borderRadius: '10px',
-                  mr: SPACING.sm,
-                  [`@media (max-width: ${MEDIA_REQ.mobile.lg})`]: {
-                    width: '50px',
-                    height: '50px',
-                  },
+                  mr: { xs: SPACING.xs, sm: SPACING.sm },
                 }}
               />
               <Box sx={{ flex: 1, overflow: 'hidden' }}>
@@ -224,14 +214,18 @@ const OrderCard: React.FC<Props> = ({ order }) => {
                   title={item.product.productName}
                   sx={{
                     fontWeight: FONTS.weight.medium,
-                    fontSize: { xs: FONTS.size.sm, sm: FONTS.size.default },
+                    fontSize: { xs: FONTS.size.xs, sm: FONTS.size.default },
                     color: COLORS.text,
                     whiteSpace: 'nowrap',
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
                     mb: 0.5,
-                    [`@media (max-width: ${MEDIA_REQ.mobile.lg})`]: {
-                      fontSize: FONTS.size.sm,
+                    width: '100%',
+                    "@media (max-width: 754px)": {
+                      maxWidth: '300px',
+                    },
+                    "@media (max-width: 454px)": {
+                      maxWidth: '200px',
                     },
                   }}
                 >
@@ -243,9 +237,6 @@ const OrderCard: React.FC<Props> = ({ order }) => {
                       sx={{
                         fontSize: { xs: FONTS.size.xs, sm: FONTS.size.sm },
                         color: COLORS.DARK_GREEN,
-                        [`@media (max-width: ${MEDIA_REQ.mobile.lg})`]: {
-                          fontSize: FONTS.size.xs,
-                        },
                       }}
                     >
                       {item.quantity} шт. × {item.product.productPrice} сом
@@ -256,10 +247,7 @@ const OrderCard: React.FC<Props> = ({ order }) => {
                       fontWeight={FONTS.weight.bold}
                       sx={{
                         color: COLORS.primary,
-                        fontSize: { xs: FONTS.size.sm, sm: FONTS.size.default },
-                        [`@media (max-width: ${MEDIA_REQ.mobile.lg})`]: {
-                          fontSize: FONTS.size.sm,
-                        },
+                        fontSize: { xs: FONTS.size.xs, sm: FONTS.size.default },
                       }}
                     >
                       {item.quantity * item.product.productPrice} сом
@@ -288,10 +276,7 @@ const OrderCard: React.FC<Props> = ({ order }) => {
               variant="body1"
               sx={{
                 color: COLORS.text,
-                fontSize: FONTS.size.sm,
-                [`@media (max-width: ${MEDIA_REQ.mobile.lg})`]: {
-                  fontSize: FONTS.size.xs,
-                },
+                fontSize: { xs: FONTS.size.xs, sm: FONTS.size.sm },
               }}
             >
               Сумма заказа:
@@ -302,10 +287,7 @@ const OrderCard: React.FC<Props> = ({ order }) => {
               fontWeight={FONTS.weight.bold}
               sx={{
                 color: COLORS.DARK_GREEN,
-                fontSize: { xs: FONTS.size.lg, sm: FONTS.size.big_default },
-                [`@media (max-width: ${MEDIA_REQ.mobile.lg})`]: {
-                  fontSize: FONTS.size.default,
-                },
+                fontSize: { xs: FONTS.size.default, sm: FONTS.size.big_default },
               }}
             >
               {totalAmount} сом
@@ -314,32 +296,28 @@ const OrderCard: React.FC<Props> = ({ order }) => {
 
           {order.status !== OrderStatus.Canceled &&
             order.status !== OrderStatus.Delivered &&
-            order.status !== OrderStatus.Received &&
-            <Button
-              variant="contained"
-              onClick={cancelOrder}
-              disabled={order.status === OrderStatus.Canceled}
-              sx={{
-                backgroundColor: COLORS.warning,
-                color: COLORS.white,
-                '&:hover': {
-                  backgroundColor: theme.colors.warning || '#C62828',
-                },
-                textTransform: 'none',
-                fontWeight: FONTS.weight.medium,
-                borderRadius: '15px',
-                px: SPACING.md,
-                py: SPACING.xs,
-                fontSize: { xs: FONTS.size.sm, sm: FONTS.size.default },
-                width: { xs: '100%', sm: 'auto' },
-                "@media (max-width: 1154px)": {
-                  py: '6px',
-                },
-              }}
-            >
-              Отменить заказ
-            </Button>
-          }
+            order.status !== OrderStatus.Received && (
+              <Button
+                variant="contained"
+                onClick={cancelOrder}
+                disabled={order.status === OrderStatus.Canceled}
+                sx={{
+                  backgroundColor: COLORS.warning,
+                  color: COLORS.white,
+                  '&:hover': {
+                    backgroundColor: theme.colors.error || '#C62828',
+                  },
+                  textTransform: 'none',
+                  fontWeight: FONTS.weight.medium,
+                  borderRadius: '15px',
+                  fontSize: { xs: FONTS.size.xs, sm: FONTS.size.default },
+                  width: { xs: '100%', sm: 'auto' },
+                  minWidth: { xs: 'unset', sm: '180px' },
+                }}
+              >
+                Отменить заказ
+              </Button>
+            )}
         </Box>
       </CardContent>
     </Card>

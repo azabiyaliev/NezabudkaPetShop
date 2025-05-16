@@ -132,23 +132,25 @@ const MyOrders = () => {
           sx={{
             textAlign: 'center',
             marginTop: 10,
-            [`@media (max-width: ${MEDIA_REQ.tablet.md})`]: {
+            [`@media (maxWidth: ${MEDIA_REQ.tablet.md})`]: {
               marginTop: 6,
             },
-            [`@media (max-width: ${MEDIA_REQ.mobile.lg})`]: {
+            [`@media (maxWidth: 375px)`]: {
               marginTop: 4,
             },
           }}
         >
           <Typography variant="h3" sx={{
             fontWeight: FONTS.weight.bold,
+            fontSize: FONTS.size.xxl,
             color: COLORS.text,
             mb: SPACING.sm,
             [`@media (max-width: ${MEDIA_REQ.tablet.md})`]: {
               fontSize: FONTS.size.xxl,
             },
-            [`@media (max-width: ${MEDIA_REQ.mobile.lg})`]: {
-              fontSize: FONTS.size.xl,
+            "@media (max-width: 375px)": {
+              fontSize: '24px',
+              fontWeight: 400,
             },
           }}>
             Мои заказы
@@ -170,7 +172,7 @@ const MyOrders = () => {
               fontSize: FONTS.size.big_default,
               maxWidth: 600,
               margin: '0 auto',
-              [`@media (max-width: ${MEDIA_REQ.mobile.lg})`]: {
+              [`@media (maxWidth: ${MEDIA_REQ.mobile.lg})`]: {
                 fontSize: FONTS.size.default,
               },
             }}
@@ -190,7 +192,7 @@ const MyOrders = () => {
               "&:hover": {
                 backgroundColor: COLORS.DARK_GREEN,
               },
-              [`@media (max-width: ${MEDIA_REQ.mobile.lg})`]: {
+              [`@media (maxWidth: ${MEDIA_REQ.mobile.lg})`]: {
                 width: "100%",
                 maxWidth: "250px",
               },
@@ -212,7 +214,7 @@ const MyOrders = () => {
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        [`@media (max-width: ${MEDIA_REQ.tablet.md})`]: {
+        [`@media (maxWidth: ${MEDIA_REQ.tablet.md})`]: {
           minHeight: '60vh',
         },
       }}>
@@ -220,10 +222,10 @@ const MyOrders = () => {
           sx={{
             textAlign: 'center',
             marginTop: 10,
-            [`@media (max-width: ${MEDIA_REQ.tablet.md})`]: {
+            [`@media (maxWidth: ${MEDIA_REQ.tablet.md})`]: {
               marginTop: 6,
             },
-            [`@media (max-width: ${MEDIA_REQ.mobile.lg})`]: {
+            [`@media (maxWidth: ${MEDIA_REQ.mobile.lg})`]: {
               marginTop: 4,
             },
           }}
@@ -232,10 +234,10 @@ const MyOrders = () => {
             fontWeight: FONTS.weight.bold,
             color: COLORS.text,
             mb: SPACING.sm,
-            [`@media (max-width: ${MEDIA_REQ.tablet.md})`]: {
+            [`@media (maxWidth: ${MEDIA_REQ.tablet.md})`]: {
               fontSize: FONTS.size.xxl,
             },
-            [`@media (max-width: ${MEDIA_REQ.mobile.lg})`]: {
+            [`@media (maxWidth: ${MEDIA_REQ.mobile.lg})`]: {
               fontSize: FONTS.size.xl,
             },
           }}>
@@ -252,7 +254,7 @@ const MyOrders = () => {
             fontWeight: FONTS.weight.bold,
             color: COLORS.text,
             mb: SPACING.sm,
-            [`@media (max-width: ${MEDIA_REQ.mobile.lg})`]: {
+            [`@media (maxWidth: ${MEDIA_REQ.mobile.lg})`]: {
               fontSize: FONTS.size.lg,
             },
           }}>
@@ -265,7 +267,7 @@ const MyOrders = () => {
               fontSize: FONTS.size.big_default,
               maxWidth: 600,
               margin: '0 auto',
-              [`@media (max-width: ${MEDIA_REQ.mobile.lg})`]: {
+              [`@media (maxWidth: ${MEDIA_REQ.mobile.lg})`]: {
                 fontSize: FONTS.size.default,
               },
             }}
@@ -285,7 +287,7 @@ const MyOrders = () => {
               "&:hover": {
                 backgroundColor: COLORS.DARK_GREEN,
               },
-              [`@media (max-width: ${MEDIA_REQ.mobile.lg})`]: {
+              [`@media (maxWidth: ${MEDIA_REQ.mobile.lg})`]: {
                 width: "100%",
                 maxWidth: "250px",
               },
@@ -299,7 +301,7 @@ const MyOrders = () => {
   }
 
   return (
-    <Container maxWidth="xl">
+    <Container maxWidth='xl'>
       <Box
         sx={{
           my: SPACING.lg,
@@ -309,10 +311,10 @@ const MyOrders = () => {
           alignItems: "center",
           position: "relative",
           overflow: "hidden",
-          [`@media (max-width: ${MEDIA_REQ.tablet.md})`]: {
+          [`@media (maxWidth: ${MEDIA_REQ.tablet.md})`]: {
             my: SPACING.md,
           },
-          [`@media (max-width: ${MEDIA_REQ.mobile.lg})`]: {
+          [`@media (maxWidth: 375px)`]: {
             my: SPACING.sm,
           },
         }}
@@ -331,6 +333,11 @@ const MyOrders = () => {
               position: "relative",
               marginBottom: SPACING.sm,
               fontSize: FONTS.size.default,
+            },
+            [`@media (max-width: ${MEDIA_REQ.mobile.md})`]: {
+              position: "relative",
+              marginBottom: SPACING.sm,
+              fontSize: FONTS.size.sm,
             },
           }}
         >
@@ -353,8 +360,8 @@ const MyOrders = () => {
             [`@media (max-width: ${MEDIA_REQ.mobile.lg})`]: {
               fontSize: FONTS.size.xl,
             },
-            [`@media (max-width: ${MEDIA_REQ.mobile.sm})`]: {
-              fontSize: FONTS.size.lg,
+            [`@media (max-width: ${MEDIA_REQ.mobile.lg})`]: {
+              fontSize: FONTS.size.default,
             },
           }}
         >
@@ -368,7 +375,7 @@ const MyOrders = () => {
             gap: SPACING.sm,
             alignItems: "center",
             maxWidth: "800px",
-            [`@media (max-width: ${MEDIA_REQ.mobile.lg})`]: {
+            [`@media (maxWidth: ${MEDIA_REQ.mobile.lg})`]: {
               flexDirection: "column",
             },
           }}
@@ -379,7 +386,7 @@ const MyOrders = () => {
             sx={{
               minWidth: 200,
               [`@media (max-width: ${MEDIA_REQ.mobile.lg})`]: {
-                minWidth: "100%",
+                minWidth: "40%",
               },
             }}
           >
@@ -398,7 +405,7 @@ const MyOrders = () => {
             sx={{
               minWidth: 200,
               [`@media (max-width: ${MEDIA_REQ.mobile.lg})`]: {
-                minWidth: "100%",
+                minWidth: "40%",
               },
             }}
           >
