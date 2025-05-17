@@ -93,8 +93,7 @@ const AllOrders = () => {
           },
         }}
       >
-
-      <AdminBar />
+        <AdminBar />
       </Box>
 
       <Box

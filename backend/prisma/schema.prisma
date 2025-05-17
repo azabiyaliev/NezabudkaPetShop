@@ -190,21 +190,22 @@ model Order {
 }
 
 model OrderItem {
-  id              Int       @id @default(autoincrement())
-  quantity        Int
-  orderAmount     Int       @map("order_amount")
-  productId       Int?      @map("product_id")
-  product         Products? @relation(fields: [productId], references: [id], onDelete: SetNull)
-  orderId         Int       @map("order_id")
-  order           Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  productName     String?   @map("product_name")
-  productPrice    Int?      @map("product_price")
-  sales           Boolean?  @default(false)
-  promoPercentage Int?      @map("sale_percentage")
-  promoPrice      Int?      @map("promo_price")
-  productPhoto    String?   @map("product_photo")
-  createdAt       DateTime  @default(now()) @map("created_at")
-  updatedAt       DateTime  @updatedAt @map("updated_at")
+  id                 Int       @id @default(autoincrement())
+  quantity           Int
+  orderAmount        Int       @map("order_amount")
+  productId          Int?      @map("product_id")
+  product            Products? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  orderId            Int       @map("order_id")
+  order              Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productName        String?   @map("product_name")
+  productPrice       Int?      @map("product_price")
+  sales              Boolean?  @default(false)
+  promoPercentage    Int?      @map("sale_percentage")
+  promoPrice         Int?      @map("promo_price")
+  productPhoto       String?   @map("product_photo")
+  productDescription String?   @map("product_description")
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime  @updatedAt @map("updated_at")
 
   @@map("order_items")
 }

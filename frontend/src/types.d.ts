@@ -338,6 +338,7 @@ export interface OrderItem {
   promoPercentage: number | null;
   promoPrice: number | null;
   sales: boolean;
+  productDescription: string | null;
 }
 
 export interface OrderStats {

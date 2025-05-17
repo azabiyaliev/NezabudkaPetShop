@@ -48,4 +48,8 @@ export class OrderItemDto {
   @IsOptional()
   @IsBoolean()
   sales?: boolean;
+
+  @IsOptional()
+  @IsString()
+  productDescription?: string;
 }

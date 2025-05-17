@@ -80,6 +80,7 @@ const OrderForm = () => {
           productPrice: item.product.productPrice,
           promoPercentage: item.product.promoPercentage ?? null,
           sales: item.product.sales,
+          productDescription: item.product.productDescription,
         })),
       }));
     }

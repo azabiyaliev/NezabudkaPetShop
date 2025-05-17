@@ -140,7 +140,7 @@ const OrderAdminItem: React.FC<Props> = ({ order }) => {
         mb: 2,
         borderRadius: 2,
         width: "100%",
-        minWidth: 250,
+        minWidth: 320,
         maxWidth: 400,
         display: "flex",
         flexDirection: "column",
@@ -156,7 +156,7 @@ const OrderAdminItem: React.FC<Props> = ({ order }) => {
           flexBasis: "48%",
           maxWidth: "48%",
         },
-        "@media (max-width: 700px)": {
+        "@media (max-width: 875px)": {
           flexBasis: "100%",
           maxWidth: "100%",
         },
@@ -308,7 +308,17 @@ const OrderAdminItem: React.FC<Props> = ({ order }) => {
                 </Typography>
               </Box>
 
-              <Box mb={2} p={2} bgcolor="action.hover" borderRadius={1}>
+              <Box
+                bgcolor="action.hover"
+                borderRadius={1}
+                sx={{
+                  mb: 2,
+                  p: 2,
+                  "@media (max-width: 900px)": {
+                    p: 1,
+                  },
+                }}
+              >
                 <Typography variant="subtitle1" gutterBottom>
                   <Person
                     fontSize="small"
@@ -388,25 +398,34 @@ const OrderAdminItem: React.FC<Props> = ({ order }) => {
                         <ListItemText
                           primary={
                             <Typography variant="body2">
-                              {item.product
-                                ? `${item.product.productName} - ${item.quantity}шт × ${item.product.productPrice} сом`
-                                : `Товар #${item.productId} - ${item.quantity} шт`}
+                              {`${item.productName} - ${item.quantity} шт × ${item.sales ? item.promoPrice?.toLocaleString('ru-RU').replace(/,/g, ' ') : item.productPrice?.toLocaleString('ru-RU').replace(/,/g, ' ')} сом ${item.sales ? `по акции ${item.promoPercentage}%` : ''}`}
                             </Typography>
                           }
                           secondary={
-                            item.product?.productDescription && (
-                              <Typography
-                                variant="caption"
-                                color="text.secondary"
-                              >
-                                {item.product.productDescription}
-                              </Typography>
-                            )
+                            <>
+                              {
+                                item.product?.productDescription && (
+                                  <Typography
+                                    variant="caption"
+                                    color="text.secondary"
+                                  >
+                                    {item.productDescription ? item.productDescription : null}
+                                  </Typography>
+                                )
+                              }
+                              {item.productId === null ? <Typography variant="body2" sx={{color: 'red', mt: 1}}>Данный товар был удален!</Typography> : null}
+                            </>
                           }
                         />
                         {item.product && (
-                          <Typography variant="body2" fontWeight="bold">
-                            {item.quantity * item.product.productPrice} сом
+                          <Typography variant="body2" fontWeight="bold" sx={{ml: 1, width: '180px'}}>
+                            {(
+                              item.quantity *
+                              (item.sales
+                                  ? (item.promoPrice ?? 0)
+                                  : (item.productPrice ?? 0)
+                              )
+                            ).toLocaleString('ru-RU').replace(/,/g, ' ')} сом
                           </Typography>
                         )}
                       </ListItem>
@@ -420,19 +439,16 @@ const OrderAdminItem: React.FC<Props> = ({ order }) => {
               </Box>
 
               <Divider sx={{ my: 2 }} />
-
+              <Box display="flex" justifyContent="space-between" mt="auto">
+                <Typography variant="subtitle1">Использовано бонусов:</Typography>
+                <Typography variant="subtitle1" fontWeight="bold">
+                  {order.bonusUsed ? order.bonusUsed.toLocaleString('ru-RU').replace(/,/g, ' ') : 0} сом
+                </Typography>
+              </Box>
               <Box display="flex" justifyContent="space-between" mt="auto">
                 <Typography variant="subtitle1">Итого:</Typography>
                 <Typography variant="subtitle1" fontWeight="bold">
-                  {order.items?.reduce(
-                    (sum, item) =>
-                      sum +
-                      (item.product
-                        ? item.quantity * item.product.productPrice
-                        : 0),
-                    0,
-                  )}{" "}
-                  сом
+                  {order.totalPrice.toLocaleString('ru-RU').replace(/,/g, ' ')} сом
                 </Typography>
               </Box>
             </>

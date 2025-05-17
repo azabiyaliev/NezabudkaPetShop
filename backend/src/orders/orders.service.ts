@@ -330,6 +330,7 @@ export class OrdersService {
             promoPercentage: item.promoPercentage,
             sales: item.sales,
             productPhoto: item.productPhoto,
+            productDescription: item.productDescription,
           })),
         },
       },
