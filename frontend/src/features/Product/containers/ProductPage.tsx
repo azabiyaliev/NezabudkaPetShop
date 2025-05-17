@@ -326,7 +326,7 @@ const ProductPage = () => {
 
               <Box component="ul" className="product-specs" sx={{ listStyle: 'none', pl: 0 }}>
                 {[
-                  { label: 'Бренд', value: product.brand.title ?? 'не указано' },
+                  { label: 'Бренд', value: product.brand?.title ?? 'не указано' },
                   { label: 'Страна-производитель', value: product.productManufacturer ?? 'не указано' },
                   { label: 'Класс корма', value: product.productFeedClass ?? 'не указано' },
                   { label: 'Вес', value: product.productWeight ? `${product.productWeight} кг` : 'не указано' },

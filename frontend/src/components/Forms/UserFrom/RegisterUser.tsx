@@ -536,7 +536,6 @@ const RegisterUser = () => {
                 className="recaptcha"
                 sitekey={import.meta.env.VITE_REACT_APP_RECAPTCHA_SITE_KEY}
                 onChange={(token) => {
-                  console.log("Token:", token);
                   setForm(prev => ({...prev, recaptchaToken: token || ''}));
                   setRecaptchaToken(token);
                 }}
