@@ -35,6 +35,7 @@ import { DeliveryMethod } from "../../Order/OrderForm.tsx";
 import Swal from "sweetalert2";
 import { enqueueSnackbar } from 'notistack';
 import theme from '../../../globalStyles/globalTheme.ts';
+import ReactHtmlParser from 'html-react-parser';
 
 interface Props {
   order: IOrder;
@@ -137,7 +138,7 @@ const OrderAdminItem: React.FC<Props> = ({ order }) => {
         mb: 2,
         borderRadius: 2,
         width: "100%",
-        minWidth: 320,
+        minWidth: 250,
         maxWidth: 400,
         display: "flex",
         flexDirection: "column",
@@ -400,31 +401,25 @@ const OrderAdminItem: React.FC<Props> = ({ order }) => {
                           }
                           secondary={
                             <>
-                              {
-                                item.product?.productDescription && (
-                                  <Typography
-                                    variant="caption"
-                                    color="text.secondary"
-                                  >
-                                    {item.productDescription ? item.productDescription : null}
-                                  </Typography>
-                                )
-                              }
-                              {item.productId === null ? <Typography variant="body2" sx={{color: 'red', mt: 1}}>Данный товар был удален!</Typography> : null}
+                              <Typography
+                                variant="caption"
+                                color="text.secondary"
+                              >
+                                {item.productDescription ? ReactHtmlParser(item.productDescription) : null}
+                                {item.productId === null ? <span style={{color: 'red', marginTop: 1}}>Данный товар был удален!</span> : null}
+                              </Typography>
                             </>
                           }
                         />
-                        {item.product && (
-                          <Typography variant="body2" fontWeight="bold" sx={{ml: 1, width: '180px'}}>
-                            {(
-                              item.quantity *
-                              (item.sales
-                                  ? (item.promoPrice ?? 0)
-                                  : (item.productPrice ?? 0)
-                              )
-                            ).toLocaleString('ru-RU').replace(/,/g, ' ')} сом
-                          </Typography>
-                        )}
+                        <Typography variant="body2" fontWeight="bold" sx={{ml: 1}}>
+                          {(
+                            item.quantity *
+                            (item.sales
+                                ? (item.promoPrice ?? 0)
+                                : (item.productPrice ?? 0)
+                            )
+                          ).toLocaleString('ru-RU').replace(/,/g, ' ')} сом
+                        </Typography>
                       </ListItem>
                     ))
                   ) : (

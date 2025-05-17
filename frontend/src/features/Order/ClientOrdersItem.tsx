@@ -11,6 +11,12 @@ import { enqueueSnackbar } from 'notistack';
 import Swal from 'sweetalert2';
 import { apiUrl } from '../../globalConstants.ts';
 import Grid from '@mui/material/Grid2';
+import React from 'react';
+import noImage from '../../assets/no-image.webp';
+import { Tooltip } from '@mui/joy';
+import 'dayjs/locale/ru';
+import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
+import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
 
 interface Props {
   order: IOrder;
@@ -19,8 +25,6 @@ interface Props {
 const OrderCard: React.FC<Props> = ({ order }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-
-  const totalAmount = order.items.reduce((sum, item) => sum + item.product.productPrice * item.quantity, 0);
 
   const cancelOrder = async () => {
     const result = await Swal.fire({
@@ -154,108 +158,204 @@ const OrderCard: React.FC<Props> = ({ order }) => {
             }}
           />
         </Box>
-
-        <Typography variant="body2" color={COLORS.text} sx={{
-          mb: SPACING.sm,
-          fontSize: { xs: FONTS.size.xs, sm: FONTS.size.sm },
-        }}>
-          Дата оформления: {dayjs(order.createdAt).format('DD MMMM YYYY, HH:mm')}
-        </Typography>
+        <Box>
+          <Typography variant="body2" color={COLORS.text} sx={{
+            fontSize: { xs: FONTS.size.xs, sm: FONTS.size.sm },
+          }}>
+            Дата оформления заказа:
+          </Typography>
+          <Box sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            mt: 1,
+          }}>
+            <Box sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}>
+              <CalendarMonthOutlinedIcon/>
+              <Typography variant="body2" color={COLORS.text} sx={{
+                fontSize: { xs: FONTS.size.xs, sm: FONTS.size.sm },
+                ml: 1,
+              }}>
+                {dayjs(order.createdAt).locale('ru').format('DD MMMM YYYY')}
+              </Typography>
+            </Box>
+            <Box sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}>
+              <AccessTimeOutlinedIcon/>
+              <Typography variant="body2" color={COLORS.text} sx={{
+                fontSize: { xs: FONTS.size.xs, sm: FONTS.size.sm },
+                ml: 1,
+              }}>
+                {dayjs(order.createdAt).locale('ru').format('HH:mm')}
+              </Typography>
+            </Box>
+          </Box>
+        </Box>
 
         <Divider sx={{ my: SPACING.sm, borderColor: COLORS.DARK_GRAY }} />
-
-        <Typography variant="subtitle1" fontWeight={FONTS.weight.medium} sx={{
-          mb: SPACING.xs,
-          color: COLORS.text,
-          fontSize: { xs: FONTS.size.sm, sm: FONTS.size.default },
+        <Box sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
         }}>
-          Товары в заказе:
-        </Typography>
+          <Box>
+            <Typography variant="subtitle1" fontWeight={FONTS.weight.medium} sx={{
+              mb: SPACING.xs,
+              color: COLORS.text,
+              fontSize: { xs: FONTS.size.sm, sm: FONTS.size.default },
+            }}>
+              Товары в заказе:
+            </Typography>
+          </Box>
+          <Box>
+            <Typography variant="subtitle1" fontWeight={FONTS.weight.medium} sx={{
+              mb: SPACING.xs,
+              color: COLORS.text,
+              fontSize: { xs: FONTS.size.sm, sm: FONTS.size.default },
+            }}>
+              Использовано бонусов: {order.bonusUsed}
+            </Typography>
+          </Box>
+        </Box>
 
         <Box
           sx={{
-            maxHeight: { xs: 150, sm: 135 },
+            maxHeight: '40vh',
             overflowY: 'auto',
             pr: 1,
           }}
         >
           {order.items.map((item) => (
-            <Box
-              key={item.id}
-              onClick={() => navigate(`/product/${item.product.id}`)}
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                p: { xs: SPACING.xs, sm: SPACING.sm },
-                mb: SPACING.xs,
-                borderRadius: { xs: '10px', sm: '150px' },
-                transition: 'background-color 0.2s ease',
-                cursor: 'pointer',
-                backgroundColor: COLORS.white,
-                '&:hover': {
-                  backgroundColor: COLORS.LIGHT_GREEN,
-                },
-                border: `1px solid ${COLORS.success}`,
-              }}
+            <Tooltip
+              sx={{color: COLORS.white, backgroundColor: COLORS.warning}} variant='outlined'
+              title={item.productId ? '' : 'Данный товар был удален'}
+              disableHoverListener={!!item.productId}
             >
-              <CardMedia
-                component="img"
-                image={apiUrl + '/' + item.product.productPhoto}
-                alt={item.product.productName}
-                sx={{
-                  width: { xs: '50px', sm: '80px' },
-                  height: { xs: '50px', sm: '80px' },
-                  borderRadius: '10px',
-                  mr: { xs: SPACING.xs, sm: SPACING.sm },
+              <Box
+                key={item.id}
+                onClick={() => {
+                  if (item.productId) {
+                    navigate(`/product/${item.productId}`);
+                  }
                 }}
-              />
-              <Box sx={{ flex: 1, overflow: 'hidden' }}>
-                <Typography
-                  title={item.product.productName}
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  p: { xs: SPACING.xs, sm: SPACING.sm },
+                  mb: SPACING.xs,
+                  transition: 'background-color 0.2s ease',
+                  cursor: 'pointer',
+                  backgroundColor: COLORS.white,
+                  position: 'relative',
+                  '&:hover': {
+                    backgroundColor: COLORS.PALE_GREEN,
+                  },
+                }}
+              >
+                {item.promoPercentage ?
+                  <Box sx={{
+                    position: 'absolute',
+                    top: 7,
+                    left: 2,
+                    backgroundColor: COLORS.warning,
+                    color: COLORS.white,
+                    width: '38px',
+                    height: '38px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderRadius: '50%',
+                    fontWeight: FONTS.weight.bold,
+                    fontSize: '11px',
+                    cursor: 'pointer',
+                    zIndex: 2,
+                  }}>
+                    - {item.promoPercentage}%
+                  </Box> : ''
+                }
+                <CardMedia
+                  component="img"
+                  image={item.productPhoto ? `${apiUrl}/${item.productPhoto}` : noImage || undefined}
+                  alt={item.productName || ''}
                   sx={{
-                    fontWeight: FONTS.weight.medium,
-                    fontSize: { xs: FONTS.size.xs, sm: FONTS.size.default },
-                    color: COLORS.text,
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    mb: 0.5,
-                    width: '100%',
-                    "@media (max-width: 754px)": {
-                      maxWidth: '300px',
-                    },
-                    "@media (max-width: 454px)": {
-                      maxWidth: '200px',
-                    },
+                    width: { xs: '50px', sm: '80px' },
+                    height: { xs: '50px', sm: '80px' },
+                    borderRadius: '10px',
+                    mr: { xs: SPACING.xs, sm: SPACING.sm },
                   }}
-                >
-                  {item.product.productName}
-                </Typography>
-                <Grid container justifyContent="space-between" alignItems="center">
-                  <Grid>
-                    <Typography
-                      sx={{
-                        fontSize: { xs: FONTS.size.xs, sm: FONTS.size.sm },
-                        color: COLORS.DARK_GREEN,
-                      }}
-                    >
-                      {item.quantity} шт. × {item.product.productPrice} сом
-                    </Typography>
+                />
+                <Box sx={{ flex: 1, overflow: 'hidden',
+                }}>
+                  <Typography
+                    title={item.productName ? item.productName : ''}
+                    sx={{
+                      fontWeight: FONTS.weight.medium,
+                      fontSize: { xs: FONTS.size.xs, sm: FONTS.size.default },
+                      color: COLORS.text,
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      mb: 0.5,
+                      width: '100%',
+                      "@media (max-width: 754px)": {
+                        maxWidth: '300px',
+                      },
+                      "@media (max-width: 454px)": {
+                        maxWidth: '200px',
+                      },
+                    }}
+                  >
+                    {item.productName}
+                  </Typography>
+                  <Grid container justifyContent="space-between" alignItems="center">
+                    <Grid>
+                      <Typography
+                        sx={{
+                          fontSize: { xs: FONTS.size.xs, sm: FONTS.size.sm },
+                          color: COLORS.DARK_GREEN,
+                        }}
+                      >
+                        {item.quantity} шт. × {item.sales ? item.promoPrice : item.productPrice} сом
+                      </Typography>
+                      {item.product === null ?
+                        <Typography
+                          sx={{
+                            fontSize: { xs: FONTS.size.xs, sm: FONTS.size.sm },
+                            color: COLORS.warning,
+                          }}
+                        >
+                          Удален
+                        </Typography> : null
+                      }
+                    </Grid>
+                    <Grid>
+                      <Typography
+                        fontWeight={FONTS.weight.bold}
+                        sx={{
+                          color: "rgba(250, 179, 1, 1)",
+                          fontSize: { xs: FONTS.size.xs, sm: FONTS.size.default },
+                        }}
+                      >
+                        {(
+                          item.quantity *
+                          (item.sales
+                              ? (item.promoPrice ?? 0)
+                              : (item.productPrice ?? 0)
+                          )
+                        ).toLocaleString('ru-RU').replace(/,/g, ' ')} сом
+                      </Typography>
+                    </Grid>
                   </Grid>
-                  <Grid>
-                    <Typography
-                      fontWeight={FONTS.weight.bold}
-                      sx={{
-                        color: COLORS.primary,
-                        fontSize: { xs: FONTS.size.xs, sm: FONTS.size.default },
-                      }}
-                    >
-                      {item.quantity * item.product.productPrice} сом
-                    </Typography>
-                  </Grid>
-                </Grid>
+                </Box>
               </Box>
-            </Box>
+            </Tooltip>
           ))}
         </Box>
 
@@ -290,7 +390,7 @@ const OrderCard: React.FC<Props> = ({ order }) => {
                 fontSize: { xs: FONTS.size.default, sm: FONTS.size.big_default },
               }}
             >
-              {totalAmount} сом
+              {order.totalPrice.toLocaleString('ru-RU').replace(/,/g, ' ')} сом
             </Typography>
           </Box>
 
