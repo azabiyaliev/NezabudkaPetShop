@@ -132,9 +132,13 @@ const ProductCard:React.FC<Props> = ({ product, cart }) => {
       }}
     >
       {product.sales && (
-        <Tooltip title={`С ${dayjs(product.startDateSales).format("DD.MM.YYYY")} по 
-      ${dayjs(product.endDateSales).format("DD.MM.YYYY")}`} sx={{color: COLORS.white, backgroundColor: COLORS.info}} variant='outlined'
-                 placement="top-start">
+        <Tooltip
+          title={`С ${dayjs(product.startDateSales).format("DD.MM.YYYY")} по 
+          ${dayjs(product.endDateSales).format("DD.MM.YYYY")}`}
+          sx={{color: COLORS.white, backgroundColor: COLORS.info}}
+          variant='outlined'
+          placement="top-start"
+        >
           <Box sx={{
             position: 'absolute',
             top: 15,
@@ -365,7 +369,11 @@ const ProductCard:React.FC<Props> = ({ product, cart }) => {
             zIndex: 1,
             pointerEvents: 'none',
           }}
-        />
+        >
+          <Typography fontWeight={600} sx={{ color: COLORS.primary, fontSize: FONTS.size.lg, mt: '65%', textAlign: 'center' }}>
+            Нет в наличии!
+          </Typography>
+        </Box>
       )}
     </Card>
   );
