@@ -138,7 +138,6 @@ export interface ICategories {
   parentId?: number | null;
   subcategories?: Subcategory[];
   parent?: { id: number; title: string } | null;
-  icon?: File | null;
   image?: File | null;
 }
 

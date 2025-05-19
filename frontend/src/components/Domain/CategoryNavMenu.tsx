@@ -14,17 +14,19 @@ import { fetchCategoriesThunk } from "../../store/categories/categoriesThunk.ts"
 import Typography from "@mui/joy/Typography";
 import {
   Box,
-  Collapse,
+  IconButton,
   List,
   ListItem,
   ListItemButton,
   ListItemText,
-} from "@mui/material";
-import ArrowDropDownOutlinedIcon from "@mui/icons-material/ArrowDropDownOutlined";
-import ArrowRightOutlinedIcon from "@mui/icons-material/ArrowRightOutlined";
+} from '@mui/material';
 import { useNavigate } from "react-router-dom";
 import { selectUser } from "../../store/users/usersSlice.ts";
 import AdminBar from '../../features/Admin/AdminProfile/AdminBar.tsx';
+import { ICategories, Subcategory } from '../../types';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import { COLORS } from '../../globalStyles/stylesObjects.ts';
 
 interface Props {
   openMenu: boolean;
@@ -34,11 +36,39 @@ interface Props {
 const CategoryNavMenu: React.FC<Props> = ({ openMenu, closeMenu }) => {
   const categories = useAppSelector(selectCategories);
   const dispatch = useAppDispatch();
-  const [openCategory, setOpenCategory] = useState<number | null>(null);
   const navigate = useNavigate();
   const user = useAppSelector(selectUser);
   const can = usePermission(user);
   const [isAdminBarOpen, setIsAdminBarOpen] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
+
+
+  const [currentCategory, setCurrentCategory] = useState<{
+    id: number;
+    title: string;
+    subcategories: Subcategory[] | [];
+  } | null>(null);
+
+  const handleCategoryClick = (category: ICategories) => {
+    setIsAnimating(true);
+    setTimeout(() => {
+      setCurrentCategory({
+        id: category.id,
+        title: category.title,
+        subcategories: category.subcategories || [],
+      });
+      setIsAnimating(false);
+    }, 150);
+  };
+
+  const handleBackClick = () => {
+    setIsAnimating(true);
+    setTimeout(() => {
+      setCurrentCategory(null);
+      setIsAnimating(false);
+    }, 150);
+  };
+
 
   const toggleAdminBar = () => setIsAdminBarOpen(!isAdminBarOpen);
 
@@ -46,8 +76,10 @@ const CategoryNavMenu: React.FC<Props> = ({ openMenu, closeMenu }) => {
     dispatch(fetchCategoriesThunk());
   }, [dispatch]);
 
-  const toggleCategory = (categoryId: number) => {
-    setOpenCategory((prev) => (prev === categoryId ? null : categoryId));
+
+  const handleSubcategoryClick = (subcategoryId: number) => {
+    closeMenu();
+    navigate(`/all-products/${subcategoryId}`);
   };
 
   return (
@@ -78,9 +110,9 @@ const CategoryNavMenu: React.FC<Props> = ({ openMenu, closeMenu }) => {
           flexDirection: "column",
           gap: 2,
           height: "100%",
-          overflow: "auto",
+          overflow: "hidden", // скрываем лишнее, скролл будет внутри списков
           "@media (max-width: 1390px)": {
-            paddingRight: 0
+            paddingRight: 0,
           },
         }}
       >
@@ -99,87 +131,194 @@ const CategoryNavMenu: React.FC<Props> = ({ openMenu, closeMenu }) => {
             </Box>
           </>
         )}
+
         {!user || !can(["admin", "superAdmin"]) ? (
           <>
-            <DialogTitle
-              sx={{ fontFamily: "Nunito, sans-serif", fontWeight: 600 }}
+            <Box
+              sx={{
+                position: "relative",
+                overflow: "hidden",
+                height: "100%",
+              }}
             >
-              Все категории
-            </DialogTitle>
-            <ModalClose onClick={closeMenu} />
-            <Divider />
-            {categories.length === 0 ? (
-              <Typography
-                level="h2"
+              {/* Все категории */}
+              <Box
                 sx={{
-                  fontSize: "xl",
-                  margin: "20px auto",
-                  fontFamily: "Nunito, sans-serif",
-                  fontWeight: 600,
+                  position: "absolute",
+                  width: "100%",
+                  top: 0,
+                  left: currentCategory
+                    ? isAnimating
+                      ? "-100%"
+                      : "-100%"
+                    : isAnimating
+                      ? "0%"
+                      : "0%",
+                  transition: "left 0.3s ease-in-out",
+                  display: "flex",
+                  flexDirection: "column",
+                  height: "100%",
                 }}
               >
-                Кажется категорий пока нет :(
-              </Typography>
-            ) : (
-              <List>
-                {categories.map((category) => (
-                  <Box key={category.id}>
-                    <ListItem
-                      disablePadding
-                      sx={{ borderBottom: 1, borderBottomColor: "grey.300" }}
-                    >
-                      <ListItemButton
-                        onClick={() => toggleCategory(category.id)}
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <DialogTitle
+                    sx={{
+                      fontFamily: "Nunito, sans-serif",
+                      fontWeight: 600,
+                    }}
+                  >
+                    Все категории
+                  </DialogTitle>
+                  <ModalClose
+                    onClick={closeMenu}
+                    sx={{ position: "static", marginRight: "10px" }}
+                  />
+                </Box>
+
+                <Divider />
+
+                <Box
+                  sx={{
+                    overflowY: "auto",
+                    flexGrow: 1,
+                  }}
+                >
+                  <List>
+                    {categories.length === 0 ? (
+                      <Typography
+                        level="h2"
                         sx={{
-                          textAlign: "center",
-                          backgroundColor: "transparent",
-                          padding: "8px 16px",
-                          color: "#343332",
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                          borderRadius: "4px",
-                          fontSize: "13px",
-                          "&:hover": {
-                            backgroundColor: "#dce5d9",
-                          },
+                          fontSize: "xl",
+                          margin: "20px 5px",
+                          fontFamily: "Nunito, sans-serif",
+                          fontWeight: 600,
                         }}
                       >
-                        <ListItemText
-                          primary={
-                            <Typography
-                              sx={{ fontWeight: 600, color: "#343332" }}
-                            >
-                              {category.title}
-                            </Typography>
-                          }
-                        />
-                        {openCategory === category.id ? (
-                          <ArrowDropDownOutlinedIcon />
-                        ) : (
-                          <ArrowRightOutlinedIcon />
-                        )}
-                      </ListItemButton>
-                    </ListItem>
-                    <Collapse
-                      in={openCategory === category.id}
-                      timeout="auto"
-                      unmountOnExit
+                        Кажется категорий пока нет :(
+                      </Typography>
+                    ) : (
+                      categories.map((category) => (
+                        <ListItem key={category.id} disablePadding>
+                          <ListItemButton
+                            onClick={() => handleCategoryClick(category)}
+                            sx={{
+                              textAlign: "left",
+                              padding: "10px 16px",
+                              color: "#343332",
+                              display: "flex",
+                              justifyContent: "space-between",
+                              fontSize: "13px",
+                              "&:hover": {
+                                backgroundColor: "#dce5d9",
+                              },
+                            }}
+                          >
+                            <ListItemText
+                              primary={
+                                <Typography
+                                  sx={{ fontWeight: 500, color: "#343332" }}
+                                >
+                                  {category.title}
+                                </Typography>
+                              }
+                            />
+                            <KeyboardArrowRightIcon sx={{ color: COLORS.text }} />
+                          </ListItemButton>
+                        </ListItem>
+                      ))
+                    )}
+                  </List>
+                </Box>
+              </Box>
+
+              {/* Подкатегории */}
+              <Box
+                sx={{
+                  position: "absolute",
+                  width: "100%",
+                  top: 0,
+                  left: currentCategory
+                    ? isAnimating
+                      ? "0%"
+                      : "0%"
+                    : isAnimating
+                      ? "100%"
+                      : "100%",
+                  transition: "left 0.3s ease-in-out",
+                  display: "flex",
+                  flexDirection: "column",
+                  height: "100%",
+                }}
+              >
+                {currentCategory && (
+                  <>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                      }}
                     >
-                      <List component="div" disablePadding sx={{ pl: 4 }}>
-                        {category.subcategories?.length ? (
-                          category.subcategories.map((subcategory) => (
-                            <ListItem
-                              key={subcategory.id}
-                              sx={{ padding: "4px 16px" }}
-                            >
+                      <IconButton onClick={handleBackClick}>
+                        <ArrowBackIcon />
+                      </IconButton>
+                      <DialogTitle
+                        sx={{
+                          fontFamily: "Nunito, sans-serif",
+                          fontWeight: 600,
+                          marginLeft: "20px",
+                          marginRight: "auto",
+                        }}
+                      >
+                        {currentCategory.title}
+                      </DialogTitle>
+                      <ModalClose
+                        onClick={closeMenu}
+                        sx={{ position: "static", marginRight: "10px" }}
+                      />
+                    </Box>
+
+                    <Divider />
+
+                    <Box
+                      sx={{
+                        overflowY: "auto",
+                        flexGrow: 1,
+                      }}
+                    >
+                      <List>
+                        {currentCategory.subcategories.length > 0 ? (
+                          currentCategory.subcategories.map((subcategory) => (
+                            <ListItem key={subcategory.id} disablePadding>
                               <ListItemButton
-                                onClick={() => {
-                                  closeMenu();
-                                  navigate(`/all-products/${subcategory.id}`);
+                                onClick={() => handleSubcategoryClick(subcategory.id)}
+                                sx={{
+                                  textAlign: "left",
+                                  padding: "8px 16px",
+                                  color: "#343332",
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  fontSize: "13px",
+                                  "&:hover": {
+                                    backgroundColor: "#dce5d9",
+                                  },
                                 }}
                               >
-                                <ListItemText primary={subcategory.title} />
+                                <ListItemText
+                                  primary={
+                                    <Typography
+                                      sx={{ fontWeight: 500, color: "#343332" }}
+                                    >
+                                      {subcategory.title}
+                                    </Typography>
+                                  }
+                                />
                               </ListItemButton>
                             </ListItem>
                           ))
@@ -195,11 +334,11 @@ const CategoryNavMenu: React.FC<Props> = ({ openMenu, closeMenu }) => {
                           </Typography>
                         )}
                       </List>
-                    </Collapse>
-                  </Box>
-                ))}
-              </List>
-            )}
+                    </Box>
+                  </>
+                )}
+              </Box>
+            </Box>
           </>
         ) : null}
       </Sheet>
