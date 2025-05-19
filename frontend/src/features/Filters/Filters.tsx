@@ -208,8 +208,12 @@ const Filters = () => {
     if (filters.existence !== null) filtersToApply.existence = filters.existence;
     if (filters.sales !== null) filtersToApply.sales = filters.sales;
 
-    if (filters.minPrice !== null) filtersToApply.minPrice = filters.minPrice;
-    if (filters.maxPrice !== null) filtersToApply.maxPrice = filters.maxPrice;
+    if (filters.minPrice > 0) {
+      filtersToApply.minPrice = filters.minPrice;
+    }
+    if (filters.maxPrice > 0) {
+      filtersToApply.maxPrice = filters.maxPrice;
+    }
 
     const cleanedFilters: Record<string, string | number | boolean | (string | number)[]> = {};
 
@@ -298,7 +302,7 @@ const Filters = () => {
             control={
               <Switch
                 checked={selectedFilters.existence === true}
-                onChange={() => handleFilterChange('existence', selectedFilters.existence === true ? null : true)}
+                onChange={() => handleFilterChange('existence', !selectedFilters.existence)}
               />
             }
             label="В наличии"
@@ -307,7 +311,7 @@ const Filters = () => {
             control={
               <Switch
                 checked={selectedFilters.sales === true}
-                onChange={() => handleFilterChange('sales', selectedFilters.sales === true ? null : true)}
+                onChange={() => handleFilterChange('sales', !selectedFilters.sales)}
               />
             }
             label="Со скидкой"
