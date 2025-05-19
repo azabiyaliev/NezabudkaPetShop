@@ -14,13 +14,21 @@ interface Props {
 
 const TotalPrice: React.FC<Props> = ({ products, bonusUsed }) => {
   const user = useAppSelector(selectUser);
+
   const productsToBuy: { price: number; amount: number }[] = products.map(
     (product) => {
       if (product.product) {
-        return {
-          price: product.product.productPrice,
-          amount: product.quantity,
-        };
+        if (product.product.sales) {
+          return {
+            price: product.product.promoPrice,
+            amount: product.quantity,
+          };
+        } else {
+          return {
+            price: product.product.productPrice,
+            amount: product.quantity,
+          };
+        }
       } else {
         return { price: 0, amount: 0 };
       }
@@ -176,7 +184,7 @@ const TotalPrice: React.FC<Props> = ({ products, bonusUsed }) => {
                   fontWeight: "bold",
                 }}
               >
-                 {bonusToReceive.toLocaleString('ru-RU').replace(/,/g, ' ')} бонусов
+                 {bonusToReceive.toLocaleString('ru-RU')} бонуса
               </span>
             </Typography>
           </ListItem>

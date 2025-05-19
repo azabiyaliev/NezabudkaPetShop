@@ -17,6 +17,8 @@ import { cartFromSlice, getFromLocalStorage } from '../../../store/cart/cartSlic
 import { userRoleClient } from '../../../globalConstants.ts';
 import { fetchCart } from '../../../store/cart/cartThunk.ts';
 import Container from '@mui/material/Container';
+import theme from '../../../globalStyles/globalTheme.ts';
+import { FONTS } from '../../../globalStyles/stylesObjects.ts';
 
 const FavoriteProduct = () => {
   const dispatch = useAppDispatch();
@@ -76,12 +78,11 @@ const FavoriteProduct = () => {
         </Breadcrumbs>
 
         <Typography
-          variant="h4"
           sx={{
-            margin: "20px 0",
-            fontFamily: "Nunito, sans-serif",
+            fontSize: theme.fonts.size.xl,
+            fontWeight: FONTS.weight.bold,
+            color: theme.colors.text,
             textAlign: "center",
-            fontWeight: "bold",
           }}
         >
           Избранное
@@ -97,10 +98,10 @@ const FavoriteProduct = () => {
                   alt="shopping-cart-emoji"
                 />
                 <Typography
-                  variant="h4"
                   sx={{
-                    margin: "20px 0",
-                    fontFamily: "Nunito, sans-serif",
+                    fontSize: theme.fonts.size.xl,
+                    color: theme.colors.text,
+                    textAlign: "center",
                   }}
                 >
                   Здесь появятся ваши любимые товары
@@ -121,10 +122,10 @@ const FavoriteProduct = () => {
                    alt="shopping-cart-emoji"
               />
               <Typography
-                variant="h4"
                 sx={{
-                  margin: "20px 0",
-                  fontFamily: "Nunito, sans-serif",
+                  fontSize: theme.fonts.size.xl,
+                  color: theme.colors.text,
+                  textAlign: "center",
                 }}
               >
                 Здесь появятся ваши любимые товары

@@ -1,5 +1,5 @@
 import { Badge, Box, Button, Container, InputBase, Toolbar, useMediaQuery, } from '@mui/material';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { useAppDispatch, useAppSelector, usePermission, } from '../../../app/hooks.ts';
 import ExistsUser from './ExistsUser.tsx';
 import UnknownUser from './UnknownUser.tsx';
@@ -22,7 +22,7 @@ import CategoryNavMenu from '../../Domain/CategoryNavMenu.tsx';
 import { cartFromSlice, getFromLocalStorage, } from '../../../store/cart/cartSlice.ts';
 import { userRoleAdmin, userRoleClient, userRoleSuperAdmin } from '../../../globalConstants.ts';
 import IconButton from '@mui/joy/IconButton';
-import { fetchUserIdBonus } from '../../../store/users/usersThunk.ts';
+import { fetchUserById, fetchUserIdBonus } from '../../../store/users/usersThunk.ts';
 import Tooltip from '@mui/joy/Tooltip';
 import { selectedFavorite } from '../../../store/favoriteProducts/favoriteProductsSlice.ts';
 import { getLocalFavoriteProducts } from '../../../store/favoriteProducts/favoriteProductLocal.ts';
@@ -47,7 +47,6 @@ const MainToolbar = () => {
   const site = useAppSelector(selectEditSite);
   const cart = useAppSelector(cartFromSlice);
   const favoriteProducts = useAppSelector(selectedFavorite);
-  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const products = useAppSelector(selectProducts);
   const [search, setSearch] = useState("");
@@ -57,6 +56,16 @@ const MainToolbar = () => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [open, setOpen] = useState(false);
   const isMobile = useMediaQuery("(max-width:600px)");
+
+  const location = useLocation();
+
+  const isClientsPage = location.pathname === '/private/clients' || location.pathname === '/private/admin-table' || location.pathname === '/private/brands' || location.pathname === '/private/products';
+
+  useEffect(() => {
+    if (user?.id) {
+      dispatch(fetchUserById(String(user.id)));
+    }
+  }, [dispatch, user?.id]);
 
   useEffect(() => {
     if (user && can([userRoleClient])) {
@@ -81,7 +90,7 @@ const MainToolbar = () => {
 
   useEffect(() => {
     if (user?.id) {
-      dispatch(fetchUserIdBonus(String(user.id))).unwrap();
+      dispatch(fetchUserIdBonus(String(user.id)));
     }
   }, [dispatch, user?.id]);
 
@@ -98,7 +107,7 @@ const MainToolbar = () => {
       dispatch(getFromLocalStorage());
     }
     dispatch(fetchSite()).unwrap();
-  }, [dispatch]);
+  }, [dispatch, user]);
 
   useEffect(() => {
     if (debouncedSearch.trim()) {
@@ -124,7 +133,6 @@ const MainToolbar = () => {
 
   const closeMenu = () => {
     setOpenCategoryMenu(false);
-    navigate("/");
   };
 
   const checkProductInCart: number[] = Array.isArray(cart?.products)
@@ -293,14 +301,12 @@ const MainToolbar = () => {
           </Container>
         )}
       </Box>
-      <div
-        style={{
+      <Box
+        sx={{
           background:
-            user?.role === "superAdmin"
-              ? `linear-gradient(135deg, ${theme.colors.adminBackgroundGreen} 0%, #A3B72F 50%, ${theme.colors.adminBackgroundYellow} 100%)`
+            can([userRoleSuperAdmin])
+              ? `linear-gradient(135deg, ${theme.colors.adminBackgroundGreen} 0%, #A3B72F 50%, ${theme.colors.adminBackgroundYellow} 100%) center / 200%`
               : theme.colors.primary,
-          backgroundSize: "200%",
-          backgroundPosition: "center",
           borderBottom: `1px solid ${theme.colors.white}`,
           boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
         }}
@@ -320,12 +326,15 @@ const MainToolbar = () => {
                 paddingBottom: "15px",
                 "@media (max-width: 1430px)": {
                   paddingTop: theme.spacing.exs,
-                  paddingBottom: 0,
+                  paddingBottom:  theme.spacing.exs,
                 },
                 "@media (max-width: 1100px)": {
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
+                },
+                "@media (max-width: 405px)": {
+                  paddingLeft: '10px',
                 },
               }}
             >
@@ -333,19 +342,36 @@ const MainToolbar = () => {
                 <Box
                   onClick={() => setOpenCategoryMenu(true)}
                   sx={{
-                    display: "none",
-                    "@media (max-width: 900px)": {
-                      paddingTop: "7px",
-                      paddingBottom: "7px",
-                      borderRadius: theme.spacing.xs,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      cursor: "pointer",
-                      transition: "background 0.3s ease",
-                      position: "relative",
-                      marginRight: theme.spacing.sm,
-                    },
+                    display: 'none',
+                    ...(isClientsPage
+                      ? {
+                        "@media (max-width: 1390px)": {
+                          display: 'flex',
+                          paddingTop: '7px',
+                          paddingBottom: '7px',
+                          borderRadius: theme.spacing.xs,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          cursor: 'pointer',
+                          transition: 'background 0.3s ease',
+                          position: 'relative',
+                          marginRight: theme.spacing.sm,
+                        },
+                      }
+                      : {
+                        "@media (max-width: 900px)": {
+                          display: 'flex',
+                          paddingTop: '7px',
+                          paddingBottom: '7px',
+                          borderRadius: theme.spacing.xs,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          cursor: 'pointer',
+                          transition: 'background 0.3s ease',
+                          position: 'relative',
+                          marginRight: theme.spacing.sm,
+                        },
+                      }),
                   }}
                 >
                   <MenuIcon sx={{ color: theme.colors.white }} />
@@ -390,6 +416,9 @@ const MainToolbar = () => {
                         marginRight: theme.spacing.xs,
                         "@media (max-width: 500px)": {
                           paddingRight: theme.spacing.xs,
+                        },
+                        "@media (max-width: 400px)": {
+                          paddingRight: 0,
                         },
                       }}
                     >
@@ -640,6 +669,9 @@ const MainToolbar = () => {
                   display: "flex",
                   alignItems: "center",
                   gap: theme.spacing.xs,
+                  "@media (max-width: 400px)": {
+                    gap: 0,
+                  },
                 }}
               >
                 {(user && can(["client"])) || !user ? (
@@ -1230,7 +1262,7 @@ const MainToolbar = () => {
             </Box>
           </Box>
         </Container>
-      </div>
+      </Box>
     </div>
   );
 };

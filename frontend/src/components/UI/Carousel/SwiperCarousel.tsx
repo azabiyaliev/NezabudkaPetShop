@@ -133,11 +133,10 @@ const SwiperCarousel = () => {
                         width: { xs: "100%", sm: "240px" },
                         fontSize: { xs: "1rem", sm: "1.2rem" },
                         py: 1.5,
-                        backgroundColor: theme.colors.black,
-                        boxShadow: "0px 14px 40px rgba(0, 0, 0, 1)",
+                        backgroundColor: theme.colors.primary,
                         borderRadius: "40px",
                         "&:hover": {
-                          backgroundColor: theme.colors.black,
+                          backgroundColor: theme.colors.DARK_GREEN,
                           boxShadow: "0px 14px 40px rgba(0, 0, 0, 1)",
                         },
                         mx: { xs: "auto", md: 0 },

@@ -47,7 +47,6 @@ export enum OrderStatus {
   Shipped = "Shipped",
   Delivered = "Delivered",
   Received = "Received",
-  Returned = "Returned",
   Canceled = "Canceled",
 }
 
@@ -84,7 +83,6 @@ const OrderAdminItem: React.FC<Props> = ({ order }) => {
       Shipped: 'Отправлен',
       Delivered: 'Доставлен',
       Received: 'Получен',
-      Returned: 'Возвращен',
       Canceled: 'Отменен'
     };
 
@@ -100,7 +98,6 @@ const OrderAdminItem: React.FC<Props> = ({ order }) => {
       Shipped: 'secondary',
       Delivered: 'success',
       Received: 'success',
-      Returned: 'error'
     };
 
     return colorMap[status] || 'default';
@@ -144,6 +141,22 @@ const OrderAdminItem: React.FC<Props> = ({ order }) => {
         maxWidth: 400,
         display: "flex",
         flexDirection: "column",
+        "@media (max-width: 1355px)": {
+          flexBasis: "48%",
+          maxWidth: "48%",
+        },
+        "@media (max-width: 955px)": {
+          flexBasis: "75%",
+          maxWidth: "75%",
+        },
+        "@media (max-width: 900px)": {
+          flexBasis: "48%",
+          maxWidth: "48%",
+        },
+        "@media (max-width: 700px)": {
+          flexBasis: "100%",
+          maxWidth: "100%",
+        },
       }}
     >
       <Box sx={{ display: "flex", flexDirection: "column", flexGrow: 1 }}>
@@ -219,6 +232,12 @@ const OrderAdminItem: React.FC<Props> = ({ order }) => {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "space-between",
+                  "@media (max-width: 1285px)": {
+                    flexWrap: "wrap",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 1
+                  },
                 }}
               >
                 <Button
@@ -228,6 +247,11 @@ const OrderAdminItem: React.FC<Props> = ({ order }) => {
                   disabled={
                     order.status !== "Delivered" && order.status !== "Received"
                   }
+                  sx={{
+                    "@media (max-width: 1285px)": {
+                      width: "100%",
+                    },
+                  }}
                 >
                   Удалить заказ
                 </Button>
@@ -235,6 +259,11 @@ const OrderAdminItem: React.FC<Props> = ({ order }) => {
                   variant="outlined"
                   onClick={() => setIsEditingStatus(true)}
                   disabled={order.status === OrderStatus.Canceled}
+                  sx={{
+                    "@media (max-width: 1285px)": {
+                      width: "100%",
+                    },
+                  }}
                 >
                   Изменить статус
                 </Button>

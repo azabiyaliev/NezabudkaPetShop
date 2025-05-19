@@ -28,10 +28,10 @@ interface SelectedFilters {
   weights: number[];
   foodClasses: string[];
   manufacturers: string[];
-  existence: boolean | null;
-  sales: boolean | null;
-  minPrice: number | null;
-  maxPrice: number | null;
+  existence: boolean;
+  sales: boolean;
+  minPrice: number;
+  maxPrice: number;
 }
 
 const Filters = () => {
@@ -60,10 +60,10 @@ const Filters = () => {
     weights: [],
     foodClasses: [],
     manufacturers: [],
-    existence: null,
-    sales: null,
-    minPrice: null,
-    maxPrice: null,
+    existence: false,
+    sales: false,
+    minPrice: 0,
+    maxPrice: 0,
   });
   
   // Загрузка опций фильтра при изменении категории
@@ -238,10 +238,10 @@ const Filters = () => {
       weights: [],
       foodClasses: [],
       manufacturers: [],
-      existence: null,
-      sales: null,
-      minPrice: null,
-      maxPrice: null,
+      existence: false,
+      sales: false,
+      minPrice: 0,
+      maxPrice: 0,
     });
     
     // Загружаем все товары категории заново

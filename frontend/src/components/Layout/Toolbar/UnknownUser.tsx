@@ -78,11 +78,15 @@ const UnknownUser = () => {
         }}
         sx={{
           '& .MuiPaper-root': {
-            backgroundColor: theme.colors.tooltip_color,
-            backdropFilter: 'blur(10px)',
+            backgroundColor: theme.colors.menu_bg_color,
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            boxShadow: 'rgb(38, 57, 77) 0px 20px 30px -10px',
+            borderRadius: '12px',
+            padding: '8px 0',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
           },
         }}
-
       >
         <MenuItem sx={{color: theme.colors.white}} component={NavLink} to="/login" onClick={handleClose}>
           Войти

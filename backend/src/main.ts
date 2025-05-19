@@ -22,10 +22,16 @@ async function bootstrap() {
     console.error('EMAIL_USER или EMAIL_PASSWORD не установлены в .env');
     process.exit(1);
   }
-
-  app.useStaticAssets(join(__dirname, '..', 'public'));
+  if (process.env.NODE_ENV === 'production') {
+    app.setGlobalPrefix('api');
+    app.useStaticAssets(join(__dirname, '..', 'public'), {
+      prefix: '/api',
+    });
+  } else {
+    app.useStaticAssets(join(__dirname, '..', 'public'));
+  }
   app.enableCors({
-    origin: 'http://localhost:5173',
+    origin: process.env.CORS_ORIGIN,
     credentials: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     allowedHeaders: 'Content-Type, Accept, Authorization',

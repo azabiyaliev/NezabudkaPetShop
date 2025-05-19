@@ -316,6 +316,7 @@ const ProductForm: React.FC<Props> = ({
           </Grid>
           <Grid size={{ xs: 12 }}>
             <TextEditor
+              placeholder='Описание'
               value={form.productDescription}
               onChange={(html) =>
                 setForm((prev) => ({
@@ -332,9 +333,9 @@ const ProductForm: React.FC<Props> = ({
               <FormControl
                 fullWidth
               >
-                <InputLabel id="brand">Бренд</InputLabel>
+                <InputLabel id="brand-label-unique">Бренд</InputLabel>
                 <Select
-                  labelId="brandId"
+                  labelId="brand-label-unique"
                   id="brandId"
                   value={form.brandId ?? ""}
                   name="brandId"
@@ -358,8 +359,11 @@ const ProductForm: React.FC<Props> = ({
           ) : (
             <Grid size={{xs:12}}>
               <FormControl fullWidth>
-                <InputLabel id="categoryId">Категория</InputLabel>
+                <InputLabel id="category-label-unique">Категория</InputLabel>
                 <Select
+                  labelId="category-label-unique"
+                  id="categoryId"
+                  label='Категория'
                 multiple
                 value={form.categoryId}
                 onChange={(e) => {

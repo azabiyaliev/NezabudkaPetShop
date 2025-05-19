@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { getAllOrders } from "../../../store/orders/ordersThunk";
 import {
-  Box, Button,
-  CircularProgress, Drawer, IconButton,
+  Box,
+  CircularProgress,
   MenuItem,
   Select,
   SelectChangeEvent,
@@ -14,7 +14,6 @@ import dayjs from "dayjs";
 import { IOrder } from "../../../types";
 import CustomPagination from "../../../components/Pagination/Pagination.tsx";
 import AdminBar from "../AdminProfile/AdminBar.tsx";
-import MenuIcon from '@mui/icons-material/Menu';
 import { SPACING } from '../../../globalStyles/stylesObjects.ts';
 
 const AllOrders = () => {
@@ -23,7 +22,6 @@ const AllOrders = () => {
   const loading = useAppSelector((state) => state.orders.isLoading);
   const [statusFilter, setStatusFilter] = useState<string>("All");
   const [timeFilter, setTimeFilter] = useState<string>("All");
-  const [isAdminBarOpen, setIsAdminBarOpen] = useState(false);
 
   useEffect(() => {
     dispatch(getAllOrders());
@@ -70,7 +68,6 @@ const AllOrders = () => {
       return 0;
     });
 
-  const toggleAdminBar = () => setIsAdminBarOpen(!isAdminBarOpen);
 
   useEffect(() => {
     document.title = "Все заказы";
@@ -82,68 +79,27 @@ const AllOrders = () => {
         display: "flex",
         margin: "30px 0",
         position: "relative",
+        "@media (max-width: 1100px)": {
+          alignItems: "center",
+          justifyContent: "center",
+        },
       }}
     >
-      <IconButton
-        onClick={toggleAdminBar}
-        sx={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          display: "block",
-          zIndex: 10,
-          "@media (min-width: 1360px)": {
-            display: "none",
-          },
-        }}
-      >
-        <MenuIcon />
-      </IconButton>
-
-      <Drawer
-        anchor="left"
-        open={isAdminBarOpen}
-        onClose={toggleAdminBar}
-        sx={{
-          "& .MuiDrawer-paper": {
-            width: 400,
-          },
-        }}
-      >
-        <Box
-          sx={{
-            p: 2,
-            display: "flex",
-            flexDirection: "column",
-            height: "100%",
-          }}
-        >
-          <Typography variant="h6" sx={{ mb: 2 }}>
-            Admin Panel
-          </Typography>
-          <AdminBar />
-          <Button
-            variant="contained"
-            color="primary"
-            sx={{ mt: "auto" }}
-            onClick={toggleAdminBar}
-          >
-            Закрыть
-          </Button>
-        </Box>
-      </Drawer>
-
       <Box
         sx={{
           flexShrink: 0,
-          width: 250,
-          height: "100%",
-          "@media (max-width: 1360px)": {
+          position: "sticky",
+          top: 20,
+          alignSelf: "flex-start",
+          zIndex: 1000,
+          marginRight: 2,
+          "@media (max-width: 900px)": {
             display: "none",
           },
         }}
       >
-        <AdminBar />
+
+      <AdminBar />
       </Box>
 
       <Box
@@ -154,6 +110,9 @@ const AllOrders = () => {
           alignItems: "center",
           flexWrap: 'wrap',
           marginLeft: SPACING.main_spacing,
+          "@media (max-width: 1750px)": {
+            marginLeft: 0
+          },
         }}
       >
         <Box>

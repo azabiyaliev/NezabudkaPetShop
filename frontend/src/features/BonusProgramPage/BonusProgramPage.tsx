@@ -23,17 +23,22 @@ const BonusProgramPage = () => {
 
   return (
     <Container maxWidth="xl">
-      <div className="d-flex">
-        <div className="col-3 mt-5">
+      <Box sx={{
+        display: 'flex',
+        "@media (max-width: 820px)": {
+          display: 'block',
+        },
+      }}>
+        <Box sx={{
+          mt: 5,
+        }}>
           <ByuerBarTopTollBar />
-        </div>
-
-        <div className="col-9 mt-5" style={{ display: 'flex', justifyContent: 'center' }}>
-          <Container>
-            <Typography variant="h6" gutterBottom sx={{ textAlign: 'center', fontWeight: 600 }}>
-              Бонусная программа
-            </Typography>
-
+        </Box>
+        <Box sx={{mt: 5}}>
+          <Typography variant="h6" gutterBottom sx={{textAlign: 'center', fontWeight: 600}}>
+            Бонусная программа
+          </Typography>
+          <div className="col-9, w-100" style={{display: 'flex', justifyContent: 'center'}}>
             <Box
               sx={{
                 borderRadius: '5px',
@@ -43,7 +48,7 @@ const BonusProgramPage = () => {
               }}
             >
               <div
-                dangerouslySetInnerHTML={{ __html: bonusProgram?.text || '<p>Информация пока не добавлена.</p>' }}
+                dangerouslySetInnerHTML={{__html: bonusProgram?.text || '<p>Информация пока не добавлена.</p>'}}
                 style={{
                   lineHeight: 1.6,
                   fontSize: '16px',
@@ -60,17 +65,21 @@ const BonusProgramPage = () => {
                     color: theme.colors.DARK_GREEN,
                   }}
                 >
-                  <Typography sx={{ fontWeight: 500 }}>
+                  <Typography sx={{fontWeight: 500}}>
                     Чтобы получать и использовать бонусы, вам необходимо{' '}
-                    <Link to="/login" style={{ color: theme.colors.DARK_GREEN, textDecoration: 'underline' }}>войти</Link> или{' '}
-                    <Link to="/register" style={{ color: theme.colors.DARK_GREEN, textDecoration: 'underline' }}>зарегистрироваться</Link>.
+                    <Link to="/login"
+                          style={{color: theme.colors.DARK_GREEN, textDecoration: 'underline'}}>войти</Link> или{' '}
+                    <Link to="/register" style={{
+                      color: theme.colors.DARK_GREEN,
+                      textDecoration: 'underline'
+                    }}>зарегистрироваться</Link>.
                   </Typography>
                 </Box>
               )}
             </Box>
-          </Container>
-        </div>
-      </div>
+          </div>
+        </Box>
+      </Box>
     </Container>
   );
 };

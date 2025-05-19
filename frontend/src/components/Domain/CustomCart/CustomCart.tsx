@@ -31,10 +31,17 @@ const CustomCart: React.FC<Props> = ({ openCart, closeCart }) => {
   const checkProductInCart: { price: number; amount: number }[] = Array.isArray(cart?.products)
     ? cart.products.map((product) => {
       if (product.product) {
-        return {
-          price: product.product.productPrice,
-          amount: product.quantity,
-        };
+        if (product.product.sales) {
+          return {
+            price: product.product.promoPrice,
+            amount: product.quantity,
+          };
+        } else {
+          return {
+            price: product.product.productPrice,
+            amount: product.quantity,
+          };
+        }
       } else {
         return { price: 0, amount: 0 };
       }

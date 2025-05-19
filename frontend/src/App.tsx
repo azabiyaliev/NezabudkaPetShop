@@ -31,7 +31,7 @@ import OrderStats from './features/Admin/AdminOrderPage/OrderStats.tsx';
 import FavoriteProduct from './features/FavoriteProduct/containers/FavoriteProduct.tsx';
 import CompanyPage from './features/CompanyPage/CompanyPage.tsx';
 import BonusProgramPage from './features/BonusProgramPage/BonusProgramPage.tsx';
-import { userRoleAdmin, userRoleSuperAdmin } from './globalConstants.ts';
+import { userRoleAdmin, userRoleClient, userRoleSuperAdmin } from "./globalConstants.ts";
 import DeliveryPage from './features/DeliveryPage/DeliveryPage.tsx';
 import CategoryPage from './features/Category/CategoryPage/CategoryPage.tsx';
 import  { useEffect } from 'react';
@@ -96,7 +96,7 @@ const App = () => {
           <Route
             path="/private_account"
             element={
-              <ProtectedRoute isAllowed={user && can(["admin", "superAdmin"])}>
+              <ProtectedRoute isAllowed={user && can([userRoleAdmin, userRoleSuperAdmin])}>
                 <AdminProfile />
               </ProtectedRoute>
             }
@@ -104,7 +104,7 @@ const App = () => {
           <Route
             path="/my_account/users/account/:id"
             element={
-              <ProtectedRoute isAllowed={user && can(["client"])}>
+              <ProtectedRoute isAllowed={user && can([userRoleClient])}>
                 <ClientProfile />
               </ProtectedRoute>
             }
@@ -112,7 +112,7 @@ const App = () => {
           <Route
             path="/private/users/:id"
             element={
-              <ProtectedRoute isAllowed={user && can(["admin", "superAdmin"])}>
+              <ProtectedRoute isAllowed={user && can([userRoleAdmin, userRoleSuperAdmin])}>
                 <AdminEditProfile />
               </ProtectedRoute>
             }
@@ -129,7 +129,7 @@ const App = () => {
           <Route
             path="/private/client_orders"
             element={
-              <ProtectedRoute isAllowed={user && can(["admin", "superAdmin"])}>
+              <ProtectedRoute isAllowed={user && can([userRoleAdmin, userRoleSuperAdmin])}>
                 <AllOrders />
               </ProtectedRoute>
             }
@@ -138,7 +138,7 @@ const App = () => {
           <Route
             path="/private/order_stats"
             element={
-              <ProtectedRoute isAllowed={user && can(["superAdmin"])}>
+              <ProtectedRoute isAllowed={user && can([userRoleSuperAdmin])}>
                 <OrderStats />
               </ProtectedRoute>
             }
@@ -154,7 +154,7 @@ const App = () => {
           <Route
             path="/private/edit_brand/:id"
             element={
-              <ProtectedRoute isAllowed={user && can(["admin", "superAdmin"])}>
+              <ProtectedRoute isAllowed={user && can([userRoleAdmin, userRoleSuperAdmin])}>
                 <EditBrandPage />
               </ProtectedRoute>
             }
@@ -162,7 +162,7 @@ const App = () => {
           <Route
             path="/private/edition_site"
             element={
-              <ProtectedRoute isAllowed={user && can(["admin", "superAdmin"])}>
+              <ProtectedRoute isAllowed={user && can([userRoleAdmin, userRoleSuperAdmin])}>
                 <EditionSitePage />
               </ProtectedRoute>
             }
@@ -170,7 +170,7 @@ const App = () => {
           <Route
             path="/private/add_product"
             element={
-              <ProtectedRoute isAllowed={user && can(["admin", "superAdmin"])}>
+              <ProtectedRoute isAllowed={user && can([userRoleAdmin, userRoleSuperAdmin])}>
                 <NewProduct />
               </ProtectedRoute>
             }
@@ -178,7 +178,7 @@ const App = () => {
           <Route
             path="/private/products"
             element={
-              <ProtectedRoute isAllowed={user && can(["admin", "superAdmin"])}>
+              <ProtectedRoute isAllowed={user && can([userRoleAdmin, userRoleSuperAdmin])}>
                 <ProductsPage />
               </ProtectedRoute>
             }
@@ -186,7 +186,7 @@ const App = () => {
           <Route
             path="/private/edit_product/:id"
             element={
-              <ProtectedRoute isAllowed={user && can(["admin", "superAdmin"])}>
+              <ProtectedRoute isAllowed={user && can([userRoleAdmin, userRoleSuperAdmin])}>
                 <EditProduct />
               </ProtectedRoute>
             }
@@ -194,7 +194,7 @@ const App = () => {
           <Route
             path="/private/manage_categories"
             element={
-              <ProtectedRoute isAllowed={user && can(["admin", "superAdmin"])}>
+              <ProtectedRoute isAllowed={user && can([userRoleAdmin, userRoleSuperAdmin])}>
                 <CategoryPage />
               </ProtectedRoute>
             }
@@ -205,57 +205,57 @@ const App = () => {
           <Route path="/all-products" element={<AllProductsCardsPage />} />
           <Route path="/all-products/:id" element={<AllProductsCardsPage />} />
           <Route path="/private/admin-create" element={
-            <ProtectedRoute isAllowed={user && can(["superAdmin"])}>
+            <ProtectedRoute isAllowed={user && can([userRoleSuperAdmin])}>
               <AddAdmin/>
             </ProtectedRoute>
           }/>
           <Route path="/private/admin-edit/:id" element={
-            <ProtectedRoute isAllowed={user && can(["superAdmin"])}>
+            <ProtectedRoute isAllowed={user && can([userRoleSuperAdmin])}>
               <AdminForm/>
             </ProtectedRoute>
           } />
           <Route path="/private/admin/statistic" element={
-            <ProtectedRoute isAllowed={user && can(['superAdmin'])}>
+            <ProtectedRoute isAllowed={user && can([userRoleSuperAdmin])}>
               <OrderStats />
             </ProtectedRoute>
           }/>
           <Route path='/private/admin-table' element={
-            <ProtectedRoute isAllowed={user && can(["superAdmin"])}>
+            <ProtectedRoute isAllowed={user && can([userRoleSuperAdmin])}>
               <AdminTable/>
             </ProtectedRoute>
           }/>
           <Route path='/private/clients' element={
-            <ProtectedRoute isAllowed={user && can(["superAdmin", "admin"])}>
+            <ProtectedRoute isAllowed={user && can([userRoleAdmin, userRoleSuperAdmin])}>
               <ClientTable/>
             </ProtectedRoute>
           }/>
           <Route path='/favorite-products' element={<FavoriteProduct/>}/>
           <Route path='/my_company' element={<CompanyPage/>}/>
           <Route path='/private/my_company' element={
-            <ProtectedRoute isAllowed={user && can(["superAdmin", "admin"])}>
+            <ProtectedRoute isAllowed={user && can([userRoleAdmin, userRoleSuperAdmin])}>
             <CompanyPageFormAdmin/>
             </ProtectedRoute>
           }/>
           <Route path='/bonus_program' element={<BonusProgramPage/>}/>
           <Route path='/private/bonus_program' element={
-            <ProtectedRoute isAllowed={user && can(["superAdmin", "admin"])}>
+            <ProtectedRoute isAllowed={user && can([userRoleAdmin, userRoleSuperAdmin])}>
             <BonusProgramFormAdminPage/>
             </ProtectedRoute>
           }/>
           <Route path='/delivery' element={<DeliveryPage/>}/>
           <Route path='/private/delivery' element={
-            <ProtectedRoute isAllowed={user && can(["superAdmin", "admin"])}>
+            <ProtectedRoute isAllowed={user && can([userRoleAdmin, userRoleSuperAdmin])}>
               <DeliveryPageFormAdmin/>
             </ProtectedRoute>
           }/>
           <Route path='/contacts' element={<ContactPage/>}/>
           <Route path='/private/admin_info' element={
-            <ProtectedRoute isAllowed={user && can(["superAdmin"])}>
+            <ProtectedRoute isAllowed={user && can([userRoleSuperAdmin])}>
               <AdminInfoPagesForm/>
             </ProtectedRoute>
           }/>
           <Route path='/private/client_info' element={
-            <ProtectedRoute isAllowed={user && can(["superAdmin"])}>
+            <ProtectedRoute isAllowed={user && can([userRoleSuperAdmin])}>
               <ClientInfoPagesForm/>
             </ProtectedRoute>
           }/>

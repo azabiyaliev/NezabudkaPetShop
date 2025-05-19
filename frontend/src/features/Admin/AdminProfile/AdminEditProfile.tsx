@@ -30,10 +30,10 @@ const AdminEditProfile = () => {
     >
       <Box
         sx={{
-        '@media (max-width: 900px)': {
-          width: '100%',
-        },
-      }}>
+          "@media (max-width: 900px)": {
+            display: "none",
+          },
+        }}>
         <AdminBar />
       </Box>
       <Box sx={{ flexGrow: 1, pl: 3, pr: 3, maxWidth: 1200,   mx: "auto", }}>
