@@ -53,7 +53,8 @@ const OrderForm = () => {
     bonusUsed: 0,
     deliveryMethod: DeliveryMethod.Delivery,
     items: [],
-    recaptchaToken: ""
+    recaptchaToken: "",
+    totalPrice: 0,
   });
   const delivery = useAppSelector(selectDelivery);
   const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
@@ -72,8 +73,15 @@ const OrderForm = () => {
         items: carts.products.map(item => ({
           productId: item.product.id,
           quantity: item.quantity,
-          orderAmount: item.product.productPrice * item.quantity
-        }))
+          orderAmount: item.product.productPrice * item.quantity,
+          productName: item.product.productName,
+          productPhoto: item.product.productPhoto,
+          promoPrice: item.product.promoPrice ?? 0,
+          productPrice: item.product.productPrice,
+          promoPercentage: item.product.promoPercentage ?? null,
+          sales: item.product.sales,
+          productDescription: item.product.productDescription,
+        })),
       }));
     }
   }, [carts]);
@@ -174,7 +182,35 @@ const OrderForm = () => {
     return true;
   };
 
+  const productsToBuy: { price: number; amount: number }[] = carts.products.map(
+    (product) => {
+      if (product.product) {
+        if (product.product.sales) {
+          return {
+            price: product.product.promoPrice,
+            amount: product.quantity,
+          };
+        } else {
+          return {
+            price: product.product.productPrice,
+            amount: product.quantity,
+          };
+        }
+      } else {
+        return { price: 0, amount: 0 };
+      }
+    },
+  );
 
+  const totalPriceProduct: number = productsToBuy.reduce(
+    (acc: number, item: { price: number; amount: number }) => {
+      return acc + item.price * item.amount;
+    },
+    0,
+  );
+
+  const bonusToReceive = totalPriceProduct * 0.01
+  const finalTotalPrice: number = totalPriceProduct - (form.bonusUsed ? form.bonusUsed : 0);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -185,30 +221,31 @@ const OrderForm = () => {
 
     if(!isFormValid) return
 
-try {
-  const orderData = {
-    ...form,
-    recaptchaToken
-  };
-  await dispatch(checkoutAuthUserOrder(orderData)).unwrap();
-  enqueueSnackbar("Заказ успешно оформлен!", {
-    variant: "success",
-  });
-  if (!orderData.userId) {
-    dispatch(clearCart())
-  } else if (carts?.id) {
-      await dispatch(deleteItemsCart({cartId: carts.id})).unwrap()
-      dispatch(clearCart());
-  }
-  navigate("/");
-} catch {
-      enqueueSnackbar("Ошибка при оформлении заказа", {
-        variant: "error",
+    try {
+      const orderData = {
+        ...form,
+        totalPrice: Number(finalTotalPrice),
+        recaptchaToken,
+      };
+      await dispatch(checkoutAuthUserOrder(orderData)).unwrap();
+      enqueueSnackbar("Заказ успешно оформлен!", {
+        variant: "success",
       });
-} finally {
-  recaptchaRef.current?.reset();
-  setRecaptchaToken(null);
-}
+      if (!orderData.userId) {
+        dispatch(clearCart())
+      } else if (carts?.id) {
+        await dispatch(deleteItemsCart({cartId: carts.id})).unwrap()
+        dispatch(clearCart());
+      }
+      navigate("/");
+    } catch {
+          enqueueSnackbar("Ошибка при оформлении заказа", {
+            variant: "error",
+          });
+    } finally {
+      recaptchaRef.current?.reset();
+      setRecaptchaToken(null);
+    }
   };
 
   const totalPrice = carts && carts.products.reduce(
@@ -290,7 +327,7 @@ try {
               }
             }}
           >
-            <TotalPrice products={carts.products} bonusUsed={form.bonusUsed || 0} />
+            <TotalPrice bonusToReceive={bonusToReceive} bonusUsed={form.bonusUsed || 0} totalPriceProduct={totalPriceProduct} finalTotalPrice={finalTotalPrice}/>
             <Box>
               {user && user.role === 'client' && (
                 <Box
@@ -724,7 +761,7 @@ try {
                 }
               }}
             >
-              <TotalPrice products={carts.products} bonusUsed={form.bonusUsed || 0} />
+              <TotalPrice bonusToReceive={bonusToReceive} bonusUsed={form.bonusUsed || 0} totalPriceProduct={totalPriceProduct} finalTotalPrice={finalTotalPrice}/>
               <Box>
                 {user && user.role === 'client' && (
                   <Box

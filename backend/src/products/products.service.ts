@@ -419,11 +419,30 @@ export class ProductsService {
       throw new NotFoundException('Данный товар не найден');
     }
 
+    await this.prismaService.cartItem.deleteMany({
+      where: {
+        productId: id,
+      },
+    });
+
+    await this.prismaService.productCategory.deleteMany({
+      where: { productId: id },
+    });
+
+    await this.prismaService.cartItem.deleteMany({
+      where: { productId: id },
+    });
+
+    await this.prismaService.favorite.deleteMany({
+      where: { productId: id },
+    });
+
     await this.prismaService.products.delete({
       where: {
         id,
       },
     });
+
     return { message: 'Товар был успешно удалён!' };
   }
 

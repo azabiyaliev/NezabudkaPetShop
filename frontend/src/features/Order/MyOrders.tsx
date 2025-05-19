@@ -434,7 +434,7 @@ const MyOrders = () => {
             renderItem={(item) =>
               <Box key={item.id} sx={{
                 display: 'flex',
-                gap: SPACING.sm,
+                gap: SPACING.md,
                 width: "100%",
               }}>
                 <ClientOrdersItem order={item} />

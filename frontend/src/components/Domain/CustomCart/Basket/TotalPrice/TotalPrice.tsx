@@ -1,6 +1,5 @@
 import React from 'react';
 import { Box, List, ListItem, ListItemDecorator } from '@mui/joy';
-import { ICartItem } from '../../../../../types';
 import Typography from '@mui/joy/Typography';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import { useAppSelector } from '../../../../../app/hooks.ts';
@@ -8,43 +7,14 @@ import { selectUser } from '../../../../../store/users/usersSlice.ts';
 import { SPACING } from '../../../../../globalStyles/stylesObjects.ts';
 
 interface Props {
-  products: ICartItem[];
   bonusUsed: number;
+  finalTotalPrice: number;
+  totalPriceProduct: number;
+  bonusToReceive: number;
 }
 
-const TotalPrice: React.FC<Props> = ({ products, bonusUsed }) => {
+const TotalPrice: React.FC<Props> = ({ bonusUsed, finalTotalPrice, totalPriceProduct, bonusToReceive }) => {
   const user = useAppSelector(selectUser);
-
-  const productsToBuy: { price: number; amount: number }[] = products.map(
-    (product) => {
-      if (product.product) {
-        if (product.product.sales) {
-          return {
-            price: product.product.promoPrice,
-            amount: product.quantity,
-          };
-        } else {
-          return {
-            price: product.product.productPrice,
-            amount: product.quantity,
-          };
-        }
-      } else {
-        return { price: 0, amount: 0 };
-      }
-    },
-  );
-
-  const totalPriceProduct: number = productsToBuy.reduce(
-    (acc: number, item: { price: number; amount: number }) => {
-      return acc + item.price * item.amount;
-    },
-    0,
-  );
-
-
-  const bonusToReceive = totalPriceProduct * 0.01
-  const finalTotalPrice: number = totalPriceProduct - bonusUsed;
 
   return (
     <Box
