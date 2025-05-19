@@ -110,7 +110,7 @@ const CategoryNavMenu: React.FC<Props> = ({ openMenu, closeMenu }) => {
           flexDirection: "column",
           gap: 2,
           height: "100%",
-          overflow: "hidden", // скрываем лишнее, скролл будет внутри списков
+          overflow: "hidden",
           "@media (max-width: 1390px)": {
             paddingRight: 0,
           },
@@ -121,7 +121,6 @@ const CategoryNavMenu: React.FC<Props> = ({ openMenu, closeMenu }) => {
             <ModalClose onClick={toggleAdminBar} />
             <Box
               sx={{
-                pt: 5,
                 display: "flex",
                 flexDirection: "column",
                 height: "100%",
@@ -141,7 +140,6 @@ const CategoryNavMenu: React.FC<Props> = ({ openMenu, closeMenu }) => {
                 height: "100%",
               }}
             >
-              {/* Все категории */}
               <Box
                 sx={{
                   position: "absolute",
@@ -237,7 +235,6 @@ const CategoryNavMenu: React.FC<Props> = ({ openMenu, closeMenu }) => {
                 </Box>
               </Box>
 
-              {/* Подкатегории */}
               <Box
                 sx={{
                   position: "absolute",
