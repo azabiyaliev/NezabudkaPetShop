@@ -38,6 +38,10 @@ const EditProduct = () => {
     }
   };
 
+  useEffect(() => {
+    document.title = "Редактирование товара";
+  }, []);
+
   return (
     <Box
       sx={{
@@ -47,7 +51,18 @@ const EditProduct = () => {
           flexWrap: "wrap",
         },
       }}>
-      <AdminBar />
+      <Box
+        sx={{
+          flexShrink: 0,
+          height: "100%",
+          marginRight: 2,
+          "@media (max-width: 900px)": {
+            display: "none",
+          },
+        }}
+      >
+        <AdminBar />
+      </Box>
       <Box
         sx={{
           flexGrow: 1,

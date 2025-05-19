@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { Box, IconButton, InputAdornment, TextField, Typography } from '@mui/material';
 import { ruRU } from '@mui/x-data-grid/locales';
@@ -104,7 +104,11 @@ const AdminList: React.FC<Props> = ({ admins }) => {
 
   const filteredAdmins = admins.filter((admin) =>
     admin.firstName.toLowerCase().includes(adminSearch.toLowerCase())
-  );
+  )
+
+  useEffect(() => {
+    document.title = "Список администраторов";
+  }, []);
 
   return (
     <Box sx={{ width: '100%' }}>

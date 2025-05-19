@@ -68,6 +68,11 @@ const AllOrders = () => {
       return 0;
     });
 
+
+  useEffect(() => {
+    document.title = "Все заказы";
+  }, []);
+
   return (
     <Box
       sx={{

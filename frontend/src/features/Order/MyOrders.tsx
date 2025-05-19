@@ -51,6 +51,10 @@ const MyOrders = () => {
   };
 
   useEffect(() => {
+    document.title = "Мои заказы";
+  }, []);
+
+  useEffect(() => {
     const loadOrders = async () => {
       if (user) {
         await dispatch(GetClientOrders());

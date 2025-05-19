@@ -59,6 +59,16 @@ const ProductPage = () => {
   const can = usePermission(user);
 
   useEffect(() => {
+      if (id) {
+        if (product) {
+          document.title = `${product.productName}`;
+        } else {
+          document.title = "Продукт не найден";
+        }
+    }
+  }, [id, product]);
+
+  useEffect(() => {
     if (id && product && product.id && product.productName) {
       dispatch(addProductToHistory({
         productId: product.id,

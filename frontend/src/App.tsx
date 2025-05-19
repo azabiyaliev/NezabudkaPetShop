@@ -56,6 +56,12 @@ const App = () => {
   const location = useLocation();
 
   useEffect(() => {
+    if (location.pathname === "/") {
+      document.title = "Незабудка";
+    }
+  }, [location]);
+
+  useEffect(() => {
     const tokenExists = document.cookie.includes('tokenPresent=true');
     if (tokenExists) {
       dispatch(fetchMe());

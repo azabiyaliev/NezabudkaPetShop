@@ -136,6 +136,11 @@ const DeliveryPageForm = () => {
     }
   };
 
+  useEffect(() => {
+    document.title = "Редактирование страницы «Доставка и оплата»";
+  }, []);
+
+
   return (
     <Box>
       <Box

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { IBrandForm, ICartBack, ProductResponse } from '../../../../types';
 import { Box, Typography } from '@mui/joy';
 import { apiUrl } from '../../../../globalConstants';
@@ -13,6 +13,15 @@ interface Props {
 }
 
 const OneBrand:React.FC<Props> = ({ brand, products, cart }) => {
+
+  useEffect(() => {
+
+    if(brand) {
+      document.title = `Брэнд - ${brand.title}`;
+    }
+
+  }, [brand]);
+
   return (
     <>
       <Box sx={{ position: 'relative', overflow: 'hidden', marginTop: '60px' }}>

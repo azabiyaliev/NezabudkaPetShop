@@ -104,6 +104,10 @@ const FormEditPhoto: React.FC<FormEditPhotoProps> = ({ photoId }) => {
       photo: null,
     });
   };
+
+  useEffect(() => {
+    document.title = "Редактирование фото карусели";
+  }, []);
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: { xs: 2, md: 4 } }}>
       <NavLink to="/private/edit-carousel" style={{ textDecoration: 'none', color: theme.colors.primary, alignSelf: 'flex-start' }}>

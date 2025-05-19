@@ -129,6 +129,15 @@ const ProductCard:React.FC<Props> = ({ product, cart }) => {
           boxShadow: 6,
           transition: 'transform 0.3s, box-shadow 0.3s',
         },
+        "@media (max-width: 1420px)": {
+          width: 200,
+        },
+        "@media (max-width: 503px)": {
+          width: 188,
+        },
+        "@media (max-width: 483px)": {
+          width: 233,
+        },
       }}
     >
       {product.sales && (

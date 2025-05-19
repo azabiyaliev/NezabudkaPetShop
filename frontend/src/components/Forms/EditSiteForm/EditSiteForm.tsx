@@ -117,6 +117,10 @@ const EditSiteForm = () => {
     Boolean(addressError) ||
     Boolean(linkAddressError);
 
+  useEffect(() => {
+    document.title = " Редактирование информации о магазине 'Незабудка'";
+  }, []);
+
   return (
     <Container component="main">
       <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center",  position: "relative" }}>

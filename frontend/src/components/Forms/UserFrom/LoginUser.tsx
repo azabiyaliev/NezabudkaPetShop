@@ -118,6 +118,10 @@ const LoginUser = () => {
     );
   };
 
+  useEffect(() => {
+    document.title = `Вход в аккаунт`;
+  }, []);
+
   return (
     <Box
       display="flex"

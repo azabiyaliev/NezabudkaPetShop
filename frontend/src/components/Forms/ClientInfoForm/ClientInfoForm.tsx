@@ -53,6 +53,11 @@ const ClientInfoForm = () => {
     }
   };
 
+  useEffect(() => {
+    document.title = "Редактирование личного кабинета для клиентов";
+  }, []);
+
+
   return (
     <Box>
       <Box

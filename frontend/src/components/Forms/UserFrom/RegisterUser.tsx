@@ -148,6 +148,10 @@ const RegisterUser = () => {
     return undefined;
   };
 
+  useEffect(() => {
+    document.title = `Регистрация`;
+  }, []);
+
   const hiddenPassword = () => {
     setPassword(!password);
   };
