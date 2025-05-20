@@ -431,15 +431,8 @@ const MyOrders = () => {
         ) : (
           <CustomPagination
             items={filteredAndSortedOrders}
-            renderItem={(item) =>
-              <Box key={item.id} sx={{
-                display: 'flex',
-                gap: SPACING.md,
-                width: "100%",
-              }}>
-                <ClientOrdersItem order={item} />
-              </Box>
-            }
+            columns={3}
+            renderItem={(item) => <ClientOrdersItem order={item} />}
           />
         )}
       </Box>

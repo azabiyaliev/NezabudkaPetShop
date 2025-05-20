@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Pagination, Box, PaginationItem } from '@mui/material';
+import { Pagination, Box } from '@mui/material';
 
 interface PaginationProps<T> {
   items: T[];
@@ -14,30 +14,6 @@ const CustomPagination = <T,>({ items, renderItem, columns = 4, rows = 5 }: Pagi
 
   const pageCount = Math.ceil(items.length / itemsPerPage);
   const paginatedItems = items.slice((page - 1) * itemsPerPage, page * itemsPerPage);
-
-  const getPaginationItems = (current: number, total: number) => {
-    const buttons = [];
-
-    buttons.push(1);
-
-    if (current > 2) {
-      buttons.push(current - 1);
-    }
-
-    if (current !== 1 && current !== total) {
-      buttons.push(current);
-    }
-
-    if (current < total - 1) {
-      buttons.push(current + 1);
-    }
-
-    if (current < total - 1) {
-      buttons.push(total);
-    }
-
-    return [...new Set(buttons)];
-  };
 
   return (
     <Box mt={3}>
@@ -57,17 +33,10 @@ const CustomPagination = <T,>({ items, renderItem, columns = 4, rows = 5 }: Pagi
           page={page}
           onChange={(_, value) => setPage(value)}
           shape="rounded"
+          showFirstButton
+          showLastButton
           size="large"
           color="primary"
-          renderItem={(item) => {
-            const visibleItems = getPaginationItems(page, pageCount);
-
-            if (visibleItems.includes(item.page!) || item.type === 'start-ellipsis' || item.type === 'end-ellipsis') {
-              return <PaginationItem {...item} />;
-            }
-
-            return null;
-          }}
         />
       </Box>
     </Box>
