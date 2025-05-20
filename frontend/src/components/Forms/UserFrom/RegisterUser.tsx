@@ -586,7 +586,6 @@ const RegisterUser = () => {
               style={{
                 textDecoration: "none",
                 color: COLORS.primary,
-                marginLeft: SPACING.sm,
               }}
             >
               Нажмите здесь, чтобы войти.
