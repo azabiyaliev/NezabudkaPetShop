@@ -406,7 +406,7 @@ const OrderAdminItem: React.FC<Props> = ({ order }) => {
                                 color="text.secondary"
                               >
                                 {item.productDescription ? ReactHtmlParser(item.productDescription) : null}
-                                {item.productId === null ? <span style={{color: 'red', marginTop: 1}}>Данный товар был удален!</span> : null}
+                                {item.productId === null ? <span style={{color: 'red', marginTop: 1}}><br/>Данный товар был удален!</span> : null}
                               </Typography>
                             </>
                           }

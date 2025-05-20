@@ -98,7 +98,7 @@ const OrderCard: React.FC<Props> = ({ order }) => {
   return (
     <Card
       sx={{
-        height: 'auto',
+        height: '100%',
         borderRadius: '15px',
         boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
         mb: SPACING.md,
@@ -108,7 +108,19 @@ const OrderCard: React.FC<Props> = ({ order }) => {
           transform: 'translateY(-4px)',
           boxShadow: '0 8px 20px rgba(0, 0, 0, 0.12)',
         },
-        borderLeft: `5px solid ${statusChipProps.color === 'error' ? COLORS.warning : COLORS.primary}`,
+        borderLeft: `5px solid ${
+          statusChipProps.color === 'error' ? COLORS.warning : COLORS.primary
+        }`,
+        width: '480px',
+        '@media (max-width: 1348px)': {
+          width: '430px',
+        },
+        '@media (max-width: 900px)': {
+          width: '370px',
+        },
+        '@media (max-width: 754px)': {
+          width: '100%',
+        },
       }}
     >
       <CardContent sx={{
@@ -210,6 +222,9 @@ const OrderCard: React.FC<Props> = ({ order }) => {
               mb: SPACING.xs,
               color: COLORS.text,
               fontSize: { xs: FONTS.size.sm, sm: FONTS.size.default },
+              '@media (max-width: 900px)': {
+                fontSize: FONTS.size.sm,
+              },
             }}>
               Товары в заказе:
             </Typography>
@@ -219,6 +234,9 @@ const OrderCard: React.FC<Props> = ({ order }) => {
               mb: SPACING.xs,
               color: COLORS.text,
               fontSize: { xs: FONTS.size.sm, sm: FONTS.size.default },
+              '@media (max-width: 900px)': {
+                fontSize: FONTS.size.sm,
+              },
             }}>
               Использовано бонусов: {order.bonusUsed}
             </Typography>

@@ -115,6 +115,7 @@ const AllProductsCardsPage = () => {
 
   const handleSelectCategory = (id: number) => {
     navigate(`/all-products/${id}`);
+    handleCloseModal();
   };
 
   const sortedProducts = [...products].sort((a, b) => {
@@ -553,10 +554,7 @@ const AllProductsCardsPage = () => {
             })()}
 
 
-          <Modal
-            open={openModal}
-            onClose={handleCloseModal}
-          >
+          <Modal open={openModal} onClose={handleCloseModal}>
             <Fade in={openModal}>
               <Box
                 sx={{
@@ -573,6 +571,7 @@ const AllProductsCardsPage = () => {
                   display: "flex",
                   flexDirection: "column",
                   gap: 2,
+                  maxHeight: "80vh",
                 }}
               >
                 <Box
@@ -588,11 +587,19 @@ const AllProductsCardsPage = () => {
                   <CloseIcon onClick={handleCloseModal} sx={{ cursor: "pointer" }} />
                 </Box>
 
-                <List>
-                  {!currentCategory
-                    ? renderCategoriesInModal(categories)
-                    : renderSubcategoriesInModal(currentCategory)}
-                </List>
+                <Box
+                  sx={{
+                    overflowY: "auto",
+                    flexGrow: 1,
+                    minHeight: 100,
+                  }}
+                >
+                  <List>
+                    {!currentCategory
+                      ? renderCategoriesInModal(categories)
+                      : renderSubcategoriesInModal(currentCategory)}
+                  </List>
+                </Box>
 
                 {currentCategory && (
                   <Button
@@ -601,7 +608,7 @@ const AllProductsCardsPage = () => {
                     onClick={() => setCurrentCategory(null)}
                     sx={{
                       mt: 2,
-                      backgroundColor:  COLORS.primary,
+                      backgroundColor: COLORS.primary,
                       color: theme.colors.white,
                       borderRadius: 2,
                       textTransform: "none",
@@ -610,11 +617,11 @@ const AllProductsCardsPage = () => {
                   >
                     Назад к категориям
                   </Button>
-
                 )}
               </Box>
             </Fade>
           </Modal>
+
 
           <Button
             onClick={handleOpenModal}
