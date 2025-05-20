@@ -40,11 +40,13 @@ const SwiperCarousel = () => {
           pauseOnMouseEnter: false,
         }}
         pagination={{
-          clickable: false,
+          clickable: true,
           dynamicBullets: true,
         }}
-        allowTouchMove={false}
-        simulateTouch={false}
+        simulateTouch={true}
+        touchRatio={1}
+        touchStartPreventDefault={false}
+        grabCursor={true}
         className="pet-shop-swiper"
         style={{
           overflow: "hidden",
@@ -130,14 +132,13 @@ const SwiperCarousel = () => {
                       sx={{
                         mt: 5,
                         maxWidth: "240px",
-                        width: { xs: "100%", sm: "240px" },
-                        fontSize: { xs: "1rem", sm: "1.2rem" },
-                        py: 1.5,
+                        width: { xs: "100%", sm: "200px", md: "240px" },
+                        fontSize: { xs: "0.9rem", sm: "1rem", md: "1.2rem" },
+                        py: { xs: 1, sm: 1.2, md: 1.5 },
                         backgroundColor: theme.colors.primary,
                         borderRadius: "40px",
                         "&:hover": {
                           backgroundColor: theme.colors.DARK_GREEN,
-                          boxShadow: "0px 14px 40px rgba(0, 0, 0, 1)",
                         },
                         mx: { xs: "auto", md: 0 },
                         display: "inline-block",
@@ -146,17 +147,17 @@ const SwiperCarousel = () => {
                       variant="contained"
                       color="success"
                     >
-                       <span
-                         style={{
-                           display: "block",
-                           whiteSpace: "nowrap",
-                           overflow: "hidden",
-                           textOverflow: "ellipsis",
-                         }}
-                         title={image.title}
-                       >
-                             {image.title}
-                        </span>
+  <span
+    style={{
+      display: "block",
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+    }}
+    title={image.title}
+  >
+    {image.title}
+  </span>
                     </Button>
                   )}
                 </Container>
