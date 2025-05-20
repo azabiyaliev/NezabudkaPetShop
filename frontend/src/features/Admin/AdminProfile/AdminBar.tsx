@@ -26,6 +26,8 @@ import HomeIcon from '@mui/icons-material/Home';
 import AdminNavItem from './AdminNavItem.tsx';
 import { userRoleAdmin, userRoleSuperAdmin } from '../../../globalConstants.ts';
 import theme from '../../../globalStyles/globalTheme.ts';
+import HistoryIcon from '@mui/icons-material/History';
+
 const iconSx = { color: theme.colors.primary, mr: theme.spacing.exs };
 const AdminBar = () => {
   const user = useAppSelector(selectUser);
@@ -99,11 +101,19 @@ const AdminBar = () => {
             icon={<SettingsSuggestOutlined sx={iconSx} />}
             text="Профиль магазина"
           />
+          <Divider />
+          <ListSubheader sx={{ bgcolor: 'inherit', fontWeight: 600, pl: 0,  position: 'static' }}>Заказы</ListSubheader>
           <AdminNavItem
-            to="/private/client_orders"
-            icon={<CreditScoreOutlined sx={iconSx} />}
-            text="Заказы клиентов"
+            to="/private/history_orders"
+            icon={<HistoryIcon sx={iconSx} />}
+            text="История Заказов"
           />
+          <AdminNavItem
+            to="/private/client_inprocess_orders"
+            icon={<CreditScoreOutlined sx={iconSx} />}
+            text="Активные Заказы"
+          />
+
           {can(['superAdmin']) && (
             <AdminNavItem
               to="/private/order_stats"
@@ -111,6 +121,7 @@ const AdminBar = () => {
               text="Статистика заказов"
             />
           )}
+          <Divider/>
           <AdminNavItem
             to="/private/clients"
             icon={<GroupOutlined sx={iconSx} />}

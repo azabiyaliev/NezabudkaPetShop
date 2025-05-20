@@ -37,7 +37,6 @@ import CategoryPage from './features/Category/CategoryPage/CategoryPage.tsx';
 import  { useEffect } from 'react';
 import { fetchMe } from './store/users/usersThunk.ts';
 import ContactPage from './features/ContactPage/ContactPage.tsx';
-import AllOrders from './features/Admin/AdminOrderPage/AllOrders.tsx';
 import MyOrders from './features/Order/MyOrders.tsx';
 import AddAdmin from './features/Admin/AddAdmin/AddAdmin.tsx';
 import ErrorPage from './components/ErrorPage/ErrorPage.tsx';
@@ -47,6 +46,8 @@ import ClientInfoPagesForm from './features/Admin/ClientInfoPagesForm/ClientInfo
 import BonusProgramFormAdminPage from './features/Admin/BonusProgramFormAdminPage/BonusProgramFormAdminPage.tsx';
 import CompanyPageFormAdmin from './features/Admin/CompanyPageFormAdmin/CompanyPageFormAdmin.tsx';
 import DeliveryPageFormAdmin from './features/Admin/DeliveryPageFormAdmin/DeliveryPageFormAdmin.tsx';
+import OrderInProcess from './features/Admin/AdminOrderPage/OrderInProcess.tsx';
+import OrderHistory from './features/Admin/AdminOrderPage/OrderHistory.tsx';
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -121,13 +122,20 @@ const App = () => {
             }
           />
           <Route
-            path="/private/client_orders"
+            path="/private/client_inprocess_orders"
             element={
               <ProtectedRoute isAllowed={user && can([userRoleAdmin, userRoleSuperAdmin])}>
-                <AllOrders />
+                <OrderInProcess />
               </ProtectedRoute>
             }
           />
+          <Route
+          path="/private/history_orders"
+          element={
+            <ProtectedRoute isAllowed={user && can([userRoleAdmin, userRoleSuperAdmin])}>
+              <OrderHistory />
+            </ProtectedRoute>
+          }/>
 
           <Route
             path="/private/order_stats"

@@ -20,8 +20,31 @@ export class OrdersService {
     private telegramBot: TelegramService,
   ) {}
 
-  async getAllOrders() {
+  async getAllOrders(inProcessing = false) {
+    const statusFilter = inProcessing
+      ? {
+          OR: [
+            { status: OrderStatus.Pending },
+            { status: OrderStatus.Confirmed },
+            { status: OrderStatus.Packed },
+            { status: OrderStatus.Shipped },
+          ],
+        }
+      : {
+          OR: [
+            { status: OrderStatus.Delivered },
+            { status: OrderStatus.Received },
+            { status: OrderStatus.Canceled },
+          ],
+        };
+
+    const finalOrderList = {
+      ...statusFilter,
+      isArchive: false,
+    };
+
     const orders = await this.prisma.order.findMany({
+      where: finalOrderList,
       include: {
         user: true,
         items: {
@@ -452,11 +475,12 @@ export class OrdersService {
     }
 
     if (status.Delivered) {
-      await this.prisma.order.delete({
+      await this.prisma.order.update({
         where: { id: orderId },
+        data: { isArchive: true },
       });
     }
-    return { message: 'Заказ был успешно удален' };
+    return { message: 'Заказ был успешно архивирован' };
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
@@ -464,12 +488,15 @@ export class OrdersService {
     const tenDaysAgo = new Date();
     tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
 
-    await this.prisma.order.deleteMany({
+    await this.prisma.order.updateMany({
       where: {
         status: OrderStatus.Delivered,
         deliveredAt: {
           lte: tenDaysAgo,
         },
+      },
+      data: {
+        isArchive: true,
       },
     });
   }
@@ -478,12 +505,15 @@ export class OrdersService {
   async autoDeletingCanceledOrder() {
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-    await this.prisma.order.deleteMany({
+    await this.prisma.order.updateMany({
       where: {
         status: OrderStatus.Canceled,
         createdAt: {
           lte: sevenDaysAgo,
         },
+      },
+      data: {
+        isArchive: true,
       },
     });
   }

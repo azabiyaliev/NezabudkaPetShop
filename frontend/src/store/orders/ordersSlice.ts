@@ -1,8 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IOrder, OrderStats } from '../../types';
 import {
-  checkoutAuthUserOrder, deleteOrder,
-  getAllOrders, GetClientOrders, GetGuestOrders, getStatistics, transferGuestOrders,
+  archiveOrder,
+  checkoutAuthUserOrder,
+  getAllProcessingOrders, GetClientOrders, GetGuestOrders, getStatistics, transferGuestOrders,
   updateOrderStatus
 } from './ordersThunk.ts';
 
@@ -34,19 +35,19 @@ const ordersSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(
-        getAllOrders.pending, (state) => {
+        getAllProcessingOrders.pending, (state) => {
           state.isLoading = true;
           state.isError = false
         }
       )
       .addCase(
-        getAllOrders.fulfilled, (state, action: PayloadAction<IOrder[]>) => {
+        getAllProcessingOrders.fulfilled, (state, action: PayloadAction<IOrder[]>) => {
           state.isLoading = false;
           state.orders = action.payload;
         }
       )
       .addCase(
-        getAllOrders.rejected, (state) => {
+        getAllProcessingOrders.rejected, (state) => {
           state.isLoading = false;
           state.isError = true;
         }
@@ -159,19 +160,19 @@ const ordersSlice = createSlice({
         }
       )
       .addCase(
-        deleteOrder.pending, (state) => {
+        archiveOrder.pending, (state) => {
           state.isLoading = true;
           state.isError = false
         }
       )
       .addCase(
-        deleteOrder.fulfilled, (state, action) => {
+        archiveOrder.fulfilled, (state, action) => {
           state.isLoading = false;
           state.orders = state.orders.filter((order) => String(order.id) !== action.meta.arg)
         }
       )
       .addCase(
-        deleteOrder.rejected, (state) => {
+        archiveOrder.rejected, (state) => {
           state.isLoading = false;
           state.isError = true;
         }

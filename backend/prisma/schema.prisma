@@ -132,7 +132,7 @@ model Products {
 
   existence       Boolean   @default(true)
   sales           Boolean   @default(false)
-  isBestseller    Boolean @default(false) @map("is_bestseller")
+  isBestseller    Boolean   @default(false) @map("is_bestseller")
   startDateSales  DateTime?
   endDateSales    DateTime?
   promoPercentage Int?      @map("sale_percentage")
@@ -180,6 +180,7 @@ model Order {
   deliveryMethod DeliveryMethod @default(Delivery) @map("delivery_method")
   bonusUsed      Int            @default(0)
   useBonus       Boolean        @default(false)
+  isArchive      Boolean        @default(false)
 
   userId Int?        @map("user_id")
   user   User?       @relation(fields: [userId], references: [id])

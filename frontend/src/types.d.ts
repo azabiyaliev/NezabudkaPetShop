@@ -307,6 +307,7 @@ export interface IOrder {
   items: ICartItem[];
   createdAt: string;
   updatedAt: string;
+  isArchive: boolean;
 }
 
 export interface OrderMutation {
