@@ -12,6 +12,10 @@ const OrderStats = () => {
   const orders = useAppSelector((state) => state.orders.orderStats);
 
   useEffect(() => {
+    document.title = "Статистика заказов";
+  }, []);
+
+  useEffect(() => {
     dispatch(getStatistics());
 
     const interval = setInterval(() => {
@@ -87,6 +91,7 @@ const OrderStats = () => {
     { field: "count", headerName: "Количество", flex: 1 },
     { field: "percentage", headerName: "Проценты", flex: 1 },
   ];
+
 
   return (
     <Box

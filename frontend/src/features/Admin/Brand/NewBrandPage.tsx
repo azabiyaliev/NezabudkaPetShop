@@ -11,6 +11,7 @@ import { enqueueSnackbar } from 'notistack';
 import { userRoleAdmin, userRoleSuperAdmin } from '../../../globalConstants.ts';
 import theme from '../../../globalStyles/globalTheme.ts';
 import Typography from '@mui/joy/Typography';
+import { useEffect } from 'react';
 
 
 const NewBrandPage = () => {
@@ -28,6 +29,10 @@ const NewBrandPage = () => {
       navigate("/private/brands");
     }
   };
+
+  useEffect(() => {
+    document.title = "Добавление нового бренда";
+  }, []);
 
   return (
     <Box

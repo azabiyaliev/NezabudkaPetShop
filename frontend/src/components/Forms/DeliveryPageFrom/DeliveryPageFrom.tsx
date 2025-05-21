@@ -19,7 +19,10 @@ const initialState = {
   checkoutDeliveryPriceInfo: ''
 }
 
-const DELIVERY_MAP_REGEX = /https:\/\/www\.google\.com\/maps\/d\/u\/\d\/embed\?mid=[A-Za-z0-9_-]+/;
+const transformMapLink = (link: string) => {
+  if (!link) return '';
+  return link.replace('/edit?mid=', '/embed?mid=');
+}
 
 const DeliveryPageForm = () => {
   const dispatch = useAppDispatch();
@@ -34,9 +37,14 @@ const DeliveryPageForm = () => {
       .unwrap()
       .then((deliveryData) => {
         if (deliveryData) {
+          const transformedData = {
+            ...deliveryData,
+            map: transformMapLink(deliveryData.map),
+          };
+
           setForm(prev => {
-            if (JSON.stringify(prev) !== JSON.stringify(deliveryData)) {
-              return deliveryData;
+            if (JSON.stringify(prev) !== JSON.stringify(transformedData)) {
+              return transformedData;
             }
             return prev;
           });
@@ -79,14 +87,18 @@ const DeliveryPageForm = () => {
   };
 
   const handleMapChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const mapValue = e.target.value;
+    let mapValue = e.target.value;
+    if (mapValue.includes('/edit?mid=')) {
+      mapValue = mapValue.replace('/edit?mid=', '/embed?mid=');
+    }
+
     setForm((prevState) => ({
       ...prevState,
       map: mapValue,
     }));
 
-    if (!DELIVERY_MAP_REGEX.test(mapValue)) {
-      setMapError("Неверный формат ссылки на карту.");
+    if (!mapValue.includes('/embed?mid=')) {
+      setMapError("Ссылка должна содержать '/embed?mid='.");
     } else {
       setMapError(null);
     }
@@ -129,12 +141,16 @@ const DeliveryPageForm = () => {
       await dispatch(updateDeliveryPage({ id: delivery.id, data: form })).unwrap();
       enqueueSnackbar('Вы успешно отредактировали страницу "Доставка и оплата"!', { variant: 'success' });
       navigate(`/delivery`);
-      await dispatch(fetchDeliveryPage())
+      await dispatch(fetchDeliveryPage());
     } catch (error) {
       console.error(error);
-      enqueueSnackbar('Ввм неудалось отредактировать страницу "Доставка и оплата"!', { variant: 'error' });
+      enqueueSnackbar('Вам не удалось отредактировать страницу "Доставка и оплата"!', { variant: 'error' });
     }
   };
+
+  useEffect(() => {
+    document.title = "Редактирование страницы «Доставка и оплата»";
+  }, []);
 
   return (
     <Box>
@@ -159,10 +175,10 @@ const DeliveryPageForm = () => {
               flexDirection: 'column',
               alignItems: 'center',
               width: '100%',
-              mt:theme.spacing.sm,
+              mt: theme.spacing.sm,
             }}
           >
-            <Box sx={{mb: theme.spacing.sm}}>
+            <Box sx={{ mb: theme.spacing.sm }}>
               <Typography
                 variant="body2"
                 sx={{
@@ -208,30 +224,30 @@ const DeliveryPageForm = () => {
                 color: 'text.secondary',
                 fontWeight: 400,
                 mb: 0.5,
-                mt:theme.spacing.sm,
+                mt: theme.spacing.sm,
               }}
             >
               Цена за зону доставки
             </Typography>
 
             <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              gap: '10px'
-            }}>
-            <TextEditor
-              value={form.checkoutDeliveryPriceInfo}
-              onChange={onChangeEditorCheckoutDeliveryPriceInfo}
-              error={!!checkoutPriceError}
-              placeholder={deliveryPriceInfoTemplate}
-              helperText={checkoutPriceError || (form.checkoutDeliveryPriceInfo ? undefined : 'Поле обязательно для заполнения')}
-            />
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                gap: '10px'
+              }}>
+              <TextEditor
+                value={form.checkoutDeliveryPriceInfo}
+                onChange={onChangeEditorCheckoutDeliveryPriceInfo}
+                error={!!checkoutPriceError}
+                placeholder={deliveryPriceInfoTemplate}
+                helperText={checkoutPriceError || (form.checkoutDeliveryPriceInfo ? undefined : 'Поле обязательно для заполнения')}
+              />
               <Box>
-              <Typography>Шаблон</Typography>
-              <Typography sx={{ color: 'gray', width: '254px' }}>
-                {deliveryPriceInfoTemplate}
-              </Typography>
+                <Typography>Шаблон</Typography>
+                <Typography sx={{ color: 'gray', width: '254px' }}>
+                  {deliveryPriceInfoTemplate}
+                </Typography>
               </Box>
             </Box>
             <Box sx={{ mt: theme.spacing.lg, width: '100%' }}>
@@ -253,43 +269,42 @@ const DeliveryPageForm = () => {
                     </Typography>
                     <Typography variant="caption" component="div" color="text.secondary">
                       1. Откройте <b>Google My Maps</b> и создайте карту.<br />
-                      2. Нажмите <b>"Поделиться" → "Встроить карту"</b>.<br />
-                      3. Скопируйте ссылку, начинающуюся с:<br />
-                      <code>https://www.google.com/maps/d/u/0/embed?mid=...</code><br />
+                      2. Нажмите <b>"Поделиться"</b>.<br />
+                      3. Скопируйте ссылку<br />
                       4. Вставьте её в поле выше.
                     </Typography>
                   </Box>
                 </Grid>
 
                 <Grid item xs={12} md={6}>
-                    <Box
-                      sx={{
-                        flex: '0 1 450px',
-                        width: '100%',
-                        maxWidth: '350px',
-                        height: '350px',
-                        borderRadius: '5px',
-                        overflow: 'hidden',
-                        boxShadow: '0 2px 6px rgba(0, 0, 0, 0.1)',
-                        position: 'relative',
-                        order: { xs: 1, md: 2 },
-                        float: "right",
+                  <Box
+                    sx={{
+                      flex: '0 1 450px',
+                      width: '100%',
+                      maxWidth: '350px',
+                      height: '350px',
+                      borderRadius: '5px',
+                      overflow: 'hidden',
+                      boxShadow: '0 2px 6px rgba(0, 0, 0, 0.1)',
+                      position: 'relative',
+                      order: { xs: 1, md: 2 },
+                      float: "right",
+                    }}
+                  >
+                    <iframe
+                      src={form.map}
+                      width="600px"
+                      height="600px"
+                      style={{
+                        position: 'absolute',
+                        top: '-70px',
+                        border: 0,
                       }}
-                    >
-                      <iframe
-                        src={delivery?.map}
-                        width="600px"
-                        height="600px"
-                        style={{
-                          position: 'absolute',
-                          top: '-70px',
-                          border: 0,
-                        }}
-                        allowFullScreen
-                        loading="lazy"
-                        referrerPolicy="no-referrer-when-downgrade"
-                      />
-                    </Box>
+                      allowFullScreen
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                    />
+                  </Box>
                 </Grid>
               </Grid>
             </Box>
@@ -307,7 +322,6 @@ const DeliveryPageForm = () => {
       </Box>
     </Box>
   );
-
 };
 
 export default DeliveryPageForm;

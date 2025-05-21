@@ -67,6 +67,10 @@ const AdminInfoForm = () => {
     }
   };
 
+  useEffect(() => {
+    document.title = "Редактирование личного кабинета для администариции";
+  }, []);
+
   return (
     <Box>
       <Box

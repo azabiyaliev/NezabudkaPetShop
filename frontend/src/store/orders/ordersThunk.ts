@@ -58,7 +58,6 @@ export const checkoutAuthUserOrder = createAsyncThunk<void, OrderMutation, {stat
    }) => {
     try {
       const token = getState().users.user?.token;
-      console.log('Отправка заказа:', order);
       if (token) {
        await axiosApi.post('orders/checkout', {...order, recaptchaToken: order.recaptchaToken})
       } else if(!token) {

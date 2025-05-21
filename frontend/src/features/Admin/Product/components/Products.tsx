@@ -1,5 +1,5 @@
 import { ProductResponse } from '../../../../types';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ClearIcon from '@mui/icons-material/Clear';
 import EditIcon from '@mui/icons-material/Edit';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
@@ -319,6 +319,10 @@ const Products: React.FC<Props> = ({products}) => {
       headerClassName: 'header-column',
     },
   ];
+
+    useEffect(() => {
+      document.title = "Список товаров";
+    }, []);
 
   return (
     <Box sx={{ width: '100%' }}>

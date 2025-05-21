@@ -11,6 +11,7 @@ import { enqueueSnackbar } from 'notistack';
 
 import theme from '../../../../globalStyles/globalTheme.ts';
 import Typography from '@mui/joy/Typography';
+import { useEffect } from 'react';
 
 const NewProduct = () => {
   const dispatch = useAppDispatch();
@@ -29,6 +30,10 @@ const NewProduct = () => {
       console.log(e);
     }
   };
+
+  useEffect(() => {
+    document.title = "Добавление нового товара";
+  }, []);
 
   return (
     <Box

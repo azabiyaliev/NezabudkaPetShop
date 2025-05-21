@@ -19,6 +19,10 @@ const ContactPage = () => {
     dispatch(fetchSite());
   }, [dispatch]);
 
+  useEffect(() => {
+    document.title = `Контакты`;
+  }, []);
+
   return (
     <Container maxWidth="xl">
       <Box sx={{

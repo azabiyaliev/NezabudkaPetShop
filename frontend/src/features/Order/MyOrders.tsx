@@ -51,6 +51,10 @@ const MyOrders = () => {
   };
 
   useEffect(() => {
+    document.title = "Мои заказы";
+  }, []);
+
+  useEffect(() => {
     const loadOrders = async () => {
       if (user) {
         await dispatch(GetClientOrders());
@@ -427,15 +431,8 @@ const MyOrders = () => {
         ) : (
           <CustomPagination
             items={filteredAndSortedOrders}
-            renderItem={(item) =>
-              <Box key={item.id} sx={{
-                display: 'flex',
-                gap: SPACING.sm,
-                width: "100%",
-              }}>
-                <ClientOrdersItem order={item} />
-              </Box>
-            }
+            columns={3}
+            renderItem={(item) => <ClientOrdersItem order={item} />}
           />
         )}
       </Box>

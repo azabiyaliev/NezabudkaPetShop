@@ -138,7 +138,6 @@ export interface ICategories {
   parentId?: number | null;
   subcategories?: Subcategory[];
   parent?: { id: number; title: string } | null;
-  icon?: File | null;
   image?: File | null;
 }
 
@@ -304,9 +303,10 @@ export interface IOrder {
   userId: number;
   bonusUsed?: number;
   user: User;
-  items: ICartItem[];
+  items: OrderItem[];
   createdAt: string;
   updatedAt: string;
+  totalPrice: number;
   isArchive: boolean;
 }
 
@@ -321,16 +321,24 @@ export interface OrderMutation {
   bonusUsed?: number;
   deliveryMethod: string;
   userId: string;
-  items: ICartMutation[];
+  items: OrderItem[];
   recaptchaToken: string;
+  totalPrice: number;
 }
 
 export interface OrderItem {
-  id: number;
+  id?: number;
   quantity: number;
   productId: number;
-  product: ProductResponse;
+  product?: ProductResponse;
   orderAmount: number;
+  productName: string | null;
+  productPhoto: string | null;
+  productPrice: number | null;
+  promoPercentage: number | null;
+  promoPrice: number | null;
+  sales: boolean;
+  productDescription: string | null;
 }
 
 export interface OrderStats {

@@ -54,6 +54,10 @@ const BonusProgramForm = () => {
     }
   };
 
+  useEffect(() => {
+    document.title = "Редактирование страницы «Бонусная программа»";
+  }, []);
+
   return (
     <Box>
       <Box

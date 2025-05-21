@@ -1,5 +1,5 @@
 import { IBrand } from '../../../../types';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, IconButton, InputAdornment, TextField, Typography } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
@@ -154,6 +154,10 @@ const Brands: React.FC<Props> = ({ brands }) => {
       }
     },
   ];
+
+  useEffect(() => {
+    document.title = "Список брендов";
+  }, []);
 
   return (
     <Box sx={{ width: '100%' }}>

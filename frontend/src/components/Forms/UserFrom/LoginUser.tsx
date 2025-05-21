@@ -118,6 +118,10 @@ const LoginUser = () => {
     );
   };
 
+  useEffect(() => {
+    document.title = `Вход в аккаунт`;
+  }, []);
+
   return (
     <Box
       display="flex"
@@ -301,6 +305,29 @@ const LoginUser = () => {
               </Button>
             </Grid>
           </Grid>
+          <Typography
+            sx={{
+              display: "none",
+              "@media (max-width: 965px)": {
+                display: "block",
+                textAlign: "center",
+              },
+              "@media (max-width: 550px)": {
+                fontSize: FONTS.size.sm,
+              },
+            }}
+          >
+            У вас нет аккаунта? <br/>
+            <NavLink
+              to="/register"
+              style={{
+                textDecoration: "none",
+                color: COLORS.primary,
+              }}
+            >
+              Нажмите здесь, чтобы зарегистрироваться.
+            </NavLink>
+          </Typography>
         </Box>
         <Box sx={{ width: "100%", textAlign: "center", mt: SPACING.sm }}>
           <Divider sx={{ mb: SPACING.sm, textTransform: "uppercase" }}>

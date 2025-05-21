@@ -419,11 +419,30 @@ export class ProductsService {
       throw new NotFoundException('Данный товар не найден');
     }
 
+    await this.prismaService.cartItem.deleteMany({
+      where: {
+        productId: id,
+      },
+    });
+
+    await this.prismaService.productCategory.deleteMany({
+      where: { productId: id },
+    });
+
+    await this.prismaService.cartItem.deleteMany({
+      where: { productId: id },
+    });
+
+    await this.prismaService.favorite.deleteMany({
+      where: { productId: id },
+    });
+
     await this.prismaService.products.delete({
       where: {
         id,
       },
     });
+
     return { message: 'Товар был успешно удалён!' };
   }
 
@@ -671,14 +690,28 @@ export class ProductsService {
         : {}),
     };
 
+    const subcategories = await this.prismaService.category.findMany({
+      where: {
+        parentId: categoryId,
+      },
+      select: { id: true },
+    });
+
+    const categoryIds = [categoryId, ...subcategories.map((c) => c.id)];
+    const filteredCategoryIds = categoryIds?.filter(
+      (id): id is number => typeof id === 'number',
+    );
+
     return this.prismaService.products.findMany({
       where: {
         ...whereConditions,
-        ...(categoryId
+        ...(filteredCategoryIds && filteredCategoryIds.length
           ? {
               productCategory: {
                 some: {
-                  categoryId: categoryId,
+                  categoryId: {
+                    in: filteredCategoryIds,
+                  },
                 },
               },
             }

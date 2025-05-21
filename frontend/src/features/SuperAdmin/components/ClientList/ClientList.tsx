@@ -1,7 +1,7 @@
 import { Box, Typography, TextField, InputAdornment } from "@mui/material";
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { ruRU } from '@mui/x-data-grid/locales';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import { UserWithOrder } from '../../../../types';
 import theme from '../../../../globalStyles/globalTheme.ts';
@@ -28,6 +28,10 @@ const ClientList: React.FC<Props> = ({ clients }) => {
     { field: "phone", headerName: "Телефон", width: 160, headerAlign: 'center', align: 'center' },
     { field: "orderCount", headerName: "Заказы", width: 160, align: 'center', headerAlign: 'center' },
   ];
+
+  useEffect(() => {
+    document.title = "Список клиентов";
+  }, []);
 
   return (
     <Box>
