@@ -114,7 +114,7 @@ const OrderHistoryItem: React.FC<Props> = ({ orders }) => {
     {
       field: 'actions',
       headerName: 'Действие',
-      width: 100,
+      width: 80,
       headerAlign: 'center',
       align: 'center',
       renderCell: (params) => (
@@ -217,7 +217,7 @@ const OrderHistoryItem: React.FC<Props> = ({ orders }) => {
     {
       field: 'status',
       headerName: 'Статус заказа',
-      width: 180,
+      width: 100,
       headerAlign: 'center',
       align: 'center',
       sortable: true,
@@ -246,10 +246,15 @@ const OrderHistoryItem: React.FC<Props> = ({ orders }) => {
         const paymentMethodKeys = params.row.paymentMethod;
 
         const translatedPaymentMethod = translatePaymentMethod(paymentMethodKeys);
+
+        const total: number =
+          params.row.items.reduce((acc: number, item: ICartItem) => {
+            return acc + item.quantity * item.product.productPrice;
+          }, 0);
         return (
           <Box>
             <Typography>
-              1million na krasnoe
+              {total} сом
             </Typography>
             <Typography sx={{color: COLORS.OLIVE_GREEN}}>
               {translatedPaymentMethod}

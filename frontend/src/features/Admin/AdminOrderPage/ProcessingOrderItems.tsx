@@ -291,10 +291,16 @@ const columns: GridColDef[] = [
       const paymentMethodKeys = params.row.paymentMethod;
 
       const translatedPaymentMethod = translatePaymentMethod(paymentMethodKeys);
+
+      const total: number =
+        params.row.items.reduce((acc: number, item: ICartItem) => {
+          return acc + item.quantity * item.product.productPrice;
+        }, 0);
+
       return (
       <Box>
         <Typography>
-          1million na krasnoe
+          {total} сом
         </Typography>
         <Typography sx={{color: COLORS.OLIVE_GREEN}}>
           {translatedPaymentMethod}
