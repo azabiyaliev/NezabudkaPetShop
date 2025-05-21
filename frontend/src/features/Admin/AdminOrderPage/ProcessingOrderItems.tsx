@@ -55,11 +55,11 @@ const ProcessingOrderItems: React.FC<Props> = ({ orders }) => {
   const isPopoverOpen = Boolean(popoverData.anchorEl);
   const popoverId = isPopoverOpen ? 'items-popover' : undefined;
 
-const changeStatus = async (id: string, status: OrderStatus) => {
+const changeStatus = async (id: string, status: string) => {
   try {
-  await dispatch(updateOrderStatus({orderId: id, updatedStatus: status})).unwrap();
+  await dispatch(updateOrderStatus({orderId: id, updatedStatus: status}));
     enqueueSnackbar('Статус заказа обновлен', {variant: 'success'});
-  await dispatch(getAllProcessingOrders(true));
+    dispatch(getAllProcessingOrders(true));
   } catch {
     enqueueSnackbar('Ошибка при обновлении статуса', { variant: 'error' });
   }
@@ -268,12 +268,12 @@ const columns: GridColDef[] = [
             }
           }}
         >
-          <MenuItem onClick={() => changeStatus(params.row.id, OrderStatus.Pending)} value={OrderStatus.Pending}>В обработке</MenuItem>
-          <MenuItem onClick={() => changeStatus(params.row.id, OrderStatus.Confirmed)} value={OrderStatus.Confirmed}>Подтвержден</MenuItem>
-          <MenuItem onClick={() => changeStatus(params.row.id, OrderStatus.Packed)} value={OrderStatus.Packed}>Упакован</MenuItem>
-          <MenuItem onClick={() => changeStatus(params.row.id, OrderStatus.Shipped)} value={OrderStatus.Shipped}>Отправлен</MenuItem>
-          <MenuItem onClick={() => changeStatus(params.row.id, OrderStatus.Delivered)} value={OrderStatus.Delivered}>Доставлен</MenuItem>
-          <MenuItem onClick={() => changeStatus(params.row.id, OrderStatus.Received)} value={OrderStatus.Received}>Получен</MenuItem>
+          <MenuItem value={OrderStatus.Pending}>В обработке</MenuItem>
+          <MenuItem value={OrderStatus.Confirmed}>Подтвержден</MenuItem>
+          <MenuItem value={OrderStatus.Packed}>Упакован</MenuItem>
+          <MenuItem value={OrderStatus.Shipped}>Отправлен</MenuItem>
+          <MenuItem value={OrderStatus.Delivered}>Доставлен</MenuItem>
+          <MenuItem value={OrderStatus.Received}>Получен</MenuItem>
         </Select>
       );
     },

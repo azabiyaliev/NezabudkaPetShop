@@ -76,7 +76,7 @@ const OrderInProcess = () => {
           </Typography>
         </Box>
 
-        <Box sx={{ width: "100%", maxWidth: 1110, mt: SPACING.md }}>
+        <Box sx={{ width: "100%", maxWidth: 940, mt: SPACING.md }}>
           <ProcessingOrderItems orders={orders}/>
         </Box>
       </Box>
