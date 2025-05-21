@@ -13,6 +13,8 @@ services:
   backend:
     build:
       context: ./backend
+      args:
+        BUILD_DATE: ${BUILD_DATE:-dev}
     container_name: backend
     restart: unless-stopped
     env_file: ./backend/.env
@@ -27,6 +29,7 @@ services:
       context: ./frontend
       args:
         VITE_API_URL: /api
+        BUILD_DATE: ${BUILD_DATE:-dev}
     container_name: frontend
     restart: unless-stopped
     ports:
