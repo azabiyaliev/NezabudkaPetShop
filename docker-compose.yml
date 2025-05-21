@@ -23,6 +23,8 @@ services:
     depends_on:
       - db
     command: sh -c "npx prisma migrate deploy && node dist/main"
+    volumes:
+      - ./backend/public:/app/public
 
   frontend:
     build:
