@@ -307,6 +307,7 @@ export interface IOrder {
   createdAt: string;
   updatedAt: string;
   totalPrice: number;
+  isArchive: boolean;
 }
 
 export interface OrderMutation {

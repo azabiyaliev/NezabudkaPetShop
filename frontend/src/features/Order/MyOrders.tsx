@@ -22,9 +22,9 @@ import CustomPagination from "../../components/Pagination/Pagination.tsx";
 import ClientOrdersItem from "./ClientOrdersItem.tsx";
 import { useNavigate } from 'react-router-dom';
 import { COLORS, FONTS, MEDIA_REQ, SPACING } from '../../globalStyles/stylesObjects.ts';
-import { OrderStatus } from '../Admin/AdminOrderPage/OrdersItem.tsx';
 import image from '../../assets/image_transparent.webp';
 import Button from '@mui/joy/Button';
+import { OrderStatus } from '../Admin/AdminOrderPage/ProcessingOrderItems.tsx';
 
 const MyOrders = () => {
   const dispatch = useAppDispatch();

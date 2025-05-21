@@ -4,10 +4,10 @@ import axiosApi from '../../axiosApi.ts';
 import { RootState } from '../../app/store.ts';
 import { isAxiosError } from 'axios';
 
-export const getAllOrders = createAsyncThunk<IOrder[], void>(
+export const getAllProcessingOrders = createAsyncThunk<IOrder[], boolean>(
   'orders/getAllOrders',
-  async () => {
-    const response = await axiosApi.get("/orders/all-orders");
+  async (inProcessing) => {
+    const response = await axiosApi.get(`/orders/all-orders?inProcessing=${inProcessing}`);
     return response.data;
   }
 );
@@ -86,9 +86,9 @@ export const updateOrderStatus = createAsyncThunk<
   }
 )
 
-export const deleteOrder = createAsyncThunk<void, string, {state: RootState}>(
-  'orders/deleteOrder',
+export const archiveOrder = createAsyncThunk<void, string, {state: RootState}>(
+  'orders/archiveOrder',
   async(orderId) => {
-    await axiosApi.delete(`orders/${orderId}`);
+    await axiosApi.put(`orders/${orderId}`);
   }
 )

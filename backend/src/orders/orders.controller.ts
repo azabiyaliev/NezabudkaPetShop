@@ -2,12 +2,12 @@ import {
   BadRequestException,
   Body,
   Controller,
-  Delete,
   Get,
   HttpCode,
   Param,
   Patch,
   Post,
+  Put,
   Query,
   Req,
   UseGuards,
@@ -28,8 +28,8 @@ export class OrdersController {
   @UseGuards(TokenAuthGuard, RolesGuard)
   @Roles('admin', 'superAdmin')
   @Get('all-orders')
-  async getAllOrders() {
-    return this.ordersService.getAllOrders();
+  async getAllOrders(@Query('inProcessing') inProcessing?: boolean) {
+    return this.ordersService.getAllOrders(inProcessing);
   }
 
   @UseGuards(TokenAuthGuard, RolesGuard)
@@ -98,7 +98,7 @@ export class OrdersController {
   }
 
   @UseGuards(TokenAuthGuard)
-  @Delete(':id')
+  @Put(':id')
   async deleteOrder(@Param('id') orderId: string) {
     return await this.ordersService.deleteOrder(Number(orderId));
   }
