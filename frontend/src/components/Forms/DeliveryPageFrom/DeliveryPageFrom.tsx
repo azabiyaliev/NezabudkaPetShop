@@ -291,19 +291,21 @@ const DeliveryPageForm = () => {
                       float: "right",
                     }}
                   >
-                    <iframe
-                      src={form.map}
-                      width="600px"
-                      height="600px"
-                      style={{
-                        position: 'absolute',
-                        top: '-70px',
-                        border: 0,
-                      }}
-                      allowFullScreen
-                      loading="lazy"
-                      referrerPolicy="no-referrer-when-downgrade"
-                    />
+                    {form.map && (
+                      <iframe
+                        src={form.map}
+                        width="600px"
+                        height="600px"
+                        style={{
+                          position: 'absolute',
+                          top: '-70px',
+                          border: 0,
+                        }}
+                        allowFullScreen
+                        loading="lazy"
+                        referrerPolicy="no-referrer-when-downgrade"
+                      />
+                    )}
                   </Box>
                 </Grid>
               </Grid>

@@ -51,7 +51,6 @@ const AdminBar = () => {
           borderRadius: 1,
           height: 'auto',
           maxHeight: 'none',
-          overflowY: 'visible',
         },
       }}
     >
