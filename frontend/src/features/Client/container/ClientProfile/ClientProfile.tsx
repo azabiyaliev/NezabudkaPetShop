@@ -24,6 +24,9 @@ const ClientProfile = () => {
     dispatch(fetchClientInfo());
   }, [dispatch]);
 
+  useEffect(() => {
+    document.title = "Личный кабинет";
+  }, []);
 
   return (
     <Container maxWidth="xl">

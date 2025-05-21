@@ -170,6 +170,10 @@ const AdminForm = () => {
     ? allFields.filter((field) => field.name !== 'password')
     : allFields;
 
+  useEffect(() => {
+    document.title = "Администрация";
+  }, []);
+
   return (
     <Box
       component="form"

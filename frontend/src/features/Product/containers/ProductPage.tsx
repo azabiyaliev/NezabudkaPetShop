@@ -59,6 +59,16 @@ const ProductPage = () => {
   const can = usePermission(user);
 
   useEffect(() => {
+      if (id) {
+        if (product) {
+          document.title = `${product.productName}`;
+        } else {
+          document.title = "Продукт не найден";
+        }
+    }
+  }, [id, product]);
+
+  useEffect(() => {
     if (id && product && product.id && product.productName) {
       dispatch(addProductToHistory({
         productId: product.id,
@@ -298,10 +308,10 @@ const ProductPage = () => {
                     textDecoration: 'line-through',
                     color: COLORS.text,
                   }}>
-                    {product.productPrice.toLocaleString('ru-RU').replace(/,/g, ' ')} сом
+                    {product.productPrice.toLocaleString('ru-RU').replace(/,/g, ' ')} сом/шт
                   </Typography>
                   <Typography fontWeight={600} sx={{ color: COLORS.warning }}>
-                    {product.promoPrice && product.promoPrice.toLocaleString('ru-RU').replace(/,/g, ' ')} сом
+                    {product.promoPrice && product.promoPrice.toLocaleString('ru-RU').replace(/,/g, ' ')} сом/шт
                   </Typography>
               </> :
                 <Typography sx={{
@@ -311,7 +321,7 @@ const ProductPage = () => {
                     textAlign: "center",
                   },
                 }}>
-                  {product.productPrice} сом/шт
+                  {product.productPrice.toLocaleString('ru-RU').replace(/,/g, ' ')} сом/шт
                 </Typography>
               }
 

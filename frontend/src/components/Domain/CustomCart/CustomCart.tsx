@@ -107,7 +107,11 @@ const CustomCart: React.FC<Props> = ({ openCart, closeCart }) => {
                 )}
               </DialogTitle>
               <ModalClose  sx={{
-                marginTop: '-15px'
+                marginTop: '-15px',
+                '@media (max-width: 1040px)': {
+                  marginTop: '-20px',
+                  mr: -2
+                },
               }}/>
             </Box>
             <Divider />

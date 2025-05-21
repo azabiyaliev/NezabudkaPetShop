@@ -3,6 +3,8 @@ import {
   IsEmail,
   IsEnum,
   IsInt,
+  IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsPhoneNumber,
   IsString,
@@ -76,6 +78,14 @@ export class CreateOrderDto {
   @IsBoolean()
   useBonus?: boolean;
 
+  @IsOptional()
+  @IsBoolean()
+  isArchive?: boolean;
+
   @IsString()
   recaptchaToken!: string;
+
+  @IsNotEmpty()
+  @IsNumber()
+  totalPrice!: number;
 }

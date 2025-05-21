@@ -20,12 +20,11 @@ import { IOrder } from "../../types";
 import dayjs from "dayjs";
 import CustomPagination from "../../components/Pagination/Pagination.tsx";
 import ClientOrdersItem from "./ClientOrdersItem.tsx";
-import { NavLink, useNavigate } from 'react-router-dom';
-import { COLORS, FONTS } from "../../globalStyles/stylesObjects.ts";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { OrderStatus } from '../Admin/AdminOrderPage/OrdersItem.tsx';
+import { useNavigate } from 'react-router-dom';
+import { COLORS, FONTS, MEDIA_REQ, SPACING } from '../../globalStyles/stylesObjects.ts';
 import image from '../../assets/image_transparent.webp';
 import Button from '@mui/joy/Button';
+import { OrderStatus } from '../Admin/AdminOrderPage/ProcessingOrderItems.tsx';
 
 const MyOrders = () => {
   const dispatch = useAppDispatch();
@@ -37,6 +36,23 @@ const MyOrders = () => {
   const [statusFilter, setStatusFilter] = useState<string>("All");
   const [timeFilter, setTimeFilter] = useState<string>("All");
   const navigate = useNavigate();
+
+  const getStatusLabel = (status: string) => {
+    const statusLabels: Record<string, string> = {
+      "All": "Все",
+      "Pending": "В обработке",
+      "Confirmed": "Подтвержден",
+      "Packed": "Упакован",
+      "Shipped": "Отправлен",
+      "Delivered": "Доставлен",
+      "Canceled": "Отменен",
+    };
+    return statusLabels[status] || status;
+  };
+
+  useEffect(() => {
+    document.title = "Мои заказы";
+  }, []);
 
   useEffect(() => {
     const loadOrders = async () => {
@@ -87,17 +103,21 @@ const MyOrders = () => {
   const filteredAndSortedOrders = orders
     .filter((order) => filterByStatus(order) && filterByTime(order))
     .sort((a, b) => {
-      if (a.status === OrderStatus.Canceled && b.status !== OrderStatus.Canceled) {
-        return 1;
-      }
-      if (a.status !== OrderStatus.Canceled && b.status === OrderStatus.Canceled) {
-        return -1;
-      }
-      return 0;
+      const isACanceled = a.status === OrderStatus.Canceled;
+      const isBCanceled = b.status === OrderStatus.Canceled;
+
+      if (isACanceled && !isBCanceled) return 1;
+      if (!isACanceled && isBCanceled) return -1;
+
+      return dayjs(b.createdAt).diff(dayjs(a.createdAt));
     });
 
   if (loading) {
-    return <CircularProgress />;
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="80vh">
+        <CircularProgress size={60} sx={{color: COLORS.primary || COLORS.success}} />
+      </Box>
+    );
   }
 
   if (error) {
@@ -115,12 +135,30 @@ const MyOrders = () => {
           sx={{
             textAlign: 'center',
             marginTop: 10,
+            [`@media (maxWidth: ${MEDIA_REQ.tablet.md})`]: {
+              marginTop: 6,
+            },
+            [`@media (maxWidth: 375px)`]: {
+              marginTop: 4,
+            },
           }}
         >
-          <Typography variant="h3" sx={{ fontWeight: 600, color: '#333', mb: 2 }}>
+          <Typography variant="h3" sx={{
+            fontWeight: FONTS.weight.bold,
+            fontSize: FONTS.size.xxl,
+            color: COLORS.text,
+            mb: SPACING.sm,
+            [`@media (max-width: ${MEDIA_REQ.tablet.md})`]: {
+              fontSize: FONTS.size.xxl,
+            },
+            "@media (max-width: 375px)": {
+              fontSize: '24px',
+              fontWeight: 400,
+            },
+          }}>
             Мои заказы
           </Typography>
-          <Typography sx={{ mb: 2 }}>
+          <Typography sx={{ mb: SPACING.sm }}>
             Для просмотра заказов необходимо авторизоваться или оформить заказ
           </Typography>
           <img
@@ -128,15 +166,18 @@ const MyOrders = () => {
             height="200"
             src={image}
             alt="shopping-cart-emoji"
-            style={{ marginBottom: 20 }}
+            style={{ marginBottom: SPACING.sm }}
           />
           <Typography
             variant="body1"
             sx={{
-              color: '#706e6a',
-              fontSize: '18px',
+              color: COLORS.GRAY_BROWN,
+              fontSize: FONTS.size.big_default,
               maxWidth: 600,
               margin: '0 auto',
+              [`@media (maxWidth: ${MEDIA_REQ.mobile.lg})`]: {
+                fontSize: FONTS.size.default,
+              },
             }}
           >
             Начните делать покупки и порадуйте своего питомца!
@@ -144,15 +185,19 @@ const MyOrders = () => {
           <Button
             onClick={() => navigate('/all-products')}
             sx={{
-              backgroundColor: "#237803",
+              backgroundColor: COLORS.primary,
               borderRadius: "50px",
-              color: "white",
-              fontWeight: 600,
-              padding: "13px",
+              color: COLORS.contrastText,
+              fontWeight: FONTS.weight.medium,
+              padding: SPACING.sm,
               width: "250px",
-              marginTop: '20px',
+              marginTop: SPACING.sm,
               "&:hover": {
-                backgroundColor: "#154902",
+                backgroundColor: COLORS.DARK_GREEN,
+              },
+              [`@media (maxWidth: ${MEDIA_REQ.mobile.lg})`]: {
+                width: "100%",
+                maxWidth: "250px",
               },
             }}
           >
@@ -165,14 +210,40 @@ const MyOrders = () => {
 
   if (!orders || orders.length === 0) {
     return (
-      <Container maxWidth="xl" sx={{ position: 'relative', minHeight: '70vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+      <Container maxWidth="xl" sx={{
+        position: 'relative',
+        minHeight: '70vh',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        [`@media (maxWidth: ${MEDIA_REQ.tablet.md})`]: {
+          minHeight: '60vh',
+        },
+      }}>
         <Box
           sx={{
             textAlign: 'center',
             marginTop: 10,
+            [`@media (maxWidth: ${MEDIA_REQ.tablet.md})`]: {
+              marginTop: 6,
+            },
+            [`@media (maxWidth: ${MEDIA_REQ.mobile.lg})`]: {
+              marginTop: 4,
+            },
           }}
         >
-          <Typography variant="h3" sx={{ fontWeight: 600, color: '#333', mb: 2 }}>
+          <Typography variant="h3" sx={{
+            fontWeight: FONTS.weight.bold,
+            color: COLORS.text,
+            mb: SPACING.sm,
+            [`@media (maxWidth: ${MEDIA_REQ.tablet.md})`]: {
+              fontSize: FONTS.size.xxl,
+            },
+            [`@media (maxWidth: ${MEDIA_REQ.mobile.lg})`]: {
+              fontSize: FONTS.size.xl,
+            },
+          }}>
             Мои заказы
           </Typography>
           <img
@@ -180,18 +251,28 @@ const MyOrders = () => {
             height="200"
             src={image}
             alt="shopping-cart-emoji"
-            style={{ marginBottom: 20 }}
+            style={{ marginBottom: SPACING.sm }}
           />
-          <Typography variant="h5" sx={{ fontWeight: 600, color: '#333', mb: 2 }}>
+          <Typography variant="h5" sx={{
+            fontWeight: FONTS.weight.bold,
+            color: COLORS.text,
+            mb: SPACING.sm,
+            [`@media (maxWidth: ${MEDIA_REQ.mobile.lg})`]: {
+              fontSize: FONTS.size.lg,
+            },
+          }}>
             У вас пока нет заказов!
           </Typography>
           <Typography
             variant="body1"
             sx={{
-              color: '#706e6a',
-              fontSize: '18px',
+              color: COLORS.GRAY_BROWN,
+              fontSize: FONTS.size.big_default,
               maxWidth: 600,
               margin: '0 auto',
+              [`@media (maxWidth: ${MEDIA_REQ.mobile.lg})`]: {
+                fontSize: FONTS.size.default,
+              },
             }}
           >
             Начните делать покупки и порадуйте своего питомца
@@ -199,15 +280,19 @@ const MyOrders = () => {
           <Button
             onClick={() => navigate('/all-products')}
             sx={{
-              backgroundColor: "#237803",
+              backgroundColor: COLORS.primary,
               borderRadius: "50px",
-              color: "white",
-              fontWeight: 600,
-              padding: "13px",
+              color: COLORS.contrastText,
+              fontWeight: FONTS.weight.medium,
+              padding: SPACING.sm,
               width: "250px",
-              marginTop: '20px',
+              marginTop: SPACING.sm,
               "&:hover": {
-                backgroundColor: "#154902",
+                backgroundColor: COLORS.DARK_GREEN,
+              },
+              [`@media (maxWidth: ${MEDIA_REQ.mobile.lg})`]: {
+                width: "100%",
+                maxWidth: "250px",
               },
             }}
           >
@@ -219,38 +304,33 @@ const MyOrders = () => {
   }
 
   return (
-    <Container maxWidth="xl">
+    <Container maxWidth='xl'>
       <Box
         sx={{
-          my: 5,
+          my: SPACING.lg,
           display: "flex",
           flexDirection: "column",
-          gap: "20px",
+          gap: SPACING.sm,
           alignItems: "center",
           position: "relative",
           overflow: "hidden",
+          [`@media (maxWidth: ${MEDIA_REQ.tablet.md})`]: {
+            my: SPACING.md,
+          },
+          [`@media (maxWidth: 375px)`]: {
+            my: SPACING.sm,
+          },
         }}
       >
-        <NavLink
-          to={`/my_account/users/account/${user?.id}`}
-          style={{
-            position: "absolute",
-            left: 1,
-            textDecoration: "none",
-            color: COLORS.success,
-            fontSize: FONTS.size.lg,
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          <ArrowBackIcon sx={{ fontSize: FONTS.size.lg, marginRight: 1 }} />
-          Назад
-        </NavLink>
         <Typography
           variant="h4"
           sx={{
-            "@media (max-width: 480px)": {
-              fontSize: FONTS.size.lg
+            fontWeight: FONTS.weight.bold,
+            [`@media (max-width: ${MEDIA_REQ.tablet.md})`]: {
+              fontSize: FONTS.size.xxl,
+            },
+            [`@media (max-width: ${MEDIA_REQ.mobile.lg})`]: {
+              fontSize: FONTS.size.default,
             },
           }}
         >
@@ -261,8 +341,12 @@ const MyOrders = () => {
           sx={{
             display: "flex",
             justifyContent: "space-between",
-            gap: "20px",
+            gap: SPACING.sm,
             alignItems: "center",
+            maxWidth: "800px",
+            [`@media (maxWidth: ${MEDIA_REQ.mobile.lg})`]: {
+              flexDirection: "column",
+            },
           }}
         >
           <Select
@@ -270,8 +354,8 @@ const MyOrders = () => {
             onChange={handleStatusFilterChange}
             sx={{
               minWidth: 200,
-              "@media (max-width: 480px)": {
-                minWidth: 120,
+              [`@media (max-width: ${MEDIA_REQ.mobile.lg})`]: {
+                minWidth: "40%",
               },
             }}
           >
@@ -281,7 +365,6 @@ const MyOrders = () => {
             <MenuItem value="Packed">Упакован</MenuItem>
             <MenuItem value="Shipped">Отправлен</MenuItem>
             <MenuItem value="Delivered">Доставлен</MenuItem>
-            <MenuItem value="Returned">Возвращен</MenuItem>
             <MenuItem value="Canceled">Отменен</MenuItem>
           </Select>
 
@@ -290,8 +373,8 @@ const MyOrders = () => {
             onChange={handleTimeFilterChange}
             sx={{
               minWidth: 200,
-              "@media (max-width: 480px)": {
-                minWidth: 120,
+              [`@media (max-width: ${MEDIA_REQ.mobile.lg})`]: {
+                minWidth: "40%",
               },
             }}
           >
@@ -302,12 +385,54 @@ const MyOrders = () => {
           </Select>
         </Box>
 
-        {loading ? (
-          <CircularProgress />
+        {filteredAndSortedOrders.length === 0 ? (
+          <Box
+            sx={{
+              textAlign: 'center',
+              marginTop: 6,
+              padding: 4,
+              borderRadius: 2,
+              backgroundColor: COLORS.background,
+              width: '100%',
+              maxWidth: 600,
+            }}
+          >
+            <Typography variant="h5" sx={{
+              fontWeight: FONTS.weight.medium,
+              color: COLORS.text,
+              mb: 2,
+            }}>
+              Заказы не найдены
+            </Typography>
+            <Typography sx={{
+              color: COLORS.GRAY_BROWN,
+              mb: 3,
+            }}>
+              {statusFilter === "All"
+                ? "У вас пока нет заказов за выбранный период"
+                : `Нет заказов со статусом "${getStatusLabel(statusFilter)}"`}
+            </Typography>
+            <Button
+              onClick={() => {
+                setStatusFilter("All");
+                setTimeFilter("All");
+              }}
+              sx={{
+                backgroundColor: COLORS.primary,
+                color: COLORS.contrastText,
+                '&:hover': {
+                  backgroundColor: COLORS.DARK_GREEN,
+                },
+              }}
+            >
+              Сбросить фильтры
+            </Button>
+          </Box>
         ) : (
           <CustomPagination
             items={filteredAndSortedOrders}
-            renderItem={(item) => <ClientOrdersItem key={item.id} order={item} />}
+            columns={3}
+            renderItem={(item) => <ClientOrdersItem order={item} />}
           />
         )}
       </Box>

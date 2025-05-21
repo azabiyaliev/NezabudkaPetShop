@@ -38,21 +38,38 @@ const EditProduct = () => {
     }
   };
 
+  useEffect(() => {
+    document.title = "Редактирование товара";
+  }, []);
+
   return (
     <Box
       sx={{
         display: "flex",
         margin: "30px 0",
         "@media (max-width: 900px)": {
-          flexWrap: "wrap",
+          flexDirection: "column",
         },
-      }}>
-      <AdminBar />
+      }}
+    >
+      <Box
+        sx={{
+          flexShrink: 0,
+          height: "100%",
+          marginRight: 2,
+          "@media (max-width: 900px)": {
+            display: "none",
+          },
+        }}
+      >
+        <AdminBar />
+      </Box>
       <Box
         sx={{
           flexGrow: 1,
           display: "flex",
           justifyContent: "center",
+          mt: 5
         }}
       >
         <Box

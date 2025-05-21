@@ -216,6 +216,11 @@ const ManageCategories = () => {
     );
   };
 
+  useEffect(() => {
+    document.title = "Управление категориями";
+  }, []);
+
+
   return (
     <>
       <Box

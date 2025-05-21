@@ -131,6 +131,11 @@ const DragAndDropPhoto = () => {
     }
   };
 
+  useEffect(() => {
+    document.title = "Управление каруселью";
+  }, []);
+
+
   return (
     <Box
       sx={{

@@ -51,6 +51,10 @@ const EditBrandPage = () => {
     }
   };
 
+  useEffect(() => {
+    document.title = "Редактирование бренда";
+  }, []);
+
   return (
     <Box
       sx={{

@@ -8,6 +8,7 @@ import { Navigation, Pagination, Autoplay } from 'swiper/modules';
 import React from 'react';
 import { apiUrl } from '../../../../globalConstants.ts';
 import { useNavigate } from 'react-router-dom';
+import { COLORS } from '../../../../globalStyles/stylesObjects.ts';
 
 interface Props {
   brands: IBrand[];
@@ -78,6 +79,8 @@ const BrandForHomePage:React.FC<Props> = ({brands}) => {
                   width: '80px',
                   height: '80px',
                   objectFit: 'contain',
+                  backgroundColor: COLORS.white,
+                  boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
                 }}
               />
             )}

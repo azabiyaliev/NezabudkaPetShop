@@ -140,7 +140,8 @@ export class SeedService {
 
     await this.prisma.siteEdition.create({
       data: {
-        instagram: 'https://www.instagram.com/nezabudka.bishkek?igsh=MXg5ankzZ3JwdjFvag==',
+        instagram:
+          'https://www.instagram.com/nezabudka.bishkek?igsh=MXg5ankzZ3JwdjFvag==',
         whatsapp: 'https://api.whatsapp.com/send?phone=99655533889',
         schedule: '10:00-20:00',
         address: 'г. Бишкек, Гоголя 127',
@@ -637,6 +638,13 @@ export class SeedService {
           quantity,
           orderAmount,
           productId: randomProduct.id,
+          productName: randomProduct.productName,
+          productPrice: randomProduct.productPrice,
+          sales: randomProduct.sales,
+          promoPercentage: randomProduct.promoPercentage,
+          promoPrice: randomProduct.promoPrice,
+          productPhoto: randomProduct.productPhoto,
+          productDescription: randomProduct.productDescription,
         });
       }
 
@@ -684,8 +692,7 @@ export class SeedService {
 
     await this.prisma.adminInfo.create({
       data: {
-        information:
-          `
+        information: `
           <div style="font-family: Arial, sans-serif; padding: 24px; border-radius: 12px; color: black; max-width: 800px; margin: 0 auto;">
   <h4 style="margin-top: 0; text-align: center; color: black;">Добро пожаловать в зоомагазин<span style="font-style: italic;">«Незабудка»</span>!</h4>
   <p style="font-size: 16px; line-height: 1.6;">
@@ -718,8 +725,7 @@ export class SeedService {
 
     await this.prisma.clientInfo.create({
       data: {
-        information:
-         `
+        information: `
          <div style="font-family: Arial, sans-serif; padding: 24px; border-radius: 12px; color: black; max-width: 800px; margin: 0 auto;">
   <h4 style="margin-top: 0; text-align: center;">Уважаемые покупатели!</h4>
   <p style="font-size: 16px; line-height: 1.6;">

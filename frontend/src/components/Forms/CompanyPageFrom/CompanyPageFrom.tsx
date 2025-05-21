@@ -54,6 +54,11 @@ const CompanyPageForm = () => {
     }
   };
 
+  useEffect(() => {
+    document.title = "Редактирование страницы «О компании»";
+  }, []);
+
+
   return (
     <Box>
       <Box

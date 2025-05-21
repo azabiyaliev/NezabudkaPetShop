@@ -17,6 +17,10 @@ const BonusProgramPage = () => {
     dispatch(fetchBonusPage()).unwrap();
   }, [dispatch]);
 
+  useEffect(() => {
+    document.title = `Бонусная программа`;
+  }, []);
+
   return (
     <Container maxWidth="xl">
       <Box sx={{
