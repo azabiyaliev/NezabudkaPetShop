@@ -86,8 +86,6 @@ const NewProduct = () => {
         </Box>
       </Box>
     </Box>
-
-
   );
 };
 
