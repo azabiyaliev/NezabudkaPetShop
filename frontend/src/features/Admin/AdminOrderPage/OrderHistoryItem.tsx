@@ -45,6 +45,8 @@ const OrderHistoryItem: React.FC<Props> = ({ orders }) => {
     anchorEl: HTMLButtonElement | null;
     items: ICartItem[];
   }>({ anchorEl: null, items: [] });
+
+
   const handleOpenPopover = (event: React.MouseEvent<HTMLButtonElement>, itemsToShow: ICartItem[]) => {
     setPopoverData({ anchorEl: event.currentTarget, items: itemsToShow });
   };
@@ -57,26 +59,40 @@ const OrderHistoryItem: React.FC<Props> = ({ orders }) => {
   const popoverId = isPopoverOpen ? 'items-popover' : undefined;
 
   const handleArchiveOrder = async(id: string) => {
+    const order = orders.find(order => order.id === Number(id));
+
+    if (!order) {
+      enqueueSnackbar('Заказ не найден', { variant: 'error' });
+      return;
+    }
+
+    const isArchived = order.isArchive;
+    const actionText = isArchived ? 'разархивировать' : 'архивировать';
+    const successText = isArchived ? 'разархивирован' : 'архивирован';
+
     const result = await Swal.fire({
-      title: "Архивировать заказ?",
-      text: "Вы уверены, что хотите архивировать этот заказ?",
+      title: `${isArchived ? 'Разархивировать' : 'Архивировать'} заказ?`,
+      text: `Вы уверены, что хотите ${actionText} этот заказ?`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: COLORS.warning,
       cancelButtonColor: COLORS.OLIVE_GREEN,
-      confirmButtonText: "Да, архивировать",
+      confirmButtonText: `Да, ${actionText}`,
       cancelButtonText: "Нет, оставить",
       customClass: {
         popup: 'beautiful-sweetalert',
       }
     });
+
     if(result.isConfirmed) {
       try {
         await dispatch(archiveOrder(id)).unwrap();
         await dispatch(getAllProcessingOrders(false));
-        enqueueSnackbar(`Заказ ${id} был архивирован`, { variant: 'success' })
+        enqueueSnackbar(`Заказ ${id} был ${successText}`, { variant: 'success' });
       } catch {
-        enqueueSnackbar('Произошла ошибка при архивации', { variant: 'error' })
+        enqueueSnackbar(`Произошла ошибка при ${actionText} заказа`, {
+          variant: 'error'
+        });
       }
     }
   }
@@ -112,21 +128,32 @@ const OrderHistoryItem: React.FC<Props> = ({ orders }) => {
 
   const columns: GridColDef[] = [
     {
-      field: 'actions',
-      headerName: 'Действие',
-      width: 80,
+      field: 'isArchive',
+      headerName: 'Архив',
+      width: 100,
       headerAlign: 'center',
+      sortable: true,
       align: 'center',
       renderCell: (params) => (
-        <ArchiveIcon
-          sx={{
-            '&:hover': {
-              cursor: 'pointer',
-              color: COLORS.OLIVE_GREEN
-            }
-          }}
-          onClick={() => handleArchiveOrder(params.row.id)}/>
-      )
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          {loading ? (
+            <CircularProgress size={24} />
+          ) : (
+            <Tooltip title={params.row.isArchive ? "Разархивировать" : "Архивировать"}>
+              <ArchiveIcon
+                sx={{
+                  '&:hover': {
+                    cursor: 'pointer',
+                    color: params.row.isArchive ? COLORS.warning : COLORS.OLIVE_GREEN
+                  },
+                  color: params.row.isArchive ? COLORS.warning : undefined
+                }}
+                onClick={() => handleArchiveOrder(params.row.id.toString())}
+              />
+            </Tooltip>
+          )}
+        </Box>
+      ),
     },
     {
       field: 'id',
@@ -289,7 +316,7 @@ const OrderHistoryItem: React.FC<Props> = ({ orders }) => {
             columns={columns}
             initialState={{
               sorting: {
-                sortModel: [{ field: 'createdAt', sort: 'desc' }],
+                sortModel: [{ field: 'isArchive', sort: 'asc' }, { field: 'createdAt', sort: 'asc' }],
               },
               pagination: {
                 paginationModel: {

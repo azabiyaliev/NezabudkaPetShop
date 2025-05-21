@@ -38,13 +38,8 @@ export class OrdersService {
           ],
         };
 
-    const finalOrderList = {
-      ...statusFilter,
-      isArchive: false,
-    };
-
     const orders = await this.prisma.order.findMany({
-      where: finalOrderList,
+      where: statusFilter,
       include: {
         user: true,
         items: {
@@ -53,9 +48,14 @@ export class OrdersService {
           },
         },
       },
-      orderBy: {
-        createdAt: 'desc',
-      },
+      orderBy: [
+        {
+          createdAt: 'desc',
+        },
+        {
+          isArchive: 'desc',
+        },
+      ],
     });
 
     return orders;
@@ -479,20 +479,23 @@ export class OrdersService {
 
     const order = await this.prisma.order.findUnique({
       where: { id: orderId },
-      select: { status: true },
     });
 
     if (!order) {
       throw new NotFoundException('Заказ не найден');
     }
 
-    if (status.Delivered) {
-      await this.prisma.order.update({
+    if (status.Delivered && status.Canceled && status.Received) {
+      const updatedOrder = await this.prisma.order.update({
         where: { id: orderId },
-        data: { isArchive: true },
+        data: { isArchive: !order.isArchive },
       });
+
+      return {
+        message: `Заказ успешно ${updatedOrder.isArchive ? 'архивирован' : 'разархивирован'}`,
+        order: updatedOrder,
+      };
     }
-    return { message: 'Заказ был успешно архивирован' };
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
