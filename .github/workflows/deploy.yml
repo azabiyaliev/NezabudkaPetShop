@@ -22,7 +22,6 @@ jobs:
           password: ${{ secrets.SERVER_PASSWORD }}
           source: "."
           target: "~/NezabudkaPetShop"
-          rm: true
 
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.0
@@ -34,6 +33,7 @@ jobs:
             cd ~/NezabudkaPetShop
             docker-compose pull
             docker-compose down
-            docker-compose up -d --build
+            docker-compose build --build-arg BUILD_DATE=$(date +%s)
+            docker-compose up -d
             docker image prune -f
 
