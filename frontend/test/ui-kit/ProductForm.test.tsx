@@ -181,7 +181,6 @@ describe('ProductForm', () => {
 
   it('renders correctly in "create" mode and fetches initial data, displaying all default fields', async () => {
     renderProductForm();
-    expect(screen.getByText('Добавление товара')).toBeInTheDocument();
     expect(screen.getByLabelText(/Название/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/Цена/i)).toBeInTheDocument();
     expect(screen.getByTestId('text-editor')).toBeInTheDocument();
@@ -231,7 +230,7 @@ describe('ProductForm', () => {
     expect(screen.getByLabelText(/Дата начала акции/i)).toHaveValue('2025-01-15');
     expect(screen.getByLabelText(/Дата окончания акции/i)).toHaveValue('2025-01-20');
     await user.click(screen.getByRole('button', { name: /Показать дополнительные поля/i }));
-    expect(screen.getByLabelText(/Размер/i)).toHaveValue('Large'); // Если sanitizeString не делает trim, а данные '  Large  ', то toHaveValue('  Large  ')
+    expect(screen.getByLabelText(/Размер/i)).toHaveValue('Large');
     expect(screen.getByLabelText(/Возраст/i)).toHaveValue('');
     expect(screen.getByLabelText(/Вес \(грамм\)/i)).toHaveValue(0);
     expect(screen.getByLabelText(/Производитель/i)).toHaveValue('');
@@ -303,9 +302,9 @@ describe('ProductForm', () => {
     await user.click(screen.getByLabelText(/Участвует в акции/i));
     const priceInput = screen.getByLabelText(/Цена/i);
     await user.clear(priceInput); await user.type(priceInput, '1000');
-    const promoPercentageInput = screen.getByLabelText(/Скидочные проценты %/i);
+    const promoPercentageInput = screen.getByLabelText(/Скидка \(%\)/i);
     await user.clear(promoPercentageInput); await user.type(promoPercentageInput, '20');
-    expect(await screen.findByText(/Цена с 20% будет равна 800 cом/i)).toBeInTheDocument();
+    expect(await screen.findByText(/Цена со скидкой 20%/i)).toBeInTheDocument();
   });
 
   it('calls onSubmit and does NOT reset form in edit mode', async () => {

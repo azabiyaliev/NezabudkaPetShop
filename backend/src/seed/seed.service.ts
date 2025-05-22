@@ -648,6 +648,11 @@ export class SeedService {
         });
       }
 
+      const totalPrice = orderItems.reduce(
+        (acc, item) => acc + item.productPrice * item.quantity,
+        0,
+      );
+
       function randomDate(start: Date, end: Date): Date {
         return new Date(
           start.getTime() + Math.random() * (end.getTime() - start.getTime()),
@@ -667,6 +672,7 @@ export class SeedService {
           paymentMethod: randomPaymentMethod,
           deliveryMethod: randomDeliveryMethod,
           orderComment: randomComment,
+          totalPrice: totalPrice,
           useBonus,
           bonusUsed,
           items: {
