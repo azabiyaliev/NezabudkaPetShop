@@ -39,7 +39,7 @@ import theme from "../../../globalStyles/globalTheme.ts";
 import CloseIcon from '@mui/icons-material/Close';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import PetsIcon from '@mui/icons-material/Pets';
-import ArrowRightIcon from '@mui/icons-material/ArrowRight';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 
 const AllProductsCardsPage = () => {
   const dispatch = useAppDispatch();
@@ -370,6 +370,8 @@ const AllProductsCardsPage = () => {
                   : handleSelectCategory(category.id)
               }
               sx={{
+                display: "flex",
+                justifyContent: "space-between",
                 borderRadius: 2,
                 mx: 1,
                 my: 0.5,
@@ -383,7 +385,7 @@ const AllProductsCardsPage = () => {
             >
               <Typography fontWeight={500}>{category.title}</Typography>
               {category.subcategories?.length ? (
-                <ArrowRightIcon sx={{ mr: 1 }} />
+                <KeyboardArrowRightIcon sx={{ color: COLORS.text }} />
               ) : null}
             </ListItemButton>
           </ListItem>
@@ -589,16 +591,27 @@ const AllProductsCardsPage = () => {
 
                 <Box
                   sx={{
-                    overflowY: "auto",
+                    overflow: "hidden",
                     flexGrow: 1,
                     minHeight: 100,
+                    position: "relative",
                   }}
                 >
-                  <List>
-                    {!currentCategory
-                      ? renderCategoriesInModal(categories)
-                      : renderSubcategoriesInModal(currentCategory)}
-                  </List>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      width: "200%",
+                      transform: currentCategory ? "translateX(-50%)" : "translateX(0)",
+                      transition: "transform 0.3s ease-in-out",
+                    }}
+                  >
+                    <List sx={{ width: "100%" }}>
+                      {renderCategoriesInModal(categories)}
+                    </List>
+                    <List sx={{ width: "100%" }}>
+                      {currentCategory && renderSubcategoriesInModal(currentCategory)}
+                    </List>
+                  </Box>
                 </Box>
 
                 {currentCategory && (
@@ -621,7 +634,6 @@ const AllProductsCardsPage = () => {
               </Box>
             </Fade>
           </Modal>
-
 
           <Button
             onClick={handleOpenModal}

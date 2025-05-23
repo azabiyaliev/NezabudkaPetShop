@@ -234,7 +234,11 @@ const DeliveryPageForm = () => {
               sx={{
                 display: 'flex',
                 justifyContent: 'space-between',
-                gap: '10px'
+                gap: '10px',
+                '@media (max-width: 630px)': {
+                  flexWrap: 'wrap',
+                  flexDirection: 'column-reverse',
+                },
               }}>
               <TextEditor
                 value={form.checkoutDeliveryPriceInfo}
