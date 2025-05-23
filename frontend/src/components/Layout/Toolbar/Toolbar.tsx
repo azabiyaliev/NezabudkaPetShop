@@ -1033,7 +1033,7 @@ const MainToolbar = () => {
                   }}
                 >
                   <NavLink
-                    to="/private/client_orders"
+                    to="/private/client_inprocess_orders"
                     style={{
                       textDecoration: "none",
                       display: "flex",
