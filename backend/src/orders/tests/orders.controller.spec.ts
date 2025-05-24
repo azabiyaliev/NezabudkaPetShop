@@ -123,6 +123,7 @@ describe('OrdersController', () => {
         paymentMethod: 'ByCard',
         deliveryMethod: 'Delivery',
         recaptchaToken: 'token',
+        totalPrice: 100,
       };
       const createdOrder = { id: 1, ...orderDto };
 
@@ -146,6 +147,7 @@ describe('OrdersController', () => {
         deliveryMethod: 'Delivery',
         paymentMethod: 'ByCard',
         recaptchaToken: 'token',
+        totalPrice: 100,
       };
       const createdOrder = { id: 2, ...orderDto };
 
@@ -164,6 +166,7 @@ describe('OrdersController', () => {
         deliveryMethod: 'Delivery',
         paymentMethod: 'ByCard',
         recaptchaToken: 'token',
+        totalPrice: 100,
       };
 
       mockOrdersService.createOrder.mockImplementation(() => {

@@ -130,6 +130,7 @@ describe('OrdersService', () => {
       guestPhone: '+996555123456',
       guestName: 'Guest',
       recaptchaToken: 'token',
+      totalPrice: 200,
     };
 
     it('should create order for guest', async () => {
@@ -137,6 +138,7 @@ describe('OrdersService', () => {
         id: 1,
         ...mockCreateOrderDto,
         userId: null,
+        user: null,
         items: mockCreateOrderDto.items.map((item) => ({
           ...item,
           orderAmount: item.orderAmount * item.quantity,
@@ -303,20 +305,20 @@ describe('OrdersService', () => {
   describe('autoDeletingOrder', () => {
     it('should delete orders older than 10 days', async () => {
       const mockResult = { count: 5 };
-      mockPrisma.order.deleteMany.mockResolvedValue(mockResult);
+      mockPrisma.order.updateMany.mockResolvedValue(mockResult);
 
       await service.autoDeletingOrder();
-      expect(mockPrisma.order.deleteMany).toHaveBeenCalled();
+      expect(mockPrisma.order.updateMany).toHaveBeenCalled();
     });
   });
 
   describe('autoDeletingCanceledOrder', () => {
     it('should delete canceled orders older than 7 days', async () => {
       const mockResult = { count: 3 };
-      mockPrisma.order.deleteMany.mockResolvedValue(mockResult);
+      mockPrisma.order.updateMany.mockResolvedValue(mockResult);
 
       await service.autoDeletingCanceledOrder();
-      expect(mockPrisma.order.deleteMany).toHaveBeenCalled();
+      expect(mockPrisma.order.updateMany).toHaveBeenCalled();
     });
   });
 });

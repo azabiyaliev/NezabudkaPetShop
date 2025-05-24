@@ -234,8 +234,23 @@ const DeliveryPageForm = () => {
               sx={{
                 display: 'flex',
                 justifyContent: 'space-between',
-                gap: '10px'
+                gap: '10px',
+                "@media (max-width: 1150px)": {
+                  flexDirection: 'column',
+                }
               }}>
+              <Box sx={{
+                display: 'none',
+                "@media (max-width: 1150px)": {
+                  display: 'block',
+                }
+              }}>
+                <Typography>Шаблон</Typography>
+                <Typography sx={{ color: 'gray', width: '254px',
+                  }}>
+                  {deliveryPriceInfoTemplate}
+                </Typography>
+              </Box>
               <TextEditor
                 value={form.checkoutDeliveryPriceInfo}
                 onChange={onChangeEditorCheckoutDeliveryPriceInfo}
@@ -243,9 +258,16 @@ const DeliveryPageForm = () => {
                 placeholder={deliveryPriceInfoTemplate}
                 helperText={checkoutPriceError || (form.checkoutDeliveryPriceInfo ? undefined : 'Поле обязательно для заполнения')}
               />
-              <Box>
+              <Box sx={{
+                "@media (max-width: 1150px)": {
+                  display: 'none',
+                }
+              }}>
                 <Typography>Шаблон</Typography>
-                <Typography sx={{ color: 'gray', width: '254px' }}>
+                <Typography sx={{ color: 'gray', width: '254px',
+                    "@media (max-width: 1536)": {
+                      width: '100%',
+                    }}}>
                   {deliveryPriceInfoTemplate}
                 </Typography>
               </Box>
