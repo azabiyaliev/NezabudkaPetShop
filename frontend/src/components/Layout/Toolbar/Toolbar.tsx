@@ -1,43 +1,65 @@
-import { Badge, Box, Button, Container, InputBase, Toolbar, useMediaQuery, } from '@mui/material';
-import { NavLink, useLocation } from 'react-router-dom';
-import { useAppDispatch, useAppSelector, usePermission, } from '../../../app/hooks.ts';
-import ExistsUser from './ExistsUser.tsx';
-import UnknownUser from './UnknownUser.tsx';
-import logo from '../../../assets/logo-nezabudka.webp';
-import Typography from '@mui/material/Typography';
-import './Fonts.css';
-import { selectEditSite } from '../../../store/editionSite/editionSiteSlice.ts';
-import { selectUser } from '../../../store/users/usersSlice.ts';
-import { useEffect, useMemo, useRef, useState } from 'react';
-import CustomCart from '../../Domain/CustomCart/CustomCart.tsx';
-import { fetchSite } from '../../../store/editionSite/editionSiteThunk.ts';
-import { selectProducts } from '../../../store/products/productsSlice.ts';
-import { getProducts } from '../../../store/products/productsThunk.ts';
-import SearchIcon from '@mui/icons-material/Search';
-import LocalMallOutlinedIcon from '@mui/icons-material/LocalMallOutlined';
-import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
-import SettingsIcon from '@mui/icons-material/Settings';
-import MenuIcon from '@mui/icons-material/Menu';
-import CategoryNavMenu from '../../Domain/CategoryNavMenu.tsx';
-import { cartFromSlice, getFromLocalStorage, } from '../../../store/cart/cartSlice.ts';
-import { userRoleAdmin, userRoleClient, userRoleSuperAdmin } from '../../../globalConstants.ts';
-import IconButton from '@mui/joy/IconButton';
-import { fetchUserById, fetchUserIdBonus } from '../../../store/users/usersThunk.ts';
-import Tooltip from '@mui/joy/Tooltip';
-import { selectedFavorite } from '../../../store/favoriteProducts/favoriteProductsSlice.ts';
-import { getLocalFavoriteProducts } from '../../../store/favoriteProducts/favoriteProductLocal.ts';
+import {
+  Badge,
+  Box,
+  Button,
+  Container,
+  InputBase,
+  Toolbar,
+  useMediaQuery,
+} from "@mui/material";
+import { NavLink, useLocation } from "react-router-dom";
+import {
+  useAppDispatch,
+  useAppSelector,
+  usePermission,
+} from "../../../app/hooks.ts";
+import ExistsUser from "./ExistsUser.tsx";
+import UnknownUser from "./UnknownUser.tsx";
+import logo from "../../../assets/logo-nezabudka.webp";
+import Typography from "@mui/material/Typography";
+import "./Fonts.css";
+import { selectEditSite } from "../../../store/editionSite/editionSiteSlice.ts";
+import { selectUser } from "../../../store/users/usersSlice.ts";
+import { useEffect, useMemo, useRef, useState } from "react";
+import CustomCart from "../../Domain/CustomCart/CustomCart.tsx";
+import { fetchSite } from "../../../store/editionSite/editionSiteThunk.ts";
+import { selectProducts } from "../../../store/products/productsSlice.ts";
+import { getProducts } from "../../../store/products/productsThunk.ts";
+import SearchIcon from "@mui/icons-material/Search";
+import LocalMallOutlinedIcon from "@mui/icons-material/LocalMallOutlined";
+import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined";
+import SettingsIcon from "@mui/icons-material/Settings";
+import MenuIcon from "@mui/icons-material/Menu";
+import CategoryNavMenu from "../../Domain/CategoryNavMenu.tsx";
+import {
+  cartFromSlice,
+  getFromLocalStorage,
+} from "../../../store/cart/cartSlice.ts";
+import {
+  userRoleAdmin,
+  userRoleClient,
+  userRoleSuperAdmin,
+} from "../../../globalConstants.ts";
+import IconButton from "@mui/joy/IconButton";
+import {
+  fetchUserById,
+  fetchUserIdBonus,
+} from "../../../store/users/usersThunk.ts";
+import Tooltip from "@mui/joy/Tooltip";
+import { selectedFavorite } from "../../../store/favoriteProducts/favoriteProductsSlice.ts";
+import { getLocalFavoriteProducts } from "../../../store/favoriteProducts/favoriteProductLocal.ts";
 import { ClickAwayListener } from "@mui/material";
 import theme from "../../../globalStyles/globalTheme.ts";
-import PhoneIcon from '@mui/icons-material/Phone';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import PhoneIcon from "@mui/icons-material/Phone";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import {
   Heart,
   MagnifyingGlass,
   ShoppingCartSimple,
-  Star, Truck
-} from 'phosphor-react';
-import StorefrontIcon from '@mui/icons-material/Storefront';
-
+  Star,
+  Truck,
+} from "phosphor-react";
+import StorefrontIcon from "@mui/icons-material/Storefront";
 
 const MainToolbar = () => {
   const [openCart, setOpenCart] = useState<boolean>(false);
@@ -59,7 +81,11 @@ const MainToolbar = () => {
 
   const location = useLocation();
 
-  const isClientsPage = location.pathname === '/private/clients' || location.pathname === '/private/admin-table' || location.pathname === '/private/brands' || location.pathname === '/private/products';
+  const isClientsPage =
+    location.pathname === "/private/clients" ||
+    location.pathname === "/private/admin-table" ||
+    location.pathname === "/private/brands" ||
+    location.pathname === "/private/products";
 
   useEffect(() => {
     if (user?.id) {
@@ -168,8 +194,6 @@ const MainToolbar = () => {
       ),
     );
   };
-
-
 
   return (
     <div>
@@ -303,10 +327,9 @@ const MainToolbar = () => {
       </Box>
       <Box
         sx={{
-          background:
-            can([userRoleSuperAdmin])
-              ? `linear-gradient(135deg, ${theme.colors.adminBackgroundGreen} 0%, #A3B72F 50%, ${theme.colors.adminBackgroundYellow} 100%) center / 200%`
-              : theme.colors.primary,
+          background: can([userRoleSuperAdmin])
+            ? `linear-gradient(135deg, ${theme.colors.adminBackgroundGreen} 0%, #A3B72F 50%, ${theme.colors.adminBackgroundYellow} 100%) center / 200%`
+            : theme.colors.primary,
           borderBottom: `1px solid ${theme.colors.white}`,
           boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
         }}
@@ -326,7 +349,7 @@ const MainToolbar = () => {
                 paddingBottom: "15px",
                 "@media (max-width: 1430px)": {
                   paddingTop: theme.spacing.exs,
-                  paddingBottom:  theme.spacing.exs,
+                  paddingBottom: theme.spacing.exs,
                 },
                 "@media (max-width: 1100px)": {
                   display: "flex",
@@ -334,7 +357,7 @@ const MainToolbar = () => {
                   alignItems: "center",
                 },
                 "@media (max-width: 405px)": {
-                  paddingLeft: '10px',
+                  paddingLeft: "10px",
                 },
               }}
             >
@@ -342,36 +365,36 @@ const MainToolbar = () => {
                 <Box
                   onClick={() => setOpenCategoryMenu(true)}
                   sx={{
-                    display: 'none',
+                    display: "none",
                     ...(isClientsPage
                       ? {
-                        "@media (max-width: 1390px)": {
-                          display: 'flex',
-                          paddingTop: '7px',
-                          paddingBottom: '7px',
-                          borderRadius: theme.spacing.xs,
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          cursor: 'pointer',
-                          transition: 'background 0.3s ease',
-                          position: 'relative',
-                          marginRight: theme.spacing.sm,
-                        },
-                      }
+                          "@media (max-width: 1390px)": {
+                            display: "flex",
+                            paddingTop: "7px",
+                            paddingBottom: "7px",
+                            borderRadius: theme.spacing.xs,
+                            alignItems: "center",
+                            justifyContent: "center",
+                            cursor: "pointer",
+                            transition: "background 0.3s ease",
+                            position: "relative",
+                            marginRight: theme.spacing.sm,
+                          },
+                        }
                       : {
-                        "@media (max-width: 900px)": {
-                          display: 'flex',
-                          paddingTop: '7px',
-                          paddingBottom: '7px',
-                          borderRadius: theme.spacing.xs,
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          cursor: 'pointer',
-                          transition: 'background 0.3s ease',
-                          position: 'relative',
-                          marginRight: theme.spacing.sm,
-                        },
-                      }),
+                          "@media (max-width: 900px)": {
+                            display: "flex",
+                            paddingTop: "7px",
+                            paddingBottom: "7px",
+                            borderRadius: theme.spacing.xs,
+                            alignItems: "center",
+                            justifyContent: "center",
+                            cursor: "pointer",
+                            transition: "background 0.3s ease",
+                            position: "relative",
+                            marginRight: theme.spacing.sm,
+                          },
+                        }),
                   }}
                 >
                   <MenuIcon sx={{ color: theme.colors.white }} />
@@ -770,7 +793,7 @@ const MainToolbar = () => {
                           backgroundColor: "transparent",
                           padding: { xs: "10px", sm: "10px", md: "7px" },
                           borderRadius: { xs: "50%", md: "10px" },
-                          display:  "flex",
+                          display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
                           cursor: "pointer",
@@ -895,43 +918,37 @@ const MainToolbar = () => {
                         to="/my_orders"
                         style={{ textDecoration: "none", marginTop: "5px" }}
                       >
-                        <Badge
-                          badgeContent={sum}
-                          overlap="circular"
-                          color="warning"
+                        <Button
+                          sx={{
+                            color: "black",
+                            display: "flex",
+                            flexDirection: "row",
+                            alignItems: "center",
+                            padding: 0,
+                            gap: "8px",
+                          }}
                         >
-                          <Button
+                          <LocalMallOutlinedIcon
                             sx={{
-                              color: "black",
-                              display: "flex",
-                              flexDirection: "row",
-                              alignItems: "center",
-                              padding: 0,
-                              gap: "8px",
+                              width: "27px",
+                              height: "27px",
+                              color: theme.colors.black,
                             }}
-                          >
-                            <LocalMallOutlinedIcon
-                              sx={{
-                                width: "27px",
-                                height: "27px",
-                                color: theme.colors.black,
-                              }}
-                            />
-                          </Button>
-                        </Badge>
+                          />
+                        </Button>
                       </NavLink>
 
                       <NavLink
                         to="/all-products"
                         style={{ textDecoration: "none" }}
                       >
-                       <StorefrontIcon
-                         sx={{
-                           width: "27px",
-                           height: "27px",
-                           color: theme.colors.black,
-                         }}
-                       />
+                        <StorefrontIcon
+                          sx={{
+                            width: "27px",
+                            height: "27px",
+                            color: theme.colors.black,
+                          }}
+                        />
                       </NavLink>
 
                       {user ? <ExistsUser /> : <UnknownUser />}
@@ -1033,7 +1050,7 @@ const MainToolbar = () => {
                   }}
                 >
                   <NavLink
-                    to="/private/client_orders"
+                    to="/private/client_inprocess_orders"
                     style={{
                       textDecoration: "none",
                       display: "flex",
@@ -1041,30 +1058,24 @@ const MainToolbar = () => {
                       alignItems: "center",
                     }}
                   >
-                    <Badge
-                      badgeContent={sum}
-                      overlap="circular"
-                      color="warning"
+                    <Button
+                      sx={{
+                        color: "black",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        padding: 0,
+                        gap: "8px",
+                      }}
                     >
-                      <Button
+                      <LocalMallOutlinedIcon
                         sx={{
-                          color: "black",
-                          display: "flex",
-                          flexDirection: "column",
-                          alignItems: "center",
-                          padding: 0,
-                          gap: "8px",
+                          width: "27px",
+                          height: "27px",
+                          color: theme.colors.black,
                         }}
-                      >
-                        <LocalMallOutlinedIcon
-                          sx={{
-                            width: "27px",
-                            height: "27px",
-                            color: theme.colors.black,
-                          }}
-                        />
-                      </Button>
-                    </Badge>
+                      />
+                    </Button>
                   </NavLink>
 
                   <NavLink
@@ -1076,31 +1087,25 @@ const MainToolbar = () => {
                       alignItems: "center",
                     }}
                   >
-                    <Badge
-                      badgeContent={sum}
-                      overlap="circular"
-                      color="warning"
+                    <Button
+                      sx={{
+                        color: theme.colors.black,
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        padding: 0,
+                        gap: "8px",
+                      }}
                     >
-                      <Button
+                      <GroupOutlinedIcon
                         sx={{
-                          color: theme.colors.black,
-                          display: "flex",
-                          flexDirection: "column",
-                          alignItems: "center",
-                          padding: 0,
-                          gap: "8px",
+                          width: "30px",
+                          height: "30px",
+                          color: "black",
+                          marginTop: "5px",
                         }}
-                      >
-                        <GroupOutlinedIcon
-                          sx={{
-                            width: "30px",
-                            height: "30px",
-                            color: "black",
-                            marginTop: "5px",
-                          }}
-                        />
-                      </Button>
-                    </Badge>
+                      />
+                    </Button>
                   </NavLink>
 
                   <Box

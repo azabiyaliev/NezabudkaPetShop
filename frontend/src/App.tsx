@@ -48,6 +48,7 @@ import CompanyPageFormAdmin from './features/Admin/CompanyPageFormAdmin/CompanyP
 import DeliveryPageFormAdmin from './features/Admin/DeliveryPageFormAdmin/DeliveryPageFormAdmin.tsx';
 import OrderInProcess from './features/Admin/AdminOrderPage/OrderInProcess.tsx';
 import OrderHistory from './features/Admin/AdminOrderPage/OrderHistory.tsx';
+import PrivacyPolicy from "./components/Domain/PrivacyPolicy/PrivacyPolicy.tsx";
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -267,6 +268,7 @@ const App = () => {
               <ClientInfoPagesForm/>
             </ProtectedRoute>
           }/>
+          <Route path='/privacy' element={<PrivacyPolicy/>}/>
         </Routes>
       </Layout>
     </div>

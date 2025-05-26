@@ -9,7 +9,6 @@ import { sendPasswordCode } from "../../../store/users/usersThunk.ts";
 import { enqueueSnackbar } from 'notistack';
 import { COLORS } from "../../../globalStyles/stylesObjects.ts";
 
-
 interface Props {
   open: boolean;
   setOpen: (open: boolean) => void;
@@ -17,6 +16,7 @@ interface Props {
 
 const ModalWindow: React.FC<Props> = ({ open, setOpen }) => {
   const [email, setEmail] = useState("");
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const dispatch = useAppDispatch();
 
   const handelCloseModal = () => {
@@ -28,20 +28,17 @@ const ModalWindow: React.FC<Props> = ({ open, setOpen }) => {
   };
 
   const handleSubmitEmail = async () => {
-
     if (!email) {
       enqueueSnackbar('Пожалуйста, введите ваш email.', { variant: 'error' });
       return;
     }
 
-
     try {
       const response = await dispatch(sendPasswordCode(email));
-
       if (sendPasswordCode.fulfilled.match(response)) {
-        enqueueSnackbar('Проверьте почту, вам поступило сообщение для восстановления пароля!', { variant: 'success' });
         setEmail("");
         setOpen(false);
+        setShowSuccessDialog(true);
       } else {
         enqueueSnackbar('Такой почты не существует. Проверьте введенные данные.', { variant: 'error' });
       }
@@ -52,7 +49,7 @@ const ModalWindow: React.FC<Props> = ({ open, setOpen }) => {
   };
 
   return (
-    <div>
+    <>
       <Dialog
         open={open}
         onClose={handelCloseModal}
@@ -159,7 +156,80 @@ const ModalWindow: React.FC<Props> = ({ open, setOpen }) => {
           </Button>
         </DialogActions>
       </Dialog>
-    </div>
+
+      {/* Успешный диалог */}
+      <Dialog
+        open={showSuccessDialog}
+        onClose={() => setShowSuccessDialog(false)}
+        PaperProps={{
+          sx: {
+            border: "1px solid #344C3D",
+            borderRadius: "12px",
+            boxShadow: "0px 8px 24px #344C3D",
+            padding: "10px",
+            maxWidth: "90vw", // адаптивная ширина
+            mx: "auto", // центрирование
+          },
+        }}
+      >
+        <DialogTitle
+          sx={{
+            textAlign: "center",
+            fontWeight: 600,
+            fontSize: "22px",
+            color: "#344C3D",
+            "@media (max-width: 600px)": {
+              fontSize: "18px",
+            },
+          }}
+        >
+          Письмо отправлено
+        </DialogTitle>
+        <DialogContent>
+          <Typography
+            variant="body2"
+            align="center"
+            sx={{
+              mt: 1,
+              fontSize: "16px",
+              color: "#4D4D4D",
+              "@media (max-width: 600px)": {
+                fontSize: "14px",
+              },
+            }}
+          >
+            Мы отправили письмо с инструкциями по восстановлению пароля.<br />
+            Если вы не нашли его во <b>«Входящих»</b>, проверьте папку <b>«Спам»</b>.
+          </Typography>
+        </DialogContent>
+        <DialogActions
+          sx={{
+            justifyContent: "center",
+            mb: 2,
+          }}
+        >
+          <Button
+            variant="contained"
+            onClick={() => setShowSuccessDialog(false)}
+            sx={{
+              backgroundColor: COLORS.primary,
+              color: COLORS.white,
+              width: "auto",
+              maxWidth: "300px",
+              borderRadius: "20px",
+              paddingX: 3,
+              "@media (max-width: 600px)": {
+                maxWidth: "90%",
+                fontSize: "14px",
+              },
+            }}
+          >
+            Понятно
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+    </>
   );
 };
 

@@ -12,6 +12,7 @@ const BuyerBlockFooter = () => {
         {[
           { to: "/my_company", label: "О компании" },
           { to: "/delivery", label: "Доставка и оплата" },
+          { to: "/privacy", label: "Политика конфиденциальности" },
           { to: "/bonus_program", label: "Бонусная программа" },
           { to: "/contacts", label: "Контакты" },
         ].map((item) => (
