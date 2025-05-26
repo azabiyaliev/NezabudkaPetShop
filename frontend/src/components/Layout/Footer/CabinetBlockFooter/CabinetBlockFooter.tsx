@@ -26,14 +26,14 @@ const CabinetBlockFooter = () => {
     links.push(
       { to: "/private_account", label: "Админ панель" },
       { to: "/private/products", label: "Товары" },
-      { to: "/private/client_orders", label: "Заказы" },
+      { to: "/private/client_inprocess_orders", label: "Заказы" },
       { to: "/private/clients", label: "Клиенты" }
     );
   } else if (user.role === "superAdmin") {
     links.push(
       { to: "/private/order_stats", label: "Статистика" },
       { to: "/private/products", label: "Товары" },
-      { to: "/private/client_orders", label: "Заказы" },
+      { to: "/private/client_inprocess_orders", label: "Заказы" },
       { to: "/private/clients", label: "Клиенты" }
     );
   }
