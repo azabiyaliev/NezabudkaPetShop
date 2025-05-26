@@ -1,7 +1,7 @@
 import React, { FormEvent, useEffect, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../app/hooks.ts';
 import { checkoutAuthUserOrder } from '../../store/orders/ordersThunk.ts';
-import { Box, Button, TextField } from '@mui/material';
+import { Box, Button, CircularProgress, TextField } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
@@ -38,6 +38,7 @@ const OrderForm = () => {
   const [incorrectFormatPhone, setIncorrectFormatPhone] = useState("");
   const [incorrectFormatAddress, setIncorrectFormatAddress] = useState("");
   const carts = useAppSelector(cartFromSlice);
+  const loading = useAppSelector((state) => state.orders.isLoading);
   const user = useAppSelector(selectUser);
   const [isBonusInputDisabled, setIsBonusInputDisabled] = useState(false);
   const navigate = useNavigate();
@@ -298,7 +299,7 @@ const OrderForm = () => {
     !form.guestPhone ||
     !form.guestName ||
     (form.deliveryMethod !== DeliveryMethod.PickUp && !form.address) ||
-    recaptchaRef === null
+    !recaptchaRef
   )
 
   return (
@@ -418,7 +419,10 @@ const OrderForm = () => {
                   },
                 }}
               >
-                Оформить заказ
+                {loading ? (
+                  <CircularProgress sx={{ color: COLORS.white }} size={24}/>
+                ) : ('Оформить заказ')}
+
               </Button>
             </Box>
           </Box>
@@ -855,7 +859,9 @@ const OrderForm = () => {
                     },
                   }}
                 >
-                  Оформить заказ
+                  {loading ? (
+                    <CircularProgress sx={{ color: COLORS.white }} size={14}/>
+                  ) : ('Оформить заказ')}
                 </Button>
               </Box>
             </Box>

@@ -399,58 +399,63 @@ const OrderHistoryItem: React.FC<Props> = ({ orders }) => {
             </Typography>
             <List dense sx={{ maxHeight: 400, overflow: 'auto' }}>
               {popoverData.items.map((item) => (
-                <>
-                <ListItem
-                  component={NavLink}
-                  to={`/product/${item.productId}`}
-                  key={item.id} disableGutters
-                  sx={{
-                    mb: 1.5,
-                    borderBottom: '1px solid #eee',
-                    pb: 1.5,
-                    fontSize: '14px',
-                    color: 'black',
-                    cursor: 'pointer',
-                    textDecoration: "none",
-                    '&:hover': {
-                      color: COLORS.DARK_GREEN,
-                    },
-                  }}>
-                  <ListItemIcon sx={{ mr: 1.5, minWidth: 'auto' }}>
-                    <Avatar
-                      variant="rounded"
-                      src={`${apiUrl}/${item.productPhoto}`}
-                      alt={item.productName || ''}
-                      sx={{ width: 56, height: 56 }}
+                <div key={item.id}>
+                  <ListItem
+                    component={NavLink}
+                    to={`/product/${item.productId}`}
+                    disableGutters
+                    sx={{
+                      mb: 1.5,
+                      borderBottom: '1px solid #eee',
+                      pb: 1.5,
+                      fontSize: '14px',
+                      color: 'black',
+                      cursor: 'pointer',
+                      textDecoration: "none",
+                      '&:hover': {
+                        color: COLORS.DARK_GREEN,
+                      },
+                    }}>
+                    <ListItemIcon sx={{ mr: 1.5, minWidth: 'auto' }}>
+                      <Avatar
+                        variant="rounded"
+                        src={`${apiUrl}/${item.productPhoto}`}
+                        alt={item.productName || ''}
+                        sx={{ width: 56, height: 56 }}
+                      />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={
+                        <Typography variant="subtitle2" sx={{ fontWeight: 500 }}>
+                          {item.productName}
+                          {item.product === null ?
+                            <Typography
+                              component='span'
+                              sx={{
+                                fontSize: { xs: FONTS.size.xs, sm: FONTS.size.sm },
+                                color: COLORS.warning,
+                              }}
+                            >
+                              Удален
+                            </Typography> : null
+                          }
+                        </Typography>
+                      }
+                      secondary={
+                        <Typography variant="body2" color="text.secondary" sx={{display: 'flex', alignItems: 'center', gap: '5px', mt: 0.5, mb: 0.5}}>
+                          Кол-во: {item.quantity} x {item.productPrice === null ?
+                          <Typography component='span' sx={{fontSize: FONTS.size.xl}}>{item.promoPrice}</Typography>
+                          :
+                          <Typography component='span'>{item.sales ? item.promoPrice : item.productPrice.toLocaleString('ru-RU').replace(/,/g, ' ')}</Typography>} сом
+                          {item.sales ? <Typography component='span' sx={{fontSize: FONTS.size.xs, color: COLORS.warning}}> Скидка -{item.promoPercentage}%</Typography> : null}
+                        </Typography>
+                      }
                     />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={
-                      <Typography variant="subtitle2" sx={{ fontWeight: 500 }}>
-                        {item.productName}
-                        {item.product === null ?
-                          <Typography
-                            sx={{
-                              fontSize: { xs: FONTS.size.xs, sm: FONTS.size.sm },
-                              color: COLORS.warning,
-                            }}
-                          >
-                            Удален
-                          </Typography> : null
-                        }
-                      </Typography>
-                    }
-                    secondary={
-                      <Typography variant="body2" color="text.secondary">
-                        Кол-во: {item.quantity} x {item.product?.productPrice.toLocaleString('ru-RU')} сом
-                      </Typography>
-                    }
-                  />
-                  <Typography variant="subtitle1" fontWeight="bold" sx={{ ml: 2, whiteSpace: 'nowrap' }}>
-                    {item.quantity} шт. × {item.sales ? item.promoPrice : item.productPrice} сом
-                  </Typography>
-                </ListItem>
-                </>
+                    <Typography variant="subtitle1" fontWeight="bold" sx={{ ml: 2, whiteSpace: 'nowrap' }}>
+                      {item.orderAmount.toLocaleString('ru-RU').replace(/,/g, ' ')} сом
+                    </Typography>
+                  </ListItem>
+                </div>
               ))}
             </List>
           </Box>

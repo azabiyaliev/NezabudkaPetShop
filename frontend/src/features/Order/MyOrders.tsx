@@ -432,7 +432,7 @@ const MyOrders = () => {
           <CustomPagination
             items={filteredAndSortedOrders}
             columns={3}
-            renderItem={(item) => <ClientOrdersItem order={item} />}
+            renderItem={(item) => <div key={item.id}><ClientOrdersItem order={item} /> </div>}
           />
         )}
       </Box>

@@ -191,7 +191,11 @@ export class OrdersService {
     }
 
     const orderAmount = items.reduce(
-      (acc, item) => acc + item.orderAmount * item.quantity,
+      (acc, item) =>
+        acc +
+        (item.sales
+          ? (item.promoPrice ?? 0) * (item.quantity ?? 1)
+          : (item.productPrice ?? 0) * (item.quantity ?? 1)),
       0,
     );
 
@@ -346,7 +350,7 @@ export class OrdersService {
             productId: item.productId,
             products: item.products,
             quantity: item.quantity,
-            orderAmount: item.orderAmount * item.quantity,
+            orderAmount: orderAmount,
             productName: item.productName,
             productPrice: item.productPrice,
             promoPrice: item.promoPrice,

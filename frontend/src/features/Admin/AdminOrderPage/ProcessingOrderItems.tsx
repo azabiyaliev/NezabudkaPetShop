@@ -411,6 +411,9 @@ const columns: GridColDef[] = [
           vertical: 'top',
           horizontal: 'left',
         }}
+        sx={{
+          overflow: 'hidden'
+        }}
       >
         <Box sx={{ p: 2, minWidth: 350, maxWidth: 500 }}>
           <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', color: COLORS.DARK_GREEN, mb: 2 }}>
@@ -418,11 +421,11 @@ const columns: GridColDef[] = [
           </Typography>
           <List dense sx={{ maxHeight: 400, overflow: 'auto' }}>
             {popoverData.items.map((item) => (
-              <>
+              <div key={item.id}>
                 <ListItem
                   component={NavLink}
                   to={`/product/${item.productId}`}
-                  key={item.id} disableGutters
+                  disableGutters
                   sx={{
                     mb: 1.5,
                     borderBottom: '1px solid #eee',
@@ -449,6 +452,7 @@ const columns: GridColDef[] = [
                         {item.productName}
                         {item.product === null ?
                           <Typography
+                            component='span'
                             sx={{
                               fontSize: { xs: FONTS.size.xs, sm: FONTS.size.sm },
                               color: COLORS.warning,
@@ -460,16 +464,20 @@ const columns: GridColDef[] = [
                       </Typography>
                     }
                     secondary={
-                      <Typography variant="body2" color="text.secondary">
-                        Кол-во: {item.quantity} x {item.product?.productPrice.toLocaleString('ru-RU')} сом
+                      <Typography variant="body2" color="text.secondary" sx={{display: 'flex', alignItems: 'center', gap: '5px', mt: 0.5, mb: 0.5}}>
+                        Кол-во: {item.quantity} x {item.productPrice === null ?
+                        <Typography component='span' sx={{fontSize: FONTS.size.xl}}>{item.promoPrice}</Typography>
+                        :
+                        <Typography component='span'>{item.sales ? item.promoPrice : item.productPrice.toLocaleString('ru-RU').replace(/,/g, ' ')}</Typography>} сом
+                        {item.sales ? <Typography component='span' sx={{fontSize: FONTS.size.xs, color: COLORS.warning}}> Скидка -{item.promoPercentage}%</Typography> : null}
                       </Typography>
                     }
                   />
                   <Typography variant="subtitle1" fontWeight="bold" sx={{ ml: 2, whiteSpace: 'nowrap' }}>
-                    {item.quantity} шт. × {item.sales ? item.promoPrice : item.productPrice} сом
+                    {item.orderAmount.toLocaleString('ru-RU').replace(/,/g, ' ')} сом
                   </Typography>
                 </ListItem>
-              </>
+              </div>
             ))}
           </List>
         </Box>
