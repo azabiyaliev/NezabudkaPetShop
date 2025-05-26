@@ -633,7 +633,7 @@ const ProductForm: React.FC<Props> = ({
                   justifyContent: "center",
                 }}
               >
-                <Grid item>
+                <Grid >
                   <TextField
                     label="Дата начала акции"
                     type="date"
@@ -645,7 +645,7 @@ const ProductForm: React.FC<Props> = ({
                   />
                 </Grid>
 
-                <Grid item>
+                <Grid >
                   <TextField
                     label="Дата окончания акции"
                     type="date"
@@ -657,7 +657,7 @@ const ProductForm: React.FC<Props> = ({
                   />
                 </Grid>
 
-                <Grid item>
+                <Grid >
                   <TextField
                     label="Скидка (%)"
                     id="promoPercentage"
@@ -679,7 +679,7 @@ const ProductForm: React.FC<Props> = ({
             )}
           </Grid>
           <Grid container justifyContent="center">
-            <Grid item>
+            <Grid >
               <Button
                 type="submit"
                 sx={{
