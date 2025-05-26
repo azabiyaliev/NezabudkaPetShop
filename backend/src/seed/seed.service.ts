@@ -149,7 +149,7 @@ export class SeedService {
         phone: '+(996)500-430-481',
         linkAddress: 'https://go.2gis.com/ZA3mL',
         mapGoogleLink:
-          'https://www.google.com/maps/d/u/0/embed?mid=13x6QctVrCI831zyl84NAk4f4rI6LUDI&ehbc=2E312F&noprof=1',
+          'https://www.google.com/maps/d/u/2/embed?mid=1_aHiDAiHySs-Fyqb-GZgZxFtlrFSeg4&usp=sharing',
       },
     });
 
@@ -838,7 +838,8 @@ export class SeedService {
 
   <p>Если ваш район находится за пределами основных зон доставки, уточните стоимость у оператора. Стандартные варианты: <strong>200 сом, 250 сом, 500 сом</strong>.</p>
 `,
-        map: 'https://www.google.com/maps/d/u/0/embed?mid=1G9bEPWjGTG9-GRPK14b78rv1mUoLvkE',
+        map: ' https://www.google.com/maps/d/u/2/embed?mid=1zLWfBmC5N7L7VfbRCAmmS72pqZxl0rg&usp=sharing',
+
       },
     });
   }
