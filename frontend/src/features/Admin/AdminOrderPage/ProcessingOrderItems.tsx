@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ICartItem, IOrder } from '../../../types';
+import { IOrder, OrderItem } from '../../../types';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
 import { getAllProcessingOrders, updateOrderStatus } from '../../../store/orders/ordersThunk.ts';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
@@ -18,7 +18,7 @@ import dayjs from 'dayjs';
 import { enqueueSnackbar } from 'notistack';
 import { ruRU } from '@mui/x-data-grid/locales';
 import { apiUrl } from '../../../globalConstants.ts';
-import { COLORS } from '../../../globalStyles/stylesObjects.ts';
+import { COLORS, FONTS } from '../../../globalStyles/stylesObjects.ts';
 import { NavLink } from 'react-router-dom';
 import { DeliveryMethod, PaymentMethod } from '../../Order/OrderForm.tsx';
 
@@ -42,9 +42,9 @@ const ProcessingOrderItems: React.FC<Props> = ({ orders }) => {
   const loading = useAppSelector((state) => state.orders.isLoading);
   const [popoverData, setPopoverData] = useState<{
     anchorEl: HTMLButtonElement | null;
-    items: ICartItem[];
+    items: OrderItem[];
   }>({ anchorEl: null, items: [] });
-  const handleOpenPopover = (event: React.MouseEvent<HTMLButtonElement>, itemsToShow: ICartItem[]) => {
+  const handleOpenPopover = (event: React.MouseEvent<HTMLButtonElement>, itemsToShow: OrderItem[]) => {
     setPopoverData({ anchorEl: event.currentTarget, items: itemsToShow });
   };
 
@@ -292,15 +292,10 @@ const columns: GridColDef[] = [
 
       const translatedPaymentMethod = translatePaymentMethod(paymentMethodKeys);
 
-      const total: number =
-        params.row.items.reduce((acc: number, item: ICartItem) => {
-          return acc + item.quantity * item.product.productPrice;
-        }, 0);
-
       return (
       <Box>
         <Typography>
-          {total} сом
+          {params.row.totalPrice} сом
         </Typography>
         <Typography sx={{color: COLORS.OLIVE_GREEN}}>
           {translatedPaymentMethod}
@@ -416,53 +411,75 @@ const columns: GridColDef[] = [
           vertical: 'top',
           horizontal: 'left',
         }}
+        sx={{
+          overflow: 'hidden'
+        }}
       >
         <Box sx={{ p: 2, minWidth: 350, maxWidth: 500 }}>
           <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', color: COLORS.DARK_GREEN, mb: 2 }}>
             Товары в заказе
           </Typography>
           <List dense sx={{ maxHeight: 400, overflow: 'auto' }}>
-            {popoverData.items.map((cartItem: ICartItem) => (
-              <ListItem
-                component={NavLink}
-                to={`/product/${cartItem.product.id}`}
-                key={cartItem.id} disableGutters
-                sx={{
-                  mb: 1.5,
-                  borderBottom: '1px solid #eee',
-                  pb: 1.5,
-                  fontSize: '14px',
-                  color: 'black',
-                  cursor: 'pointer',
-                  textDecoration: "none",
-                  '&:hover': {
-                    color: COLORS.DARK_GREEN,
-                  },
-              }}>
-                <ListItemIcon sx={{ mr: 1.5, minWidth: 'auto' }}>
-                  <Avatar
-                    variant="rounded"
-                    src={`${apiUrl}/${cartItem.product.productPhoto}`}
-                    alt={cartItem.product.productName}
-                    sx={{ width: 56, height: 56 }}
+            {popoverData.items.map((item) => (
+              <div key={item.id}>
+                <ListItem
+                  component={NavLink}
+                  to={`/product/${item.productId}`}
+                  disableGutters
+                  sx={{
+                    mb: 1.5,
+                    borderBottom: '1px solid #eee',
+                    pb: 1.5,
+                    fontSize: '14px',
+                    color: 'black',
+                    cursor: 'pointer',
+                    textDecoration: "none",
+                    '&:hover': {
+                      color: COLORS.DARK_GREEN,
+                    },
+                  }}>
+                  <ListItemIcon sx={{ mr: 1.5, minWidth: 'auto' }}>
+                    <Avatar
+                      variant="rounded"
+                      src={`${apiUrl}/${item.productPhoto}`}
+                      alt={item.productName || ''}
+                      sx={{ width: 56, height: 56 }}
+                    />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={
+                      <Typography variant="subtitle2" sx={{ fontWeight: 500 }}>
+                        {item.productName}
+                        <Box>
+                        {item.product === null ?
+                          <Typography
+                            component='span'
+                            sx={{
+                              fontSize: { xs: FONTS.size.xs, sm: FONTS.size.sm },
+                              color: COLORS.warning,
+                            }}
+                          >
+                            Удален
+                          </Typography> : null
+                        }
+                        </Box>
+                      </Typography>
+                    }
+                    secondary={
+                      <Typography variant="body2" color="text.secondary" sx={{display: 'flex', alignItems: 'center', gap: '5px', mb: 0.5}}>
+                        Кол-во: {item.quantity} x {item.productPrice === null ?
+                        <Typography variant="body2" component='span' sx={{fontSize: FONTS.size.xl}}>{item.promoPrice}</Typography>
+                        :
+                        <Typography variant="body2" component='span'>{item.sales ? item.promoPrice : item.productPrice.toLocaleString('ru-RU').replace(/,/g, ' ')}</Typography>} сом
+                        {item.sales ? <Typography component='span' sx={{fontSize: FONTS.size.xs, color: COLORS.warning}}> Скидка -{item.promoPercentage}%</Typography> : null}
+                      </Typography>
+                    }
                   />
-                </ListItemIcon>
-                <ListItemText
-                  primary={
-                    <Typography variant="subtitle2" sx={{ fontWeight: 500 }}>
-                      {cartItem.product.productName}
-                    </Typography>
-                  }
-                  secondary={
-                    <Typography variant="body2" color="text.secondary">
-                      Кол-во: {cartItem.quantity} x {cartItem.product.productPrice.toLocaleString('ru-RU')} сом
-                    </Typography>
-                  }
-                />
-                <Typography variant="subtitle1" fontWeight="bold" sx={{ ml: 2, whiteSpace: 'nowrap' }}>
-                  {(cartItem.quantity * cartItem.product.productPrice).toLocaleString('ru-RU')} сом
-                </Typography>
-              </ListItem>
+                  <Typography variant="subtitle1" fontWeight="bold" sx={{ ml: 2, whiteSpace: 'nowrap' }}>
+                    {item.orderAmount.toLocaleString('ru-RU').replace(/,/g, ' ')} сом
+                  </Typography>
+                </ListItem>
+              </div>
             ))}
           </List>
         </Box>

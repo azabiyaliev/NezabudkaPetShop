@@ -7,9 +7,16 @@ import { ValidationPipe } from '@nestjs/common';
 import * as process from 'node:process';
 import { ValidationExceptionFilter } from './auth/auth.validate';
 import * as cookieParser from 'cookie-parser';
+import helmet from 'helmet';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  app.use(
+    helmet({
+      crossOriginOpenerPolicy: false,
+      crossOriginResourcePolicy: false,
+    }),
+  );
   app.use(cookieParser());
 
   const result = dotenv.config();

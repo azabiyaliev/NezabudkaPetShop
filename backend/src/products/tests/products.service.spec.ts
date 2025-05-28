@@ -57,6 +57,7 @@ describe('ProductsService', () => {
       productAge: '1+',
       productFeedClass: 'Premium',
       promoPercentage: 50,
+      isBestseller: 'false',
     };
 
     it('should create new product', async () => {
@@ -94,6 +95,7 @@ describe('ProductsService', () => {
           productFeedClass: mockCreateProductDto.productFeedClass,
           promoPercentage: mockCreateProductDto.promoPercentage,
           promoPrice: 250,
+          isBestseller: false,
           productCategory: {
             create: mockCreateProductDto.categoryId.map((id: number) => ({
               category: { connect: { id } },
@@ -130,6 +132,7 @@ describe('ProductsService', () => {
       productFeedClass: 'Premium',
       productWeight: 2.5,
       promoPercentage: 10,
+      isBestseller: 'false',
     };
 
     const mockFile: Express.Multer.File = {
@@ -178,6 +181,7 @@ describe('ProductsService', () => {
         productFeedClass: 'Premium',
         productWeight: 2.5,
         promoPercentage: 10,
+        isBestseller: false,
         productCategory: [
           { category: { id: 1, title: 'Category 1' } },
           { category: { id: 2, title: 'Category 2' } },
@@ -210,6 +214,7 @@ describe('ProductsService', () => {
           productFeedClass: mockDto.productFeedClass,
           productWeight: mockDto.productWeight,
           promoPercentage: mockDto.promoPercentage,
+          isBestseller: false,
           productCategory: {
             deleteMany: {},
             create: mockDto.categoryId.map((id: number) => ({

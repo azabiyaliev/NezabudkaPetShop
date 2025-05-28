@@ -38,13 +38,8 @@ export class OrdersService {
           ],
         };
 
-    const finalOrderList = {
-      ...statusFilter,
-      isArchive: false,
-    };
-
     const orders = await this.prisma.order.findMany({
-      where: finalOrderList,
+      where: statusFilter,
       include: {
         user: true,
         items: {
@@ -53,9 +48,14 @@ export class OrdersService {
           },
         },
       },
-      orderBy: {
-        createdAt: 'desc',
-      },
+      orderBy: [
+        {
+          createdAt: 'desc',
+        },
+        {
+          isArchive: 'desc',
+        },
+      ],
     });
 
     return orders;
@@ -191,7 +191,11 @@ export class OrdersService {
     }
 
     const orderAmount = items.reduce(
-      (acc, item) => acc + item.orderAmount * item.quantity,
+      (acc, item) =>
+        acc +
+        (item.sales
+          ? (item.promoPrice ?? 0) * (item.quantity ?? 1)
+          : (item.productPrice ?? 0) * (item.quantity ?? 1)),
       0,
     );
 
@@ -346,7 +350,7 @@ export class OrdersService {
             productId: item.productId,
             products: item.products,
             quantity: item.quantity,
-            orderAmount: item.orderAmount * item.quantity,
+            orderAmount: orderAmount,
             productName: item.productName,
             productPrice: item.productPrice,
             promoPrice: item.promoPrice,
@@ -479,20 +483,23 @@ export class OrdersService {
 
     const order = await this.prisma.order.findUnique({
       where: { id: orderId },
-      select: { status: true },
     });
 
     if (!order) {
       throw new NotFoundException('Заказ не найден');
     }
 
-    if (status.Delivered) {
-      await this.prisma.order.update({
+    if (status.Delivered && status.Canceled && status.Received) {
+      const updatedOrder = await this.prisma.order.update({
         where: { id: orderId },
-        data: { isArchive: true },
+        data: { isArchive: !order.isArchive },
       });
+
+      return {
+        message: `Заказ успешно ${updatedOrder.isArchive ? 'архивирован' : 'разархивирован'}`,
+        order: updatedOrder,
+      };
     }
-    return { message: 'Заказ был успешно архивирован' };
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)

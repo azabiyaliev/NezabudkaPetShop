@@ -7,17 +7,16 @@ import '@testing-library/jest-dom';
 import { userReducer } from '../../src/store/users/usersSlice';
 import LoginUser from '../../src/components/Forms/UserFrom/LoginUser';
 import { GoogleOAuthProvider } from '@react-oauth/google';
-import { toast } from 'react-toastify';
 import { LogInMutation } from '../../src/types';
+import { enqueueSnackbar } from 'notistack';
 
-vi.mock('react-toastify', () => ({
-  toast: {
-    error: vi.fn(),
-    info: vi.fn(),
-    success: vi.fn(),
-  },
-  ToastContainer: () => <div>ToastContainer</div>,
-}));
+vi.mock('notistack', async () => {
+  const actual = await vi.importActual('notistack');
+  return {
+    ...actual,
+    enqueueSnackbar: vi.fn(),
+  };
+});
 
 const mockNavigate = vi.fn();
 vi.mock('react-router-dom', async () => {
@@ -25,6 +24,20 @@ vi.mock('react-router-dom', async () => {
   return {
     ...actual,
     useNavigate: () => mockNavigate,
+  };
+});
+
+const mockStartGoogleLogin = vi.fn();
+vi.mock('@react-oauth/google', async () => {
+  const actual = await vi.importActual('@react-oauth/google'); // Important to get other exports if any
+  return {
+    ...actual, // Spread actual to keep any other exports
+    GoogleOAuthProvider: ({ children }: { children: React.ReactNode }) => children,
+    // You can simplify GoogleLogin if you're not testing its direct rendering here
+    GoogleLogin: vi.fn(() => <button data-testid="google-login-button">Google</button>),
+    useGoogleLogin: vi.fn(() => {
+      return mockStartGoogleLogin;
+    }),
   };
 });
 
@@ -65,11 +78,6 @@ const createMockStore = (state: { users: ReturnType<typeof userReducer> }) => {
     preloadedState: state,
   });
 };
-
-vi.mock('@react-oauth/google', () => ({
-  GoogleOAuthProvider: ({ children }: { children: React.ReactNode }) => children,
-  GoogleLogin: () => <button data-testid="google-login-button">Google</button>,
-}));
 
 const googleClientId = 'test-google-client-id';
 
@@ -187,15 +195,9 @@ describe('LoginUser component', () => {
       await new Promise(resolve => setTimeout(resolve, 0));
     });
 
-    expect(toast.error).toHaveBeenCalledTimes(1);
-    expect(toast.error).toHaveBeenCalledWith('Произошла ошибка. Повторите попытку.', {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
+    expect(enqueueSnackbar).toHaveBeenCalledTimes(1);
+    expect(enqueueSnackbar).toHaveBeenCalledWith('Произошла ошибка. Повторите попытку.', {
+      variant: "error",
     });
   });
 
@@ -211,10 +213,11 @@ describe('LoginUser component', () => {
   it('handles Google login', async () => {
     renderWithProviders(<LoginUser />, mockStore);
 
-    const button = screen.getByTestId('google-login-button');
+    const button = screen.getByRole('button', { name: /google/i })
     await act(async () => {
       fireEvent.click(button);
     });
+    expect(mockStartGoogleLogin).toHaveBeenCalled();
   });
 
   it('handles Facebook login failure', () => {

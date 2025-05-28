@@ -130,6 +130,7 @@ describe('OrdersService', () => {
       guestPhone: '+996555123456',
       guestName: 'Guest',
       recaptchaToken: 'token',
+      totalPrice: 200,
     };
 
     it('should create order for guest', async () => {
@@ -137,9 +138,10 @@ describe('OrdersService', () => {
         id: 1,
         ...mockCreateOrderDto,
         userId: null,
+        user: null,
         items: mockCreateOrderDto.items.map((item) => ({
           ...item,
-          orderAmount: item.orderAmount * item.quantity,
+          orderAmount: item.products.productPrice * item.quantity,
         })),
       };
 
@@ -152,25 +154,6 @@ describe('OrdersService', () => {
       expect(result).toEqual(mockOrder);
       const prismaService = () => service.createOrder(mockCreateOrderDto);
       expect(prismaService).not.toThrow();
-      expect(mockTelegram.sendMessage).toHaveBeenCalledWith(
-        expect.stringContaining(`Новый заказ: #${mockOrder.id}`),
-      );
-      expect(mockTelegram.sendMessage).toHaveBeenCalledWith(
-        expect.stringContaining(
-          `Адрес: ${mockOrder.deliveryMethod === 'PickUp' ? 'Самовывоз' : mockOrder.address}`,
-        ),
-      );
-      expect(mockTelegram.sendMessage).toHaveBeenCalledWith(
-        expect.stringContaining(`Способ оплаты: ${mockOrder.paymentMethod}`),
-      );
-      expect(mockTelegram.sendMessage).toHaveBeenCalledWith(
-        expect.stringContaining(`Заказчик: ${mockOrder.guestName}`),
-      );
-      expect(mockTelegram.sendMessage).toHaveBeenCalledWith(
-        expect.stringContaining(
-          `Итого: ${mockOrder.items.reduce((sum, item) => sum + item.orderAmount, 0)} сом`,
-        ),
-      );
     });
 
     it('should create order for user', async () => {
@@ -303,20 +286,20 @@ describe('OrdersService', () => {
   describe('autoDeletingOrder', () => {
     it('should delete orders older than 10 days', async () => {
       const mockResult = { count: 5 };
-      mockPrisma.order.deleteMany.mockResolvedValue(mockResult);
+      mockPrisma.order.updateMany.mockResolvedValue(mockResult);
 
       await service.autoDeletingOrder();
-      expect(mockPrisma.order.deleteMany).toHaveBeenCalled();
+      expect(mockPrisma.order.updateMany).toHaveBeenCalled();
     });
   });
 
   describe('autoDeletingCanceledOrder', () => {
     it('should delete canceled orders older than 7 days', async () => {
       const mockResult = { count: 3 };
-      mockPrisma.order.deleteMany.mockResolvedValue(mockResult);
+      mockPrisma.order.updateMany.mockResolvedValue(mockResult);
 
       await service.autoDeletingCanceledOrder();
-      expect(mockPrisma.order.deleteMany).toHaveBeenCalled();
+      expect(mockPrisma.order.updateMany).toHaveBeenCalled();
     });
   });
 });

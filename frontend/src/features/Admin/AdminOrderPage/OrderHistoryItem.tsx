@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ICartItem, IOrder } from '../../../types';
+import { IOrder, OrderItem } from '../../../types';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks.ts';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import {
@@ -17,7 +17,7 @@ import ArchiveIcon from '@mui/icons-material/Archive';
 import dayjs from 'dayjs';
 import { ruRU } from '@mui/x-data-grid/locales';
 import { apiUrl } from '../../../globalConstants.ts';
-import { COLORS } from '../../../globalStyles/stylesObjects.ts';
+import { COLORS, FONTS } from '../../../globalStyles/stylesObjects.ts';
 import { NavLink } from 'react-router-dom';
 import { DeliveryMethod, PaymentMethod } from '../../Order/OrderForm.tsx';
 import { archiveOrder, getAllProcessingOrders } from '../../../store/orders/ordersThunk.ts';
@@ -43,9 +43,11 @@ const OrderHistoryItem: React.FC<Props> = ({ orders }) => {
   const loading = useAppSelector((state) => state.orders.isLoading);
   const [popoverData, setPopoverData] = useState<{
     anchorEl: HTMLButtonElement | null;
-    items: ICartItem[];
+    items: OrderItem[];
   }>({ anchorEl: null, items: [] });
-  const handleOpenPopover = (event: React.MouseEvent<HTMLButtonElement>, itemsToShow: ICartItem[]) => {
+
+
+  const handleOpenPopover = (event: React.MouseEvent<HTMLButtonElement>, itemsToShow: OrderItem[]) => {
     setPopoverData({ anchorEl: event.currentTarget, items: itemsToShow });
   };
 
@@ -57,26 +59,40 @@ const OrderHistoryItem: React.FC<Props> = ({ orders }) => {
   const popoverId = isPopoverOpen ? 'items-popover' : undefined;
 
   const handleArchiveOrder = async(id: string) => {
+    const order = orders.find(order => order.id === Number(id));
+
+    if (!order) {
+      enqueueSnackbar('Заказ не найден', { variant: 'error' });
+      return;
+    }
+
+    const isArchived = order.isArchive;
+    const actionText = isArchived ? 'разархивировать' : 'архивировать';
+    const successText = isArchived ? 'разархивирован' : 'архивирован';
+
     const result = await Swal.fire({
-      title: "Архивировать заказ?",
-      text: "Вы уверены, что хотите архивировать этот заказ?",
+      title: `${isArchived ? 'Разархивировать' : 'Архивировать'} заказ?`,
+      text: `Вы уверены, что хотите ${actionText} этот заказ?`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: COLORS.warning,
       cancelButtonColor: COLORS.OLIVE_GREEN,
-      confirmButtonText: "Да, архивировать",
+      confirmButtonText: `Да, ${actionText}`,
       cancelButtonText: "Нет, оставить",
       customClass: {
         popup: 'beautiful-sweetalert',
       }
     });
+
     if(result.isConfirmed) {
       try {
         await dispatch(archiveOrder(id)).unwrap();
         await dispatch(getAllProcessingOrders(false));
-        enqueueSnackbar(`Заказ ${id} был архивирован`, { variant: 'success' })
+        enqueueSnackbar(`Заказ ${id} был ${successText}`, { variant: 'success' });
       } catch {
-        enqueueSnackbar('Произошла ошибка при архивации', { variant: 'error' })
+        enqueueSnackbar(`Произошла ошибка при ${actionText} заказа`, {
+          variant: 'error'
+        });
       }
     }
   }
@@ -112,21 +128,32 @@ const OrderHistoryItem: React.FC<Props> = ({ orders }) => {
 
   const columns: GridColDef[] = [
     {
-      field: 'actions',
-      headerName: 'Действие',
-      width: 80,
+      field: 'isArchive',
+      headerName: 'Архив',
+      width: 100,
       headerAlign: 'center',
+      sortable: true,
       align: 'center',
       renderCell: (params) => (
-        <ArchiveIcon
-          sx={{
-            '&:hover': {
-              cursor: 'pointer',
-              color: COLORS.OLIVE_GREEN
-            }
-          }}
-          onClick={() => handleArchiveOrder(params.row.id)}/>
-      )
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          {loading ? (
+            <CircularProgress size={24} />
+          ) : (
+            <Tooltip title={params.row.isArchive ? "Разархивировать" : "Архивировать"}>
+              <ArchiveIcon
+                sx={{
+                  '&:hover': {
+                    cursor: 'pointer',
+                    color: params.row.isArchive ? COLORS.warning : COLORS.OLIVE_GREEN
+                  },
+                  color: params.row.isArchive ? COLORS.warning : undefined
+                }}
+                onClick={() => handleArchiveOrder(params.row.id.toString())}
+              />
+            </Tooltip>
+          )}
+        </Box>
+      ),
     },
     {
       field: 'id',
@@ -246,15 +273,10 @@ const OrderHistoryItem: React.FC<Props> = ({ orders }) => {
         const paymentMethodKeys = params.row.paymentMethod;
 
         const translatedPaymentMethod = translatePaymentMethod(paymentMethodKeys);
-
-        const total: number =
-          params.row.items.reduce((acc: number, item: ICartItem) => {
-            return acc + item.quantity * item.product.productPrice;
-          }, 0);
         return (
           <Box>
             <Typography>
-              {total} сом
+              {params.row.totalPrice} сом
             </Typography>
             <Typography sx={{color: COLORS.OLIVE_GREEN}}>
               {translatedPaymentMethod}
@@ -289,7 +311,7 @@ const OrderHistoryItem: React.FC<Props> = ({ orders }) => {
             columns={columns}
             initialState={{
               sorting: {
-                sortModel: [{ field: 'createdAt', sort: 'desc' }],
+                sortModel: [{ field: 'isArchive', sort: 'asc' }, { field: 'createdAt', sort: 'asc' }],
               },
               pagination: {
                 paginationModel: {
@@ -376,47 +398,66 @@ const OrderHistoryItem: React.FC<Props> = ({ orders }) => {
               Товары в заказе
             </Typography>
             <List dense sx={{ maxHeight: 400, overflow: 'auto' }}>
-              {popoverData.items.map((cartItem: ICartItem) => (
-                <ListItem
-                  component={NavLink}
-                  to={`/product/${cartItem.product.id}`}
-                  key={cartItem.id} disableGutters
-                  sx={{
-                    mb: 1.5,
-                    borderBottom: '1px solid #eee',
-                    pb: 1.5,
-                    fontSize: '14px',
-                    color: 'black',
-                    cursor: 'pointer',
-                    textDecoration: "none",
-                    '&:hover': {
-                      color: COLORS.DARK_GREEN,
-                    },
-                  }}>
-                  <ListItemIcon sx={{ mr: 1.5, minWidth: 'auto' }}>
-                    <Avatar
-                      variant="rounded"
-                      src={`${apiUrl}/${cartItem.product.productPhoto}`}
-                      alt={cartItem.product.productName}
-                      sx={{ width: 56, height: 56 }}
+              {popoverData.items.map((item) => (
+                <div key={item.id}>
+                  <ListItem
+                    component={NavLink}
+                    to={`/product/${item.productId}`}
+                    disableGutters
+                    sx={{
+                      mb: 1.5,
+                      borderBottom: '1px solid #eee',
+                      pb: 1.5,
+                      fontSize: '14px',
+                      color: 'black',
+                      cursor: 'pointer',
+                      textDecoration: "none",
+                      '&:hover': {
+                        color: COLORS.DARK_GREEN,
+                      },
+                    }}>
+                    <ListItemIcon sx={{ mr: 1.5, minWidth: 'auto' }}>
+                      <Avatar
+                        variant="rounded"
+                        src={`${apiUrl}/${item.productPhoto}`}
+                        alt={item.productName || ''}
+                        sx={{ width: 56, height: 56 }}
+                      />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={
+                        <Typography variant="subtitle2" sx={{ fontWeight: 500 }}>
+                          {item.productName}
+                          <Box>
+                            {item.product === null ?
+                              <Typography
+                                component='span'
+                                sx={{
+                                  fontSize: { xs: FONTS.size.xs, sm: FONTS.size.sm },
+                                  color: COLORS.warning,
+                                }}
+                              >
+                                Удален
+                              </Typography> : null
+                            }
+                          </Box>
+                        </Typography>
+                      }
+                      secondary={
+                        <Typography variant="body2" color="text.secondary" sx={{display: 'flex', alignItems: 'center', gap: '5px', mb: 0.5}}>
+                          Кол-во: {item.quantity} x {item.productPrice === null ?
+                          <Typography component='span' sx={{fontSize: FONTS.size.xl}}>{item.promoPrice}</Typography>
+                          :
+                          <Typography component='span'>{item.sales ? item.promoPrice : item.productPrice.toLocaleString('ru-RU').replace(/,/g, ' ')}</Typography>} сом
+                          {item.sales ? <Typography component='span' sx={{fontSize: FONTS.size.xs, color: COLORS.warning}}> Скидка -{item.promoPercentage}%</Typography> : null}
+                        </Typography>
+                      }
                     />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={
-                      <Typography variant="subtitle2" sx={{ fontWeight: 500 }}>
-                        {cartItem.product.productName}
-                      </Typography>
-                    }
-                    secondary={
-                      <Typography variant="body2" color="text.secondary">
-                        Кол-во: {cartItem.quantity} x {cartItem.product.productPrice.toLocaleString('ru-RU')} сом
-                      </Typography>
-                    }
-                  />
-                  <Typography variant="subtitle1" fontWeight="bold" sx={{ ml: 2, whiteSpace: 'nowrap' }}>
-                    {(cartItem.quantity * cartItem.product.productPrice).toLocaleString('ru-RU')} сом
-                  </Typography>
-                </ListItem>
+                    <Typography variant="subtitle1" fontWeight="bold" sx={{ ml: 2, whiteSpace: 'nowrap' }}>
+                      {item.orderAmount.toLocaleString('ru-RU').replace(/,/g, ' ')} сом
+                    </Typography>
+                  </ListItem>
+                </div>
               ))}
             </List>
           </Box>
