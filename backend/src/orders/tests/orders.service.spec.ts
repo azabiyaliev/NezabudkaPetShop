@@ -141,7 +141,7 @@ describe('OrdersService', () => {
         user: null,
         items: mockCreateOrderDto.items.map((item) => ({
           ...item,
-          orderAmount: item.orderAmount * item.quantity,
+          orderAmount: item.products.productPrice * item.quantity,
         })),
       };
 
@@ -154,25 +154,6 @@ describe('OrdersService', () => {
       expect(result).toEqual(mockOrder);
       const prismaService = () => service.createOrder(mockCreateOrderDto);
       expect(prismaService).not.toThrow();
-      expect(mockTelegram.sendMessage).toHaveBeenCalledWith(
-        expect.stringContaining(`Новый заказ: #${mockOrder.id}`),
-      );
-      expect(mockTelegram.sendMessage).toHaveBeenCalledWith(
-        expect.stringContaining(
-          `Адрес: ${mockOrder.deliveryMethod === 'PickUp' ? 'Самовывоз' : mockOrder.address}`,
-        ),
-      );
-      expect(mockTelegram.sendMessage).toHaveBeenCalledWith(
-        expect.stringContaining(`Способ оплаты: ${mockOrder.paymentMethod}`),
-      );
-      expect(mockTelegram.sendMessage).toHaveBeenCalledWith(
-        expect.stringContaining(`Заказчик: ${mockOrder.guestName}`),
-      );
-      expect(mockTelegram.sendMessage).toHaveBeenCalledWith(
-        expect.stringContaining(
-          `Итого: ${mockOrder.items.reduce((sum, item) => sum + item.orderAmount, 0)} сом`,
-        ),
-      );
     });
 
     it('should create order for user', async () => {

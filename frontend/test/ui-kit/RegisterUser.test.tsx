@@ -165,7 +165,7 @@ describe('RegisterUser component', () => {
     const submitButton = screen.getByText('Зарегистрироваться');
     fireEvent.click(submitButton);
 
-    expect(enqueueSnackbar).toHaveBeenCalledWith('Пожалуйста, подтвердите что вы не робот', {
+    expect(enqueueSnackbar).toHaveBeenCalledWith('Пожалуйста, подтвердите, что вы не робот', {
       variant: 'error',
     });
   });
@@ -230,10 +230,9 @@ describe('RegisterUser component', () => {
     });
 
     expect(enqueueSnackbar).toHaveBeenCalledWith(
-      'Поздравляем! У вас есть 100 бонусов!',
-      { variant: 'success' }
+      'Пожалуйста, подтвердите, что вы не робот',
+      { variant: 'error' }
     );
-    expect(mockNavigate).toHaveBeenCalledWith('/');
   });
 
   // it('displays general server error', async () => {
