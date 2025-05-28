@@ -428,21 +428,23 @@ const OrderHistoryItem: React.FC<Props> = ({ orders }) => {
                       primary={
                         <Typography variant="subtitle2" sx={{ fontWeight: 500 }}>
                           {item.productName}
-                          {item.product === null ?
-                            <Typography
-                              component='span'
-                              sx={{
-                                fontSize: { xs: FONTS.size.xs, sm: FONTS.size.sm },
-                                color: COLORS.warning,
-                              }}
-                            >
-                              Удален
-                            </Typography> : null
-                          }
+                          <Box>
+                            {item.product === null ?
+                              <Typography
+                                component='span'
+                                sx={{
+                                  fontSize: { xs: FONTS.size.xs, sm: FONTS.size.sm },
+                                  color: COLORS.warning,
+                                }}
+                              >
+                                Удален
+                              </Typography> : null
+                            }
+                          </Box>
                         </Typography>
                       }
                       secondary={
-                        <Typography variant="body2" color="text.secondary" sx={{display: 'flex', alignItems: 'center', gap: '5px', mt: 0.5, mb: 0.5}}>
+                        <Typography variant="body2" color="text.secondary" sx={{display: 'flex', alignItems: 'center', gap: '5px', mb: 0.5}}>
                           Кол-во: {item.quantity} x {item.productPrice === null ?
                           <Typography component='span' sx={{fontSize: FONTS.size.xl}}>{item.promoPrice}</Typography>
                           :
