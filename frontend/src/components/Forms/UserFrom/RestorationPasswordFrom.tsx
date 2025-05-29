@@ -54,6 +54,8 @@ const RestorationPasswordFrom = () => {
       navigate('/login');
     } else if (result.payload && 'errors' in result.payload) {
       enqueueSnackbar('Ошибка при сбросе пароля.', { variant: 'error' });
+    }else {
+      enqueueSnackbar('Срок действия ссылки истёк или произошла ошибка.', { variant: 'error' });
     }
   };
 

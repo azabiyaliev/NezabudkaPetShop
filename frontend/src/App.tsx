@@ -94,7 +94,7 @@ const App = () => {
           <Route path ="/my_orders" element={<MyOrders /> } />
           <Route path="/private/edit-carousel" element={<DragAndDropPhoto />} />
           <Route path="/photos/:id" element={<Photo/>}/>
-          <Route path="/change-password" element={<RestorationPasswordFrom/>}/>
+          <Route path="users/change-password" element={<RestorationPasswordFrom/>}/>
           <Route
             path="/private_account"
             element={
